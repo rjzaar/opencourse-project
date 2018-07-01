@@ -1,5 +1,9 @@
-# opencat
+# opencourse-project
 
+This project is a folder wrapper for opencourse. It provides various scripts. TBC
+
+
+# Processes
 The process is as follows:
 1) dev2qa (opencourse push)
 2) qa2prod (opencat push)
