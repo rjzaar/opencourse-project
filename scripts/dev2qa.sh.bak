@@ -1,0 +1,60 @@
+#!/bin/bash
+#dev2qa
+#Make changes to move from a dev to qa environment.
+#This is the same folder with the same database, just some changes are made to setup.
+#This presumes a single dev is able to work on dev and qa on his own, without a common qa server (for now).
+
+#You would normally push opencourse to git before these steps.
+
+#turn off dev settings
+cd opencat/opencourse/docroot
+drupal site:mode prod
+
+#turn off dev modules
+#drupal mou field_ui needed by panelizer
+drupal mou syslog
+drupal mou views_ui
+drupal mou migrate_devel
+#drupal mou layout_discovery needed by ds, etc
+drupal mou block_place
+drupal mou devel
+drupal mou kint
+drupal mou features_ui
+drupal mou oc_prod
+drupal mou default_content
+drupal mou dblog
+drupal mou search_kint
+drupal mou twig_xdebug
+drupal mou migrate_manifest
+drupal mou custom_migration
+drupal mou migrate_tools
+drupal mou migrate_plus
+drupal mou migrate_upgrade
+drupal mou twig_xdebug
+
+#move opencourse git
+cd 
+cd opencat/opencourse
+mv .git ../ocgitstore/
+
+#uninstall feature modules (leaves settings on site).
+drupal mou oc_groups
+drupal mou oc_lp
+drupal mou oc_sequence
+drupal mou oc_content
+drupal mou oc_doc
+drupal mou oc_book
+drupal mou oc_link
+drupal mou oc_image
+drupal mou oc_taxonomy
+drupal mou oc_fields
+drupal mou oc_site
+
+#turn off composer dev
+cd
+cd opencat/opencourse
+composer install --no-dev
+
+#Note database is the same between dev and qa in the forward direction.
+
+
