@@ -3,7 +3,7 @@
 This project is a folder wrapper for opencourse. It provides various scripts for development processes which incorporate composer, cmi and backup. It includes three stages, dev, qa and prod. There are some scripts needed on the production server.
 This project is also based on the varbase two repository structure, varbase and varbase-project. This is a good way to go since most updates to varbase don't need to be updated on a varbase based project. Those that do are included in varbase-project. There are also a lot less files to track in varbase-project than varbase itself. It provides an intelligent separation. But there is need for another wrapper for a varbase project, since scripts, cmi and private folders need to be excluded from standard access. Since a particular site based project needs to include site specific files which should be stored on a private repository for backup, there is one more layer needed. The only difference with this layer is the .gitignore file which includes folders needed on production. Welcome to Drupal 8 development. 
 
-# Here is the structure explained in detaow
+# Here is the structure explained in detail
 VARBASE
 This is where vardot works on all the details for the Drupal distribution of varbase.
 
