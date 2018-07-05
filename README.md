@@ -17,9 +17,12 @@ OPENCOURSE-PROJECT
 This is a particular staging strategy taking into account the new complexities (I'm looking at you composer and cmi) Drupal uses. While composer and cmi bring many advantages, they need to be managed properly so errors are properly dealt with and don't end up in production. These should be able to be automated for quicker error finding and prepartion for using tools like docker and travis. The opencourse-project provides a number of scripts that provides automated ways to move between stages dev, qa and prod and (still to be written) ways to revcover from mishaps. 
 
 OCSITE
-Opencourse-project is written for its own development. Anyone wanting to build on it will need to fork it and have it setup as the upstream version. There is then one set of changes for the gitignore so private and cmi are included. Database backup folders could also be included. Ocsite is your private site backup on github (or any git server?). 
+Opencourse-project is written for its own development. Anyone wanting to build on it will need to fork it and have it setup as the upstream version. Opencourse-project is setup so all you have to do is fork it. There is then one set of changes for the gitignore so private and cmi are included in the standard gitignore. There is another gitignore for development which is used when working on opencourse-project itself. Database backup folders could also be included. Ocsite is your private site backup on github (or any git server?). 
 
 While it appears complex, the structure provides clear separation between each of the layers, with improvements cascading through and the potential to automate these changes with automated tests and auto updates. It must be honestly taken into account that the time period between drupal security updates made available and incorporated on production is critical and the new drupal complexities means this can take time. Any serious update should not break current sites and a 'drush up drupal' should be enough, but I'm not silly enough to guarantee that. I don't know of any other tool that can provide the breadth of possibilities (Drupal framework and modules) I need in a dev environment while building on and incorporating other people's work (Vardot and maybe Opigno later). Drupal is going to be around for a long time and building on D8 should last awhile, this is particularly appealing, though it is yet to be seen that this is a wise choice. The cutting edge is usually the bleeding edge. But so far so good.
+
+# SUMMARY so far
+Either fork opencourse and use your own infrastructure or fork opencourse-project and use the provided set of scripts to manage your dev, qa and prod stages.
 
 # Processes
 The process is as follows:
