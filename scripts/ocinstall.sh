@@ -34,7 +34,8 @@ Options for project
     ocp|opencourse-project
 or provide something else: rjzaar/opencourse:8.5.x-dev
 
-Example: (sudo) bash ${0##*/} -i -g -p=oc -d -y -u=rob -s -a=o.c1
+Example (for varbase): ./scripts/ocinstall.sh -i -g -p=v -d -y -u=rob -s -a=v.b -db=vb -n
+for opencourse: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1
 HELP
 exit 0
 }
@@ -58,12 +59,11 @@ oc="n" #add opencourse modules etc.
 cat="n" #add opencat setup.
 # db is for database. It is used for db name, db user, db password to simplify things. It is the same as folder unless opencat setup.
 
-if [ "$#"=0 ]
+if [ "$#" = 0 ]
 then
 print_help
 exit 1
 fi
-
 for i in "$@"
 do
 case $i in
@@ -76,7 +76,7 @@ case $i in
     shift # past argument=value
     ;;
     -n|--nodownload)
-    nodown="y"
+    $nodown="y"
     shift # past argument=value
     ;;
     -m|--migrate)
@@ -143,7 +143,9 @@ esac
 done
 case $project in
     v|varbase)
+    echo "varbase chosen"
     project="vardot/varbase-project:8.5.x-dev"
+    gproject='git@github.com:Vardot/varbase.git'
     profile='varbase'
     sfolder='docroot'
     folder="varbase"
@@ -187,7 +189,7 @@ case $project in
     ;;
 esac
 
-if [ "$ofolder"=false ]
+if [ "$ofolder" = false ]
 then
 folder=$folder
 else
@@ -195,21 +197,21 @@ folder=$ofolder
 fi
 
 #Opencourse-project setup
-if [ "$db"=false ]
+if [ -z ${db+x} ]
 then
     db=$folder
 fi
-if [ "$dbuser"=false ]
+if [ -z ${dbuser+x} ]
 then
     dbuser=$db
 fi
-if [ "$dbpass"=false ]
+if [ -z ${dbpass+x} ]
 then
     dbpass=$dbuser
 fi
 
 
-if [ "$sfolder"=false ]
+if [ "$sfolder" = false ]
 then
 #request sfolder
 read -p "You need to choose the right site folder name (d(docroot)/h(html)/w(web)/or type in folder name" sfolderq
@@ -255,14 +257,21 @@ if [ "$sn"!="opencourse-project" ]
 then
     echo "folder needs to be changed and site name established."
     cd
+    if [ ! -d "$sn" ]; then
+    echo "Site folder $sn doesn't exist"
     mv opencourse-project $sn
+    else
+    echo "Site folder $sn already exists"
+    fi
     echo "Record sitename in file ocvariables.txt"
     cd $sn
 if [ ! -e "ocvariables.txt" ]; then
     echo "Creating ocvariables.txt"
-  echo >> "ocvariables.txt"
 
+  echo >> "ocvariables.txt"
 fi
+fi
+
 #storing sitename so other scripts can use it.
 echo "$sn" > "ocvariables.txt"
 
@@ -272,7 +281,7 @@ then
     if [ "$nodown"="n" ]
     then
         echo "Downloading ... (nodown = n)"
-        if [ "$yes"!="y" ]
+        if [ "$yes" != "y" ]
         then
         read -p "Do you want to delete the folder $folder if it exists (y/n/c)" question
         case $question in
@@ -388,7 +397,7 @@ then
     echo "install site"
     cd $sn/$folder/$sfolder
 
-    #set up settings.local.php so drush won't add database connections to settings.php
+    #set up settings.local.php so drush won''t add database connections to settings.php
     echo "create settings.local.php"
     cd sites/default
     cp default.settings.php settings.php
@@ -468,7 +477,7 @@ then
     echo "drupal path $dpath"
 	echo "Fixing permissions requires sudo password."
     sudo bash ./$sn/scripts/d8fp.sh --drupal_user=$user --drupal_path=$dpath
-    chmod g+w -R $sn/$folder/$sfolder/modules/custom
+    #chmod g+w -R $sn/$folder/$sfolder/modules/custom
 
 
 fi
@@ -496,7 +505,7 @@ echo "install drupal site"
 # drush status
 # drupal site:install  varbase --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
  drush -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$folder"
-#don't need --db-url=mysql://$dir:$dir@localhost:3306/$dir in drush because the settings.local.php has it.
+#don''t need --db-url=mysql://$dir:$dir@localhost:3306/$dir in drush because the settings.local.php has it.
 
 #sudo bash ./d8fp.sh --drupal_path=$folder/$sfolder --drupal_user=$user #shouldn't need this, since files don't need to be changed.
 #chmod g+w -R $folder/$sfolder/modules/custom
@@ -504,7 +513,7 @@ echo "install drupal site"
 if [ "$oc" = "y" ]
 then
     #install all required modules
-    echo "Install modules"
+    echo "Install modules for opencourse"
      #drush en -y oc_theme
 	#for some reason does not set it as default!
      drupal theme:install  oc_theme --set-default
@@ -520,9 +529,10 @@ then
 
     drush pm-uninstall -y oc_prod
     cd
-    if [ "$install"="y" ]
+    if [ "$install" = "y" ]
     then
-    echo "fix permissions, requires sudo" #This is only if the install hasn't been run before. All files should have correct permissions.
+    echo "fix permissions, requires sudo"
+    # This is only if the install hasn''t been run before. All files should have correct permissions.
     sudo bash ./d8fp.sh --drupal_path=$folder/$sfolder --drupal_user=$user
     chmod g+w -R $folder/$sfolder/modules/custom
     fi
