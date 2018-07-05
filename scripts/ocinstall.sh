@@ -4,6 +4,7 @@
 print_help() {
 cat <<-HELP
 This script is used to install a variety of drupal flavours particularly opencourse
+This will use opencourse-project as a wrapper. It is presumed you have already cloned opencourse-project.
 you can provide the following arguments:
 
 -i|--install 	This will install the files with the options you set, otherwise the database will be dumped and recreated and rebuilt.
@@ -14,13 +15,14 @@ you can provide the following arguments:
 -y|--yes	Answer all prompts with yes.
 -f=*|--folder=*	Specify the project folder name. This is the root folder for the installation. If not given the standard name will be used, eg opencourse for opencourse.
 -sf=*|--sfolder=* Give the site folder name, otherwise the standard one will be used, eg opencourse/docroot, d8/web, social/html.
--u=*|--user=*	Username, ie your username.
+-u=*|--user=*	Username, ie your username on ubuntu.
 -s|--secure	Do you want the private files folder stored somewhere else?
 -a=*|--address=*|uri=* What is the localwebserver url? This will automatically open it up once the script completes.
 -n|--nodownload This is a subchoice of install, where it is presumed the download has already occurred and so it picks up install at that point.
 -db|--database Database name. If no database name is given then the foldername is used.
 -dbuser|--databaseuser Database user name. If no username is given then the username is the same as the database name.
 -dbpass|--databasepassword Database password If no password is given then the password is the same as the username.
+-sn|--sitename This is the site name. It could be the URL of the site.
 
 Options for project
     v|varbase
@@ -29,7 +31,8 @@ Options for project
     os|opensocial
     dr|druptopia
     l|lightning
-or provide something else: rjzaar/opencourse:8.4.x-dev
+    ocp|opencourse-project
+or provide something else: rjzaar/opencourse:8.5.x-dev
 
 Example: (sudo) bash ${0##*/} -i -g -p=oc -d -y -u=rob -s -a=o.c1
 HELP
@@ -44,17 +47,18 @@ yes="n"
 secure="n"
 user="rob"
 uri="o.c"
+sn="opencourse-project"
 ofolder=false #This is to check if the user chose a folder or not. If not use the standard one for that install.
 sfolder=false #site folder, folder where the site sits, not the site folder where default is.
 project="opencourse"
 # For a private setup, either it is a test setup which means private is in the usual location <site root>/site/default/files/private or
 # there is a proper setup with opencat, which means private is as below. $secure is the switch, so if $secure and 
-private="/home/$user/opencat/private"
+private="/home/$user/$sn/private"
 oc="n" #add opencourse modules etc.
 cat="n" #add opencat setup.
 # db is for database. It is used for db name, db user, db password to simplify things. It is the same as folder unless opencat setup.
 
-if [ "$#" = 0 ] 
+if [ "$#"=0 ]
 then
 print_help
 exit 1
@@ -123,6 +127,10 @@ case $i in
     dbpass="${i#*=}"
     shift # past argument=value
     ;;
+    -sn*|--sitename=*)
+    $sn="${i#*=}"
+    shift # past argument=value
+    ;;
     -h|--help) print_help;;
     *)
       printf "***************************\n"
@@ -147,16 +155,6 @@ case $project in
     profile='varbase'
     sfolder='docroot'
     folder="opencourse"
-    ;;
-    cat|opencat)
-    project="opencat" #project no composer version at this stage but simple name for feedback
-    oc="y"
-    gproject='git@github.com:rjzaar/opencat.git'
-    profile='varbase'
-    sfolder='docroot'
-    # folder will be set later
-    cat="y"
-	git="y"	#make sure you are using git.
     ;;
     d8|drupal)
     project="drupal-composer/drupal-project:8.x-dev"
@@ -189,37 +187,29 @@ case $project in
     ;;
 esac
 
-if [ "$ofolder" = false ]
+if [ "$ofolder"=false ]
 then
 folder=$folder
 else
 folder=$ofolder
 fi
 
-#Opencat setup
-if [ "$db" = false ]
+#Opencourse-project setup
+if [ "$db"=false ]
 then
-    db=$folder #All other instances db=folder.
-    if [ "$cat" = "y" ]
-    then
-        db="opencourse"
-    fi
+    db=$folder
 fi
-if [ "$cat" = "y" ]
-then
-	folder="opencat/opencourse"
-fi
-if [ "$dbuser" = false ]
+if [ "$dbuser"=false ]
 then
     dbuser=$db
 fi
-if [ "$dbpass" = false ]
+if [ "$dbpass"=false ]
 then
     dbpass=$dbuser
 fi
 
 
-if [ "$sfolder" = false ]
+if [ "$sfolder"=false ]
 then
 #request sfolder
 read -p "You need to choose the right site folder name (d(docroot)/h(html)/w(web)/or type in folder name" sfolderq
@@ -241,7 +231,8 @@ read -p "You need to choose the right site folder name (d(docroot)/h(html)/w(web
 else
 sfolder=$sfolder
 fi
-
+private="/home/$user/$sn/private"
+echo "Note the project will always be in opencourse-project folder than the install folder."
 echo "Install  = $install"
 echo "Migrate  = $migrate"
 echo "Git      = $git"
@@ -252,17 +243,36 @@ echo "Install folder = $folder"
 echo "site folder = $sfolder"
 echo "uri      = $uri"
 echo "secure   = $secure"
-echo "nodownlaod = $nodown"
+echo "Private folder = $private"
+echo "nodownload = $nodown"
 echo "Database = $db"
 echo "Database user = $dbuser"
 echo "Database password = $dbpass"
+echo "Site name = $sn"
 echo
 
-if [ "$install" = "y" ]
+if [ "$sn"!="opencourse-project" ]
 then
-    if [ "$nodown" = "n" ]
+    echo "folder needs to be changed and site name established."
+    cd
+    mv opencourse-project $sn
+    echo "Record sitename in file ocvariables.txt"
+    cd $sn
+if [ ! -e "ocvariables.txt" ]; then
+    echo "Creating ocvariables.txt"
+  echo >> "ocvariables.txt"
+
+fi
+#storing sitename so other scripts can use it.
+echo "$sn" > "ocvariables.txt"
+
+if [ "$install"="y" ]
+then
+    echo "Installing ..."
+    if [ "$nodown"="n" ]
     then
-        if [ "$yes" != "y" ]
+        echo "Downloading ... (nodown = n)"
+        if [ "$yes"!="y" ]
         then
         read -p "Do you want to delete the folder $folder if it exists (y/n/c)" question
         case $question in
@@ -274,52 +284,57 @@ then
         esac
         fi
 
+        echo "Move to opencourse-project folder"
         cd
+        cd $sn
         echo "remove $folder"
         rm -rf $folder
-        if [ "$cat" = "y" ]
-        then
-            rm -rf opencat
-        fi
+        #if [ "$cat" = "y" ]
+        #then
+        #    rm -rf opencat
+        #fi
+
         #set group so file permissions are correct.
-        echo "set group to www-data"
+        #echo "set group to www-data"
         #newgrp www-data
-        echo "continue"
+        echo "Checking for git"
         if [ "$git" = "y" ]
         then
+            echo "Adding git credentials"
              ssh-add /home/$user/.ssh/github
-            echo " git clone $gproject"
+            echo "Cloning  git project: $gproject"
 
              git clone $gproject
 
-            #echo "git additions"
+            echo "move to project folder $folder"
             cd
-            cd $folder/$sfolder
-            if [ "$cat" = "n" ]
+            cd $sn/$folder/
+            if [ "$folder" = "opencourse" ]
             then
-             git remote add upstream git@github.com:Vardot/varbase.git
-            cd
-             cd $folder
-             composer install
+                echo "Opencouse so add upstream varbase-project.git"
+             git remote add upstream git@github.com:Vardot/varbase-project.git
             fi
-
+            echo "Run composer install"
+            composer install
         else
             if [ "$dev" = "y" ]
             then
+                echo "Setting composer install to dev."
                 devs="--stability dev"
             else
                 devs=""
             fi
 
-            echo "start composer"
+            echo "Run composer create project: $project"
              composer create-project $project $folder $devs --no-interaction
         fi
 
-        # Add opencourse git if opencat setup
+        # Add opencourse git if you are going to override the upstream with new version...?
+        # this needs a lot or checking out....
         if [ "$cat" = "y" ]
         then
             cd
-            cd $folder
+            cd $sn/$folder
             echo "initialising and adding git to opencourse"
             git init
             git remote add origin git@github.com:rjzaar/opencourse.git
@@ -356,32 +371,22 @@ then
             esac
              git remote add upstream git@github.com:Vardot/varbase.git
              cd
-            sudo chown $user:www-data -R opencat
-            cd $folder
+            sudo chown $user:www-data -R $sn
+            cd $sn/$folder
             echo "Composer install"
              composer install
 
         fi
     fi
     #end of nodown can now continue to install
-    echo "change file permissions"
+    echo "change file permissions add www-data as group"
     cd
-	#shouldn't need this since group is set to www-data
-	if [ "$cat" = "y" ]
-	then
-	    cd
-		sudo chown $user:www-data -R opencat
-		cd $folder
-	else
-	    cd
-		sudo chown $user:www-data -R $folder
-		cd $folder
-	fi
+    sudo chown $user:www-data -R $sn
+
 	echo "patch .htaccess"
-    sed -i '4iOptions +FollowSymLinks' $folder/$sfolder/.htaccess
+    sed -i '4iOptions +FollowSymLinks' $sn/$folder/$sfolder/.htaccess
     echo "install site"
-    cd
-    cd $folder/$sfolder
+    cd $sn/$folder/$sfolder
 
     #set up settings.local.php so drush won't add database connections to settings.php
     echo "create settings.local.php"
@@ -429,10 +434,11 @@ then
     else
         devp=""
     fi
-    if [ "$secure" = "y" ] && [ "$cat" = "y" ]
-    then
+    if [ "$secure" = "y" ]
+        then
         secures="\$settings['file_private_path'] =  '$private';"
         # Create private files directory.
+        echo "Create private files directory"
         if [ ! -d $private ]; then
           mkdir $private
         fi
@@ -458,34 +464,34 @@ then
     $devp
     " > settings.local.php
     cd
-    dpath="/home/$user/$folder/$sfolder"
+    dpath="/home/$user/$sn/$folder/$sfolder"
     echo "drupal path $dpath"
 	echo "Fixing permissions requires sudo password."
-    sudo bash ./d8fp.sh --drupal_user=$user --drupal_path=$dpath
-    chmod g+w -R $folder/$sfolder/modules/custom
+    sudo bash ./$sn/scripts/d8fp.sh --drupal_user=$user --drupal_path=$dpath
+    chmod g+w -R $sn/$folder/$sfolder/modules/custom
 
 
 fi
 #
 
 #Drop database  # Not needed since drush install will drop and recreate the database anyway.
- if [ "$yes" != "y" ]
-    then
-    read -p "do you want to drop the database $folder if it exists (y/n/c)" question
-    case $question in
-        n|c|no|cancel)
-        echo exiting immediately, no changes made
-        exit 1
-        ;;
-    esac
-    fi
-echo "drop database"
-mysqladmin -u $dbuser -p$dbpass -f drop $db;
-echo "recreate database"
-mysql -u $dbuser -p$dbpass -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
+# if [ "$yes" != "y" ]
+#    then
+#    read -p "do you want to drop the database $folder if it exists (y/n/c)" question
+#    case $question in
+#        n|c|no|cancel)
+#        echo exiting immediately, no changes made
+#        exit 1
+#        ;;
+#    esac
+#    fi
+#echo "drop database"
+#mysqladmin -u $dbuser -p$dbpass -f drop $db;
+#echo "recreate database"
+#mysql -u $dbuser -p$dbpass -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
 
 cd
-cd $folder/$sfolder
+cd $sn/$folder/$sfolder
 echo "install drupal site"
 # drush status
 # drupal site:install  varbase --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
@@ -532,13 +538,15 @@ then
     fi
 fi
 cd
-cd $folder/$sfolder
+cd $sn/$folder/$sfolder
 if [ "$dev" = "y" ]
 then
+echo "Setting to dev mode"
  drupal site:mode dev
  drush php-eval 'node_access_rebuild();'
 fi
 #try again
-drush config-set system.theme default oc_theme -y
+###drush config-set system.theme default oc_theme -y
+echo "Trying to go to URL $uri"
  drush uli --uri=$uri
 
