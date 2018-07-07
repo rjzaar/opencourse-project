@@ -127,8 +127,8 @@ case $i in
     dbpass="${i#*=}"
     shift # past argument=value
     ;;
-    -sn*|--sitename=*)
-    $sn="${i#*=}"
+    -sn=*|--sitename=*)
+    sn="${i#*=}"
     shift # past argument=value
     ;;
     -h|--help) print_help;;
@@ -253,7 +253,7 @@ echo "Database password = $dbpass"
 echo "Site name = $sn"
 echo
 
-if [ "$sn"!="opencourse-project" ]
+if [ "$sn" != "opencourse-project" ]
 then
     echo "folder needs to be changed and site name established."
     cd
@@ -275,10 +275,10 @@ fi
 #storing sitename so other scripts can use it.
 echo "$sn" > "ocvariables.txt"
 
-if [ "$install"="y" ]
+if [ "$install" = "y" ]
 then
     echo "Installing ..."
-    if [ "$nodown"="n" ]
+    if [ "$nodown" = "n" ]
     then
         echo "Downloading ... (nodown = n)"
         if [ "$yes" != "y" ]
@@ -296,8 +296,8 @@ then
         echo "Move to opencourse-project folder"
         cd
         cd $sn
-        echo "remove $folder"
-        rm -rf $folder
+        echo "remove $folder: May need sudo password."
+        sudo rm -rf $folder
         #if [ "$cat" = "y" ]
         #then
         #    rm -rf opencat
@@ -410,7 +410,7 @@ then
     migratesettings=""
     if [ "$migrate" = "y" ]
     then
-    migratesettings="// Database entry for drush migrate-upgrade --configure-only
+    $migratesettings="// Database entry for drush migrate-upgrade --configure-only
                      \$databases['upgrade']['default'] = array (
                        'database' => 'ocmigrate',
                        'username' => 'ocmigrate',
@@ -536,16 +536,6 @@ then
     sudo bash ./d8fp.sh --drupal_path=$folder/$sfolder --drupal_user=$user
     chmod g+w -R $folder/$sfolder/modules/custom
     fi
-
-    if [ "$migrate" = "y" ]
-    then
-        echo "Run migrations"
-        cd
-        cd $folder/$sfolder
-         drupal site:mode dev
-        chmod ug+x resoc.sh
-         ./resoc.sh install
-    fi
 fi
 cd
 cd $sn/$folder/$sfolder
@@ -554,6 +544,13 @@ then
 echo "Setting to dev mode"
  drupal site:mode dev
  drush php-eval 'node_access_rebuild();'
+fi
+if [ "$migrate" = "y" ] && [ "$oc" = "y" ]
+then
+    echo "Run migrations"
+    cd
+    cd $sn/$folder/$sfolder
+    ../../scripts/resoc.sh install
 fi
 #try again
 ###drush config-set system.theme default oc_theme -y

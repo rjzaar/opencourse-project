@@ -4,19 +4,20 @@
     ->execute();
 //$node = db_query(“select nid from node”)->fetchAll();
 
-Foreach ($nids as $nid) {
+//Foreach ($nids as $nid) {
+  $nid=890;
   $node      = \Drupal\node\Entity\NODE::load($nid);
   $videos = $node->field_oc_video->getValue();
+
   foreach ($videos as $video) {
-    $content='<drupal-entity data-align="right" data-embed-button="media" data-entity-embed-display="view_mode:media.small"
-                   data-entity-type="media" data-entity-uuid="'.$video
-    {{ node.uuid.0.value }}"></drupal-entity>
-
-
+    $content=$content.'<drupal-entity data-align="right" data-embed-button="media" data-entity-embed-display="view_mode:media.small"
+                   data-entity-type="media" data-entity-uuid="'.$video->uuid().'"></drupal-entity>';
+    
   }
   $node->save();
-}
+//}
 
+// {{ node.uuid.0.value }}
 
 // get list of all oc_docs
 

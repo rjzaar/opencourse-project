@@ -3,27 +3,24 @@ dbuser="vbn"
 dbpass="vbp"
 folder="folder"
 #db="vb"
+nodown="n"
 
-
-if [ -z ${db+x} ]
-then
-    db=$folder
-fi
-if [ -z ${dbuser+x}]
-then
-    dbuser=$db
-fi
-if [ -z ${dbpass+x} ]
-then
-    dbpass=$dbuser
-fi
-echo "db $db dbuser $dbuser dbpass $dbpass"
-
-RESULT=`mysqlshow --user=$dbuser --password=$dbpass $db| grep -v Wildcard | grep -o $db`
-if [ "$RESULT" == "$db" ]; then
-    echo "yes"
+    if [ "$nodown" = "a" ]
+    then
+    echo "no $nodown"
     else
-    echo "No"
-fi
+    echo "yes"
+    fi
+
+
+
+#echo "db $db dbuser $dbuser dbpass $dbpass"
+#
+#RESULT=`mysqlshow --user=$dbuser --password=$dbpass $db| grep -v Wildcard | grep -o $db`
+#if [ "$RESULT" == "$db" ]; then
+#    echo "yes"
+#    else
+#    echo "No"
+#fi
 
 # ../scripts/d8fp.sh  --drupal_path=docroot --drupal_user=rob
