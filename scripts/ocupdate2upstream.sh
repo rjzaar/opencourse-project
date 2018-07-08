@@ -16,16 +16,14 @@ git remote add upstream git@github.com:Vardot/varbase-project.git
 echo "Fetch upstream"
 git fetch upstream
 
+echo "Now try merge."
+git merge upstream/8.5.x
+
 #Now overide the upstream readme.
 echo "Now move readme back"
 mv README.md1 README.md
 
-echo "Now try merge."
-git merge upstream/8.5.x
-
-
-
-#git add .
-#git commit -m “Updated to lastest varbase.”
-#rm composer.lock
-#composer install
+git add .
+git commit -m “Updated to lastest varbase.”
+rm composer.lock
+composer install
