@@ -38,6 +38,11 @@
     $content = $content . "External links<br>";
     //For each link
     $enodes = $node->field_oc_external_links->getValue();
+
+    if (  !is_null($enodes) ) {
+      $content = $content . "External links<br>";
+    }
+
     foreach ($enodes as $enode) {
       print_r($enode['target_id']);
       $exid = $enode['target_id'];
@@ -50,10 +55,13 @@
 
 
     //Internal links
-    $content = $content . "Internal links<br>";
+
     //For each doc
     //Add the link accoring to
     $inodes = $node->field_oc_internal_links->getValue();
+    if (  !is_null($inodes) ) {
+      $content = $content . "Internal links<br>";
+    }
     foreach ($inodes as $inode) {
       $iid = $inode['target_id'];
       $inode = \Drupal\node\Entity\NODE::load($iid);
