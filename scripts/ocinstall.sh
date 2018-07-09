@@ -23,6 +23,7 @@ you can provide the following arguments:
 -dbuser|--databaseuser Database user name. If no username is given then the username is the same as the database name.
 -dbpass|--databasepassword Database password If no password is given then the password is the same as the username.
 -sn|--sitename This is the site name. It could be the URL of the site.
+-ap|--apache This will set up apache and hosts infrastructure based on your settings
 
 Options for project
     v|varbase
@@ -58,6 +59,7 @@ private="/home/$user/$sn/private"
 oc="n" #add opencourse modules etc.
 cat="n" #add opencat setup.
 # db is for database. It is used for db name, db user, db password to simplify things. It is the same as folder unless opencat setup.
+apache="n"
 
 if [ "$#" = 0 ]
 then
@@ -129,6 +131,10 @@ case $i in
     ;;
     -sn=*|--sitename=*)
     sn="${i#*=}"
+    shift # past argument=value
+    ;;
+    -ap|--apache)
+    apache="y"
     shift # past argument=value
     ;;
     -h|--help) print_help;;
@@ -252,6 +258,7 @@ echo "Database = $db"
 echo "Database user = $dbuser"
 echo "Database password = $dbpass"
 echo "Site name = $sn"
+echo "Apache and hosts setup = $apache"
 echo
 
 if [ "$sn" != "opencourse-project" ]
@@ -275,6 +282,9 @@ fi
 
 #storing sitename so other scripts can use it.
 echo "$sn" > "ocvariables.txt"
+
+#Apache and hosts setup: set up apache conf and hosts conf.
+
 
 if [ "$install" = "y" ]
 then
@@ -519,7 +529,7 @@ then
 	#for some reason does not set it as default!
      drupal theme:install  oc_theme --set-default
 	drush cr
-     drush config-set system.theme default oc_theme -y
+
 
     if [ "$dev" = "y" ]
     then
@@ -537,6 +547,8 @@ then
     sudo bash ./d8fp.sh --drupal_path=$folder/$sfolder --drupal_user=$user
     chmod g+w -R $folder/$sfolder/modules/custom
     fi
+    cd $sn/$folder/$sfolder
+    drush config-set system.theme default oc_theme -y
 fi
 cd
 cd $sn/$folder/$sfolder
