@@ -10,9 +10,9 @@
   Foreach ($nids as $nid) {
     //  $nid=890;
     $node = \Drupal\node\Entity\NODE::load($nid);
+    $content="";
 
 
-    $node->save();
     //}
 
     // {{ node.uuid.0.value }}
@@ -63,7 +63,7 @@
     // <drupal-entity data-embed-button="node" data-entity-embed-display="view_mode:node.embeded" data-entity-type="node" data-entity-uuid="dd624427-4211-4a9a-9520-5c97c462aeb3"></drupal-entity>
 
     //Save as the new body content
-    print $content;
+    #print $content;
     $node->body->value = $content;
     $node->save();
 

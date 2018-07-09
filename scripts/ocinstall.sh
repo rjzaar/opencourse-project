@@ -553,7 +553,7 @@ then
     cd $sn/$folder/$sfolder
     ../../scripts/resoc.sh install
     #Now run the script to embed the videos, external and internal links into the body.
-    drush scr ../../scripts/updoc.php
+    #drush scr ../../scripts/updoc.php
 fi
 #try again
 ###drush config-set system.theme default oc_theme -y
