@@ -234,7 +234,8 @@ else
 sfolder=$sfolder
 fi
 private="/home/$user/$sn/private"
-echo "Note the project will always be in opencourse-project folder than the install folder."
+echo "Note the project will always be in the opencourse-project folder (unless you choose another name for it via the -sn=choice)
+echo "than the install folder."
 echo "Install  = $install"
 echo "Migrate  = $migrate"
 echo "Git      = $git"
@@ -551,6 +552,8 @@ then
     cd
     cd $sn/$folder/$sfolder
     ../../scripts/resoc.sh install
+    #Now run the script to embed the videos, external and internal links into the body.
+    drush ../../scripts/updoc.php
 fi
 #try again
 ###drush config-set system.theme default oc_theme -y
