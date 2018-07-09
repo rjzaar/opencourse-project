@@ -8,7 +8,7 @@ $file_storage = \Drupal::entityTypeManager()->getStorage('media_type');
 
 
 Foreach ($nids as $nid) {
-  print $nid." ";
+  //print $nid." ";
   $node = \Drupal\node\Entity\NODE::load($nid);
   $content="";
 
