@@ -4,7 +4,16 @@ dbpass="vbp"
 folder="folder"
 #db="vb"
 nodown="n"
+migrate="y"
+ migratesettings="asd"
+    if [ "$migrate" = "y" ]
+    then
 
+    migratesettings="y"
+    #$migratesettings="hello"
+    fi
+
+    echo "this is the $migratesettings"
     if [ "$nodown" = "a" ]
     then
     echo "no $nodown"
