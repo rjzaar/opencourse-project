@@ -234,7 +234,7 @@ else
 sfolder=$sfolder
 fi
 private="/home/$user/$sn/private"
-echo "Note the project will always be in the opencourse-project folder (unless you choose another name for it via the -sn=choice)
+echo "Note the project will always be in the opencourse-project folder (unless you choose another name for it via the -sn=choice)"
 echo "than the install folder."
 echo "Install  = $install"
 echo "Migrate  = $migrate"
