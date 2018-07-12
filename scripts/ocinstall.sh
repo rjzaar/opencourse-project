@@ -36,7 +36,8 @@ Options for project
 or provide something else: rjzaar/opencourse:8.5.x-dev
 
 Example (for varbase): ./scripts/ocinstall.sh -i -g -p=v -d -y -u=rob -s -a=v.b -db=vb -n
-for opencourse: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1
+for opencourse: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c -db=oc
+for testing (migration): ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1 -db=oc1 -sn=testmig -m
 HELP
 exit 0
 }
@@ -565,6 +566,7 @@ then
     cd $sn/$folder/$sfolder
     ../../scripts/resoc.sh install
     #Now run the script to embed the videos, external and internal links into the body.
+    echo "Incorporate video and links into ocdoc body."
     drush scr ../../scripts/updoc.php
 fi
 #try again
