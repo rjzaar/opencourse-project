@@ -537,6 +537,8 @@ then
      drush en -y oc_dev
      #uninstall the wrapper. Will leave all dependencies installed.
      drush pm-uninstall -y oc_dev
+    else
+     drush en -y oc_prod
     fi
 
     drush pm-uninstall -y oc_prod
