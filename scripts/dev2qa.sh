@@ -6,11 +6,6 @@
 
 #You would normally push opencourse to git before these steps.
 
-
-
-
-
-
 #turn off dev settings
 echo "turn off site dev settings."
 cd
@@ -64,9 +59,6 @@ sed -i '4iOptions +FollowSymLinks' docroot/.htaccess
 echo "rebuilding permissions, requires sudo"
 
 sudo ../scripts/d8fp.sh  --drupal_path=docroot --drupal_user=rob
-
-
-
 
 # clear cache
 echo "clear cache"

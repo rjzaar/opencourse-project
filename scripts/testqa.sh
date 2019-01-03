@@ -13,12 +13,13 @@ drush ard --destination=~/ocbackup/site/oc.tar --overwrite
 #export cmi
 echo -e "\e[34mexport cmi\e[39m"
 drush cex --destination=../../cmi -y
+Name="OC-"$(date +"%Y-%m-%d")".sql"
 
 #backup db
 echo -e "\e[34mbackup qadb\e[39m"
 cd
 cd opencat/opencourse/docroot
-drush sql-dump > ~/ocbackup/localdb/oc.sql
+drush sql-dump > ~/ocbackup/localdb/$Name
 
 #pull db and private files from prod
 echo -e "\e[34mpull proddb\e[39m"
@@ -57,7 +58,7 @@ git add .
 git commit -m "Scripts update."
 git push
 cp .gitignore.ocsite .gitignore
-mv .git ocgitstore/ocproject/.git
+mv .git ocgitstore/ocprojectgit/.git
 cp ocgitstore/ocsitegit/.git .git -rf
 
 #import proddb
