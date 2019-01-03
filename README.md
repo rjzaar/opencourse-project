@@ -26,7 +26,7 @@ Make sure you have a key to your server at ~/.ssh/sitename
 
 Add an apache rule:
 address.conf:
-<VirtualHost *:80>
+```<VirtualHost *:80>
         ServerName address
         DocumentRoot /home/user/sitename/folder/sfolder
                <Directory /home/user/sitename/folder/sfolder>
@@ -38,14 +38,30 @@ address.conf:
         CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+```
 
 then 
+```
 sudo a2ensite address.conf
 sudo service apache2 restart
-
-git clone git@github.com:rjzaar/opencourse-project.git
+```
+    git clone git@github.com:rjzaar/opencourse-project.git
 To install varbase:
-./opencourse-project/scripts/ocinstall.sh 
+
+    ./opencourse-project/scripts/ocinstall.sh 
+
+# REQUIREMENTS
+sudo apt-get install php7.0-zip (for h5p)
+
+# PRODUCTION SERVER 
+The production server settings.local.php needs to have
+```$settings['config_readonly'] = TRUE;```
+
+so config can't be changed on the production server.
+
+Make sure the production server has the same timezone as dev
+
+```sudo dpkg-reconfigure tzdata```
 
 # Here is the structure explained in detail
 VARBASE
@@ -71,89 +87,78 @@ Either fork opencourse and use your own infrastructure or fork opencourse-projec
 # Processes
 The process is as follows:
 1) dev2qa (opencourse push)
-2) qa2prod (opencat push)
-3) prod2qa (if qa pres, then just database, and pull opencat (in case others have updated it).
-          (if qa not pres, then pull opencat).
+2) testqa (pull prod database and test)
+3) qa2prod (opencat push)
 4) qa2dev (if opencourse.git not present, then pull opencourse.git and setup).
 
 #dev2qa
-#Make changes to move from a dev to qa environment.
-#This is the same folder with the same database, just some changes are made to setup.
-#This presumes a single dev is able to work on dev and qa on his own, without a common qa server (for now).
+Make changes to move from a dev to qa environment.
+This is the same folder with the same database, just some changes are made to setup.
+This presumes a single dev is able to work on dev and qa on his own, without a common qa server (for now).
+Note database is the same between dev and qa in the forward direction.
 
-#You would normally push opencourse to git before these steps.
+- turn off dev settings
+- turn off dev modules
+- opencourse git push
+- turn off composer dev (patch .htaccess)
+- rebuild permissions
+- clear cache
+(uninstall feature modules (leaves settings on site).???)
 
-#turn off dev settings
-
-#turn off dev modules
-
-#move opencourse git
-
-#uninstall feature modules (leaves settings on site).
-
-#Note database is the same between dev and qa in the forward direction.
-
-
-
+#testqa
+This will pull down the production db and test it.
+- backup whole qa site (stored in ~/ocbackup/site/oc.tar)
+- export cmi
+- backup qadb (stored in ~/ocbackup/localdb/oc.sql)
+- pull proddb (calls backoc.sh on prod, pulls db and private files, replaces private files)
+- push opencat
+- import proddb
+- update db, fra, cim, clear cache
 
 #qa2prod
-#Make changes to move from a dev to qa environment.
-#This is the same folder with the same database, just some changes are made to setup.
-#This presumes a single dev is able to work on dev and qa on his own, without a common qa server (for now).
+Make changes to move from a dev to qa environment.
+This is the same folder with the same database, just some changes are made to setup.
+This presumes a single dev is able to work on dev and qa on his own, without a common qa server (for now).
+- put prod in maintenance mode
+- backup proddb and private files
+- pull opencat on prod
+- restore private files (since the pull possible overwrites new ones)
+- update drupal, fra, cr
+- import cmi
+- prod mode
+- check site!
 
-#export cmi
-
-#push opencat
-
-#backup db
-
-#pull db from prod
-
-#cmi import
-
-# test
-
-#On prod:
-# backup db
-# maintenance mode
-# pull opencat
-# update/cmi import
-# out of maintenance mode
-# test again.
-
-
+# restore prod
+This script needs to be written in case qa2prod does not work right.
+- maintenance mode
+- restore files
+- restore db
+- prod mode
 
 #prod2qa
-#There should be NO changes to CMI on live. if there are, they will be in sql an
-d therefore moved down with the database to qa, but could be overwritten with fe
-ature import from dev to qa. 
-
-# Files option: setup all the files as well.
-# clone opencat.
-#  opencourse non dev files are already included.
-# set up database
-# set up settings and settings.local
-
-# On prod: export sql
-
-# On qa: get sql
-
-#       import sql
-
-
-
+This is defunct, since testqa serves the same purpose better.
 
 #qa2dev
+Need to check if there is an opencourse git or not.
+if not, then delete opencourse and clone a fresh opencourse and install (dev is default).
+- move opencourse git (not needed since ignored.)
+- turn on dev modules (composer install and patch .htaccess)
+- rebuild file permissions
+- enable dev modules (oc_dev)
+- site mode dev
+- clear cache
 
-# Need to check if there is an opencourse git or not.
-# if not, then delete opencourse and clone a fresh opencourse and install (dev is default).
+#resoc.sh
+This script ran migrations from the old D7 database. It is now defunct since the structure has improved and
+a new method needs to be developed to copy the live database, sanitize it and use it
+to populate the demo site.
 
-# install feature modules?
+#updoc.php
+This is now defunct. It moved field data into embeded nodes in the body field for all docs.
 
-# move opencourse git to opencourse
+#ocupdate2ustream.sh
+This is used to update opencourse to the latest varbase release.
 
-# turn on dev modules (composer)
-
-# turn on dev settings.
-
-
+#overwriteqa2prod
+this script will overwrite the production site with qa. All data on production will be lost. 
+This is good for a first setup of production.

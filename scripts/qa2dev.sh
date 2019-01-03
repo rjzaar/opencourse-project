@@ -6,10 +6,12 @@
 
 # install feature modules?
 
+
+# Don't need to move since it is ignored.
 # move opencourse git to opencourse
-cd
-cd opencat/ocgitstore
-mv .git ../opencourse/
+#cd
+#cd opencat/ocgitstore
+#mv .git ../opencourse/
 
 # turn on dev modules (composer)
 cd
@@ -20,7 +22,7 @@ sed -i '4iOptions +FollowSymLinks' docroot/.htaccess
 
 # rebuild permissions
 echo "Rebuild permissions, requires sudo."
-sudo ../scripts/d8fp.sh  --drupal_path=docroot --drupal_user=rob
+../scripts/d8fp.sh  --drupal_path=docroot --drupal_user=rob
 #make custom writable
 cd
 chmod g+w -R opencat/opencourse/docroot/modules/custom

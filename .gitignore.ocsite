@@ -33,7 +33,7 @@ ehthumbs.db
 .bashrc
 errors.log
 
-# This is the ocsite specific parts.
+
 !opencourse/*
 /opencourse/docroot/themes/custom/oc_theme/node_modules/
 /opencourse/docroot/sites/default/settings.local.php

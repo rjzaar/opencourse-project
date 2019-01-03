@@ -10,7 +10,7 @@
 
 
 
-foo() {
+
 #turn off dev settings
 echo "turn off site dev settings."
 cd
@@ -39,8 +39,8 @@ drupal mou migrate_tools
 
 #drupal mou syslog, views_ui, migrate_devel, block_place, devel, kint, features_ui, oc_prod, default_content, dblog, search_kint, twig_xdebug, migrate_manifest, custom_migration, migrate_tools, migrate_plus, migrate_upgrade, twig_xdebug, oc_groups, oc_lp, oc_sequence, oc_content, oc_doc, oc_book, oc_link, oc_image, oc_taxonomy, oc_fields, oc_site
 
-#move opencourse git
-echo "push git and move"
+#push opencourse git. No need to move since it is ignored.
+echo "push git"
 cd
 cd opencat/opencourse
 #remove any extra options. Since each reinstall may add an extra one.
@@ -48,7 +48,7 @@ sed -i 's/Options +FollowSymLinks/Options +FollowSymLinks/g' .htaccess
 git add .
 git commit -m "Backup."
 git push
-mv .git ../ocgitstore/
+#mv .git ../ocgitstore/
 
 #turn off composer dev
 echo "Turn off composer dev"
@@ -63,18 +63,17 @@ sed -i '4iOptions +FollowSymLinks' docroot/.htaccess
 # rebuild permissions
 echo "rebuilding permissions, requires sudo"
 
-}
+sudo ../scripts/d8fp.sh  --drupal_path=docroot --drupal_user=rob
 
-bar() {
+
+
+
 # clear cache
 echo "clear cache"
 cd docroot
 drush cr
-}
 
-sudo -u rob foo
-../scripts/d8fp.sh  --drupal_path=docroot --drupal_user=rob
-sudo -u rob bar
+
 
 
 

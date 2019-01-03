@@ -1,6 +1,6 @@
 #!/bin/bash
 #testqa
-#This will backup everyting including opencourse-project, pull down the prod db and test it.
+#This will delete qa, then pull down the whole prod site and set it up as qa.
 db="oc"
 user="rob"
 #backup whole site
@@ -10,55 +10,30 @@ cd opencat/opencourse/docroot
 drush ard --destination=~/ocbackup/site/oc.tar --overwrite
 #drush archive-restore ./example.tar.gz --db-url=mysql://root:pass@127.0.0.1/dbname
 
-#export cmi
-echo -e "\e[34mexport cmi\e[39m"
-drush cex --destination=../../cmi -y
 
-#backup db
-echo -e "\e[34mbackup qadb\e[39m"
-cd
-cd opencat/opencourse/docroot
-drush sql-dump > ~/ocbackup/localdb/oc.sql
-
-#pull db and private files from prod
+#pull db and all files from prod
 echo -e "\e[34mpull proddb\e[39m"
 cd
 ssh cathnet "cd opencat.org/opencourse/docroot/ && drush sset system.maintenance_mode TRUE"
-ssh cathnet "./backoc.sh"
+ssh cathnet "./backocall.sh"
 ssh cathnet "cd opencat.org/opencourse/docroot/ && drush sset system.maintenance_mode FALSE"
 echo -e "\e[34mgetting /ocbackup/OC-"$(date +"%Y-%m-%d")".sql\e[39m"
 scp cathnet:ocbackup/OC-$(date +"%Y-%m-%d").sql ocbackup/proddb/OC-$(date +"%Y-%m-%d").sql
-echo -e "\e[34mgetting private files.\e[39m"
-scp cathnet:ocbackup/private.tar.gz ocbackup/private/private.tar.gz
-rm -rf opencat/private
-cd opencat
-tar -zxf ../ocbackup/private/private.tar.gz
+echo -e "\e[34mgetting all files.\e[39m"
+scp cathnet:ocbackup/ocall.tar.gz ocbackup/prodallfiles/ocall.tar.gz
+mv  opencat opencat.$(date +"%Y-%m-%d")
+mv  opencat.org opencat.org.$(date +"%Y-%m-%d")
+
+tar -zxf ocbackup/prodallfiles/ocall.tar.gz
+mv opencat.org opencat
+echo -e "\e[34mmove settings back\e[39m"
+mv opencat.$(date +"%Y-%m-%d")/opencourse/docroot/sites/default/settings.local.php opencat/opencourse/docroot/sites/default/settings.local.php
+
+echo -e "\e[34mMove opencourse git back\e[39m"
+cp -rf opencat.$(date +"%Y-%m-%d")/opencourse/.git opencat/opencourse/.git
 
 echo -e "\e[34mFix permissions, requires sudo\e[39m"
-sudo chown :www-data private -R
-
-
-#push opencat
-echo -e "\e[34mpush opencat\e[39m"
-cd
-ssh-add .ssh/github
-cd opencat
-git add .
-git commit -m "Test QA."
-git push
-
-#push opencourse-project
-echo -e "\e[34mpush opencourse-project\e[39m"
-rm ocgitstore/ocsitegit/.git -rf
-mv .git ocgitstore/ocsitegit/.git
-cp .gitignore.ocproj .gitignore
-mv ocgitstore/ocprojectgit/.git .git
-git add .
-git commit -m "Scripts update."
-git push
-cp .gitignore.ocsite .gitignore
-mv .git ocgitstore/ocproject/.git
-cp ocgitstore/ocsitegit/.git .git -rf
+sudo bash ./opencat/scripts/d8fp.sh --drupal_user=$user --drupal_path=opencat/opencourse/docroot
 
 #import proddb
 cd
@@ -70,10 +45,6 @@ mysql -u $db -p$db $db < ocbackup/proddb/OC-$(date +"%Y-%m-%d").sql
 
 #updatedb
 cd opencat/opencourse/docroot
-drush cr
-drush updb -y
-drush fra -y
-drush cim --source=../../cmi -y
 drush sset system.maintenance_mode FALSE
 drush cr
 

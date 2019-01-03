@@ -10,13 +10,16 @@
 
 # On prod: export sql
 cd
-ssh puregift "cd opencat.org/opencourse/docroot/ && drush sset system.maintenance_mode TRUE"
-ssh puregift "./backoc.sh"
-ssh puregift "cd opencat.org/opencourse/docroot/ && drush sset system.maintenance_mode FALSE"
+echo "set prod maintenance mode"
+ssh cathnet "cd opencat.org/opencourse/docroot/ && drush sset system.maintenance_mode TRUE"
+echo "backup prod"
+ssh cathnet "./backoc.sh"
+echo "prod prod mode"
+ssh cathnet "cd opencat.org/opencourse/docroot/ && drush sset system.maintenance_mode FALSE"
 echo "getting /ocbackup/OC-"$(date +"%Y-%m-%d")".sql"
-scp puregift:ocbackup/OC-$(date +"%Y-%m-%d").sql ocbackup/proddb/OC-$(date +"%Y-%m-%d").sql
+scp cathnet:ocbackup/OC-$(date +"%Y-%m-%d").sql ocbackup/proddb/OC-$(date +"%Y-%m-%d").sql
 echo getting private files from prod
-scp puregift:ocbackup/private.tar.gz ocbackup/private/private.tar.gz
+scp cathnet:ocbackup/private.tar.gz ocbackup/private/private.tar.gz
 echo Installing private files
 cd opencat
 rm -rf private

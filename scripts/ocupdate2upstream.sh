@@ -2,7 +2,7 @@
 
 #This script will update opencourse to the varbase-project upstream
 cd
-cd opencourse-project/opencourse
+cd opencat/opencourse
 echo "Add credentials."
 ssh-add ~/.ssh/github
 echo "Make sure any changes are pushed up. "
@@ -27,3 +27,6 @@ git add .
 git commit -m “Updated to lastest varbase.”
 rm composer.lock
 composer install
+
+# test and then push
+
