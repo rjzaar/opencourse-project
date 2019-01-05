@@ -4,7 +4,8 @@
 #This is the same folder with the same database, just some changes are made to setup.
 #This presumes a single dev is able to work on dev and qa on his own, without a common qa server (for now).
 
-#You would normally push opencourse to git before these steps.
+# Start Timer
+SECONDS=0
 
 #turn off dev settings
 echo "turn off site dev settings."
@@ -60,7 +61,7 @@ composer install --no-dev
 
 # rebuild permissions
 echo "rebuilding permissions, requires sudo"
-
+#( speaker-test -t sine -f 1000 )& pid=$! ; sleep 0.1s ; kill -9 $pid
 sudo ../scripts/d8fp.sh  --drupal_path=docroot --drupal_user=rob
 
 # clear cache
@@ -70,7 +71,7 @@ cd docroot
 drush en -y video_embed_field
 drush cr
 
-
+echo '%dh:%dm:%ds\n' $(($SECONDS/3600)) $(($SECONDS%3600/60)) $(($SECONDS%60))
 
 
 

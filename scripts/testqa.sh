@@ -1,5 +1,8 @@
 #!/bin/bash
 #testqa
+
+#start timer
+SECONDS=0
 #This will backup everyting including opencourse-project, pull down the prod db and test it.
 db="oc"
 user="rob"
@@ -36,6 +39,7 @@ cd opencat
 tar -zxf ../ocbackup/private/private.tar.gz
 
 echo -e "\e[34mFix permissions, requires sudo\e[39m"
+#( speaker-test -t sine -f 1000 )& pid=$! ; sleep 0.1s ; kill -9 $pid
 sudo chown :www-data private -R
 
 
@@ -80,10 +84,13 @@ drush cr
 
 cd
 cd opencat/opencourse
-#remove any extra options. Since each reinstall may add an extra one.
-echo -e "\e[34mpatch .htaccess\e[39m"
-sed -i 's/Options +FollowSymLinks/Options +FollowSymLinks/g' .htaccess
 
+# Not needed since patched.
+#remove any extra options. Since each reinstall may add an extra one.
+#echo -e "\e[34mpatch .htaccess\e[39m"
+#sed -i 's/Options +FollowSymLinks/Options +FollowSymLinks/g' .htaccess
+
+echo 'H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 #test
 
 
