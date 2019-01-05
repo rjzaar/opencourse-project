@@ -13,7 +13,7 @@ drush ard --destination=~/ocbackup/site/oc.tar --overwrite
 #export cmi
 echo -e "\e[34mexport cmi\e[39m"
 drush cex --destination=../../cmi -y
-Name="OC-"$(date +"%Y-%m-%d")".sql"
+Name="OC-"$(date +"%Y-%m-%d-%H%M")".sql"
 
 #backup db
 echo -e "\e[34mbackup qadb\e[39m"
@@ -78,6 +78,7 @@ drush cim --source=../../cmi -y
 drush sset system.maintenance_mode FALSE
 drush cr
 
+cd
 cd opencat/opencourse
 #remove any extra options. Since each reinstall may add an extra one.
 echo -e "\e[34mpatch .htaccess\e[39m"

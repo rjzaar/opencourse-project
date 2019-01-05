@@ -39,7 +39,9 @@ echo "push git"
 cd
 cd opencat/opencourse
 #remove any extra options. Since each reinstall may add an extra one.
-sed -i 's/Options +FollowSymLinks/Options +FollowSymLinks/g' .htaccess
+#following line has been fixed with a patch
+#sed -i 's/Options +FollowSymLinks/Options +FollowSymLinks/g' .htaccess
+ssh-add ~/.ssh/github
 git add .
 git commit -m "Backup."
 git push
@@ -51,9 +53,10 @@ cd
 cd opencat/opencourse
 composer install --no-dev
 
+#following line has been fixed with a patch
 # patch .htaccess
-echo "patch .htaccess"
-sed -i '4iOptions +FollowSymLinks' docroot/.htaccess
+#echo "patch .htaccess"
+#sed -i '4iOptions +FollowSymLinks' docroot/.htaccess
 
 # rebuild permissions
 echo "rebuilding permissions, requires sudo"
@@ -63,6 +66,8 @@ sudo ../scripts/d8fp.sh  --drupal_path=docroot --drupal_user=rob
 # clear cache
 echo "clear cache"
 cd docroot
+#don't know why, but for some reason video embed field is not installed when it is in composer and oc_prod.
+drush en -y video_embed_field
 drush cr
 
 
