@@ -25,6 +25,7 @@ cp .gitignore.ocsite .gitignore
 mv .git ocgitstore/ocprojectgit/.git
 cp ocgitstore/ocsitegit/.git .git -rf
 
+cd
 Name=$(date +"%Y-%m-%d")
 #move what's there
 Bname="OC-"$(date +"%Y-%m-%d")".sql"
@@ -47,10 +48,10 @@ ssh cathnet cp ocbackup/settings.local.php opencat/opencourse/docroot/sites/defa
 echo copy localdb to external
 cd
 cd opencat/opencourse/docroot
-drush sql-dump > ~/ocbackup/localdb/OC-$(date +"%Y-%m-%d")q2p.sql
-scp ocbackup/localdb/OC-$(date +"%Y-%m-%d").sql cathnet:ocbackup/localdb/OC-$(date +"%Y-%m-%d")q2p.sql
+drush sql-dump > ~/ocbackup/localdb/OC-$(date +"%Y-%m-%d").sql
+scp ocbackup/localdb/OC-$(date +"%Y-%m-%d").sql cathnet:ocbackup/localdb/OC-$(date +"%Y-%m-%d").sql
 echo fix file permissions, requires sudo on external server
-ssh cathnet -t "sudo bash ./fix-p.sh --drupal_user=puregift --drupal_path=opencat/opencourse/docroot"
+ssh cathnet -t "sudo bash ./fix-p.sh --drupal_user=puregift --drupal_path=opencat.org/opencourse/docroot"
 echo "The restoring the database requires sudo on the external server."
 ssh cathnet -t "sudo ./restoredb.sh"
 echo "clearing cache"
