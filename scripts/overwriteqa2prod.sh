@@ -38,7 +38,7 @@ ssh cathnet mv opencat.org opencat.$Name
 
 #git clone
 echo git clone opencat
-ssh cathnet eval 'ssh-agent -s'
+ssh cathnet eval `ssh-agent -s`
 ssh cathnet ssh-add ~/.ssh/github
 ssh cathnet git clone git@github.com:rjzaar/opencat.git
 echo composer install
