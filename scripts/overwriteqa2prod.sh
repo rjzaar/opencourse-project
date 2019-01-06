@@ -38,7 +38,7 @@ ssh cathnet mv opencat.org opencat.$Name
 
 #git clone
 echo git clone opencat
-ssh cathnet "eval `ssh-agent -s` && ssh-add ~/.ssh/github && git clone git@github.com:rjzaar/opencat.git"
+ssh cathnet "./clone.sh"
 echo composer install
 ssh cathnet "cd opencat/opencourse && composer install --no-dev"
 echo copy settings.local.php to new server
