@@ -76,17 +76,22 @@ mysql -u $db -p$db $db < ocbackup/proddb/OC-$(date +"%Y-%m-%d").sql
 #updatedb
 cd opencat/opencourse/docroot
 drush cr
+echo -e "\e[34m update database\e[39m"
 drush updb -y
+echo -e "\e[34m fra\e[39m"
 drush fra -y
+echo -e "\e[34m import config\e[39m"
 drush cim --source=../../cmi -y
+echo -e "\e[34m get out of maintenance mode\e[39m"
 drush sset system.maintenance_mode FALSE
 drush cr
 
-cd
-cd opencat/opencourse
+
 
 # Not needed since patched.
 #remove any extra options. Since each reinstall may add an extra one.
+#cd
+#cd opencat/opencourse
 #echo -e "\e[34mpatch .htaccess\e[39m"
 #sed -i 's/Options +FollowSymLinks/Options +FollowSymLinks/g' .htaccess
 

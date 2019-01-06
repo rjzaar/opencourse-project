@@ -2,6 +2,29 @@
 
 #this script will overwrite the production site with qa. All data on production will be lost.
 # this is good for a first setup of production.
+
+#push opencat
+echo -e "\e[34mpush opencat\e[39m"
+cd
+ssh-add .ssh/github
+cd opencat
+git add .
+git commit -m "Test QA."
+git push
+
+#push opencourse-project
+echo -e "\e[34mpush opencourse-project\e[39m"
+rm ocgitstore/ocsitegit/.git -rf
+mv .git ocgitstore/ocsitegit/.git
+cp .gitignore.ocproj .gitignore
+mv ocgitstore/ocprojectgit/.git .git
+git add .
+git commit -m "Scripts update."
+git push
+cp .gitignore.ocsite .gitignore
+mv .git ocgitstore/ocprojectgit/.git
+cp ocgitstore/ocsitegit/.git .git -rf
+
 Name=$(date +"%Y-%m-%d")
 #move what's there
 Bname="OC-"$(date +"%Y-%m-%d")".sql"
@@ -24,8 +47,8 @@ ssh cathnet cp ocbackup/settings.local.php opencat/opencourse/docroot/sites/defa
 echo copy localdb to external
 cd
 cd opencat/opencourse/docroot
-drush sql-dump > ~/ocbackup/localdb/OC-$(date +"%Y-%m-%d").sql
-scp ocbackup/localdb/OC-$(date +"%Y-%m-%d").sql cathnet:ocbackup/localdb/OC-$(date +"%Y-%m-%d").sql
+drush sql-dump > ~/ocbackup/localdb/OC-$(date +"%Y-%m-%d")q2p.sql
+scp ocbackup/localdb/OC-$(date +"%Y-%m-%d").sql cathnet:ocbackup/localdb/OC-$(date +"%Y-%m-%d")q2p.sql
 echo fix file permissions, requires sudo on external server
 ssh cathnet -t "sudo bash ./fix-p.sh --drupal_user=puregift --drupal_path=opencat/opencourse/docroot"
 echo "The restoring the database requires sudo on the external server."
