@@ -51,6 +51,8 @@ cd
 scp ocbackup/localdb/OC-$(date +"%Y-%m-%d").sql cathnet:ocbackup/localdb/OC-$(date +"%Y-%m-%d").sql
 echo fix file permissions, requires sudo on external server
 ssh cathnet -t "sudo bash ./fix-p.sh --drupal_user=puregift --drupal_path=opencat/opencourse/docroot"
+ssh cathnet -t "sudo chown puregift:www-data opencat.org -R"
+
 echo "The restoring the database requires sudo on the external server."
 ssh cathnet -t "sudo ./restoredb.sh"
 echo "clearing cache"

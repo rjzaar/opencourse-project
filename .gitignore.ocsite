@@ -41,4 +41,5 @@ errors.log
 #/opencourse/docroot/sites/default/services.yml
 /opencourse/.idea/
 /opencourse/.git
+private/
 
