@@ -16,12 +16,13 @@ drush ard --destination=~/ocbackup/site/oc.tar --overwrite
 #export cmi
 echo -e "\e[34mexport cmi\e[39m"
 drush cex --destination=../../cmi -y
-Name="OC-"$(date +"%Y-%m-%d-%H%M")".sql"
+
 
 #backup db
 echo -e "\e[34mbackup qadb\e[39m"
 cd
 cd opencat/opencourse/docroot
+Name="OC-"$(date +"%Y-%m-%d-%H%M")".sql"
 drush sql-dump > ~/ocbackup/localdb/$Name
 
 #pull db and private files from prod

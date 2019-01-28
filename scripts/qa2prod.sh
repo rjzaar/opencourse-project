@@ -22,7 +22,7 @@ ssh cathnet "cd opencat.org && rm -rf private"
 echo "restore prod private files"
 ssh cathnet "cd opencat.org && tar -zxf ../ocbackup/private.tar.gz"
 echo "Fix permissions, requires sudo"
-ssh -t cathnet "cd opencat.org && sudo chown :www-data private -R"
+ssh -t cathnet "sudo chown :www-data opencat.org -R"
 
 #update drupal
 echo "prod drush updb"
