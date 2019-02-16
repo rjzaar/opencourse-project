@@ -45,4 +45,11 @@ ssh cathnet "cd opencat.org/opencourse/docroot/ && drush sset system.maintenance
 echo -e "\e[34mpatch .htaccess on prod\e[39m"
 ssh cathnet "cd opencat.org/opencourse/docroot/ && sed -i 's/Options +FollowSymLinks/Options +FollowSymLinks/g' .htaccess"
 
+#for some reason this is needed again.
+echo -e "\e[34mFix ownership may need sudo password.\e[39m"
+ssh cathnet "sudo chown :www-data opencat.org -R"
+
+
+
+
 # test again.

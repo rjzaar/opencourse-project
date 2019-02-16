@@ -37,6 +37,7 @@ or provide something else: rjzaar/opencourse:8.5.x-dev
 
 Example (for varbase): ./scripts/ocinstall.sh -i -g -p=v -d -y -u=rob -s -a=v.b -db=vb -n
 for opencourse: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c -db=oc
+for opencourse test: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1 -db=oc1 -f=octest
 for testing (migration): ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1 -db=oc1 -sn=testmig -m
 HELP
 exit 0
@@ -151,14 +152,14 @@ done
 case $project in
     v|varbase)
     echo "varbase chosen"
-    project="vardot/varbase-project:8.5.x-dev"
+    project="vardot/varbase-project:8.6.x-dev"
     gproject='git@github.com:Vardot/varbase.git'
     profile='varbase'
     sfolder='docroot'
     folder="varbase"
     ;;
     oc|opencourse)
-    project="rjzaar/opencourse:8.5.x-dev"
+    project="rjzaar/opencourse:8.6.x-dev"
     oc="y"
     gproject='git@github.com:rjzaar/opencourse.git'
     profile='varbase'
@@ -325,7 +326,7 @@ then
              ssh-add /home/$user/.ssh/github
             echo "Cloning  git project: $gproject"
 
-             git clone $gproject
+             git clone $gproject $folder
 
             echo "move to project folder $folder"
             cd
@@ -360,8 +361,8 @@ then
             git init
             git remote add origin git@github.com:rjzaar/opencourse.git
             git fetch
-            git reset origin/8.5.x  # this is required if files in the non-empty directory are in the repo
-            git checkout -t origin/8.5.x
+            git reset origin/8.6.x  # this is required if files in the non-empty directory are in the repo
+            git checkout -t origin/8.6.x
             git status
             if [ $? -eq 0 ]; then
              echo Good status
@@ -384,7 +385,7 @@ then
                 o)
                 echo overriding current with opencourse git remote
                 git fetch --all
-                git reset --hard origin/8.5.x
+                git reset --hard origin/8.6.x
                 ;;
                 *)
                 echo Continuing ...

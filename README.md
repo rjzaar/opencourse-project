@@ -45,7 +45,9 @@ then
 sudo a2ensite address.conf
 sudo service apache2 restart
 ```
-    git clone git@github.com:rjzaar/opencourse-project.git
+    git clone git@github.com:rjzaar/opencourse-project.git octest
+    cd octest
+    ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=address -db=db -f=octest
 To install varbase:
 
     ./opencourse-project/scripts/ocinstall.sh 

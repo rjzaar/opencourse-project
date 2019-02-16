@@ -17,6 +17,7 @@ echo "Fetch upstream"
 git fetch upstream
 
 echo "Now try merge."
+git merge upstream/8.6.x
 
 
 #Now overide the upstream readme.
@@ -24,7 +25,8 @@ echo "Now move readme back"
 mv README.md1 README.md
 
 git add .
-git commit -m “Updated to lastest varbase.”
+git commit -m \"Updated to lastest varbase.\”
+
 rm composer.lock
 composer install
 
