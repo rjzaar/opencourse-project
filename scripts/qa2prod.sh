@@ -23,6 +23,7 @@ echo "restore prod private files"
 ssh cathnet "cd opencat.org && tar -zxf ../ocbackup/private.tar.gz"
 echo "Fix permissions, requires sudo"
 ssh -t cathnet "sudo chown :www-data opencat.org -R"
+ssh -t cathnet "sudo ./fix-p.sh --drupal_user=puregift --drupal_path=/home/puregift/opencat.org/opencourse/docroot"
 
 #update drupal
 echo "prod drush updb"
