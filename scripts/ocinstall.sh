@@ -36,8 +36,8 @@ Options for project
 or provide something else: rjzaar/opencourse:8.7.x-dev
 
 Example (for varbase): ./scripts/ocinstall.sh -i -g -p=v -d -y -u=rob -s -a=v.b -db=vb -n
-for opencourse: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c -db=oc -sn=opencat
-for opencourse test: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1 -db=oc1 -sn=opencat
+for opencourse: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c -db=oc
+for opencourse test: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1 -db=oc1 -f=octest
 for testing (migration): ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1 -db=oc1 -sn=testmig -m
 for testing alt: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1 -db=oc1 -sn=o.c1
 HELP

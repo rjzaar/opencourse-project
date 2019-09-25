@@ -19,7 +19,6 @@ git fetch upstream
 echo "Now try merge."
 git merge upstream/8.7.x
 
-
 #Now overide the upstream readme.
 echo "Now move readme back"
 mv README.md1 README.md
