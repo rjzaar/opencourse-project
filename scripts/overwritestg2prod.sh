@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#this script will overwrite the production site with qa. All data on production will be lost.
+#this script will overwrite the production site with stg. All data on production will be lost.
 # this is good for a first setup of production.
 
 #push opencat
@@ -9,7 +9,7 @@ cd
 ssh-add .ssh/github
 cd opencat
 git add .
-git commit -m "Test QA."
+git commit -m "Test STG."
 git push
 
 #push opencourse-project

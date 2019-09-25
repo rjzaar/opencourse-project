@@ -1,5 +1,5 @@
 #!/bin/bash
-#restore QA database (or earlier backups).
+#restore STG database (or earlier backups).
 
 db="oc"
 user="rob"
@@ -28,13 +28,13 @@ done
 
 
 
-#restore qa db
+#restore stg db
 cd
 echo -e "\e[34mdrop current database\e[39m"
 mysqladmin -u $db -p$db -f drop $db;
 echo -e "\e[34mrecreate database\e[39m"
 mysql -u $db -p$db -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;";
-echo -e "\e[34mrestore qa database\e[39m"
+echo -e "\e[34mrestore stg database\e[39m"
 mysql -u $db -p$db $db < ocbackup/localdb/${opt:2}
 
 

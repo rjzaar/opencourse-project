@@ -1,5 +1,5 @@
 #!/bin/bash
-#testqa
+#teststg
 
 #start timer
 SECONDS=0
@@ -7,7 +7,7 @@ SECONDS=0
 db="oc"
 user="rob"
 #backup whole site
-echo -e "\e[34mbackup whole qa site\e[39m"
+echo -e "\e[34mbackup whole stg site\e[39m"
 cd
 cd opencat/opencourse/docroot
 drush ard --destination=~/ocbackup/site/oc.tar --overwrite
@@ -19,7 +19,7 @@ drush cex --destination=../../cmi -y
 
 
 #backup db
-echo -e "\e[34mbackup qadb\e[39m"
+echo -e "\e[34mbackup stgdb\e[39m"
 cd
 cd opencat/opencourse/docroot
 Name="OC-"$(date +"%Y-%m-%d-%H%M")".sql"
@@ -50,7 +50,7 @@ cd
 ssh-add .ssh/github
 cd opencat
 git add .
-git commit -m "Test QA."
+git commit -m "Test STG."
 git push
 
 #push opencourse-project

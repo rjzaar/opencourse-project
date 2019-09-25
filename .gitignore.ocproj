@@ -36,13 +36,15 @@ Thumbs.db
 errors.log
 
 # These are now ignored so opencourse-project can be public, ie these are for the development version.
-cmi/
-private/
-opencourse/
-varbase/
-opensocial/
-drupal/
-drutopia/
-lightning/
-ocgitstore/
+/*
+!/scripts
+!.gitignore
+!.gitignore.ocproj
+!.gitignore.ocsite
+!example.oc.yml
+!LICENSE
+!README.md
+!/ocgitstore
+/ocgitstore/*
+
 

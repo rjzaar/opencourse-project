@@ -19,5 +19,5 @@ select opt in "${options[@]}" "Quit" ; do
         echo "Invalid option. Try another one."
     fi
 done
-
-ls -ld $opt
+Name=${opt:2}
+echo -e "\e[34mbackup files ${Name::-4}.tar.gz\e[39m"

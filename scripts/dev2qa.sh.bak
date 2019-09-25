@@ -1,8 +1,8 @@
 #!/bin/bash
-#dev2qa
-#Make changes to move from a dev to qa environment.
+#dev2stg
+#Make changes to move from a dev to stg environment.
 #This is the same folder with the same database, just some changes are made to setup.
-#This presumes a single dev is able to work on dev and qa on his own, without a common qa server (for now).
+#This presumes a single dev is able to work on dev and stg on his own, without a common stg server (for now).
 
 #You would normally push opencourse to git before these steps.
 
@@ -55,6 +55,6 @@ cd
 cd opencat/opencourse
 composer install --no-dev
 
-#Note database is the same between dev and qa in the forward direction.
+#Note database is the same between dev and stg in the forward direction.
 
 

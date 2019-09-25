@@ -1,0 +1,41 @@
+#!/bin/bash
+# stolen from https://github.com/pendashteh/drop
+
+set -e
+
+# Usage:
+# 	$ drop config.yml build
+#	$ drop test.yml install -y
+#
+
+# Helper functions to get the abolute path for the command
+# Copyright http://stackoverflow.com/a/7400673/257479
+myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -ld -- "$1")" : '.*-> \(.*\)$')"; cd $(dirname $1); myreadlink "$link" | sed "s|^\([^/].*\)\$|$(dirname $1)/\1|"); }
+whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
+whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
+
+config_path=$1
+script_root=$(dirname $(whereis_realpath "$0"))
+
+drop_run_task() {
+	local task=$1
+	local task_args="${@:2}"
+	task_script_path=$script_root/$task.sh
+	if [ ! -e "$task_script_path" ]
+		then
+		echo "Drop task '$task' was not found. (Expected at $task_script_path)"
+		exit 1
+	fi
+	. $task_script_path $task_args
+}
+
+task=$2
+[ ! "$task" ] && echo "No task provided." && exit 1
+
+. $script_root/lib/common.inc.sh;
+. $script_root/lib/db.inc.sh;
+. $script_root/scripts/_inc.sh;
+
+drop_config_init $config_path
+
+drop_run_task $task "${@:3}"

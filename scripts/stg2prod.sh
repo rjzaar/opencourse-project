@@ -1,7 +1,7 @@
 #!/bin/bash
-#qa2prod
-#This will backup prod, push qa to prod and import.
-#This presumes testqa.sh worked, therefore opencat git is upto date with cmi export and all files.
+#stg2prod
+#This will backup prod, push stg to prod and import.
+#This presumes teststg.sh worked, therefore opencat git is upto date with cmi export and all files.
 
 #On prod:
 # maintenance mode
@@ -23,6 +23,7 @@ echo "restore prod private files"
 ssh cathnet "cd opencat.org && tar -zxf ../ocbackup/private.tar.gz"
 echo "Fix permissions, requires sudo"
 ssh -t cathnet "sudo chown :www-data opencat.org -R"
+ssh -t cathnet "sudo ./fix-p.sh --drupal_user=puregift --drupal_path=/home/puregift/opencat.org/opencourse/docroot"
 
 #update drupal
 echo "prod drush updb"
@@ -44,5 +45,12 @@ ssh cathnet "cd opencat.org/opencourse/docroot/ && drush sset system.maintenance
 
 echo -e "\e[34mpatch .htaccess on prod\e[39m"
 ssh cathnet "cd opencat.org/opencourse/docroot/ && sed -i 's/Options +FollowSymLinks/Options +FollowSymLinks/g' .htaccess"
+
+#for some reason this is needed again.
+echo -e "\e[34mFix ownership may need sudo password.\e[39m"
+ssh cathnet "sudo chown :www-data opencat.org -R"
+
+
+
 
 # test again.

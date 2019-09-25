@@ -1,5 +1,5 @@
 #!/bin/bash
-#qa2devnointernet
+#stg2devnointernet
 
 #install dev modules
 cd

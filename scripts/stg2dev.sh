@@ -1,5 +1,5 @@
 #!/bin/bash
-#qa2dev
+#stg2dev
 # Start Timer
 SECONDS=0
 
@@ -24,7 +24,7 @@ composer install
 # rebuild permissions
 echo "Rebuild permissions, requires sudo."
 #( speaker-test -t sine -f 1000 )& pid=$! ; sleep 0.1s ; kill -9 $pid
-../scripts/d8fp.sh  --drupal_path=docroot --drupal_user=rob
+sudo ../scripts/d8fp.sh  --drupal_path=docroot --drupal_user=rob
 #make custom writable
 cd
 chmod g+w -R opencat/opencourse/docroot/modules/custom

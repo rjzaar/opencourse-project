@@ -1,8 +1,8 @@
 #!/bin/bash
-#dev2qa
-#Make changes to move from a dev to qa environment.
+#dev2stg
+#Make changes to move from a dev to stg environment.
 #This is the same folder with the same database, just some changes are made to setup.
-#This presumes a single dev is able to work on dev and qa on his own, without a common qa server (for now).
+#This presumes a single dev is able to work on dev and stg on his own, without a common stg server (for now).
 
 # Start Timer
 SECONDS=0
@@ -62,7 +62,7 @@ composer install --no-dev
 # rebuild permissions
 echo "rebuilding permissions, requires sudo"
 #( speaker-test -t sine -f 1000 )& pid=$! ; sleep 0.1s ; kill -9 $pid
-sudo ../scripts/d8fp.sh  --drupal_path=docroot --drupal_user=rob
+"sudo ../scripts/d8fp.sh  --drupal_path=docroot --drupal_user=rob"
 
 # clear cache
 echo "clear cache"
@@ -75,6 +75,6 @@ echo 'H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 
 
 
-#Note database is the same between dev and qa in the forward direction.
+#Note database is the same between dev and stg in the forward direction.
 
 

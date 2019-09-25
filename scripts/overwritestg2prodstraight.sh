@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#this script will overwrite the production site with qa. All data on production will be lost.
+#this script will overwrite the production site with stg. All data on production will be lost.
 # this is good for a first setup of production.
 Name=$(date +"%Y-%m-%d")
 #move what's there

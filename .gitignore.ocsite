@@ -5,6 +5,7 @@ bower_components/
 npm-debug.log
 acquia-file
 /log
+oc.yml
 
 # Ignore vim swp files and gedit temp files
 *.swp
@@ -33,6 +34,7 @@ ehthumbs.db
 .bashrc
 errors.log
 
+ocbackup/
 
 !opencourse/*
 /opencourse/docroot/themes/custom/oc_theme/node_modules/

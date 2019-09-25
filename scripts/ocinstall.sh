@@ -10,7 +10,7 @@ you can provide the following arguments:
 -i|--install 	This will install the files with the options you set, otherwise the database will be dumped and recreated and rebuilt.
 -g|--git	This will do a git install, otherwise composer will be used.
 -m|--migrate	For opencourse perform a migration from the old site. Only works if you have the database setup.
--p=*|--project=* give a composer install, eg rjzaar/opencourse:8.4.x-dev
+-p=*|--project=* give a composer install, eg rjzaar/opencourse:8.7.x-dev
 -d|--dev	Development setup. Otherwise a non-dev installation will occur.
 -y|--yes	Answer all prompts with yes.
 -f=*|--folder=*	Specify the project folder name. This is the root folder for the installation. If not given the standard name will be used, eg opencourse for opencourse.
@@ -33,11 +33,13 @@ Options for project
     dr|druptopia
     l|lightning
     ocp|opencourse-project
-or provide something else: rjzaar/opencourse:8.5.x-dev
+or provide something else: rjzaar/opencourse:8.7.x-dev
 
 Example (for varbase): ./scripts/ocinstall.sh -i -g -p=v -d -y -u=rob -s -a=v.b -db=vb -n
-for opencourse: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c -db=oc
+for opencourse: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c -db=oc -sn=opencat
+for opencourse test: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1 -db=oc1 -sn=opencat
 for testing (migration): ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1 -db=oc1 -sn=testmig -m
+for testing alt: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1 -db=oc1 -sn=o.c1
 HELP
 exit 0
 }
@@ -151,14 +153,14 @@ done
 case $project in
     v|varbase)
     echo "varbase chosen"
-    project="vardot/varbase-project:8.5.x-dev"
+    project="vardot/varbase-project:8.7.x-dev"
     gproject='git@github.com:Vardot/varbase.git'
     profile='varbase'
     sfolder='docroot'
     folder="varbase"
     ;;
     oc|opencourse)
-    project="rjzaar/opencourse:8.5.x-dev"
+    project="rjzaar/opencourse:8.7.x-dev"
     oc="y"
     gproject='git@github.com:rjzaar/opencourse.git'
     profile='varbase'
@@ -325,7 +327,7 @@ then
              ssh-add /home/$user/.ssh/github
             echo "Cloning  git project: $gproject"
 
-             git clone $gproject
+             git clone $gproject $folder
 
             echo "move to project folder $folder"
             cd
@@ -360,8 +362,8 @@ then
             git init
             git remote add origin git@github.com:rjzaar/opencourse.git
             git fetch
-            git reset origin/8.5.x  # this is required if files in the non-empty directory are in the repo
-            git checkout -t origin/8.5.x
+            git reset origin/8.7.x  # this is required if files in the non-empty directory are in the repo
+            git checkout -t origin/8.7.x
             git status
             if [ $? -eq 0 ]; then
              echo Good status
@@ -384,7 +386,7 @@ then
                 o)
                 echo overriding current with opencourse git remote
                 git fetch --all
-                git reset --hard origin/8.5.x
+                git reset --hard origin/8.7.x
                 ;;
                 *)
                 echo Continuing ...
@@ -547,8 +549,9 @@ then
     then
     echo "fix permissions, requires sudo"
     # This is only if the install hasn''t been run before. All files should have correct permissions.
-    sudo bash ./d8fp.sh --drupal_path=$folder/$sfolder --drupal_user=$user
+    sudo bash ./$folder/scripts/d8fp.sh --drupal_path=$folder/$sfolder --drupal_user=$user
     chmod g+w -R $folder/$sfolder/modules/custom
+    chmod g+w $folder/private -R
     fi
     cd $sn/$folder/$sfolder
     drush config-set system.theme default oc_theme -y

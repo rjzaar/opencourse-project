@@ -1,9 +1,22 @@
 # opencourse-project
 
-This project is a folder wrapper for opencourse or other distributions. It provides various scripts for development processes which incorporate composer, cmi and backup. It includes three stages, dev, qa and prod. There are some scripts needed on the production server.
+This project is a folder wrapper for opencourse or other distributions. It provides various scripts for development processes which incorporate composer, cmi and backup. It includes three stages, dev, stg and prod. There are some scripts needed on the production server.
 This project is also based on the varbase two repository structure, varbase and varbase-project. This is a good way to go since most updates to varbase don't need to be updated on a varbase based project. Those that do are included in varbase-project. There are also a lot less files to track in varbase-project than varbase itself. It provides an intelligent separation. But there is need for another wrapper for a varbase project, since scripts, cmi and private folders need to be excluded from standard access. Since a particular site based project needs to include site specific files which should be stored on a private repository for backup, there is one more layer needed. The only difference with this layer is the .gitignore file which includes folders needed on production. Welcome to Drupal 8 development. 
 
-#Quickstart
+#New Commands
+Here is the simple setup for an opencourse development environment
+First choose the name of your dev environment (It will be used as the last part of the site url) I suggest oc
+
+git clone git@github.com:rjzaar/opencourse-project.git oc
+
+cd oc
+The next step will give access to the powerful drop command (thanks Alexar!) to setup the site based on the oc.yml file
+cp example.oc.yml oc.yml
+edit the oc.yml file and change accordingly, eg add database credentials. If you don't add database credentials, 
+no problem, it will prompt you as you go.
+./scripts/ocinit.sh  
+
+#The Manual Way
 Create a database and user (change db, dbuser and dbpass to whatever you want)
 mysql -u username -p -e "CREATE DATABASE db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
 mysql -u username -p
@@ -45,7 +58,9 @@ then
 sudo a2ensite address.conf
 sudo service apache2 restart
 ```
-    git clone git@github.com:rjzaar/opencourse-project.git
+    git clone git@github.com:rjzaar/opencourse-project.git octest
+    cd octest
+    ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=address -db=db -f=octest
 To install varbase:
 
     ./opencourse-project/scripts/ocinstall.sh 
@@ -74,7 +89,7 @@ OPENCOURSE
 This is a fork of varbase-project which includes all the opencourse functionality. It can therefore be extended different ways. This is for all development work on the project itself. This means it can in incorporated into various different staging strategies.
 
 OPENCOURSE-PROJECT
-This is a particular staging strategy taking into account the new complexities (I'm looking at you composer and cmi) Drupal uses. While composer and cmi bring many advantages, they need to be managed properly so errors are properly dealt with and don't end up in production. These should be able to be automated for quicker error finding and prepartion for using tools like docker and travis. The opencourse-project provides a number of scripts that provides automated ways to move between stages dev, qa and prod and (still to be written) ways to revcover from mishaps. 
+This is a particular staging strategy taking into account the new complexities (I'm looking at you composer and cmi) Drupal uses. While composer and cmi bring many advantages, they need to be managed properly so errors are properly dealt with and don't end up in production. These should be able to be automated for quicker error finding and prepartion for using tools like docker and travis. The opencourse-project provides a number of scripts that provides automated ways to move between stages dev, stg and prod and (still to be written) ways to revcover from mishaps. 
 
 OCSITE
 Opencourse-project is written for its own development. Anyone wanting to build on it will need to fork it and have it setup as the upstream version. Opencourse-project is setup so all you have to do is fork it. There is then one set of changes for the gitignore so private and cmi are included in the standard gitignore. There is another gitignore for development which is used when working on opencourse-project itself. Database backup folders could also be included. Ocsite is your private site backup on github (or any git server?). 
@@ -82,20 +97,20 @@ Opencourse-project is written for its own development. Anyone wanting to build o
 While it appears complex, the structure provides clear separation between each of the layers, with improvements cascading through and the potential to automate these changes with automated tests and auto updates. It must be honestly taken into account that the time period between drupal security updates made available and incorporated on production is critical and the new drupal complexities means this can take time. Any serious update should not break current sites and a 'drush up drupal' should be enough, but I'm not silly enough to guarantee that. I don't know of any other tool that can provide the breadth of possibilities (Drupal framework and modules) I need in a dev environment while building on and incorporating other people's work (Vardot and maybe Opigno later). Drupal is going to be around for a long time and building on D8 should last awhile, this is particularly appealing, though it is yet to be seen that this is a wise choice. The cutting edge is usually the bleeding edge. But so far so good.
 
 # SUMMARY so far
-Either fork opencourse and use your own infrastructure or fork opencourse-project and use the provided set of scripts to manage your dev, qa and prod stages.
+Either fork opencourse and use your own infrastructure or fork opencourse-project and use the provided set of scripts to manage your dev, stg and prod stages.
 
 # Processes
 The process is as follows:
-1) dev2qa (opencourse push)
-2) testqa (pull prod database and test)
-3) qa2prod (opencat push)
-4) qa2dev (if opencourse.git not present, then pull opencourse.git and setup).
+1) dev2stg (opencourse push)
+2) teststg (pull prod database and test)
+3) stg2prod (opencat push)
+4) stg2dev (if opencourse.git not present, then pull opencourse.git and setup).
 
-#dev2qa
-Make changes to move from a dev to qa environment.
+#dev2stg
+Make changes to move from a dev to stg environment.
 This is the same folder with the same database, just some changes are made to setup.
-This presumes a single dev is able to work on dev and qa on his own, without a common qa server (for now).
-Note database is the same between dev and qa in the forward direction.
+This presumes a single dev is able to work on dev and stg on his own, without a common stg server (for now).
+Note database is the same between dev and stg in the forward direction.
 
 - turn off dev settings
 - turn off dev modules
@@ -105,20 +120,20 @@ Note database is the same between dev and qa in the forward direction.
 - clear cache
 (uninstall feature modules (leaves settings on site).???)
 
-#testqa
+#teststg
 This will pull down the production db and test it.
-- backup whole qa site (stored in ~/ocbackup/site/oc.tar)
+- backup whole stg site (stored in ~/ocbackup/site/oc.tar)
 - export cmi
-- backup qadb (stored in ~/ocbackup/localdb/oc.sql)
+- backup stgdb (stored in ~/ocbackup/localdb/oc.sql)
 - pull proddb (calls backoc.sh on prod, pulls db and private files, replaces private files)
 - push opencat
 - import proddb
 - update db, fra, cim, clear cache
 
-#qa2prod
-Make changes to move from a dev to qa environment.
+#stg2prod
+Make changes to move from a dev to stg environment.
 This is the same folder with the same database, just some changes are made to setup.
-This presumes a single dev is able to work on dev and qa on his own, without a common qa server (for now).
+This presumes a single dev is able to work on dev and stg on his own, without a common stg server (for now).
 - put prod in maintenance mode
 - backup proddb and private files
 - pull opencat on prod
@@ -129,16 +144,16 @@ This presumes a single dev is able to work on dev and qa on his own, without a c
 - check site!
 
 # restore prod
-This script needs to be written in case qa2prod does not work right.
+This script needs to be written in case stg2prod does not work right.
 - maintenance mode
 - restore files
 - restore db
 - prod mode
 
-#prod2qa
-This is defunct, since testqa serves the same purpose better.
+#prod2stg
+This is defunct, since teststg serves the same purpose better.
 
-#qa2dev
+#stg2dev
 Need to check if there is an opencourse git or not.
 if not, then delete opencourse and clone a fresh opencourse and install (dev is default).
 - move opencourse git (not needed since ignored.)
@@ -159,6 +174,6 @@ This is now defunct. It moved field data into embeded nodes in the body field fo
 #ocupdate2ustream.sh
 This is used to update opencourse to the latest varbase release.
 
-#overwriteqa2prod
-this script will overwrite the production site with qa. All data on production will be lost. 
+#overwritestg2prod
+this script will overwrite the production site with stg. All data on production will be lost. 
 This is good for a first setup of production.

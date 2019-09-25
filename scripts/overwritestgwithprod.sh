@@ -1,0 +1,157 @@
+#!/bin/bash
+#teststg
+#This will delete stg, then pull down the whole prod site and set it up as stg.
+
+# Help menu
+print_help() {
+cat <<-HELP
+This script is used to overwrite stg with the production site. It will delete stg and drop the stg database.
+you can provide the following arguments:
+
+-y Use default db=dbuser=dbpass="oc" and proceed.
+-f=*|--folder=*	Specify the project folder name. This is the root folder for the installation. If not given the standard name will be used, eg opencourse for opencourse.
+-db|--database Database name. If no database name is given then the foldername is used.
+-dbuser|--databaseuser Database user name. If no username is given then the username is the same as the database name.
+-dbpass|--databasepassword Database password If no password is given then the password is the same as the username.
+-nb|--nobackup Don't backup the current site
+
+HELP
+exit 0
+}
+if [ "$#" = 0 ]
+then
+print_help
+exit 1
+fi
+
+ofolder="opencourse-project"
+proceed="no"
+noback="no"
+for i in "$@"
+do
+case $i in
+  -y) #put your project defaults here.
+  db="oc"
+  ofolder="opencat"
+  proceed="yes"
+  shift
+  ;;
+  -f=*|--folder=*)
+  ofolder="${i#*=}"
+  shift # past argument=value
+  ;;
+  -nb=*|--nobackup=*)
+  noback="yes"
+  shift # past argument=value
+  ;;
+  -db=*|--database=*)
+  db="${i#*=}"
+  shift # past argument=value
+  ;;
+  -dbuser=*|--databaseuser=*)
+  dbuser="${i#*=}"
+  shift # past argument=value
+  ;;
+  -dbpass=*|--databasepassword=*)
+  dbpass="${i#*=}"
+  shift # past argument=value
+  ;;
+  -h|--help) print_help;;
+  *)
+    printf "***************************\n"
+    printf "* Error: Invalid argument *\n"
+    printf "***************************\n"
+    print_help
+    exit 1
+  ;;
+esac
+done
+#Opencourse-project setup
+if [ -z ${db+x} ]
+then
+  db="oc" #the default
+fi
+if [ -z ${dbuser+x} ]
+then
+  dbuser=$db
+fi
+if [ -z ${dbpass+x} ]
+then
+  dbpass=$dbuser
+fi
+
+echo "Database = $db"
+echo "Database user = $dbuser"
+echo "Database password = $dbpass"
+echo "Install folder = $ofolder"
+
+if [$proceed="no"]
+then
+read -p "Do you want to proceed? " -n 1 -r
+echo    # (optional) move to a new line
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+  [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1 # handle exits from shell or function but don't exit interactive shell
+fi
+fi
+
+user="rob"
+if [$noback="no"]
+then
+#backup whole site
+echo -e "\e[34mbackup whole stg site\e[39m"
+#site and db
+cd
+cd $ofolder/opencourse/docroot
+drush ard --destination=~/ocbackup/site/oc"$(date +"%Y-%m-%d")".tar --overwrite #only one backup for the day
+#drush archive-restore ./example.tar.gz --db-url=mysql://root:pass@127.0.0.1/dbname
+fi
+
+
+#pull db and all files from prod
+echo -e "\e[34mpull proddb\e[39m"
+cd
+ssh cathnet "cd opencat.org/opencourse/docroot/ && drush sset system.maintenance_mode TRUE"
+ssh cathnet "./backocall.sh"
+ssh cathnet "cd opencat.org/opencourse/docroot/ && drush sset system.maintenance_mode FALSE"
+echo -e "\e[34mgetting /ocbackup/OC-"$(date +"%Y-%m-%d")".sql\e[39m"
+scp cathnet:ocbackup/OC-$(date +"%Y-%m-%d").sql ocbackup/proddb/OC-$(date +"%Y-%m-%d").sql
+echo -e "\e[34mgetting all files.\e[39m"
+scp cathnet:ocbackup/ocall.tar.gz ocbackup/prodallfiles/ocall.tar.gz
+mv  $ofolder $ofolder.$(date +"%Y-%m-%d")
+mv  opencat.org opencat.org.$(date +"%Y-%m-%d")
+
+tar -zxf ocbackup/prodallfiles/ocall.tar.gz
+mv opencat.org $ofolder
+echo -e "\e[34mmove settings back\e[39m"
+mv $ofolder.$(date +"%Y-%m-%d")/opencourse/docroot/sites/default/settings.local.php $ofolder/opencourse/docroot/sites/default/settings.local.php
+
+echo -e "\e[34mMove opencourse git back\e[39m"
+cp -rf $ofolder.$(date +"%Y-%m-%d")/opencourse/.git $ofolder/opencourse/.git
+
+echo -e "\e[34mFix permissions, requires sudo\e[39m"
+sudo bash ./$ofolder/scripts/d8fp.sh --drupal_user=$user --drupal_path=$ofolder/opencourse/docroot
+
+#import proddb
+cd
+echo -e "\e[34mdrop database\e[39m"
+mysqladmin -u $dbuser -p$dbpass -f drop $db;
+echo -e "\e[34mrecreate database\e[39m"
+mysql -u $dbuser -p$dbpass -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;";
+mysql -u $dbuser -p$dbpass $db < ocbackup/proddb/OC-$(date +"%Y-%m-%d").sql
+
+#updatedb
+cd $ofolder/opencourse/docroot
+drush sset system.maintenance_mode FALSE
+drush cr
+
+cd
+cd $ofolder/opencourse
+#remove any extra options. Since each reinstall may add an extra one.
+echo -e "\e[34mpatch .htaccess\e[39m"
+sed -i 's/Options +FollowSymLinks/Options +FollowSymLinks/g' .htaccess
+
+#test
+
+
+

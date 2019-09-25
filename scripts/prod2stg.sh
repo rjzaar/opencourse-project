@@ -1,6 +1,6 @@
 #!/bin/bash
-#prod2qa
-#There should be NO changes to CMI on live. if there are, they will be in sql and therefore moved down with the database to qa, but could be overwritten with feature import from dev to qa. 
+#prod2stg
+#There should be NO changes to CMI on live. if there are, they will be in sql and therefore moved down with the database to stg, but could be overwritten with feature import from dev to stg.
 
 # Files option: setup all the files as well.
 # clone opencat.
