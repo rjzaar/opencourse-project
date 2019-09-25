@@ -21,6 +21,11 @@ prod:
   uri: production.org
   user: prod
   docroot: /home/prod/opencourse-project/opencourse/docroot
+# Note localprod will be a copy of the current opencat.org website as is and use opencat .git
+# dev will be a copy of the opencat.org website but use the opencourse .git
+# stg will be a copy of the localprod site ready to test the dev changes.
+# any new site added will be a clean install of opencourse .git
 sites:
-  dev
-  stg
+  - dev
+  - stg
+  - localprod

@@ -39,12 +39,9 @@ errors.log
 /*
 !/scripts
 !.gitignore
-!.gitignore.ocproj
-!.gitignore.ocsite
 !example.oc.yml
 !LICENSE
 !README.md
-!/ocgitstore
-/ocgitstore/*
+
 
 
