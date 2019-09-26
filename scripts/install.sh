@@ -72,7 +72,6 @@ case $i in
     ;;
 esac
 done
-echo "sitename: $sn "
 
 if [[ $recipes != *"$sn"* ]]
 then
@@ -81,17 +80,17 @@ exit 1
 fi
 
 # Collect the details from oc.yml if they exist
-rp="recipes_${sn}_project" ; if [ ${!rp}!="" ] ; then project=${!rp} ; fi
-rp="recipes_${sn}_dev" ; if [ ${!rp}!="" ] ; then dev=${!rp} ; fi
-rp="recipes_${sn}_webroot" ; if [ ${!rp}!="" ] ; then webroot=${!rp} ; fi
-rp="recipes_${sn}_sitename" ; if [ ${!rp}!="" ] ; then sitename=${!rp} ; fi
-rp="recipes_${sn}_auto" ; if [ ${!rp}!="" ] ; then auto=${!rp} ; fi
-rp="recipes_${sn}_apache" ; if [ ${!rp}!="" ] ; then apache=${!rp} ; fi
-rp="recipes_${sn}_db" ; if [ ${!rp}!="" ] ; then db=${!rp} ; fi
-rp="recipes_${sn}_dbuser" ; if [ ${!rp}!="" ] ; then dbuser=${!rp} ; fi
-rp="recipes_${sn}_dbpass" ; if [ ${!rp}!="" ] ; then dbpass=${!rp} ; fi
-rp="recipes_${sn}_profile" ; if [ ${!rp}!="" ] ; then profile=${!rp} ; fi
-rp="recipes_${sn}_uri" ; if [ ${!rp}!="" ] ; then uri=${!rp} ; fi
+rp="recipes_${sn}_project" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; fi
+rp="recipes_${sn}_dev" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev=${!rp} ; fi
+rp="recipes_${sn}_webroot" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then webroot=${!rp} ; fi
+rp="recipes_${sn}_sitename" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sitename=${!rp} ; fi
+rp="recipes_${sn}_auto" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then auto=${!rp} ; fi
+rp="recipes_${sn}_apache" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then apache=${!rp} ; fi
+rp="recipes_${sn}_dbuser" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbuser=${!rp} ; fi
+rp="recipes_${sn}_profile" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then profile=${!rp} ; fi
+rp="recipes_${sn}_db" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then db=${!rp} ; fi
+rp="recipes_${sn}_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbpass=${!rp} ; fi
+rp="recipes_${sn}_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; fi
 
 #Field_Separator=$IFS
 ## set comma as internal field separator for the string list
@@ -160,7 +159,6 @@ case $i in
     ;;
     -h|--help) print_help;;
     *)
-    echo $i
     case $i in
         *[^[:alnum:]]*)
             printf "***************************\n"
