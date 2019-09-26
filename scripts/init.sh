@@ -14,8 +14,6 @@ script_root=$(dirname $(whereis_realpath "$0"))
 #. $script_root/lib/common.inc.sh;
 #. $script_root/lib/db.inc.sh;
 #. $script_root/scripts/_inc.sh;
-echo $script_root
-echo $1
 
 _config_path=$1
 _config_base_path=""
@@ -24,12 +22,9 @@ config_base=""
 echo "Parse YAML"
 . $script_root/scripts/parse_yaml.sh "../oc.yml"
 
-echo $user
-fred="/home/$user/$project/scripts/"
-echo $fred
+schome="/home/$user/$project/scripts/"
 
-
-echo "export PATH=\"\$PATH:$fred\"" >> ~/.bashrc
+echo "export PATH=\"\$PATH:$schome\"" >> ~/.bashrc
 source ~/.bashrc
 
 

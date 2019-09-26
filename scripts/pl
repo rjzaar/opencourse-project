@@ -4,8 +4,7 @@
 set -e
 
 # Usage:
-# 	$ drop config.yml build
-#	$ drop test.yml install -y
+#	$ pl install dev
 #
 
 # Helper functions to get the abolute path for the command
@@ -17,7 +16,7 @@ whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} 
 config_path=$1
 script_root=$(dirname $(whereis_realpath "$0"))
 
-drop_run_task() {
+pl_run_task() {
 	local task=$1
 	local task_args="${@:2}"
 	task_script_path=$script_root/$task.sh
@@ -29,13 +28,13 @@ drop_run_task() {
 	. $task_script_path $task_args
 }
 
-task=$2
+task=$1
 [ ! "$task" ] && echo "No task provided." && exit 1
 
-. $script_root/lib/common.inc.sh;
-. $script_root/lib/db.inc.sh;
-. $script_root/scripts/_inc.sh;
+#. $script_root/lib/common.inc.sh;
+#. $script_root/lib/db.inc.sh;
+#. $script_root/scripts/_inc.sh;
 
-drop_config_init $config_path
+#drop_config_init $config_path
 
-drop_run_task $task "${@:3}"
+pl_run_task "$1" "${@:2}"
