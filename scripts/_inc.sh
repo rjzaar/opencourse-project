@@ -26,13 +26,47 @@ rp="recipes_${sn}_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; fi
 parse_oc_yml () {
 # Import yaml
 # presumes $script_root is set
-echo "passing it"
+
 . $script_root/scripts/parse_yaml.sh "oc.yml" $script_root
 # Update all database credentials in case the user changed any.
-echo "after it"
+folder_path=$(dirname $script_root)
+user_home=$(dirname $folder_path)
+
 # Create a list of recipes
 for f in $recipes_ ; do recipes="$recipes,${f#*_}" ; done
 recipes=${recipes#","}
+
+# Store the site name to restore it later
+storesn=$sn
+
+#Collect the drush location: messy but it works!
+drush status > drush.tmp
+dline=$(awk 'match($0,v){print NR; exit}' v="Drush script" drush.tmp)
+dlinec=$(sed "${dline}q;d" drush.tmp)
+dlined="/$(echo "${dlinec#*/}")"
+drushloc=${dlined::-11}
+rm drush.tmp
+
+if [ -f $user_home/.drush/$folder.aliases.drushrc.php ]
+then
+rm  $user_home/.drush/$folder.aliases.drushrc.php
+fi
+
+cat > $user_home/.drush/$folder.aliases.drushrc.php <<EOL
+<?php
+/**
+ * This file has been created by $site_folder/scripts/_inc.sh
+ *
+ */
+ \$aliases['prod'] = array (
+  'uri' => '$prod_uri',
+  'root' => '$prod_docroot',
+  'remote-user' => '$prod_user',
+  'remote-host' => '$prod_uri',
+);
+EOL
+
+# Now go through each site and create settings for each site.
 Field_Separator=$IFS
 # set comma as internal field separator for the string list
 IFS=,
@@ -50,9 +84,28 @@ password = $sdbpass
 host = localhost
 EOL
 
+#Now go through and create a Drush Alias for each site
+import_site_config $site
+
+cat >> $user_home/.drush/$folder.aliases.drushrc.php <<EOL
+\$aliases['$site'] = array (
+  'root' => '$folderpath/$site/$docroot',
+  'uri' => 'http://$site.$folder',
+  'path-aliases' =>
+  array (
+    '%drush' => '$drushloc',
+    '%site' => 'sites/default/',
+  ),
+);
+EOL
+
 done
 IFS=$Field_Separator
 
+#Finish the Drush alias file with
+echo "?>" >> "$user_home/.drush/$folder.aliases.drushrc.php"
+
+sn=$storesn
 }
 
 ocmsg () {

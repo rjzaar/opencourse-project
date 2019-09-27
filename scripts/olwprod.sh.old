@@ -1,11 +1,11 @@
 #!/bin/bash
 #teststg
-#This will delete stg, then pull down the whole prod site and set it up as stg.
+#This will delete localprod, then pull down the whole prod site and set it up as localprod.
 
 # Help menu
 print_help() {
 cat <<-HELP
-This script is used to overwrite stg with the production site. It will delete stg and drop the stg database.
+This script is used to overwrite localprod with the production site. It will delete localprod and drop the localprod database.
 you can provide the following arguments:
 
 -y Use default db=dbuser=dbpass="oc" and proceed.

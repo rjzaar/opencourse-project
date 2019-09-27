@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#This will update the database credentials and bash file. (It all happens in parse_oc_yml)
 
 # Helper functions to get the abolute path for the command
 # Copyright http://stackoverflow.com/a/7400673/257479

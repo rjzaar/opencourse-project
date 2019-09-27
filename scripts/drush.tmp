@@ -1,0 +1,12 @@
+ Drupal version         :  8.7.7                                            
+ PHP executable         :  /usr/bin/php                                     
+ PHP configuration      :  /etc/php/7.2/cli/php.ini                         
+ PHP OS                 :  Linux                                            
+ Drush script           :  /home/rob/.composer/vendor/drush/drush/drush.php 
+ Drush version          :  8.1.15                                           
+ Drush temp directory   :  /tmp                                             
+ Drush configuration    :                                                   
+ Drush alias files      :                                                   
+ Drupal root            :  /home/rob                                        
+ Drupal Settings File   :  MISSING                                          
+
