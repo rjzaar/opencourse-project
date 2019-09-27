@@ -1,6 +1,13 @@
 #!/bin/bash
-#This will set up a new site
+#This will set up a new uri
+# Helper functions to get the abolute path for the command
+# Copyright http://stackoverflow.com/a/7400673/257479
+myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -ld -- "$1")" : '.*-> \(.*\)$')"; cd $(dirname $1); myreadlink "$link" | sed "s|^\([^/].*\)\$|$(dirname $1)/\1|"); }
+whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
+whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
+script_root=$(dirname $(whereis_realpath "$0"))
+echo $script_root
 # Help menu
 print_help() {
 cat <<-HELP
@@ -15,33 +22,20 @@ eg dev.oc site URL: dev.oc database: devoc folder: dev.oc
 HELP
 exit 0
 }
-if [ "$#" = 0 ]
-then
-print_help
-exit 1
-fi
 
-for i in "$@"
-do
-case $i in
-  -y) #put your project defaults here.
-  # currently no defaults.
-  shift
-  ;;
-      -sn=*|--sitename=*)
-    sn="${i#*=}"
-    shift # past argument=value
-    ;;
-  -h|--help) print_help;;
-  *)
-    printf "***************************\n"
-    printf "* Error: Invalid argument *\n"
-    printf "***************************\n"
+#start timer
+SECONDS=0
+if [ $1 == "sudoeuri" ] && [ -z "$2" ]
+  then
+    echo "No site specified"
     print_help
     exit 1
-  ;;
-esac
-done
+fi
+
+. $script_root/_inc.sh;
+sn=$1
+parse_oc_yml
+import_site_config $sn
 
 # Must be sudo
 if [ $(id -u) != 0 ]; then
@@ -51,19 +45,16 @@ if [ $(id -u) != 0 ]; then
   print_help
   exit 1
 fi
-
-#add apache reference
-#current_directory="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-hosts_path="/etc/hosts"
-vhosts_path="/etc/apache2/sites-available/"
-#vhost_skeleton_path="$current_directory/vhost.skeleton.conf"
-web_root="/home/rob/"
-site_url=$sn
-relative_doc_root="$sn/opencourse/docroot"
+folderpath=$(dirname $script_root)
+folder=$(basename $(dirname $script_root))
+web_root=$(dirname $folderpath)
+site_url="$sn.$folder"
+relative_doc_root="$folder/$sn/$docroot"
 
 # construct absolute path
-absolute_doc_root=$web_root$relative_doc_root
-
+absolute_doc_root="$web_root/$relative_doc_root"
+echo "Site URL: $sn.$folder"
+echo "Site docroot: $absolute_doc_root"
 
 # update vhost
 vhost="# @site_url@

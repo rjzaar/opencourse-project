@@ -14,7 +14,20 @@ else
 sn=$1
 if [[ $# -eq 1 ]]
 then
-cd $ocroot/$sn
+  case  $1  in
+    a)
+    cd /etc/apache/sites-available
+    ;;
+    b)
+    cd $ocroot/sitebackups
+    ;;
+    s)
+    cd $ocroot/scripts
+    ;;
+    *)
+    cd $ocroot/$sn
+    ;;
+  esac
 else
   case  $2  in
     d)

@@ -13,7 +13,6 @@ myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -
 whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
 whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
-config_path=$1
 script_root=$(dirname $(whereis_realpath "$0"))
 
 pl_run_task() {
@@ -25,7 +24,11 @@ pl_run_task() {
 		echo "Drop task '$task' was not found. (Expected at $task_script_path)"
 		exit 1
 	fi
-	. $task_script_path $task_args
+if [[ $task_script_path == *"sudo"* ]]; then
+ 	sudo $task_script_path $task_args
+	else
+		. $task_script_path $task_args
+fi
 }
 
 task=$1
