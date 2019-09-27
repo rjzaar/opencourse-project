@@ -1,23 +1,17 @@
 #!/usr/bin/env bash
 
-prompt="Please select a backup:"
-cd
-cd ocbackup/localdb
+#mysql --defaults-extra-file=/home/rob/opencat/mysql.cnf -e "CREATE DATABASE teststg CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+# Get the helper functions etc.
+. $script_root/_inc.sh;
 
-options=( $(find -maxdepth 1 -name "*.sql" -print0 | xargs -0 ls -1 -t ) )
+auto="y"
+folder=$(basename $(dirname $script_root))
+webroot="docroot" # or could be web or html
+project="rjzaar/opencourse:8.7.x-dev"
+# For a private setup, either it is a test setup which means private is in the usual location <site root>/site/default/files/private or
+# there is a proper setup with opencat, which means private is as below. $secure is the switch, so if $secure and
+sn="dev"
+profile="varbase"
+dev="y"
 
-PS3="$prompt "
-select opt in "${options[@]}" "Quit" ; do
-    if (( REPLY == 1 + ${#options[@]} )) ; then
-        exit
-
-    elif (( REPLY > 0 && REPLY <= ${#options[@]} )) ; then
-        echo  "You picked $REPLY which is file ocbackup/localdb/${opt:2}"
-        break
-
-    else
-        echo "Invalid option. Try another one."
-    fi
-done
-Name=${opt:2}
-echo -e "\e[34mbackup files ${Name::-4}.tar.gz\e[39m"
+parse_oc_yml

@@ -1,5 +1,5 @@
 #!/bin/bash
-#backupdb
+#backup db and files
 
 #start timer
 SECONDS=0
@@ -42,4 +42,14 @@ Name=$(date +%Y%m%d\T%H%M%S-)`git branch | grep \* | cut -d ' ' -f2 | sed -e 's/
 echo -e "\e[34mbackup db $Name\e[39m"
 drush sql-dump --structure-tables-key=common --result-file="../../sitebackups/$sn/$Name"
 
+#backupfiles
+Name2=${Name::-4}".tar.gz"
+
+echo -e "\e[34mbackup files $Name2\e[39m"
+cd ../../
+tar -czf sitebackups/$sn/$Name2 $sn
+
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
+
+
+

@@ -3,18 +3,9 @@
 # Get the helper functions etc.
 . $script_root/_inc.sh;
 
-config_path=$1
-script_root=$(dirname $(whereis_realpath "$0"))
-
 #. $script_root/lib/common.inc.sh;
 #. $script_root/lib/db.inc.sh;
 #. $script_root/scripts/_inc.sh;
-
-_config_path=$1
-_config_base_path=""
-_config_prefix=""
-config_base=""
-. $script_root/scripts/parse_yaml.sh "oc.yml" $script_root
 
 # Help menu
 print_help() {
@@ -39,6 +30,7 @@ you can provide the following arguments:
 -ap|--apache This will set up apache and hosts infrastructure based on your settings
 
 "site" Any site name that is made up of letters and numbers only.
+WARNING: if you overwrite an option in the recipe, it will not be saved in the recipe.
 
 
 HELP
@@ -54,6 +46,8 @@ project="rjzaar/opencourse:8.7.x-dev"
 sn="dev"
 profile="varbase"
 dev="y"
+
+parse_oc_yml
 
 #Import oc.yml settings
 # Create a list of recipes
@@ -79,18 +73,9 @@ echo "No recipe! For now aborting. Could in future add the details."
 exit 1
 fi
 
-# Collect the details from oc.yml if they exist
-rp="recipes_${sn}_project" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; fi
-rp="recipes_${sn}_dev" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev=${!rp} ; fi
-rp="recipes_${sn}_webroot" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then webroot=${!rp} ; fi
-rp="recipes_${sn}_sitename" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sitename=${!rp} ; fi
-rp="recipes_${sn}_auto" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then auto=${!rp} ; fi
-rp="recipes_${sn}_apache" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then apache=${!rp} ; fi
-rp="recipes_${sn}_dbuser" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbuser=${!rp} ; fi
-rp="recipes_${sn}_profile" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then profile=${!rp} ; fi
-rp="recipes_${sn}_db" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then db=${!rp} ; fi
-rp="recipes_${sn}_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbpass=${!rp} ; fi
-rp="recipes_${sn}_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; fi
+import_site_config $sn
+
+
 
 #Field_Separator=$IFS
 ## set comma as internal field separator for the string list
@@ -177,33 +162,12 @@ done
 
 private="/home/$user/$folder/$sn/private"
 uri="$sn.$folder"
-# Database defaults
-if [ -z ${db+x} ]
-then
-    db="$sn$folder"
-fi
-if [ -z ${dbuser+x} ]
-then
-    dbuser=$db
-fi
-if [ -z ${dbpass+x} ]
-then
-    dbpass=$dbuser
-fi
+
+db_defaults
 
 echo "Installing $sn"
 echo "About to install:"
-echo "Project  = $project"
-echo "Project folder = $folder"
-echo "Site folder = $sn"
-echo "webroot = $webroot"
-echo "Profile  = $profile"
-echo "uri      = $uri"
-echo "Dev      = $dev"
-echo "Private folder = $private"
-echo "Database = $db"
-echo "Database user = $dbuser"
-echo "Database password = $dbpass"
+site_info
 echo
 
 exit 1

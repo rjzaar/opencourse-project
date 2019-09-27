@@ -101,7 +101,6 @@ function parse_yaml {
 }
 echo "passing $1"
 ocy=$(find "$(dirname "$2")" -name $1)
-echo $ocy
 if [ -z "$ocy"  ]
   then
   echo "Could not find $1. Aborting."

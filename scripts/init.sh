@@ -8,24 +8,28 @@ myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -
 whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
 whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
-config_path=$1
 script_root=$(dirname $(whereis_realpath "$0"))
 
-#. $script_root/lib/common.inc.sh;
-#. $script_root/lib/db.inc.sh;
-#. $script_root/scripts/_inc.sh;
+. "$script_root/_inc.sh"
 
-_config_path=$1
-_config_base_path=""
-_config_prefix=""
-config_base=""
 echo "Parse YAML"
-. $script_root/scripts/parse_yaml.sh "../oc.yml"
+parse_oc_yml
 
-schome="/home/$user/$project/scripts/"
-
+echo "Adding pl command to bash commands, including plcd"
+schome="/home/$user/$project/scripts"
+sed -i "2s/ocroot=\"~\/opencourse\"/ocroot=\"\/home\/$user\/$project\"/" "$schome/plcd.sh"
 echo "export PATH=\"\$PATH:$schome\"" >> ~/.bashrc
+echo ". $schome/plcd.sh" >> ~/.bashrc
 source ~/.bashrc
+#plsource
+
+# Create mysql root password file
+cat > $(dirname $script_root)/mysql.cnf <<EOL
+[client]
+user = root
+password = root
+host = localhost
+EOL
 
 
 
