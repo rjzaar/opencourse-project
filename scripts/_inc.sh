@@ -146,11 +146,11 @@ set_site_permissions () {
 
 cd
 echo -e "\e[34msetting correct permissions on $sn - may require sudo password\e[39m"
-echo "user: $user folder $folder webroot $webroot"
 chown $user:www-data $folder/$sn -R
 
-./$folder/scripts/d8fp.sh --drupal_path="$folder/$sn/$webroot" --drupal_user=$user
+./$folder/scripts/lib/d8fp.sh --drupal_path="$folder/$sn/$webroot" --drupal_user=$user
 chmod g+w $folder/$sn/private -R
+chmod g+w $folder/$sn/cmi -R
 }
 
 restore_db () {

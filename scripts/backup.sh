@@ -21,8 +21,8 @@ exit 1
 fi
 
 sn=$1
-folder=$(basename $(dirname $script_root))
-webroot="docroot"
+#folder=$(basename $(dirname $script_root))
+#webroot="docroot"
 parse_oc_yml
 import_site_config $sn
 
