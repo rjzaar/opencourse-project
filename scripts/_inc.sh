@@ -48,10 +48,8 @@ parse_oc_yml () {
 # presumes $script_root is set
 
 . $script_root/scripts/parse_yaml.sh "oc.yml" $script_root
-# Update all database credentials in case the user changed any.
-folder_path=$(dirname $script_root)
-user_home=$(dirname $folder_path)
 
+# Update all database credentials in case the user changed any.
 # Create a list of recipes
 for f in $recipes_ ; do recipes="$recipes,${f#*_}" ; done
 recipes=${recipes#","}
@@ -61,12 +59,12 @@ storesn=$sn
 
 #Collect the drush location: messy but it works!
 # This command might list some warnings. It is a bug with drush: https://github.com/drush-ops/drush/issues/3226
-drush status > drush.tmp
-dline=$(awk 'match($0,v){print NR; exit}' v="Drush script" drush.tmp)
-dlinec=$(sed "${dline}q;d" drush.tmp)
+drush @dev status > "$folderpath/drush.tmp"
+dline=$(awk 'match($0,v){print NR; exit}' v="Drush script" "$folderpath/drush.tmp")
+dlinec=$(sed "${dline}q;d" "$folderpath/drush.tmp")
 dlined="/$(echo "${dlinec#*/}")"
 drushloc=${dlined::-11}
-rm drush.tmp
+rm "$folderpath/drush.tmp"
 
 if [ -f $user_home/.drush/$folder.aliases.drushrc.php ]
 then

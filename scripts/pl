@@ -16,6 +16,7 @@ whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} 
 script_root=$(dirname $(whereis_realpath "$0"))
 folder=$(basename $(dirname $script_root))
 folderpath=$(dirname $script_root)
+user_home=$(dirname $folderpath)
 . $script_root/_inc.sh;
 
 pl_run_task() {

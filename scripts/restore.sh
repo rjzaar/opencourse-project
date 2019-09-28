@@ -50,6 +50,7 @@ parse_oc_yml
 import_site_config $sn
 
 # Prompt to choose which database to backup, 1 will be the latest.
+# Could be a better way to go: https://stackoverflow.com/questions/42789273/bash-choose-default-from-case-when-enter-is-pressed-in-a-select-prompt
 prompt="Please select a backup:"
 cd
 cd "$folder/sitebackups/$bk"
@@ -99,7 +100,7 @@ fi
 # Move settings.php and settings.local.php out the way before they are overwritten just in case you might need them.
 setpath="$folderpath/$sn/$docroot/sites/default"
 if [ -f "$setpath/settings.php" ] ; then mv "$setpath/settings.php" "$setpath/settings.php.old" ; fi
-if [ -f "$setpath//local.settings.php" ] ; then mv "$setpath//local.settings.php" "$setpath/ocal.settings.php.old" ; fi
+if [ -f "$setpath//settings.local.php" ] ; then mv "$setpath//settings.local.php" "$setpath/settings.local.php.old" ; fi
 if [ -f "$setpath//default.settings.php" ] ; then mv "$setpath//default.settings.php" "$setpath//settings.php" ; fi
 
 ### do I need to deal with services.yml?
