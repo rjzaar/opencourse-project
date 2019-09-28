@@ -20,29 +20,26 @@ exit 0
 
 
 #First backup the current localprod site.
-#pl backup $sn
-#
-##pull db and all files from prod
-#### going to need to fix security. settings.local.php only have hash. all other cred in settings so not shared.
-#drush -y rsync @prod @$sn -O
-#pl fixss $sn
-#drush -y rsync @prod:%private @$sn:%private -O  --delete
-#drush -y rsync @prod:../cmi @$sn:../cmi -O  --delete
+pl backup $sn
+
+#pull db and all files from prod
+### going to need to fix security. settings.local.php only have hash. all other cred in settings so not shared.
+drush -y rsync @prod @$sn -O
+pl fixss $sn
+drush -y rsync @prod:%private @$sn:%private -O  --delete
+drush -y rsync @prod:../cmi @$sn:../cmi -O  --delete
 
 # Make sure the hash is present so drush sql will work.
-if ! grep -q hash_salt "$folderpath/$sn/$webroot/sites/default/settings.php"
+sfile=$(<"$folderpath/$sn/$webroot/sites/default/settings.php")
+slfile=$(<"$folderpath/$sn/$webroot/sites/default/settings.local.php")
+if [[ ! $sfile =~ (\'hash_salt\'\] = \') ]]
 then
-if ! grep -q hash_salt "$folderpath/$sn/$webroot/sites/default/settings.local.php"
+if [[ ! $slfile =~ (\'hash_salt\'\] = \') ]]
 then
   hash=$(drush php-eval 'echo \Drupal\Component\Utility\Crypt::randomBytesBase64(55)')
 echo "\$settings['hash_salt'] = '$hash';" >> "$folderpath/$sn/$webroot/sites/default/settings.local.php"
-else
-echo "local has hash"
 fi
-else
-echo "settings has hash"
 fi
-
 
 # Now get the database
 #This command wasn't fully working.
@@ -52,7 +49,7 @@ Name="$folderpath/sitebackups/localprod/prod$(date +%Y%m%d\T%H%M%S-).sql"
 drush @prod sql-dump  --gzip > "$Name.gz"
 gzip -d "$Name.gz"
 
-exit
+
 #Now import it
 result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" localprodopencat < $Name 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 if [ "$result" = ": 0" ]; then echo "Production database imported into database $db using root"; else echo "Could not import production database into database $db using root, exiting"; exit 1; fi
