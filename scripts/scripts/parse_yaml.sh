@@ -1,5 +1,6 @@
 #!/bin/sh
-# https://gist.githubusercontent.com/pkuczynski/8665367/raw/f81e1c9a2e23b302e9246a0820c0210bfe82ee81/parse_yaml.sh
+# This is the usual file used, but it doesn't allow groups of settings to be selected: https://gist.githubusercontent.com/pkuczynski/8665367/raw/f81e1c9a2e23b302e9246a0820c0210bfe82ee81/parse_yaml.sh
+# So I used: https://github.com/mrbaseman/parse_yaml/blob/master/src/parse_yaml.sh
 
 function parse_yaml {
    local prefix=$2

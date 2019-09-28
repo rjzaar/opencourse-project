@@ -1,4 +1,11 @@
 #!/bin/bash
+# This task must be run by pl "task name" arguments
+if [ -z $folder ]
+then
+echo "This task must be run by putting pl before it and no .sh, eg pl restore dev"
+exit 1
+fi
+
 #restore site and database
 # $1 is the backup
 # $2 if present is the site to restore into
@@ -24,8 +31,6 @@ if [ -z "$2" ]
     echo -e "\e[34mrestoring $1 to $2 \e[39m"
 fi
 
-. $script_root/_inc.sh;
-
 # Help menu
 print_help() {
 cat <<-HELP
@@ -41,9 +46,6 @@ print_help
 exit 1
 fi
 
-folder=$(basename $(dirname $script_root))
-folderpath=$(dirname $script_root)
-webroot="docroot"
 parse_oc_yml
 import_site_config $sn
 
@@ -58,12 +60,10 @@ PS3="$prompt "
 select opt in "${options[@]}" "Quit" ; do
     if (( REPLY == 1 + ${#options[@]} )) ; then
         exit
-
     elif (( REPLY > 0 && REPLY <= ${#options[@]} )) ; then
         echo  "You picked $REPLY which is file ${opt:2}"
         Name=${opt:2}
         break
-
     else
         echo "Invalid option. Try another one."
     fi
@@ -74,7 +74,7 @@ done
 cd
 cd "$folder"
 if [ -d "$sn" ]; then
-    read -p "$sn exists. If you proceed, $sn will first be deleted. Do you want to proceed?(y/n/c)" question
+    read -p "$sn exists. If you proceed, $sn will first be deleted. Do you want to proceed?(Y/n)" question
         case $question in
             n|c|no|cancel)
             echo exiting immediately, no changes made
@@ -96,10 +96,22 @@ if [ -d "$bk" ]; then
     tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz"
 fi
 
-set_site_permissions
+# Move settings.php and settings.local.php out the way before they are overwritten just in case you might need them.
+setpath="$folderpath/$sn/$docroot/sites/default"
+if [ -f "$setpath/settings.php" ] ; then mv "$setpath/settings.php" "$setpath/settings.php.old" ; fi
+if [ -f "$setpath//local.settings.php" ] ; then mv "$setpath//local.settings.php" "$setpath/ocal.settings.php.old" ; fi
+if [ -f "$setpath//default.settings.php" ] ; then mv "$setpath//default.settings.php" "$setpath//settings.php" ; fi
+
+### do I need to deal with services.yml?
+
+. $folderpath/scripts/fixss.sh $sn
+
+
+set_site_permissions $sn
 
 #restore db
 db_defaults
+
 restore_db
 
 

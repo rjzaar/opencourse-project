@@ -8,19 +8,39 @@ whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- 
 whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
 import_site_config () {
-	sn=$1
-# Collect the details from oc.yml if they exist
+# First load the defaults
+rp="recipes_default_project" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; else project=""; fi
+rp="recipes_default_dev" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev=${!rp} ; else dev=""; fi
+rp="recipes_default_webroot" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then webroot=${!rp} ; else webroot=""; fi
+rp="recipes_default_sitename" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sitename=${!rp} ; else sitename=""; fi
+rp="recipes_default_auto" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then auto=${!rp} ; else auto=""; fi
+rp="recipes_default_apache" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then apache=${!rp} ; else apache=""; fi
+rp="recipes_default_dbuser" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbuser=${!rp} ; else dbuser=""; fi
+rp="recipes_default_profile" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then profile=${!rp} ; else profile=""; fi
+rp="recipes_default_db" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then db=${!rp} ; else db=""; fi
+rp="recipes_default_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbpass=${!rp} ; else dbpass=""; fi
+rp="recipes_default_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; else uri=""; fi
+
+sn=$1
+uri="$sn.$folder"
+private="/home/$user/$folder/$sn/private"
+# Collect the details from oc.yml if they exist otherwise make blank
 rp="recipes_${sn}_project" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; fi
 rp="recipes_${sn}_dev" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev=${!rp} ; fi
 rp="recipes_${sn}_webroot" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then webroot=${!rp} ; fi
 rp="recipes_${sn}_sitename" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sitename=${!rp} ; fi
-rp="recipes_${sn}_auto" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then auto=${!rp} ; fi
+rp="recipes_${sn}_auto" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then auto=${!rp} ;  fi
 rp="recipes_${sn}_apache" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then apache=${!rp} ; fi
 rp="recipes_${sn}_dbuser" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbuser=${!rp} ; fi
 rp="recipes_${sn}_profile" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then profile=${!rp} ; fi
-rp="recipes_${sn}_db" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then db=${!rp} ; fi
+rp="recipes_${sn}_db" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then db=${!rp} ;  fi
 rp="recipes_${sn}_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbpass=${!rp} ; fi
 rp="recipes_${sn}_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; fi
+
+if [ "$db" == "" ] ; then db="$sn$folder" ; fi
+if [ "$dbuser" == "" ] ; then dbuser=$db ; fi
+if [ "$dbpass" == "" ] ; then dbpass=$dbuser ;fi
+
 }
 
 parse_oc_yml () {
@@ -40,6 +60,7 @@ recipes=${recipes#","}
 storesn=$sn
 
 #Collect the drush location: messy but it works!
+# This command might list some warnings. It is a bug with drush: https://github.com/drush-ops/drush/issues/3226
 drush status > drush.tmp
 dline=$(awk 'match($0,v){print NR; exit}' v="Drush script" drush.tmp)
 dlinec=$(sed "${dline}q;d" drush.tmp)
@@ -126,8 +147,10 @@ set_site_permissions () {
 # $webroot
 
 cd
-echo -e "\e[34msetting correct permissions on $sn - will require sudo password\e[39m"
-chown $user:www-data opencat -R
+echo -e "\e[34msetting correct permissions on $sn - may require sudo password\e[39m"
+echo "user: $user folder $folder webroot $webroot"
+chown $user:www-data $folder/$sn -R
+
 ./$folder/scripts/d8fp.sh --drupal_path="$folder/$sn/$webroot" --drupal_user=$user
 chmod g+w $folder/$sn/private -R
 }
@@ -140,57 +163,33 @@ restore_db () {
 # $dbpass
 echo "restore db start"
 result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "use $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-# result 1 if error
-echo "res >$result<"
 if [ "$result" != ": 0" ]
  then
   echo "The database $db does not exist. I will try to create it."
-
   if ! mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; then
-  # This script actually just tries to create the user since the database will be created later anyway.
-  echo "Unable to create the database $db. Check the mysql root credentials in mysql.cnf"
-  exit 1
+    # This script actually just tries to create the user since the database will be created later anyway.
+    echo "Unable to create the database $db. Check the mysql root credentials in mysql.cnf"
+    exit 1
+    else
+    echo "Database $db created."
+  fi
   else
+  echo "Database $db exists so I will drop it."
+  result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "DROP DATABASE $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+  if [ "$result" = ": 0" ]; then echo "Database $db dropped"; else echo "Could not drop database $db: exiting"; exit 1; fi
+  result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+  if [ "$result" = ": 0" ]; then echo "Created database $db using user root"; else echo "Could not create database $db using user root, exiting"; exit 1; fi
+fi
+
   result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE USER $dbuser@localhost IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-  if [ "$result" = ": 0" ]; then echo "Created user $dbuser"; else echo "Could not create user $dbuser"; fi
+  if [ "$result" = ": 0" ]; then echo "Created user $dbuser"; else echo "User $dbuser already exists"; fi
   result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES ON $db.* TO '"$dbuser"'@'localhost' IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
   if [ "$result" = ": 0" ]; then echo "Granted user $dbuser permissions on $db"; else echo "Could not grant user $dbuser permissions on $db"; fi
-  fi
-  else
-  echo "Database $db exits"
-fi
 
-echo -e "\e[34mdrop current database\e[39m"
-result=$(mysql --defaults-extra-file="$folderpath/$sn.mysql" -e "DROP DATABASE $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-if [ "$result" != ": 0" ]
-then
-echo "Could not drop $db using user $dbuser"
-# Might not have user or credentials
-echo "adding credentials"
-result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE USER $dbuser@localhost IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-if [ "$result" = ": 0" ]; then echo "Created user $dbuser  using root"; else echo "Could not create user $dbuser  using root"; fi
-
-#mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE USER $dbuser@localhost IDENTIFIED BY '"$dbpass"';"
-echo "adding permissions"
-result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES ON $db.* TO '"$dbuser"'@'localhost' IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-if [ "$result" = ": 0" ]; then echo "Granted user $dbuser permissions on $db using root"; else echo "Could not grant user $dbuser permissions on $db using root"; fi
-result=$(mysql --defaults-extra-file="$folderpath/$sn.mysql" -e "DROP DATABASE $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-  if [ "$result" != ": 0" ]
-  then
-  echo "Could not drop database $db using user $dbuser."
-  fi
-else
-  echo "Dropped database $db using root"
-fi
-echo -e "\e[34mrecreate database\e[39m"
-result=$(mysql --defaults-extra-file="$folderpath/$sn.mysql" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-if [ "$result" = ": 0" ]; then echo "Created database $db using user $dbuser"; else echo "Could not create database $db using user $dbuser"; fi
-#mysql --defaults-extra-file="$folderpath/$sn.mysql" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;";
-echo -e "\e[34mrestore stg database using $folderpath/sitebackups/$bk/$Name\e[39m"
+echo -e "\e[34mrestore $db database using $folderpath/sitebackups/$bk/$Name\e[39m"
 result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" $db < "$folderpath/sitebackups/$bk/$Name" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-if [ "$result" = ": 0" ]; then echo "Backup database $Name imported into database $db using $dbuser"; else echo "Could not import $Name into database $db using $dbuser"; fi
+if [ "$result" = ": 0" ]; then echo "Backup database $Name imported into database $db using root"; else echo "Could not import $Name into database $db using root, exiting"; exit 1; fi
 
-#mysql --defaults-extra-file="$folderpath/mysql.cnf" $db < "$folderpath/sitebackups/$bk/$Name"
 }
 
 test_site () {
@@ -199,6 +198,7 @@ echo $sn, $db, $dbuser, $dbpass
 
 db_defaults () {
 # Database defaults
+echo "db defaults: db $db dbuser $dbuser dbpass $dbpass"
 if [ -z ${db+x} ]
 then
     db="$sn$folder"
@@ -211,6 +211,7 @@ if [ -z ${dbpass+x} ]
 then
     dbpass=$dbuser
 fi
+echo "db defaults: db $db dbuser $dbuser dbpass $dbpass"
 }
 
 site_info () {

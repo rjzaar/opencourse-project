@@ -12,40 +12,23 @@ print_help() {
 cat <<-HELP
 This script is used to install a variety of drupal flavours particularly opencourse
 This will use opencourse-project as a wrapper. It is presumed you have already cloned opencourse-project.
-you can provide the following arguments:
-
--r|--rebuild 	The database will be dumped, recreated and rebuilt.
--g|--git	This will do a git install, otherwise composer will be used.
--p=*|--project=* give a composer install, eg rjzaar/opencourse:8.7.x-dev
--pr=*|--profile=* The profile to be installed
--d|--dev	Development setup. Otherwise a non-dev installation will occur.
--au|--auto	Answer all prompts with yes.
--w=*|--webroot=* Give the site folder name, otherwise the standard one will be used, eg opencourse/docroot, d8/web, social/html.
--a=*|--address=*|uri=* What is the localwebserver url? This will automatically open it up once the script completes.
--n|--nodownload This is a subchoice of install, where it is presumed the download has already occurred and so it picks up install at that point.
--db|--database Database name. If no database name is given then the foldername is used.
--dbuser|--databaseuser Database user name. If no username is given then the username is the same as the database name.
--dbpass|--databasepassword Database password If no password is given then the password is the same as the username.
--sn|--sitename This is the site name, eg dev. The url will be sn.folder, eg dev.oc, unless address is specified.
--ap|--apache This will set up apache and hosts infrastructure based on your settings
-
-"site" Any site name that is made up of letters and numbers only.
-WARNING: if you overwrite an option in the recipe, it will not be saved in the recipe.
-
+You just need to specify the site name as a single argument.
+All the settings for that site are in oc.yml
+If no site name is given then the default site is created.
 
 HELP
 exit 0
 }
 
-auto="y"
-folder=$(basename $(dirname $script_root))
-webroot="docroot" # or could be web or html
-project="rjzaar/opencourse:8.7.x-dev"
-# For a private setup, either it is a test setup which means private is in the usual location <site root>/site/default/files/private or
-# there is a proper setup with opencat, which means private is as below. $secure is the switch, so if $secure and
-sn="dev"
-profile="varbase"
-dev="y"
+#auto="y"
+#folder=$(basename $(dirname $script_root))
+#webroot="docroot" # or could be web or html
+#project="rjzaar/opencourse:8.7.x-dev"
+## For a private setup, either it is a test setup which means private is in the usual location <site root>/site/default/files/private or
+## there is a proper setup with opencat, which means private is as below. $secure is the switch, so if $secure and
+#sn="dev"
+#profile="varbase"
+#dev="y"
 
 parse_oc_yml
 
@@ -54,6 +37,10 @@ parse_oc_yml
 for f in $recipes_ ; do recipes="$recipes,${f#*_}" ; done
 recipes=${recipes#","}
 
+if [ "$#" = 0 ]
+then
+sn="default"
+else
 # Check to see if recipe is present
 # Get the sitename
 for i in "$@"
@@ -66,104 +53,16 @@ case $i in
     ;;
 esac
 done
-
+echo "Looking for recipe $sn"
 if [[ $recipes != *"$sn"* ]]
 then
-echo "No recipe! For now aborting. Could in future add the details."
-exit 1
+echo "No recipe for $sn! Current recipes include $recipes. Please add a recipe to oc.yml for $sn"
+fi
 fi
 
 import_site_config $sn
 
-
-
-#Field_Separator=$IFS
-## set comma as internal field separator for the string list
-#IFS=,
-#for val in $recipes;
-#do
-#echo ">$val<"
-#done
-#IFS=$Field_Separator
-
-if [ "$#" = 0 ]
-then
-print_help
-exit 1
-fi
-for i in "$@"
-do
-case $i in
-    -p=*|--project=*)
-    $project="${i#*=}"
-    shift # past argument=value
-    ;;
-    -pr=*|--profile=*)
-    $profile="${i#*=}"
-    shift # past argument=value
-    ;;
-    -d|--dev)
-    dev="y"
-    shift # past argument=value
-    ;;
-    -au|--auto)
-    auto="y"
-    shift # past argument=value
-    ;;
-    -w=*|--webroot=*)
-    $webroot="${i#*=}"
-    shift # past argument=value
-    ;;
-    -u=*|--user=*)
-    user="${i#*=}"
-    shift # past argument=value
-    ;;
-    -a=*|--address=*|uri=*)
-    $uri="${i#*=}"
-    shift # past argument=value
-    ;;
-    -db=*|--database=*)
-    db="${i#*=}"
-    shift # past argument=value
-    ;;
-    -dbuser=*|--databaseuser=*)
-    dbuser="${i#*=}"
-    shift # past argument=value
-    ;;
-    -dbpass=*|--databasepassword=*)
-    dbpass="${i#*=}"
-    shift # past argument=value
-    ;;
-    -sn=*|--sitename=*)
-    $sn="${i#*=}"
-    shift # past argument=value
-    ;;
-    -ap|--apache)
-    apache="y"
-    shift # past argument=value
-    ;;
-    -h|--help) print_help;;
-    *)
-    case $i in
-        *[^[:alnum:]]*)
-            printf "***************************\n"
-            printf "* Error: Invalid argument *\n"
-            printf "***************************\n"
-            print_help
-            exit 1
-        ;;
-            *)
-            sn=$i
-        ;;
-    esac
-    ;;
-esac
-done
-
-private="/home/$user/$folder/$sn/private"
-uri="$sn.$folder"
-
-db_defaults
+#db_defaults
 
 echo "Installing $sn"
 echo "About to install:"
