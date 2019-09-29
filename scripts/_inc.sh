@@ -10,7 +10,6 @@ whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} 
 import_site_config () {
 # setup basic defaults
 sn=$1
-uri="$sn.$folder"
 private="/home/$user/$folder/$sn/private"
 
 # First load the defaults
@@ -24,7 +23,7 @@ rp="recipes_default_dbuser" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbuser=${!
 rp="recipes_default_profile" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then profile=${!rp} ; else profile=""; fi
 rp="recipes_default_db" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then db=${!rp} ; else db=""; fi
 rp="recipes_default_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbpass=${!rp} ; else dbpass=""; fi
-rp="recipes_default_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; else uri=""; fi
+rp="recipes_default_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; else uri="$folder.$sn"; fi
 rp="recipes_default_install_method" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_method=${!rp} ; else install_method=""; fi
 rp="recipes_default_git_upstream" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then git_upstream=${!rp} ; else git_upstream=""; fi
 rp="recipes_default_theme" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme=${!rp} ; else theme=""; fi
@@ -155,7 +154,7 @@ import_site_config $site
 cat >> $user_home/.drush/$folder.aliases.drushrc.php <<EOL
 \$aliases['$site'] = array (
   'root' => '$folderpath/$site/$docroot',
-  'uri' => 'http://$site.$folder',
+  'uri' => 'http://$folder.$site',
   'path-aliases' =>
   array (
     '%drush' => '$drushloc',
@@ -277,17 +276,67 @@ chmod g+w $folder/$sn/private -R
 chmod g+w $folder/$sn/cmi -R
 }
 
-#rebuild_site () {
-##This will delete current site database and rebuild it
-## Persumes the following information is set
-## $user
-## $folder
-## $sn
-## $webroot
-#
-#
-#
-#}
+
+
+rebuild_site () {
+#This will delete current site database and rebuild it
+# Persumes the following information is set
+# $user
+# $folder
+# $sn
+# $webroot
+#etc
+
+
+echo "Build the drupal site $sn, ie builds the database for the site."
+# drush status
+# drupal site:install  varbase --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
+drush @$sn -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sn"
+#don''t need --db-url=mysql://$dir:$dir@localhost:3306/$dir in drush because the settings.local.php has it.
+
+#sudo bash ./d8fp.sh --drupal_path=$folder/$webroot --drupal_user=$user #shouldn't need this, since files don't need to be changed.
+#chmod g+w -R $folder/$webroot/modules/custom
+
+#drush en -y oc_theme
+#for some reason does not set it as default!
+if [ $theme != "" ]
+then
+echo "Install theme for $sn"
+drupal --target=$uri theme:install  $theme --set-default
+drush @$sn config-set system.theme default $theme -y
+fi
+#drush cr #is this needed here?
+drush @$sn cr
+
+###
+
+#  if [ "$dev" = "y" ]
+#  then
+#  drush en -y oc_dev
+#  #uninstall the wrapper. Will leave all dependencies installed.
+#  drush pm-uninstall -y oc_dev
+#  else
+#  drush en -y oc_prod
+#  fi
+
+if [ $install_modules != "" ]
+then
+echo "Install modules for $sn"
+drush @$sn en -y $install_modules
+fi
+
+#drush pm-uninstall -y oc_prod
+
+if [ $dev = "y" ]
+then
+echo "Setting to dev mode"
+drupal --target=$uri site:mode dev
+drush php-eval 'node_access_rebuild();'
+else
+drupal --target=$uri site:mode prod
+fi
+}
+
 restore_db () {
 #presumes that the correct information is already set
 # $Name backup sql file
@@ -360,4 +409,7 @@ echo "Database = $db"
 echo "Database user = $dbuser"
 echo "Database password = $dbpass"
 echo "Install method = $install_method"
+echo "git_upstream = $git_upstream"
+echo "theme = $theme"
+echo "install_modules = $install_modules"
 }

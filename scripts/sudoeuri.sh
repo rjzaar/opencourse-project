@@ -48,12 +48,12 @@ fi
 folderpath=$(dirname $script_root)
 folder=$(basename $(dirname $script_root))
 web_root=$(dirname $folderpath)
-site_url="$sn.$folder"
+site_url="$folder.$sn"
 relative_doc_root="$folder/$sn/$docroot"
 
 # construct absolute path
 absolute_doc_root="$web_root/$relative_doc_root"
-echo "Site URL: $sn.$folder"
+echo "Site URL: $folder.$sn"
 echo "Site docroot: $absolute_doc_root"
 
 # update vhost
@@ -87,7 +87,7 @@ echo "Enabling site in Apache..."
 echo `a2ensite $site_url`
 
 echo "Restarting Apache..."
-echo `/etc/init.d/apache2 restart`
+echo `service apache2 restart`
 
 echo "Process complete, check out the new site at http://$site_url"
 

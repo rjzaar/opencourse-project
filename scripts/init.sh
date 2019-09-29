@@ -2,6 +2,11 @@
 
 # This will set up drop and initialise the sites as per oc.yml, including the current production shared database.
 
+# TODO?
+# install drupal console: run in user home directory:
+# composer require drupal/console:~1.0 --prefer-dist --optimize-autoloader
+
+
 # Helper functions to get the abolute path for the command
 # Copyright http://stackoverflow.com/a/7400673/257479
 myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -ld -- "$1")" : '.*-> \(.*\)$')"; cd $(dirname $1); myreadlink "$link" | sed "s|^\([^/].*\)\$|$(dirname $1)/\1|"); }
@@ -31,5 +36,5 @@ password = root
 host = localhost
 EOL
 
-
+#Could check install of drush, drupal console, etc.
 

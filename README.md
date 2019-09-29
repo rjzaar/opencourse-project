@@ -177,3 +177,8 @@ This is used to update opencourse to the latest varbase release.
 #overwritestg2prod
 this script will overwrite the production site with stg. All data on production will be lost. 
 This is good for a first setup of production.
+
+
+#todo
+Remove on longer needed config, eg site.mysql files.
+Could add drupal console config file ~/.console/config.yml
