@@ -8,6 +8,11 @@ whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- 
 whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
 import_site_config () {
+# setup basic defaults
+sn=$1
+uri="$sn.$folder"
+private="/home/$user/$folder/$sn/private"
+
 # First load the defaults
 rp="recipes_default_project" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; else project=""; fi
 rp="recipes_default_dev" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev=${!rp} ; else dev=""; fi
@@ -20,10 +25,9 @@ rp="recipes_default_profile" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then profile=$
 rp="recipes_default_db" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then db=${!rp} ; else db=""; fi
 rp="recipes_default_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbpass=${!rp} ; else dbpass=""; fi
 rp="recipes_default_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; else uri=""; fi
+rp="recipes_default_install_method" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_method=${!rp} ; else install_method=""; fi
+rp="recipes_default_git_upstream" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then git_upstream=${!rp} ; else git_upstream=""; fi
 
-sn=$1
-uri="$sn.$folder"
-private="/home/$user/$folder/$sn/private"
 # Collect the details from oc.yml if they exist otherwise make blank
 rp="recipes_${sn}_project" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; fi
 rp="recipes_${sn}_dev" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev=${!rp} ; fi
@@ -36,6 +40,8 @@ rp="recipes_${sn}_profile" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then profile=${!
 rp="recipes_${sn}_db" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then db=${!rp} ;  fi
 rp="recipes_${sn}_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbpass=${!rp} ; fi
 rp="recipes_${sn}_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; fi
+rp="recipes_${sn}_install_method" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; fi
+rp="recipes_${sn}_git_upstream" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then git_upstream=${!rp} ; fi
 
 if [ "$db" == "" ] ; then db="$sn$folder" ; fi
 if [ "$dbuser" == "" ] ; then dbuser=$db ; fi
@@ -127,6 +133,77 @@ echo "?>" >> "$user_home/.drush/$folder.aliases.drushrc.php"
 sn=$storesn
 }
 
+fix_site_settings () {
+# This will fix the site settings
+# Presumes the following information is set
+# $user
+# $folder
+# $sn
+# $webroot
+# $folderpath
+
+# Check that settings.php has reference to local.settings.php
+if [ ! -f "$folderpath/$sn/$webroot/sites/default/settings.php" ]
+then
+cp "$folderpath/$sn/$webroot/sites/default/default.settings.php" "$folderpath/$sn/$webroot/sites/default/settings.php"
+fi
+
+sfile=$(<"$folderpath/$sn/$webroot/sites/default/settings.php")
+if [[ $sfile =~ (\{[[:space:]]*include) ]]
+then
+echo "settings.php is correct"
+else
+echo "settings.php: added reference to settings.local.php"
+cat >> $folderpath/$sn/$webroot/sites/default/settings.php <<EOL
+ if (file_exists(\$app_root . '/' . \$site_path . '/settings.local.php')) {
+       include \$app_root . '/' . \$site_path . '/settings.local.php';
+    }
+
+EOL
+fi
+
+
+cat > $folderpath/$sn/$webroot/sites/default/settings.local.php <<EOL
+<?php
+
+\$settings['install_profile'] = '$profile';
+\$settings['file_private_path'] =  '../private';
+\$databases['default']['default'] = array (
+  'database' => '$db',
+  'username' => '$dbuser',
+  'password' => '$dbpass',
+  'prefix' => '',
+  'host' => 'localhost',
+  'port' => '3306',
+  'namespace' => 'Drupal\Core\Database\Driver\mysql',
+  'driver' => 'mysql',
+);
+\$config_directories[CONFIG_SYNC_DIRECTORY] = '../cmi';
+EOL
+if [ "$dev" == "y" ]
+then
+cat >> $folderpath/$sn/$webroot/sites/default/settings.local.php <<EOL
+\$settings['container_yamls'][] = DRUPAL_ROOT . '/sites/development.services.yml';
+\$settings['cache']['bins']['render'] = 'cache.backend.null';
+\$settings['cache']['bins']['dynamic_page_cache'] = 'cache.backend.null';
+\$config['config_split.config_split.config_dev']['status'] = TRUE;
+EOL
+fi
+echo "Added local.settings.php to $sn"
+
+# Make sure the hash is present so drush sql will work.
+sfile=$(<"$folderpath/$sn/$webroot/sites/default/settings.php")
+slfile=$(<"$folderpath/$sn/$webroot/sites/default/settings.local.php")
+if [[ ! $sfile =~ (\'hash_salt\'\] = \') ]]
+then
+if [[ ! $slfile =~ (\'hash_salt\'\] = \') ]]
+then
+  hash=$(drush php-eval 'echo \Drupal\Component\Utility\Crypt::randomBytesBase64(55)')
+echo "\$settings['hash_salt'] = '$hash';" >> "$folderpath/$sn/$webroot/sites/default/settings.local.php"
+fi
+fi
+
+}
 ocmsg () {
 if [ "$#" = 0 ]
 then
@@ -138,7 +215,7 @@ fi
 
 set_site_permissions () {
 # This will set the correct permissions
-# Persumes the following information is set
+# Presumes the following information is set
 # $user
 # $folder
 # $sn
@@ -153,6 +230,17 @@ chmod g+w $folder/$sn/private -R
 chmod g+w $folder/$sn/cmi -R
 }
 
+rebuild_site () {
+#This will delete current site database and rebuild it
+# Persumes the following information is set
+# $user
+# $folder
+# $sn
+# $webroot
+
+
+
+}
 restore_db () {
 #presumes that the correct information is already set
 # $Name backup sql file
@@ -224,4 +312,5 @@ echo "Private folder = $private"
 echo "Database = $db"
 echo "Database user = $dbuser"
 echo "Database password = $dbpass"
+echo "Install method = $install_method"
 }

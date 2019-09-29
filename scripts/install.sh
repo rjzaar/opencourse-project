@@ -65,190 +65,83 @@ import_site_config $sn
 #db_defaults
 
 echo "Installing $sn"
-echo "About to install:"
 site_info
-echo
 
-exit 1
-install="y"
-
-if [ "$install" = "y" ]
-then
-    echo "Installing ..."
-    if [ "$nodown" = "n" ]
-    then
-        echo "Downloading ... (nodown = n)"
-        if [ "$auto" != "y" ]
-        then
-        read -p "Do you want to delete the folder $folder if it exists (y/n/c)" question
+# Check to see if folder already exits.
+if [ -d "$folderpath/$sn" ]; then
+    read -p "$sn exists. If you proceed, $sn will first be deleted. Do you want to proceed?(Y/n)" question
         case $question in
             n|c|no|cancel)
             echo exiting immediately, no changes made
             exit 1
             ;;
-
         esac
-        fi
+    rm -rf $sn
+fi
 
-        echo "Move to opencourse-project folder"
-        cd
-        cd $sn
-        echo "remove $folder: May need sudo password."
-        sudo rm -rf $folder
-        #if [ "$cat" = "y" ]
-        #then
-        #    rm -rf opencat
-        #fi
+if [ "$install_method" = "git" ]
+then
+    echo "Adding git credentials"
+     ssh-add /home/$user/.ssh/$github_key
+     cd $folderpath
+     git clone $project $sn
 
-        #set group so file permissions are correct.
-        #echo "set group to www-data"
-        #newgrp www-data
-        echo "Checking for git"
-        if [ "$git" = "y" ]
-        then
-            echo "Adding git credentials"
-             ssh-add /home/$user/.ssh/github
-            echo "Cloning  git project: $gproject"
-
-             git clone $gproject $folder
-
-            echo "move to project folder $folder"
-            cd
-            cd $sn/$folder/
-            if [ "$folder" = "opencourse" ]
-            then
-                echo "Opencouse so add upstream varbase-project.git"
-             git remote add upstream git@github.com:Vardot/varbase-project.git
-            fi
-            echo "Run composer install"
-            composer install
-        else
-            if [ "$dev" = "y" ]
-            then
-                echo "Setting composer install to dev."
-                devs="--stability dev"
-            else
-                devs=""
-            fi
-
-            echo "Run composer create project: $project"
-             composer create-project $project $folder $devs --no-interaction
-        fi
-
-        # Add opencourse git if you are going to override the upstream with new version...?
-        # this needs a lot or checking out....
-        if [ "$cat" = "y" ]
-        then
-            cd
-            cd $sn/$folder
-            echo "initialising and adding git to opencourse"
-            git init
-            git remote add origin git@github.com:rjzaar/opencourse.git
-            git fetch
-            git reset origin/8.7.x  # this is required if files in the non-empty directory are in the repo
-            git checkout -t origin/8.7.x
-            git status
-            if [ $? -eq 0 ]; then
-             echo Good status
-            else
-             echo bad status
-            fi
-            git diff
-            read -p "Do you want to (a)bort, (p)ush current status to remote, or (o)veride with remote or (c)ontinue (a/p/o/c)" question
-            case $question in
-                a)
-                echo aborting
-                exit 1
-                ;;
-                p)
-                echo push current to opencourse git remote
-                git add .
-                git commit -m "Adding current files from opencat."
-                git push
-                ;;
-                o)
-                echo overriding current with opencourse git remote
-                git fetch --all
-                git reset --hard origin/8.7.x
-                ;;
-                *)
-                echo Continuing ...
-                ;;
-            esac
-             git remote add upstream git@github.com:Vardot/varbase.git
-             cd
-            sudo chown $user:www-data -R $sn
-            cd $sn/$folder
-            echo "Composer install"
-             composer install
-
-        fi
+    echo "move to project folder $folder"
+    if [ "$git_upstream" != "" ]
+    then
+      cd $folderpath/$sn
+      echo "$sn has upstream git so adding $git_upstream"
+      git remote add upstream $git_upstream
     fi
-    #end of nodown can now continue to install
-    echo "change file permissions add www-data as group"
-    cd
-    sudo chown $user:www-data -R $sn
 
-	echo "patch .htaccess"
-    sed -i '4iOptions +FollowSymLinks' $sn/$folder/$webroot/.htaccess
-    echo "install site"
-    cd $sn/$folder/$webroot
-
-    #set up settings.local.php so drush won''t add database connections to settings.php
-    echo "create settings.local.php"
-    cd sites/default
-    cp default.settings.php settings.php
-
-     echo " if (file_exists(\$app_root . '/' . \$site_path . '/settings.local.php')) {
-       include \$app_root . '/' . \$site_path . '/settings.local.php';
-    }" >> settings.php
-
+elif [ "$install_method" = "composer" ]
+    then
     if [ "$dev" = "y" ]
     then
-        devp="\$settings['container_yamls'][] = DRUPAL_ROOT . '/sites/development.services.yml';
-              \$settings['cache']['bins']['render'] = 'cache.backend.null';
-              \$settings['cache']['bins']['dynamic_page_cache'] = 'cache.backend.null';
-              \$config_directories[CONFIG_SYNC_DIRECTORY] = '../cmi';"
+        echo "Setting composer install to dev."
+        devs="--stability dev"
     else
-        devp=""
-    fi
-    if [ "$secure" = "y" ]
-        then
-        secures="\$settings['file_private_path'] =  '$private';"
-        # Create private files directory.
-        echo "Create private files directory"
-        if [ ! -d $private ]; then
-          mkdir $private
-        fi
-        chmod 770 -R $private
-        chown $user:www-data -R $private
+        devs=""
     fi
 
-     echo "<?php
+    echo "Run composer create project: $project"
+     composer create-project $project $sn $devs --no-interaction
+elif [ "$install_method" = "file" ]
+    then
+    if [ ! -d "$folderpath/downloads" ]
+    then
+    mkdir "$folderpath/downloads"
+    fi
+    cd "$folderpath/downloads"
+    Name="$sn.tar.gz"
+    wget -O $Name $project
+    tar -xf $Name -C "$folderpath/$sn"
 
-    \$settings['install_profile'] = '$profile';
-    $secures
-    \$databases['default']['default'] = array (
-      'database' => '$db',
-      'username' => '$dbuser',
-      'password' => '$dbpass',
-      'prefix' => '',
-      'host' => 'localhost',
-      'port' => '3306',
-      'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
-      'driver' => 'mysql',
-    );
-    $devp
-    " > settings.local.php
-    cd
-    dpath="/home/$user/$sn/$folder/$webroot"
-    echo "drupal path $dpath"
-	echo "Fixing permissions requires sudo password."
-    sudo bash ./$sn/scripts/d8fp.sh --drupal_user=$user --drupal_path=$dpath
-    #chmod g+w -R $sn/$folder/$webroot/modules/custom
-
-
+    else
+    echo "No install method specified. You need to at least edit the default recipe in oc.yml and specify \"install_method\"."
+    exit 1
+    fi
 fi
+
+cd $folderpath/$sn
+
+composer install
+
+fix_site_settings
+
+echo "Create private files directory"
+if [ ! -d $private ]; then
+  mkdir $private
+fi
+chmod 770 -R $private
+
+set_site_permissions
+
+
+echo "install site"
+cd $sn/$folder/$webroot
+
+exit 0
 #
 
 #Drop database  # Not needed since drush install will drop and recreate the database anyway.

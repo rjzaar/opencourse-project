@@ -71,10 +71,8 @@ select opt in "${options[@]}" "Quit" ; do
 done
 
 
-#restore files
-cd
-cd "$folder"
-if [ -d "$sn" ]; then
+# Check to see if folder already exits.
+if [ -d "$folderpath/$sn" ]; then
     read -p "$sn exists. If you proceed, $sn will first be deleted. Do you want to proceed?(Y/n)" question
         case $question in
             n|c|no|cancel)
@@ -87,12 +85,12 @@ fi
 
 echo -e "\e[34mrestoring files\e[39m"
 # Will need to first move the source folder if it exists, etc.
-if [ -d "$bk" ]; then
-    mv "$bk" "$bk.tmp"
+if [ -d "$folderpath/$bk" ]; then
+    mv "$folderpath/$bk" "$folderpath/$bk.tmp"
     echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz"
     tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz"
-    mv "$bk" "$sn"
-    mv "$bk.tmp" "$bk"
+    mv "$folderpath/$bk" "$folderpath/$sn"
+    mv "$folderpath/$bk.tmp" "$folderpath/$bk"
     else
     tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz"
 fi
