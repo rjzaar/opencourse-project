@@ -27,6 +27,8 @@ rp="recipes_default_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbpass=${!
 rp="recipes_default_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; else uri=""; fi
 rp="recipes_default_install_method" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_method=${!rp} ; else install_method=""; fi
 rp="recipes_default_git_upstream" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then git_upstream=${!rp} ; else git_upstream=""; fi
+rp="recipes_default_theme" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme=${!rp} ; else theme=""; fi
+rp="recipes_default_install_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_modules=${!rp} ; else install_modules=""; fi
 
 # Collect the details from oc.yml if they exist otherwise make blank
 rp="recipes_${sn}_project" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; fi
@@ -42,6 +44,8 @@ rp="recipes_${sn}_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbpass=${!rp
 rp="recipes_${sn}_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; fi
 rp="recipes_${sn}_install_method" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; fi
 rp="recipes_${sn}_git_upstream" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then git_upstream=${!rp} ; fi
+rp="recipes_${sn}_theme" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme=${!rp} ; fi
+rp="recipes_${sn}_install_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_modules=${!rp} ; fi
 
 if [ "$db" == "" ] ; then db="$sn$folder" ; fi
 if [ "$dbuser" == "" ] ; then dbuser=$db ; fi
@@ -52,8 +56,19 @@ if [ "$dbpass" == "" ] ; then dbpass=$dbuser ;fi
 parse_oc_yml () {
 # Import yaml
 # presumes $script_root is set
+# $userhome
+update_config="n"
 
 . $script_root/scripts/parse_yaml.sh "oc.yml" $script_root
+
+if [ $update_config == "y" ]
+then
+update_all_configs
+fi
+
+}
+
+update_all_configs () {
 
 # Update all database credentials in case the user changed any.
 # Create a list of recipes
@@ -63,9 +78,34 @@ recipes=${recipes#","}
 # Store the site name to restore it later
 storesn=$sn
 
+# Setup drupal console if it is installed.
+drupalconsole="y"
+
+# Create drupal console file
+if [ ! -d "$user_home/.console" ]
+then
+echo "Drupal console is not installed."
+drupalconsole="n"
+else
+if [ ! -d $user_home/.console/sites ]
+then
+mkdir $user_home/.console/sites
+fi
+fi
+# Clear current file
+echo "$user_home/.console/sites/$folder.yml"
+echo "" > "$user_home/.console/sites/$folder.yml"
+
 #Collect the drush location: messy but it works!
 # This command might list some warnings. It is a bug with drush: https://github.com/drush-ops/drush/issues/3226
+echo $folderpath/drush.tmp
+if [[ $folderpath/drush.tmp =~ (@dev) ]] ;
+then
 drush @dev status > "$folderpath/drush.tmp"
+else
+drush status > "$folderpath/drush.tmp"
+fi
+
 dline=$(awk 'match($0,v){print NR; exit}' v="Drush script" "$folderpath/drush.tmp")
 dlinec=$(sed "${dline}q;d" "$folderpath/drush.tmp")
 dlined="/$(echo "${dlinec#*/}")"
@@ -122,6 +162,13 @@ cat >> $user_home/.drush/$folder.aliases.drushrc.php <<EOL
     '%site' => 'sites/default/',
   ),
 );
+EOL
+
+#Now add drupal console aliases.
+cat >> $user_home/.console/sites/$folder.yml <<EOL
+$sn:
+  root: $folderpath/$sn
+  type: local
 EOL
 
 done
@@ -230,17 +277,17 @@ chmod g+w $folder/$sn/private -R
 chmod g+w $folder/$sn/cmi -R
 }
 
-rebuild_site () {
-#This will delete current site database and rebuild it
-# Persumes the following information is set
-# $user
-# $folder
-# $sn
-# $webroot
-
-
-
-}
+#rebuild_site () {
+##This will delete current site database and rebuild it
+## Persumes the following information is set
+## $user
+## $folder
+## $sn
+## $webroot
+#
+#
+#
+#}
 restore_db () {
 #presumes that the correct information is already set
 # $Name backup sql file

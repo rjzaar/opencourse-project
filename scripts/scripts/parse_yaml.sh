@@ -107,6 +107,24 @@ if [ -z "$ocy"  ]
   echo "Could not find $1. Aborting."
   exit 1
 fi
+#now find backup if it exists and set update if diff.
+ocyb=$(find "$(dirname "$2")" -name "$1.bk")
+if [ -z "$ocyb"  ]
+  then
+  cp $ocy "$ocy.bk"
+  update_config="n"
+  else
+  cmp --silent $ocy $ocyb || update_config="y"
+fi
+if [ $update_config == "y" ]
+then
+echo "Config changed, updating"
+  cp $ocy "$ocy.bk"
+else
+echo "Config not changed. Not updating."
+fi
+
+
 eval "$(parse_yaml $ocy | sed 's/~/$HOME/g')"
 
 

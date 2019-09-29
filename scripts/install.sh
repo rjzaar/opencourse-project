@@ -137,35 +137,12 @@ chmod 770 -R $private
 
 set_site_permissions
 
+echo "install drupal site $sn"
+cd $folderpath/$sn/$webroot
 
-echo "install site"
-cd $sn/$folder/$webroot
-
-exit 0
-#
-
-#Drop database  # Not needed since drush install will drop and recreate the database anyway.
-# if [ "$auto" != "y" ]
-#    then
-#    read -p "do you want to drop the database $folder if it exists (y/n/c)" question
-#    case $question in
-#        n|c|no|cancel)
-#        echo exiting immediately, no changes made
-#        exit 1
-#        ;;
-#    esac
-#    fi
-#echo "drop database"
-#mysqladmin -u $dbuser -p$dbpass -f drop $db;
-#echo "recreate database"
-#mysql -u $dbuser -p$dbpass -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
-
-cd
-cd $sn/$folder/$webroot
-echo "install drupal site"
 # drush status
 # drupal site:install  varbase --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
- drush -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$folder"
+ drush -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sn"
 #don''t need --db-url=mysql://$dir:$dir@localhost:3306/$dir in drush because the settings.local.php has it.
 
 #sudo bash ./d8fp.sh --drupal_path=$folder/$webroot --drupal_user=$user #shouldn't need this, since files don't need to be changed.
@@ -173,35 +150,35 @@ echo "install drupal site"
 
 if [ "$oc" = "y" ]
 then
-    #install all required modules
-    echo "Install modules for opencourse"
-     #drush en -y oc_theme
-	#for some reason does not set it as default!
-     drupal theme:install  oc_theme --set-default
-	drush cr
+  #install all required modules
+  echo "Install modules for opencourse"
+  #drush en -y oc_theme
+  #for some reason does not set it as default!
+  drupal theme:install  oc_theme --set-default
+  #drush cr #is this needed here?
+  drush
 
+  if [ "$dev" = "y" ]
+  then
+  drush en -y oc_dev
+  #uninstall the wrapper. Will leave all dependencies installed.
+  drush pm-uninstall -y oc_dev
+  else
+  drush en -y oc_prod
+  fi
 
-    if [ "$dev" = "y" ]
-    then
-     drush en -y oc_dev
-     #uninstall the wrapper. Will leave all dependencies installed.
-     drush pm-uninstall -y oc_dev
-    else
-     drush en -y oc_prod
-    fi
-
-    drush pm-uninstall -y oc_prod
-    cd
-    if [ "$install" = "y" ]
-    then
-    echo "fix permissions, requires sudo"
-    # This is only if the install hasn''t been run before. All files should have correct permissions.
-    sudo bash ./$folder/scripts/d8fp.sh --drupal_path=$folder/$webroot --drupal_user=$user
-    chmod g+w -R $folder/$webroot/modules/custom
-    chmod g+w $folder/private -R
-    fi
-    cd $sn/$folder/$webroot
-    drush config-set system.theme default oc_theme -y
+  drush pm-uninstall -y oc_prod
+  cd
+  if [ "$install" = "y" ]
+  then
+  echo "fix permissions, requires sudo"
+  # This is only if the install hasn''t been run before. All files should have correct permissions.
+  sudo bash ./$folder/scripts/d8fp.sh --drupal_path=$folder/$webroot --drupal_user=$user
+  chmod g+w -R $folder/$webroot/modules/custom
+  chmod g+w $folder/private -R
+  fi
+  cd $sn/$folder/$webroot
+  drush config-set system.theme default oc_theme -y
 fi
 cd
 cd $sn/$folder/$webroot
