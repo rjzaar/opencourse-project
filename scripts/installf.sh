@@ -10,7 +10,7 @@
 # Help menu
 print_help() {
 cat <<-HELP
-This script is used to install a variety of drupal flavours particularly opencourse
+This script is used to install a variety of drupal flavours particularly opencourse, but just the file system. No database.
 This will use opencourse-project as a wrapper. It is presumed you have already cloned opencourse-project.
 You just need to specify the site name as a single argument.
 All the settings for that site are in oc.yml
@@ -145,14 +145,6 @@ fi
 chmod 770 "$folderpath/$sn/cmi"
 
 set_site_permissions
-
-rebuild_site
-
-echo "Set up uri $uri. This will require sudo"
-pl sudoeuri $sn
-
-echo "Trying to go to URL $uri"
-drush uli --uri=$uri
 
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 echo

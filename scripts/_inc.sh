@@ -27,6 +27,7 @@ rp="recipes_default_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; 
 rp="recipes_default_install_method" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_method=${!rp} ; else install_method=""; fi
 rp="recipes_default_git_upstream" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then git_upstream=${!rp} ; else git_upstream=""; fi
 rp="recipes_default_theme" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme=${!rp} ; else theme=""; fi
+rp="recipes_default_theme_admin" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme_admin=${!rp} ; else theme_admin=""; fi
 rp="recipes_default_install_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_modules=${!rp} ; else install_modules=""; fi
 
 # Collect the details from oc.yml if they exist otherwise make blank
@@ -44,6 +45,7 @@ rp="recipes_${sn}_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; fi
 rp="recipes_${sn}_install_method" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; fi
 rp="recipes_${sn}_git_upstream" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then git_upstream=${!rp} ; fi
 rp="recipes_${sn}_theme" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme=${!rp} ; fi
+rp="recipes_${sn}_theme_admin" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme_admin=${!rp} ; fi
 rp="recipes_${sn}_install_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_modules=${!rp} ; fi
 
 if [ "$db" == "" ] ; then db="$sn$folder" ; fi
@@ -83,7 +85,7 @@ drupalconsole="y"
 # Create drupal console file
 if [ ! -d "$user_home/.console" ]
 then
-echo "Drupal console is not installed."
+ocmsg "Drupal console is not installed."
 drupalconsole="n"
 else
 if [ ! -d $user_home/.console/sites ]
@@ -92,12 +94,12 @@ mkdir $user_home/.console/sites
 fi
 fi
 # Clear current file
-echo "$user_home/.console/sites/$folder.yml"
+ocmsg "$user_home/.console/sites/$folder.yml"
 echo "" > "$user_home/.console/sites/$folder.yml"
 
 #Collect the drush location: messy but it works!
 # This command might list some warnings. It is a bug with drush: https://github.com/drush-ops/drush/issues/3226
-echo $folderpath/drush.tmp
+ocmsg $folderpath/drush.tmp
 if [[ $folderpath/drush.tmp =~ (@dev) ]] ;
 then
 drush @dev status > "$folderpath/drush.tmp"
@@ -130,30 +132,34 @@ cat > $user_home/.drush/$folder.aliases.drushrc.php <<EOL
 );
 EOL
 
+# Delete old credentials folder if it exists
+if [ -d $folderpath/credentials ] ; then rm $folderpath/credentials -rf ; fi
+mkdir $folderpath/credentials
+
 # Now go through each site and create settings for each site.
 Field_Separator=$IFS
 # set comma as internal field separator for the string list
 IFS=,
 for site in $recipes;
 do
-# Database defaults
-rp="recipes_${site}_db" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sdb=${!rp}; else sdb="$site$folder"; fi
-rp="recipes_${site}_dbuser" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sdbuser=${!rp}; else sdbuser=$sdb; fi
-rp="recipes_${site}_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sdbpass=${!rp}; else sdbpass=$sdbuser; fi
+  # Database defaults
+  rp="recipes_${site}_db" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sdb=${!rp}; else sdb="$site$folder"; fi
+  rp="recipes_${site}_dbuser" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sdbuser=${!rp}; else sdbuser=$sdb; fi
+  rp="recipes_${site}_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sdbpass=${!rp}; else sdbpass=$sdbuser; fi
 
-cat > $(dirname $script_root)/$site.mysql <<EOL
+  cat > $(dirname $script_root)/credentials/$site.mysql <<EOL
 [client]
 user = $sdbuser
 password = $sdbpass
 host = localhost
 EOL
 
-#Now go through and create a Drush Alias for each site
-import_site_config $site
+  #Now go through and create a Drush Alias for each site
+  import_site_config $site
 
-cat >> $user_home/.drush/$folder.aliases.drushrc.php <<EOL
+  cat >> $user_home/.drush/$folder.aliases.drushrc.php <<EOL
 \$aliases['$site'] = array (
-  'root' => '$folderpath/$site/$docroot',
+  'root' => '$folderpath/$site/$webroot',
   'uri' => 'http://$folder.$site',
   'path-aliases' =>
   array (
@@ -163,8 +169,8 @@ cat >> $user_home/.drush/$folder.aliases.drushrc.php <<EOL
 );
 EOL
 
-#Now add drupal console aliases.
-cat >> $user_home/.console/sites/$folder.yml <<EOL
+  #Now add drupal console aliases.
+  cat >> $user_home/.console/sites/$folder.yml <<EOL
 $sn:
   root: $folderpath/$sn
   type: local
@@ -175,6 +181,9 @@ IFS=$Field_Separator
 
 #Finish the Drush alias file with
 echo "?>" >> "$user_home/.drush/$folder.aliases.drushrc.php"
+
+# Now convert it to drush 9 yml
+drush sac "$user_home/.drush/sites/" -q
 
 sn=$storesn
 }
@@ -251,10 +260,9 @@ fi
 
 }
 ocmsg () {
-if [ "$#" = 0 ]
+# This is to provide extra messaging if the verbose variable in oc.yml is set to y.
+if [ "$verbose" == "y" ]
 then
-exit 0
-else
 echo $1
 fi
 }
@@ -267,13 +275,24 @@ set_site_permissions () {
 # $sn
 # $webroot
 
+#$folder works in this context because of the cd
+
 cd
 echo -e "\e[34msetting correct permissions on $sn - may require sudo password\e[39m"
-chown $user:www-data $folder/$sn -R
+result=$(chown $user:www-data $folder/$sn -R 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+if [ "$result" = ": 0" ]; then echo "Changed ownership of $sn to $user:www-data"
+else echo "Had errors changing ownership of $sn to $user:www-data so will need to use sudo"
+sudo chown $user:www-data $folder/$sn -R
+fi
 
 ./$folder/scripts/lib/d8fp.sh --drupal_path="$folder/$sn/$webroot" --drupal_user=$user
 chmod g+w $folder/$sn/private -R
 chmod g+w $folder/$sn/cmi -R
+
+if [ ! -d $folder/$sn/$webroot/modules/custom ] ; then mkdir $folder/$sn/$webroot/modules/custom ; fi
+chmod g+w $folder/$sn/$webroot/modules/custom -R
+if [ ! -d $folder/$sn/$webroot/themes/custom ] ; then mkdir $folder/$sn/$webroot/themes/custom ; fi
+chmod g+w $folder/$sn/$webroot/themes/custom -R
 }
 
 
@@ -290,20 +309,29 @@ rebuild_site () {
 
 echo "Build the drupal site $sn, ie builds the database for the site."
 # drush status
+site_info
 # drupal site:install  varbase --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
-drush @$sn -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sn"
+drush @$sn -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sn" --sites-subdir=default
 #don''t need --db-url=mysql://$dir:$dir@localhost:3306/$dir in drush because the settings.local.php has it.
 
 #sudo bash ./d8fp.sh --drupal_path=$folder/$webroot --drupal_user=$user #shouldn't need this, since files don't need to be changed.
 #chmod g+w -R $folder/$webroot/modules/custom
 
-#drush en -y oc_theme
-#for some reason does not set it as default!
+# Install any themes
 if [ $theme != "" ]
 then
-echo "Install theme for $sn"
-drupal --target=$uri theme:install  $theme --set-default
+echo "Install theme for $sn using uri $uri and theme $theme"
+cd
+cd $folderpath/$sn/$webroot
+drupal --target=$uri theme:install  $theme
 drush @$sn config-set system.theme default $theme -y
+fi
+
+if [ $theme_admin != "" ]
+then
+echo "Install theme for $sn"
+drupal --target=$uri theme:install  $theme_admin
+drush @$sn config-set system.theme admin $theme_admin -y
 fi
 #drush cr #is this needed here?
 drush @$sn cr
@@ -337,6 +365,49 @@ drupal --target=$uri site:mode prod
 fi
 }
 
+backup_site () {
+#backup db.
+#use git: https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/set-up-a-local-development-drupal-0-7
+cd
+# Check if site backup folder exists
+if [ ! -d "$folder/sitebackups/$sn" ]; then
+  mkdir "$folder/sitebackups/$sn"
+fi
+cd "$folder/$sn"
+#this will not affect a current git present
+git init
+cd "$webroot"
+Name=$(date +%Y%m%d\T%H%M%S-)`git branch | grep \* | cut -d ' ' -f2 | sed -e 's/[^A-Za-z0-9._-]/_/g'`-`git rev-parse HEAD | cut -c 1-8`$msg.sql
+
+echo -e "\e[34mbackup db $Name\e[39m"
+drush sql-dump --structure-tables-key=common --result-file="../../sitebackups/$sn/$Name"
+
+#backupfiles
+Name2=${Name::-4}".tar.gz"
+
+echo -e "\e[34mbackup files $Name2\e[39m"
+cd ../../
+tar -czf sitebackups/$sn/$Name2 $sn
+}
+
+backup_db () {
+
+#backup db.
+#use git: https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/set-up-a-local-development-drupal-0-7
+# Check if site backup folder exists
+if [ ! -d "$folderpath/sitebackups/$sn" ]; then
+  mkdir "$folderpath/sitebackups/$sn"
+fi
+cd
+cd "$folderpath/$sn"
+#this will not affect a current git present
+git init
+cd "$webroot"
+Name=$(date +%Y%m%d\T%H%M%S-)`git branch | grep \* | cut -d ' ' -f2 | sed -e 's/[^A-Za-z0-9._-]/_/g'`-`git rev-parse HEAD | cut -c 1-8`.sql
+echo -e "\e[34mbackup db $Name\e[39m"
+drush sql-dump --structure-tables-key=common --result-file="../../sitebackups/$sn/$Name"
+
+}
 restore_db () {
 #presumes that the correct information is already set
 # $Name backup sql file
@@ -411,5 +482,22 @@ echo "Database password = $dbpass"
 echo "Install method = $install_method"
 echo "git_upstream = $git_upstream"
 echo "theme = $theme"
+echo "admin theme = $theme_admin"
 echo "install_modules = $install_modules"
+}
+
+copy_site_files () {
+from=$1
+sn=$2
+echo "From $from to $sn"
+
+if [ -d $folderpath/$sn ]
+then
+chown $user:www-data $folderpath/$sn -R
+chmod +w $folderpath/$sn -R
+rm -rf $folderpath/$sn
+fi
+
+cp -rf "$folderpath/$from" "$folderpath/$sn"
+
 }

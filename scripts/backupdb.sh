@@ -20,26 +20,10 @@ print_help
 exit 1
 fi
 
-sn=$1
-folder=$(basename $(dirname $script_root))
-webroot="docroot"
 parse_oc_yml
+sn=$1
 import_site_config $sn
 
-#backup db.
-#use git: https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/set-up-a-local-development-drupal-0-7
-cd
-# Check if site backup folder exists
-if [ ! -d "$folder/sitebackups/$sn" ]; then
-  mkdir "$folder/sitebackups/$sn"
-fi
-cd "$folder/$sn"
-#this will not affect a current git present
-git init
-cd "$webroot"
-Name=$(date +%Y%m%d\T%H%M%S-)`git branch | grep \* | cut -d ' ' -f2 | sed -e 's/[^A-Za-z0-9._-]/_/g'`-`git rev-parse HEAD | cut -c 1-8`.sql
-
-echo -e "\e[34mbackup db $Name\e[39m"
-drush sql-dump --structure-tables-key=common --result-file="../../sitebackups/$sn/$Name"
+backup_db
 
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))

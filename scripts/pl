@@ -18,7 +18,7 @@ folder=$(basename $(dirname $script_root))
 folderpath=$(dirname $script_root)
 user_home=$(dirname $folderpath)
 . $script_root/_inc.sh;
-
+ocmsg "Finished initalising the defaults for pl command. Found script_root is $script_root"
 pl_run_task() {
 	local task=$1
 	local task_args="${@:2}"

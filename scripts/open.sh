@@ -10,6 +10,7 @@ if [ $1 == "open" ] && [ -z "$2" ]
 fi
 
 sn=$1
+echo "about to open $sn"
 drush @$sn uli
 
 

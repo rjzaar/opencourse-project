@@ -1,13 +1,6 @@
 #!/bin/bash
 #This will set up a new uri
-# Helper functions to get the abolute path for the command
-# Copyright http://stackoverflow.com/a/7400673/257479
-myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -ld -- "$1")" : '.*-> \(.*\)$')"; cd $(dirname $1); myreadlink "$link" | sed "s|^\([^/].*\)\$|$(dirname $1)/\1|"); }
-whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
-whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
-script_root=$(dirname $(whereis_realpath "$0"))
-echo $script_root
 # Help menu
 print_help() {
 cat <<-HELP
@@ -25,18 +18,13 @@ exit 0
 
 #start timer
 SECONDS=0
+
 if [ $1 == "sudoeuri" ] && [ -z "$2" ]
   then
     echo "No site specified"
     print_help
     exit 1
 fi
-
-. $script_root/_inc.sh;
-sn=$1
-parse_oc_yml
-import_site_config $sn
-
 # Must be sudo
 if [ $(id -u) != 0 ]; then
   printf "**************************************\n"
@@ -45,14 +33,28 @@ if [ $(id -u) != 0 ]; then
   print_help
   exit 1
 fi
-folderpath=$(dirname $script_root)
-folder=$(basename $(dirname $script_root))
-web_root=$(dirname $folderpath)
-site_url="$folder.$sn"
-relative_doc_root="$folder/$sn/$docroot"
+# Helper functions to get the abolute path for the command
+# Copyright http://stackoverflow.com/a/7400673/257479
+myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -ld -- "$1")" : '.*-> \(.*\)$')"; cd $(dirname $1); myreadlink "$link" | sed "s|^\([^/].*\)\$|$(dirname $1)/\1|"); }
+whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
+whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
+script_root=$(dirname $(whereis_realpath "$0"))
+script_root=$(dirname $(whereis_realpath "$0"))
+folder=$(basename $(dirname $script_root))
+folderpath=$(dirname $script_root)
+user_home=$(dirname $folderpath)
+. $script_root/_inc.sh;
+
+sn=$1
+
+parse_oc_yml
+import_site_config $sn
+
+site_url="$folder.$sn"
+site_info
 # construct absolute path
-absolute_doc_root="$web_root/$relative_doc_root"
+absolute_doc_root="$folderpath/$sn/$webroot"
 echo "Site URL: $folder.$sn"
 echo "Site docroot: $absolute_doc_root"
 

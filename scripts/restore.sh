@@ -84,19 +84,24 @@ if [ -d "$folderpath/$sn" ]; then
 fi
 
 echo -e "\e[34mrestoring files\e[39m"
-# Will need to first move the source folder if it exists, etc.
+# Will need to first move the source folder ($bk) if it exists, so we can create the new folder $sn
 if [ -d "$folderpath/$bk" ]; then
+    if [ -d "$folderpath/$bk.tmp" ]; then
+      echo "$folderpath/$bk.tmp exits. There might have been a problem previously. I suggest you move $folderpath/$bk.tmp to $folderpath/$bk and try again."
+      exit 1
+    fi
     mv "$folderpath/$bk" "$folderpath/$bk.tmp"
     echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz"
-    tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz"
+    tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C $folderpath
     mv "$folderpath/$bk" "$folderpath/$sn"
     mv "$folderpath/$bk.tmp" "$folderpath/$bk"
     else
-    tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz"
+    echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz  fp  $folderpath"
+    tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C $folderpath
 fi
 
 # Move settings.php and settings.local.php out the way before they are overwritten just in case you might need them.
-setpath="$folderpath/$sn/$docroot/sites/default"
+setpath="$folderpath/$sn/$webroot/sites/default"
 if [ -f "$setpath/settings.php" ] ; then mv "$setpath/settings.php" "$setpath/settings.php.old" ; fi
 if [ -f "$setpath//settings.local.php" ] ; then mv "$setpath//settings.local.php" "$setpath/settings.local.php.old" ; fi
 if [ -f "$setpath//default.settings.php" ] ; then mv "$setpath//default.settings.php" "$setpath//settings.php" ; fi
@@ -104,6 +109,7 @@ if [ -f "$setpath//default.settings.php" ] ; then mv "$setpath//default.settings
 ### do I need to deal with services.yml?
 
 . $folderpath/scripts/fixss.sh $sn
+
 
 
 set_site_permissions $sn

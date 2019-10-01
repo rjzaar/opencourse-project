@@ -180,5 +180,17 @@ This is good for a first setup of production.
 
 
 #todo
-Remove on longer needed config, eg site.mysql files.
 Could add drupal console config file ~/.console/config.yml
+
+install drush using composer: 
+composer global update
+composer global require drush/drush:^9.0.0
+
+set up drush to work with both drush 8 and 9
+https://github.com/drush-ops/drush/blob/master/examples/example.site.yml
+drush core:init
+
+
+Need sendmail installed
+
+
