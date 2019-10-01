@@ -64,6 +64,7 @@ bk="localprod"
 restore_db localprod stg
 drush @$sn cr
 
+
 #uninstall modules on stg
 echo "uninstalling $install_modules from $sn"
 drush @$sn pm-uninstall $install_modules -y
