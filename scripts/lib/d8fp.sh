@@ -28,6 +28,7 @@ exit 0
 drupal_path=${1%/}
 drupal_user=${2}
 httpd_group="${3:-www-data}"
+dev="n"
 
 # Parse Command Line Arguments
 while [ "$#" -gt 0 ]; do
@@ -41,6 +42,9 @@ while [ "$#" -gt 0 ]; do
     --httpd_group=*)
         httpd_group="${1#*=}"
         ;;
+    --dev)
+        dev="y"
+        ;;
     --help) print_help;;
     *)
       printf "***********************************************************\n"
@@ -50,7 +54,7 @@ while [ "$#" -gt 0 ]; do
   esac
   shift
 done
-
+echo "path $drupal_path user $drupal_user group $httpd_group dev $dev"
 if [ -z "${drupal_path}" ] || [ ! -d "${drupal_path}/sites" ] || [ ! -f "${drupal_path}/core/modules/system/system.module" ] && [ ! -f "${drupal_path}/modules/system/system.module" ]; then
   printf "*********************************************\n"
   printf "* Error: Please provide a valid Drupal path. *\n"
@@ -68,6 +72,12 @@ if [ -z "${drupal_user}" ] || [[ $(id -un "${drupal_user}" 2> /dev/null) != "${d
 fi
 
 cd $drupal_path
+cd ..
+chown -R ${drupal_user}:${httpd_group} .
+chmod g+w private -R
+chmod g+w cmi -R
+
+cd $drupal_path
 printf "Changing ownership of all contents of "${drupal_path}":\n user => "${drupal_user}" \t group => "${httpd_group}"\n"
 chown -R ${drupal_user}:${httpd_group} .
 
@@ -79,6 +89,7 @@ find . -type f -exec chmod u=rw,g=r,o= '{}' \;
 
 printf "Changing permissions of "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
 cd sites
+
 find . -type d -name files -exec chmod ug=rwx,o= '{}' \;
 
 printf "Changing permissions of all files inside all "files" directories in "${drupal_path}/sites" to "rw-rw----"...\n"
@@ -87,4 +98,23 @@ for x in ./*/files; do
   find ${x} -type d -exec chmod ug=rwx,o= '{}' \;
   find ${x} -type f -exec chmod ug=rw,o= '{}' \;
 done
+
+# If argument passed presume it is
+if [ $dev = "y" ]
+then
+echo "dev options actioned."
+if [ ! -d $drupal_path/modules/custom ] ; then mkdir $folder/$sn/$webroot/modules/custom ; fi
+chmod g+w $drupal_path/modules/custom -R
+if [ ! -d $drupal_path/themes/custom ] ; then mkdir $folder/$sn/$webroot/themes/custom ; fi
+chmod g+w $drupal_path/themes/custom -R
+fi
 echo "Done setting proper permissions on files and directories"
+
+
+
+
+
+
+
+
+

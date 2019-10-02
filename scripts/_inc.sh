@@ -276,25 +276,9 @@ set_site_permissions () {
 # $folder
 # $sn
 # $webroot
+if [ $dev = "y" ] ; then devp="--dev" ; fi ;
+sudo d8fp.sh --drupal_path="$folderpath/$sn/$webroot" --drupal_user=$user --httpd_group=www-data $devp
 
-#$folder works in this context because of the cd
-
-cd
-echo -e "\e[34msetting correct permissions on $sn - may require sudo password\e[39m"
-result=$(chown $user:www-data $folder/$sn -R 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-if [ "$result" = ": 0" ]; then echo "Changed ownership of $sn to $user:www-data"
-else echo "Had errors changing ownership of $sn to $user:www-data so will need to use sudo"
-sudo chown $user:www-data $folder/$sn -R
-fi
-
-./$folder/scripts/lib/d8fp.sh --drupal_path="$folder/$sn/$webroot" --drupal_user=$user
-chmod g+w $folder/$sn/private -R
-chmod g+w $folder/$sn/cmi -R
-
-if [ ! -d $folder/$sn/$webroot/modules/custom ] ; then mkdir $folder/$sn/$webroot/modules/custom ; fi
-chmod g+w $folder/$sn/$webroot/modules/custom -R
-if [ ! -d $folder/$sn/$webroot/themes/custom ] ; then mkdir $folder/$sn/$webroot/themes/custom ; fi
-chmod g+w $folder/$sn/$webroot/themes/custom -R
 }
 
 
