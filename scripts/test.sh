@@ -28,6 +28,6 @@
 #result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" localprodopencat < $Name 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 #if [ "$result" = ": 0" ]; then echo "Production database imported into database localprodopencat using root"; else echo "Could not import production database into database $db using root, exiting"; exit 1; fi
 
-sudo /home/rob/opencat/scripts/lib/installd8fp.sh "/home/rob/opencat/scripts/lib/" rob
+sudo /home/rob/opencat/scripts/lib/installd8fp.sh "/home/rob/opencat/scripts/lib/d8fp.sh" rob
 
 

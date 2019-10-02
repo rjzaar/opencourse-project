@@ -38,3 +38,6 @@ EOL
 
 #Could check install of drush, drupal console, etc.
 
+#set up d8fp to run without password
+sudo $folderpath/scripts/lib/installd8fp.sh "$folderpath/scripts/lib/d8fp.sh" $user
+
