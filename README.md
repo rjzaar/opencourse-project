@@ -179,8 +179,23 @@ this script will overwrite the production site with stg. All data on production 
 This is good for a first setup of production.
 
 
+#git commit steps for branch
+1) You create a branch
+2) You just commit your code to branch
+3) You tell the sitemaster to merge your code OR follow the following steps.
+4) Very optional: you update your local with composer update and commit branch
+5) Optional: you update your local with the upstream.
+6) Optional: you update your local with master and commit branch
+7) You update your local with master and commit master
+
+#git commit steps for master
+1) You just commit your code to master
+2) Very optional: you update master with composer update and commit branch
+3) You update master with the upstream.
+
 #todo
 Could add drupal console config file ~/.console/config.yml
+Important: go through gcom code and add parts to _inc.yml
 
 install drush using composer: 
 composer global update

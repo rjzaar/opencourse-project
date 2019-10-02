@@ -349,7 +349,7 @@ drush @$sn cr
 #  drush en -y oc_prod
 #  fi
 
-if [ $install_modules != "" ]
+if [ "$install_modules" != "" ]
 then
 echo "Install modules for $sn"
 drush @$sn en -y $install_modules
@@ -361,7 +361,8 @@ if [ $dev = "y" ]
 then
 echo "Setting to dev mode"
 drupal --target=$uri site:mode dev
-drush php-eval 'node_access_rebuild();'
+drush @$sn php-eval 'node_access_rebuild();'
+drush @$sn en -y $dev_modules
 else
 drupal --target=$uri site:mode prod
 fi
