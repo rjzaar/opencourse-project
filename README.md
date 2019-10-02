@@ -196,6 +196,7 @@ This is good for a first setup of production.
 #todo
 Could add drupal console config file ~/.console/config.yml
 Important: go through gcom code and add parts to _inc.yml
+set up sudoers properly: https://www.drupal.org/node/244924#script-based-on-guidelines-given-above
 
 install drush using composer: 
 composer global update

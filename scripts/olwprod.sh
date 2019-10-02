@@ -22,14 +22,16 @@ exit 0
 
 
 #First backup the current localprod site.
-pl backup $sn
+pl backup $sn "presync"
 
 #pull db and all files from prod
 ### going to need to fix security. settings.local.php only have hash. all other cred in settings so not shared.
-drush -y rsync @prod @$sn -O
+echo "pre rsync"
+drush -y rsync @prod @$sn -- --omit-dir-times --delete
+echo "post first rsync"
 pl fixss $sn
-drush -y rsync @prod:%private @$sn:%private -O  --delete
-drush -y rsync @prod:../cmi @$sn:../cmi -O  --delete
+drush -y rsync @prod:%private @$sn:%private -- --omit-dir-times  --delete
+drush -y rsync @prod:../cmi @$sn:../cmi -- --omit-dir-times  --delete
 
 # Make sure the hash is present so drush sql will work.
 sfile=$(<"$folderpath/$sn/$webroot/sites/default/settings.php")
@@ -57,6 +59,8 @@ result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" localprodopencat < 
 if [ "$result" = ": 0" ]; then echo "Production database imported into database $db using root"; else echo "Could not import production database into database $db using root, exiting"; exit 1; fi
 
 drush @localprod cr
+
+pl backup $sn "postsync"
 
 # Make sure url is setup and open it!
 pl sudoeuri localprod

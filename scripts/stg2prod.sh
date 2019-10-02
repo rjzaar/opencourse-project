@@ -3,21 +3,27 @@
 #This will backup prod, push stg to prod and import.
 #This presumes teststg.sh worked, therefore opencat git is upto date with cmi export and all files.
 
-# Overwrite Localprod With PRODuction
-
 #start timer
 SECONDS=0
 parse_oc_yml
-sn="$sites_localprod"
-echo "Importing production site into $sn"
+
+#prod settings are in oc.yml
+
+if [ $1 == "stg2prod" ] && [ -z "$2" ]
+  then
+  sn="$sites_stg"
+elif [ -z "$2" ]
+  then
+    sn=$1
+fi
 
 import_site_config $sn
 
 # Help menu
 print_help() {
 cat <<-HELP
-This script is used to overwrite localprod with the actual external production site.
-The choice of localprod is set in oc.yml under sites: localprod:
+This script will push stg to prod
+It will first backup prod
 The external site details are also set in oc.yml under prod:
 Note: once localprod has been locally backedup, then it can just be restored from there if need be.
 HELP
@@ -25,15 +31,16 @@ exit 0
 }
 
 
-#First backup the current localprod site.
-pl backup $sn
+#First backup the current stg site.
+pl backupprod
+#alternatively could use pl olwprod
 
-#pull db and all files from prod
-### going to need to fix security. settings.local.php only have hash. all other cred in settings so not shared.
-drush -y rsync @prod @$sn -O
+#put prod in maintenance mode
+drush @prod sset system.maintenance_mode TRUE
+drush -y rsync @$sn @prod -- -O  --delete
 pl fixss $sn
-drush -y rsync @prod:%private @$sn:%private -O  --delete
-drush -y rsync @prod:../cmi @$sn:../cmi -O  --delete
+drush -y rsync @$sn:%private @prod:%private -- -O  --delete
+drush -y rsync @$sn:../cmi @prod:../cmi -- -O  --delete
 
 # Make sure the hash is present so drush sql will work.
 sfile=$(<"$folderpath/$sn/$webroot/sites/default/settings.php")

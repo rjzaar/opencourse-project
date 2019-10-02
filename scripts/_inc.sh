@@ -380,6 +380,7 @@ cd "$folder/$sn"
 #this will not affect a current git present
 git init
 cd "$webroot"
+msg=${msg// /_}
 Name=$(date +%Y%m%d\T%H%M%S-)`git branch | grep \* | cut -d ' ' -f2 | sed -e 's/[^A-Za-z0-9._-]/_/g'`-`git rev-parse HEAD | cut -c 1-8`$msg.sql
 
 echo -e "\e[34mbackup db $Name\e[39m"
@@ -391,6 +392,34 @@ Name2=${Name::-4}".tar.gz"
 echo -e "\e[34mbackup files $Name2\e[39m"
 cd ../../
 tar -czf sitebackups/$sn/$Name2 $sn
+}
+
+backup_prod () {
+#backup db.
+#use git: https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/set-up-a-local-development-drupal-0-7
+sn="prod"
+msg=${1// /_}
+cd
+# Check if site backup folder exists
+if [ ! -d "$folder/sitebackups/$sn" ]; then
+  mkdir "$folder/sitebackups/$sn"
+fi
+
+#cd "$webroot"
+
+#Name="$folderpath/sitebackups/prod/prod$(date +%Y%m%d\T%H%M%S-)$msg"
+Name="prod$(date +%Y%m%d\T%H%M%S-)$msg"
+Namesql="$folderpath/sitebackups/prod/$Name.sql"
+echo -e "\e[34mbackup db $Name.sql\e[39m"
+drush @prod sql-dump   > "$Namesql"
+#gzip -d "$Namesql.gz"
+
+Namef=$Name.tar
+echo -e "\e[34mbackup files $Namef\e[39m"
+drush @prod ard --destination="$prod_docroot/../../../$Name"
+scp "$prod_alias:$Name" "$folderpath/sitebackups/prod/$Name.tar"
+tar -czf  $folderpath/sitebackups/prod/$Name.tar.gz $folderpath/sitebackups/prod/$Name.tar
+rm $folderpath/sitebackups/prod/$Name.tar
 }
 
 backup_db () {
@@ -406,7 +435,8 @@ cd "$folderpath/$sn"
 #this will not affect a current git present
 git init
 cd "$webroot"
-Name=$(date +%Y%m%d\T%H%M%S-)`git branch | grep \* | cut -d ' ' -f2 | sed -e 's/[^A-Za-z0-9._-]/_/g'`-`git rev-parse HEAD | cut -c 1-8`.sql
+msg=${1// /_}
+Name=$(date +%Y%m%d\T%H%M%S-)`git branch | grep \* | cut -d ' ' -f2 | sed -e 's/[^A-Za-z0-9._-]/_/g'`-`git rev-parse HEAD | cut -c 1-8`$msg.sql
 echo -e "\e[34mbackup db $Name\e[39m"
 drush sql-dump --structure-tables-key=common --result-file="../../sitebackups/$sn/$Name"
 

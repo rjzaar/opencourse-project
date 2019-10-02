@@ -10,9 +10,7 @@ if [ $1 == "testi" ] && [ -z "$2" ]
   then
   sn="$sites_stg"
   from="$sites_dev"
-fi
-
-if [ -z "$2" ]
+elif [ -z "$2" ]
   then
     sn=$1
     from="$sites_dev"
@@ -21,8 +19,6 @@ if [ -z "$2" ]
     sn=$2
 fi
 
-sn="$sites_stg"
-from="$sites_dev"
 import_site_config $sn
 
 echo "This will copy the custom theme and modules folder from $from to $sn and then try to rebuild the database"
