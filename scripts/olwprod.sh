@@ -30,7 +30,7 @@ echo "pre rsync"
 drush -y rsync @prod @$sn -- --omit-dir-times --delete
 echo "post first rsync"
 pl fixss $sn
-drush -y rsync @prod:%private @$sn:%private -- --omit-dir-times  --delete
+drush -y rsync @prod:../private @$sn:../private -- --omit-dir-times  --delete
 drush -y rsync @prod:../cmi @$sn:../cmi -- --omit-dir-times  --delete
 
 # Make sure the hash is present so drush sql will work.

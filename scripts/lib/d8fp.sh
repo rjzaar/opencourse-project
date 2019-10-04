@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo "storm"
 # Help menu
 print_help() {
 cat <<-HELP

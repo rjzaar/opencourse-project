@@ -39,7 +39,7 @@ chown $user:www-data $folderpath/$sn -R
 chmod +w $folderpath/$sn -R
 rm -rf $folderpath/$sn
 fi
-
+echo "Move all files from $from to $to"
 cp -rf "$folderpath/$from" "$folderpath/$sn"
 
 storesn=$sn

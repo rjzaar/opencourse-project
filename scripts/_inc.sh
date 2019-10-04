@@ -277,6 +277,7 @@ set_site_permissions () {
 # $sn
 # $webroot
 if [ $dev = "y" ] ; then devp="--dev" ; fi ;
+
 sudo d8fp.sh --drupal_path="$folderpath/$sn/$webroot" --drupal_user=$user --httpd_group=www-data $devp
 
 }
