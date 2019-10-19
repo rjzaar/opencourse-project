@@ -361,6 +361,11 @@ cd
 if [ ! -d "$folder/sitebackups/$sn" ]; then
   mkdir "$folder/sitebackups/$sn"
 fi
+
+
+if [ ! -d "$folder/$sn" ]; then
+  echo "No site folder $sn so no need to backup"
+else
 cd "$folder/$sn"
 #this will not affect a current git present
 git init
@@ -377,6 +382,7 @@ Name2=${Name::-4}".tar.gz"
 echo -e "\e[34mbackup files $Name2\e[39m"
 cd ../../
 tar -czf sitebackups/$sn/$Name2 $sn
+fi
 }
 
 backup_prod () {
@@ -518,5 +524,24 @@ rm -rf $folderpath/$sn
 fi
 
 cp -rf "$folderpath/$from" "$folderpath/$sn"
+
+}
+
+copy_site_folder () {
+from=$1
+sn=$2
+echo "Copy site folder from $from to $sn"
+
+if [ -d $folderpath/$sn/$webroot/sites ]
+then
+chown $user:www-data $folderpath/$sn/$webroot/sites -R
+chmod +w $folderpath/$sn/$webroot/sites -R
+rm -rf $folderpath/$sn/$webroot/sites
+fi
+
+echo -e "\e[34mcopy private files from $from\e[39m"
+rm -rf $folderpath/$sn/private
+cp -rf "$folderpath/$from/private" "$folderpath/$sn/private"
+cp -rf "$folderpath/$from/$webroot/sites" "$folderpath/$sn/$webroot/sites"
 
 }

@@ -50,11 +50,8 @@ drush -y rsync @$sn @prod -- -O  --delete
 drush -y rsync @$sn:../cmi @prod:../cmi -- -O  --delete
 
 # Now sync the database
-drush @prod updb -y
-drush @prod cr
-drush @prod cim --source=../cmi/ -y
-drush @prod cr
-drush @prod sset system.maintenance_mode FALSE
+y
+
 # fix file permissions?
 
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
