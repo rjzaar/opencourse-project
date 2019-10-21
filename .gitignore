@@ -37,6 +37,7 @@ errors.log
 
 # These are now ignored so opencourse-project can be public, ie these are for the development version.
 /*
+!/bin
 !/scripts
 !.gitignore
 !example.oc.yml

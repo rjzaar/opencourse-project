@@ -21,7 +21,7 @@ echo "Parse YAML"
 parse_oc_yml
 
 echo "Adding pl command to bash commands, including plcd"
-schome="/home/$user/$project/scripts"
+schome="/home/$user/$project/bin"
 sed -i "2s/ocroot=\"~\/opencourse\"/ocroot=\"\/home\/$user\/$project\"/" "$schome/plcd.sh"
 echo "export PATH=\"\$PATH:$schome\"" >> ~/.bashrc
 echo ". $schome/plcd.sh" >> ~/.bashrc

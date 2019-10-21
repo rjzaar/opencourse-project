@@ -1,0 +1,35 @@
+#!/bin/bash
+# Simple script to enable or disable xdebug profiling
+
+case $1 in
+  on)
+    sudo sed -i 's/xdebug.profiler_enable=0/xdebug.profiler_enable=1/g' /etc/php/7.2/apache2/php.ini
+    sudo sed -i 's/xdebug.remote_enable=0/xdebug.remote_enable=1/g' /etc/php/7.2/apache2/php.ini
+    sudo sed -i 's/xdebug.remote_autostart=0/xdebug.remote_autostart=1/g' /etc/php/7.2/apache2/php.ini
+    sudo sed -i 's/;zend_extension = \/usr\/lib\/php\/20151012\/xdebug.so/zend_extension = \/usr\/lib\/php\/20151012\/xdebug.so/g' /etc/php/7.2/apache2/php.ini
+
+    sudo sed -i 's/xdebug.profiler_enable=0/xdebug.profiler_enable=1/g' /etc/php/7.2/cli/php.ini
+    sudo sed -i 's/xdebug.remote_enable=0/xdebug.remote_enable=1/g' /etc/php/7.2/cli/php.ini
+    sudo sed -i 's/xdebug.remote_autostart=0/xdebug.remote_autostart=1/g' /etc/php/7.2/cli/php.ini
+    sudo sed -i 's/;zend_extension = \/usr\/lib\/php\/20151012\/xdebug.so/zend_extension = \/usr\/lib\/php\/20151012\/xdebug.so/g' /etc/php/7.2/cli/php.ini
+
+    sudo service apache2 restart
+  ;;
+  off)
+    sudo sed -i 's/xdebug.profiler_enable=1/xdebug.profiler_enable=0/g' /etc/php/7.2/apache2/php.ini
+    sudo sed -i 's/xdebug.remote_enable=1/xdebug.remote_enable=0/g' /etc/php/7.2/apache2/php.ini
+    sudo sed -i 's/xdebug.remote_autostart=1/xdebug.remote_autostart=0/g' /etc/php/7.2/apache2/php.ini
+    sudo sed -i 's/zend_extension = \/usr\/lib\/php\/20151012\/xdebug.so/;zend_extension = \/usr\/lib\/php\/20151012\/xdebug.so/g' /etc/php/7.2/apache2/php.ini
+
+    sudo sed -i 's/xdebug.profiler_enable=1/xdebug.profiler_enable=0/g' /etc/php/7.2/cli/php.ini
+    sudo sed -i 's/xdebug.remote_enable=1/xdebug.remote_enable=0/g' /etc/php/7.2/cli/php.ini
+    sudo sed -i 's/xdebug.remote_autostart=1/xdebug.remote_autostart=0/g' /etc/php/7.2/cli/php.ini
+    sudo sed -i 's/zend_extension = \/usr\/lib\/php\/20151012\/xdebug.so/;zend_extension = \/usr\/lib\/php\/20151012\/xdebug.so/g' /etc/php/7.2/cli/php.ini
+
+    sudo sed -i 's/xdebug.profiler_enable=1/xdebug.profiler_enable=0/g' /etc/php/7.2/apache2/php.ini
+    sudo service apache2 restart
+  ;;
+  *)
+    echo "Usage: php_debug on|off"
+  ;;
+esac
