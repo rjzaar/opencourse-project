@@ -5,9 +5,9 @@
 
 #start timer
 SECONDS=0
-parse_oc_yml
+parse_pl_yml
 
-#prod settings are in oc.yml
+#prod settings are in pl.yml
 
 if [ $1 == "stg2prod" ] && [ -z "$2" ]
   then
@@ -24,7 +24,7 @@ print_help() {
 cat <<-HELP
 This script will overwrite production with stg
 It will first backup prod
-The external site details are also set in oc.yml under prod:
+The external site details are also set in pl.yml under prod:
 HELP
 exit 0
 }

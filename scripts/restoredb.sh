@@ -44,7 +44,7 @@ fi
 folder=$(basename $(dirname $script_root))
 folderpath=$(dirname $script_root)
 webroot="docroot"
-parse_oc_yml
+parse_pl_yml
 import_site_config $sn
 
 # Prompt to choose which database to backup, 1 will be the latest.

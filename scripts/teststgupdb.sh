@@ -3,7 +3,7 @@
 #start timer
 SECONDS=0
 . $script_root/_inc.sh;
-parse_oc_yml
+parse_pl_yml
 
 if [ $1 == "teststgupdb" ] && [ -z "$2" ]
   then
@@ -33,6 +33,8 @@ HELP
 exit 0
 }
 
+echo "Make sure permissions are correct"
+pl fixp $sn
 
 echo -e "\e[34m update database\e[39m"
 drush @$sn updb -y

@@ -1,7 +1,7 @@
 #!/bin/bash
 #start timer
 SECONDS=0
-parse_oc_yml
+parse_pl_yml
 sn="$sites_stg"
 from="$sites_dev"
 import_site_config $sn

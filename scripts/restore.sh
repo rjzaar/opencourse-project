@@ -46,7 +46,7 @@ print_help
 exit 1
 fi
 
-parse_oc_yml
+parse_pl_yml
 import_site_config $sn
 
 # Prompt to choose which database to backup, 1 will be the latest.

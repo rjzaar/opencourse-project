@@ -3,7 +3,7 @@
 #start timer
 SECONDS=0
 . $script_root/_inc.sh;
-parse_oc_yml
+parse_pl_yml
 
 if [ $1 == "teststg" ] && [ -z "$2" ]
   then

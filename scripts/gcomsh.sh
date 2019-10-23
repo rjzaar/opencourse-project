@@ -16,7 +16,7 @@
 
 #start timer
 SECONDS=0
-parse_oc_yml
+parse_pl_yml
 
 if [ $1 == "gcomsh" ] && [ -z "$2" ]
   then
@@ -45,7 +45,7 @@ print_help
 exit 1
 fi
 
-parse_oc_yml
+parse_pl_yml
 import_site_config $sn
 
 ocmsg "Backup site $sn with msg premerge"

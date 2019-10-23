@@ -13,7 +13,7 @@ sn=$1
 private="/home/$user/$folder/$sn/private"
 
 # First load the defaults
-rp="recipes_default_project" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; else project=""; fi
+rp="recipes_default_source" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; else project=""; fi
 rp="recipes_default_dev" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev=${!rp} ; else dev=""; fi
 rp="recipes_default_webroot" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then webroot=${!rp} ; else webroot=""; fi
 rp="recipes_default_sitename" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sitename=${!rp} ; else sitename=""; fi
@@ -31,8 +31,8 @@ rp="recipes_default_theme_admin" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme
 rp="recipes_default_install_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_modules=${!rp} ; else install_modules=""; fi
 rp="recipes_default_dev_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev_modules=${!rp} ; else dev_modules=""; fi
 
-# Collect the details from oc.yml if they exist otherwise make blank
-rp="recipes_${sn}_project" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; fi
+# Collect the details from pl.yml if they exist otherwise make blank
+rp="recipes_${sn}_source" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; fi
 rp="recipes_${sn}_dev" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev=${!rp} ; fi
 rp="recipes_${sn}_webroot" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then webroot=${!rp} ; fi
 rp="recipes_${sn}_sitename" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sitename=${!rp} ; fi
@@ -56,14 +56,15 @@ if [ "$dbpass" == "" ] ; then dbpass=$dbuser ;fi
 
 }
 
-parse_oc_yml () {
+parse_pl_yml () {
 # Import yaml
 # presumes $script_root is set
 # $userhome
 update_config="n"
 
-. $script_root/scripts/parse_yaml.sh "oc.yml" $script_root
-
+. $script_root/scripts/parse_yaml.sh "pl.yml" $script_root
+# Project is no longer set in pl.yml. It is collected from the context.
+project=$folder
 if [ $update_config == "y" ]
 then
 update_all_configs
@@ -262,7 +263,7 @@ fi
 
 }
 ocmsg () {
-# This is to provide extra messaging if the verbose variable in oc.yml is set to y.
+# This is to provide extra messaging if the verbose variable in pl.yml is set to y.
 if [ "$verbose" == "y" ]
 then
 echo $1
@@ -492,7 +493,7 @@ echo "db defaults: db $db dbuser $dbuser dbpass $dbpass"
 }
 
 site_info () {
-echo "Project  = $project"
+echo "Source  = $project"
 echo "Project folder = $folder"
 echo "Site folder = $sn"
 echo "webroot = $webroot"

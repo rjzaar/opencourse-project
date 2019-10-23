@@ -1,0 +1,105 @@
+# Pleasy uses the config here to work.
+# Some variables are set from the context, eg the project name comes from the root folder name chosen at install.
+# Database root user is in a separate file that is created when pl init is run. It is called mysql.cnf
+# Drush aliases will also be automatically created when a site is installed. The alias is: @site
+# Drupal console aliases are also created: @site.
+#
+# There are some global variables set
+#  hosts_path: The hosts path
+#  vhosts_path: The apache sites available
+#  user: The current user (carlos is in honour of venerable Carlos Acutis)
+#  project: The project name will be worked out from the parent folder.
+#  github:
+#    user: Your github user name
+#    key:  Your github key
+#  prod:
+#    alias: The drush alias for your production server. Pleasy will set this alias up for you.
+#    uri: Your production server URL
+#    user: The production server user name
+#    docroot: Full path on the production server to your drupal webroot
+#  verbose: Do you want to see all comments as commands are run?
+#
+hosts_path: "/etc/hosts"
+vhosts_path: "/etc/apache2/sites-available/"
+user: carlos
+github:
+  user: puregift
+  key:  github
+prod:
+  alias: cathnet
+  uri: "opencat.org"
+  user: puregift
+  docroot: "/home/puregift/opencat.org/opencourse/docroot"
+verbose: y
+#
+# Since you can create many different sites, each in its own folder. There are certain commands that work with dev, stg and localprod
+# So these need to be specified. Therefore you can change them as you like.
+# dev(development site) is where you will do most of your development work. Its set to 'loc' for local since drupal console automatically sets up
+# a uri which as the site name last. If dev were used, google owns .dev and would not show it properly so loc is used instead. Unless you want to set up local ssl cert.
+# localprod will be a copy of the current production website as is. This will save time if you need to test stg multiple times.
+# stg is usually created from localprod files with the new files from loc and the localprod database ready to test the changes.
+#
+sites:
+  dev:  loc
+  stg:  stg
+  localprod:  localprod
+#
+# RECIPES
+# Recipes are the recipes for each site. The default is used for every site unless overwritten.
+# There are some defaults which are not specified here such as database names.
+# If no database information is given the following is used
+# db: will be "siteproject" ie site name project name (root folder name), eg locpleasy
+# dbuser: will be db
+# dbpass: will be dbuser
+#
+# Just specifying a new site name is enough.
+#
+# The following settings are possible
+# source: is the root folder by default opencourse-project. It will be used as the right most part of the URL. I suggest you build into oc instead.
+# dev: Should this site have dev modules and settings installed.
+# webroot: is the uppermost webroot folder, default is: docroot. Since this system can be used for other drupal distros, it could be web or html
+# sitename: if not given, the sitename will be the name of the site. This is only used as part of the install process for the site header.
+# auto: all prompts are given a yes by default
+# apache: Is it an apache site. default is yes. ### Not sure if this is being used....
+# profile: Which drupal profile to install. Normally it would be standard with drupal 8, varbase with varbase.
+# uri: You can set the uri otherwise it is project.site, eg pleasy.loc
+# install_method: git/composer/file. All three work.
+# git_upstream: is used if the project is forked. Pleasy can update to upstream.
+# theme: which theme to install
+# theme_admin: which admin theme to install
+# install_modules: which modules to install
+# dev_modules: which dev modules to install for dev (or uninstall if making production)
+#
+recipes:
+  default:
+    source:  git@github.com:rjzaar/opencourse.git
+    dev:  y
+    profile: varbase
+    webroot:  docroot
+    sitename: default
+    auto:  y
+    apache: y
+    install_method: git
+    git_upstream: git@github.com:Vardot/varbase-project.git
+    theme: oc_theme
+    theme_admin: octheme_admin
+    install_modules: oc_prod
+    dev_modules: oc_dev
+  loc:
+    install_modules: oc_prod
+  stg:
+  localprod:
+    dev:  n
+  ins:
+    install_modules: oc_prod oc_content
+  bak:
+  d8:
+    source: https://www.drupal.org/download-latest/tar.gz
+    install_method: file
+    profile: standard
+  d8c:
+    source: drupal-composer/drupal-project:8.x-dev
+    install_method: composer
+    profile: standard
+
+

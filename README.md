@@ -1,7 +1,37 @@
-# opencourse-project
+# Pleasy
 
-This project is a folder wrapper for opencourse or other distributions. It provides various scripts for development processes which incorporate composer, cmi and backup. It includes three stages, dev, stg and prod. There are some scripts needed on the production server.
-This project is also based on the varbase two repository structure, varbase and varbase-project. This is a good way to go since most updates to varbase don't need to be updated on a varbase based project. Those that do are included in varbase-project. There are also a lot less files to track in varbase-project than varbase itself. It provides an intelligent separation. But there is need for another wrapper for a varbase project, since scripts, cmi and private folders need to be excluded from standard access. Since a particular site based project needs to include site specific files which should be stored on a private repository for backup, there is one more layer needed. The only difference with this layer is the .gitignore file which includes folders needed on production. Welcome to Drupal 8 development. 
+This is a Devops framework for drupal sites, particularly based on varbase.
+The framework is run through the pl (short for please), plcd and plvi commands.
+The pl command has been added to bash commands so can be accessed anywhere. It is followed by the script name and usually which instance to be worked on, eg "pl backup stg" will backup the stage instance.
+There is a yaml file which contains the framework setup. An example yaml file is provided and is ready to be used, with some tweaking required.
+You set it up with the following commands
+
+```
+git clone git@github.com:rjzaar/pleasy.git [sitename]  #eg git clone git@github.com:rjzaar/pleasy.git mysite.org
+cd [sitename]
+cp example.pl.yml pl.yml 
+```
+Now edit pl.yml with your settings.
+```
+cd bin
+./pl init  #This will setup the necessary variables.
+```
+You will now have a functioning pleasy.
+
+You should now be able to install your first site:
+```
+pl install loc
+```
+
+It provides various scripts for development processes which incorporate composer, cmi and backup. It includes three stages, dev (called loc for local), stg and prod. Communication with the production server is via drush and scp.
+This project is also based on the varbase two repository structure, varbase and varbase-project. 
+This is a good way to go since most updates to varbase don't need to be updated on a varbase based project. 
+Those that do are included in varbase-project. 
+There are also a lot less files to track in varbase-project than varbase itself. 
+It provides an intelligent separation. 
+
+Since a particular site based project needs to include site specific files which should be stored on a private repository for backup, there is one more layer needed. 
+The only difference with this layer is the .gitignore file which includes folders needed on production. Welcome to Drupal 8 development. 
 
 #New Commands
 Here is the simple setup for an opencourse development environment
@@ -10,9 +40,9 @@ First choose the name of your dev environment (It will be used as the last part 
 git clone git@github.com:rjzaar/opencourse-project.git oc
 
 cd oc
-The next step will give access to the powerful drop command (thanks Alexar!) to setup the site based on the oc.yml file
-cp example.oc.yml oc.yml
-edit the oc.yml file and change accordingly, eg add database credentials. If you don't add database credentials, 
+The next step will give access to the powerful drop command (thanks Alexar!) to setup the site based on the pl.yml file
+cp example.pl.yml pl.yml
+edit the pl.yml file and change accordingly, eg add database credentials. If you don't add database credentials, 
 no problem, it will prompt you as you go.
 ./scripts/ocinit.sh  
 

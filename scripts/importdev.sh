@@ -4,7 +4,7 @@
 #start timer
 SECONDS=0
 . $script_root/_inc.sh;
-parse_oc_yml
+parse_pl_yml
 
 if [ $1 == "importdev" ] && [ -z "$2" ]
   then

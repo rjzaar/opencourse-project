@@ -40,7 +40,7 @@ errors.log
 !/bin
 !/scripts
 !.gitignore
-!example.oc.yml
+!example.pl.yml
 !LICENSE
 !README.md
 !/sitebackups

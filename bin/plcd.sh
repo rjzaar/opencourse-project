@@ -1,6 +1,6 @@
 #!/bin/bash
 ocroot="/home/rob/opencat"
-#ocroot="~/opencourse"
+#Don't touch the above line it will be modified by init.sh
 
 # This will help navigate around the project site
 function plcd () {

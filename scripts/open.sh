@@ -1,6 +1,6 @@
 #!/bin/bash
 
-parse_oc_yml
+parse_pl_yml
 
 if [ $1 == "open" ] && [ -z "$2" ]
   then

@@ -19,7 +19,7 @@ exit 1
 fi
 
 sn=$1
-parse_oc_yml
+parse_pl_yml
 import_site_config $sn
 
 # This will set the correct permissions

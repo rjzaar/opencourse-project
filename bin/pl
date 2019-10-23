@@ -14,10 +14,16 @@ whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- 
 whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
 script_root=$(dirname $(whereis_realpath "$0"))
+# get rid of 'bin'
+if [ "${script_root: (-6)}" == "/bin/." ]
+then
+script_root="${script_root:0:-6}/scripts"
+fi
 folder=$(basename $(dirname $script_root))
 folderpath=$(dirname $script_root)
 script_root=$folderpath/scripts
 user_home=$(dirname $folderpath)
+
 . $script_root/_inc.sh;
 ocmsg "Finished initalising the defaults for pl command. Found script_root is $script_root"
 pl_run_task() {
@@ -26,7 +32,7 @@ pl_run_task() {
 	task_script_path=$script_root/$task.sh
 	if [ ! -e "$task_script_path" ]
 		then
-		echo "Drop task '$task' was not found. (Expected at $task_script_path)"
+		echo "Pleasy task '$task' was not found. (Expected at $task_script_path)"
 		exit 1
 	fi
 if [[ $task_script_path == *"sudo"* ]]; then

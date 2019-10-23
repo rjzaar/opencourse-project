@@ -26,7 +26,7 @@ fi
 msg=$1
 #folder=$(basename $(dirname $script_root))
 #webroot="docroot"
-parse_oc_yml
+parse_pl_yml
 
 backup_prod $msg
 

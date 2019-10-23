@@ -4,7 +4,7 @@
 
 #start timer
 SECONDS=0
-parse_oc_yml
+parse_pl_yml
 
 if [ $1 == "testi" ] && [ -z "$2" ]
   then

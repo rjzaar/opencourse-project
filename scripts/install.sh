@@ -13,7 +13,7 @@ cat <<-HELP
 This script is used to install a variety of drupal flavours particularly opencourse
 This will use opencourse-project as a wrapper. It is presumed you have already cloned opencourse-project.
 You just need to specify the site name as a single argument.
-All the settings for that site are in oc.yml
+All the settings for that site are in pl.yml
 If no site name is given then the default site is created.
 
 HELP
@@ -30,9 +30,9 @@ exit 0
 #profile="varbase"
 #dev="y"
 
-parse_oc_yml
+parse_pl_yml
 
-#Import oc.yml settings
+#Import pl.yml settings
 # Create a list of recipes
 for f in $recipes_ ; do recipes="$recipes,${f#*_}" ; done
 recipes=${recipes#","}
@@ -47,7 +47,7 @@ sn=$1
 echo "Looking for recipe $sn"
 if [[ $recipes != *"$sn"* ]]
 then
-echo "No recipe for $sn! Current recipes include $recipes. Please add a recipe to oc.yml for $sn"
+echo "No recipe for $sn! Current recipes include $recipes. Please add a recipe to pl.yml for $sn"
 exit 1
 fi
 fi
@@ -121,7 +121,7 @@ elif [ "$install_method" == "file" ]
   wget -O $Name $project
   tar -xf $Name -C "$folderpath/$sn"
 else
-    echo "No install method specified. You need to at least edit the default recipe in oc.yml and specify \"install_method\"."
+    echo "No install method specified. You need to at least edit the default recipe in pl.yml and specify \"install_method\"."
     exit 1
 fi
 

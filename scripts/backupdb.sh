@@ -20,7 +20,7 @@ print_help
 exit 1
 fi
 
-parse_oc_yml
+parse_pl_yml
 sn=$1
 import_site_config $sn
 

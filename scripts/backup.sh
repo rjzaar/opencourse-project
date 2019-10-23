@@ -24,7 +24,7 @@ sn=$1
 msg=$2
 #folder=$(basename $(dirname $script_root))
 #webroot="docroot"
-parse_oc_yml
+parse_pl_yml
 import_site_config $sn
 
 backup_site $sn
