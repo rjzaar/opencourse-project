@@ -17,6 +17,11 @@ cd bin
 ./pl init  #This will setup the necessary variables.
 ```
 You will now have a functioning pleasy.
+If there is an error "function asorti never defined" then run the following command and it should now work
+```
+sudo apt install gawk
+```
+
 
 You should now be able to install your first site:
 ```

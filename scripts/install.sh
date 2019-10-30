@@ -87,7 +87,12 @@ fi
 if [ "$install_method" == "git" ]
 then
   echo "Adding git credentials"
+  if [ -f /home/$user/.ssh/$github_key ]
+  then
   ssh-add /home/$user/.ssh/$github_key
+  else
+    echo "No github key present."
+  fi
   echo "Cloning $project"
   git clone $project $folderpath/$sn
 
