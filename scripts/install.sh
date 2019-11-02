@@ -90,17 +90,27 @@ then
   if [ -f /home/$user/.ssh/$github_key ]
   then
   ssh-add /home/$user/.ssh/$github_key
-  else
-    echo "No github key present."
-  fi
-  echo "Cloning $project"
+    echo "Cloning $project"
   git clone $project $folderpath/$sn
+  else
+    echo "No github key present. Using https instead"
+#    git config --global user.name $user
+#    git config --global user.email "$user@example.com"
+  echo "Cloning ${project/git@github.com:/https:\/\/github.com\/}"
+  git clone "${project/git@github.com:/https:\/\/github.com\/}" $folderpath/$sn
+  fi
+
 
   if [ "$git_upstream" != "" ]
   then
+      if [ -f /home/$user/.ssh/$github_key ]
+      then
     cd $folderpath/$sn
     echo "$sn has upstream git so adding $git_upstream"
     git remote add upstream $git_upstream
+    else
+      echo "Have not added upstream since no key present."
+      fi
   fi
 
 elif [ "$install_method" == "composer" ]
@@ -133,6 +143,7 @@ fi
 
 cd $folderpath/$sn
 
+# Neet to check if composer is installed.
 composer install
 
 fix_site_settings
