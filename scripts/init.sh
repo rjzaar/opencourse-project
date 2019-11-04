@@ -93,6 +93,8 @@ sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 sudo chown -R $user .composer/
 
 
+# Add npm, nodejs: https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
+# Use node v12: https://stackoverflow.com/questions/41195952/updating-nodejs-on-ubuntu-16-04
 
 
 #set up d8fp to run without password

@@ -2,13 +2,13 @@
 #stg2dev
 # Start Timer
 SECONDS=0
-echo -e "\e[34m Give site $1 dev mode and modules \e[39m"
+echo -e "\e[34m Give site $1 prod mode and remove dev modules \e[39m"
 . $script_root/_inc.sh;
 
 # Help menu
 print_help() {
 cat <<-HELP
-This script is used to turn on dev mode and enable dev modules.
+This script is used to turn off dev mode and uninstall dev modules.
 You just need to state the sitename, eg stg.
 HELP
 exit 0
@@ -26,24 +26,24 @@ sn=$1
 parse_pl_yml
 import_site_config $sn
 
-# turn on dev modules (composer)
+#turn on prod settings
+echo "Turn on prod mode"
+drupal --target=$uri site:mode prod
+
+#uninstall dev modules
+echo "uninstall dev modules"
+drush @$sn pm-uninstall -y $dev_modules
+
+# turn off dev modules (composer)
 
 cd $folderpath/$sn
-echo "Composer install."
-composer install --quiet
+echo "Composer install with no dev modules."
+composer install --no-dev --quiet
 
 # rebuild permissions
 echo "Rebuild permissions, might require sudo."
 #( speaker-test -t sine -f 1000 )& pid=$! ; sleep 0.1s ; kill -9 $pid
 set_site_permissions
-
-#install dev modules
-echo "install dev modules"
-drush @$sn en -y $dev_modules
-
-#turn on dev settings
-echo "Turn on dev mode"
-drupal --target=$uri site:mode dev
 
 #clear cache
 echo "Clear cache"

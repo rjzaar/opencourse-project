@@ -35,11 +35,11 @@ exit 0
 
 if [ -d $folderpath/$sn ]
 then
-chown $user:www-data $folderpath/$sn -R
+sudo chown $user:www-data $folderpath/$sn -R
 chmod +w $folderpath/$sn -R
 rm -rf $folderpath/$sn
 fi
-echo "Move all files from $from to $to"
+echo "Move all files from $from to $sn"
 cp -rf "$folderpath/$from" "$folderpath/$sn"
 
 storesn=$sn

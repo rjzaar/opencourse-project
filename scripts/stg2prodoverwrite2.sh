@@ -9,7 +9,7 @@ parse_pl_yml
 
 #prod settings are in pl.yml
 
-if [ $1 == "stg2prodoverwrite" ] && [ -z "$2" ]
+if [ $1 == "stg2prodoverwrite2" ] && [ -z "$2" ]
   then
   sn="$sites_stg"
 elif [ -z "$2" ]
@@ -31,13 +31,24 @@ exit 0
 
 
 #First backup the current stg site.
-#pl backupprod
+#pl backup $sn
 #alternatively could use pl olwprod
 
 #put prod in maintenance mode
+echo "maintenance mode"
 drush @prod sset system.maintenance_mode TRUE
+echo "docroot"
 drush -y rsync @$sn @prod -- -O  --delete
+echo "cmi"
 drush -y rsync @$sn:../cmi @prod:../cmi -- -O  --delete
+echo "vendor"
+drush -y rsync @$sn:../vendor @prod:../vendor -- -O  --delete
+echo "bin"
+drush -y rsync @$sn:../bin @prod:../bin -- -O  --delete
+echo "composer.json"
+drush -y rsync @$sn:../composer.json @prod:../composer.json -- -O  --delete
+echo "composer.lock"
+drush -y rsync @$sn:../composer.lock @prod:../composer.lock -- -O  --delete
 
 # Now sync the database
 drush sql:sync @$sn @prod

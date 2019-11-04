@@ -81,12 +81,12 @@ rm composer.lock
 composer install
 
 ocmsg "Run db updates"
-drush @$sn dbup
+drush @$sn updb
 
 ocmsg "Import configuration: drush cim"
 drush @$sn cim
 
-gcom $sn "Updated to lastest varbase"
+pl gcom $sn "Updated to lastest varbase"
 
 
 
