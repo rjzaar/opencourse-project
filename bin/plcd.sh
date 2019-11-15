@@ -155,3 +155,6 @@ fi
 function plsource () {
 source ~/.bashrc
 }
+
+function addc () {
+
