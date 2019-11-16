@@ -10,7 +10,6 @@ whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} 
 import_site_config () {
 # setup basic defaults
 sn=$1
-private="/home/$user/$folder/$sn/private"
 
 # First load the defaults
 rp="recipes_default_source" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; else project=""; fi
@@ -30,6 +29,7 @@ rp="recipes_default_theme" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme=${!rp
 rp="recipes_default_theme_admin" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme_admin=${!rp} ; else theme_admin=""; fi
 rp="recipes_default_install_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_modules=${!rp} ; else install_modules=""; fi
 rp="recipes_default_dev_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev_modules=${!rp} ; else dev_modules=""; fi
+rp="recipes_default_lando" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then lando=${!rp} ; else lando=""; fi
 
 # Collect the details from pl.yml if they exist otherwise make blank
 rp="recipes_${sn}_source" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; fi
@@ -49,10 +49,18 @@ rp="recipes_${sn}_theme" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme=${!rp} 
 rp="recipes_${sn}_theme_admin" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme_admin=${!rp} ; fi
 rp="recipes_${sn}_install_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_modules=${!rp} ; fi
 rp="recipes_${sn}_dev_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev_modules=${!rp} ; fi
+rp="recipes_${sn}_lando" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then lando=${!rp} ; fi
 
 if [ "$db" == "" ] ; then db="$sn$folder" ; fi
 if [ "$dbuser" == "" ] ; then dbuser=$db ; fi
 if [ "$dbpass" == "" ] ; then dbpass=$dbuser ;fi
+
+if [ "$lando" == "y" ]
+then
+private="/home/$user/$folder/$sn/private"
+else
+private="/home/$user/$folder/$sn/private"
+fi
 
 }
 

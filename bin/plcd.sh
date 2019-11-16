@@ -1,5 +1,6 @@
 #!/bin/bash
 ocroot="/home/rob/opencat"
+ocwroot="/var/www"
 #Don't touch the above line it will be modified by init.sh
 
 # This will help navigate around the project site
@@ -40,13 +41,20 @@ then
     cd $ocroot/$sn
     ;;
   esac
+
 else
   case  $2  in
     d)
     if [ -d $ocroot/$sn/docroot ] ; then cd $ocroot/$sn/docroot
     else if [ -d $ocroot/$sn/html ] ; then cd $ocroot/$sn/html
     else if [ -d $ocroot/$sn/web ] ; then cd $ocroot/$sn/web
-    else "webroot directory for $sn can't be found"
+    else if [ -d $ocwroot/$sn/docroot ] ; then cd $ocwroot/$sn/docroot
+    else if [ -d $ocwroot/$sn/html ] ; then cd $ocwroot/$sn/html
+    else if [ -d $ocwroot/$sn/web ] ; then cd $ocwroot/$sn/web
+    else echo "webroot directory for $sn can't be found"
+    fi
+    fi
+    fi
     fi
     fi
     fi
@@ -58,7 +66,13 @@ else
     if [ -d $ocroot/$sn/docroot ] ; then cd $ocroot/$sn/docroot/sites/default
     else if [ -d $ocroot/$sn/html ] ; then cd $ocroot/$sn/html/sites/default
     else if [ -d $ocroot/$sn/web ] ; then cd $ocroot/$sn/web/sites/default
-    else "sites/default directory for $sn can't be found"
+    else if [ -d $ocwroot/$sn/docroot ] ; then cd $ocwroot/$sn/docroot/sites/default
+    else if [ -d $ocwroot/$sn/html ] ; then cd $ocwroot/$sn/html/sites/default
+    else if [ -d $ocwroot/$sn/web ] ; then cd $ocwroot/$sn/web/sites/default\
+    else echo "sites/default directory for $sn can't be found"
+    fi
+    fi
+    fi
     fi
     fi
     fi
@@ -122,7 +136,13 @@ else
     if [ -f $ocroot/$sn/docroot/sites/default/settings.php ] ; then vi $ocroot/$sn/docroot/sites/default/settings.php
     else if [ -f $ocroot/$sn/html/sites/default/settings.php ] ; then vi $ocroot/$sn/html/sites/default/settings.php
     else if [ -f $ocroot/$sn/web/sites/default/settings.php ] ; then vi $ocroot/$sn/web/sites/default/settings.php
-    else "sites/default directory for $sn can't be found"
+    else if [ -f $ocwroot/$sn/docroot/sites/default/settings.php ] ; then vi $ocwroot/$sn/docroot/sites/default/settings.php
+    else if [ -f $ocwroot/$sn/html/sites/default/settings.php ] ; then vi $ocwroot/$sn/html/sites/default/settings.php
+    else if [ -f $ocwroot/$sn/web/sites/default/settings.php ] ; then vi $ocwroot/$sn/web/sites/default/settings.php
+    else echo "sites/default directory for $sn can't be found"
+    fi
+    fi
+    fi
     fi
     fi
     fi
@@ -131,7 +151,13 @@ else
     if [ -f $ocroot/$sn/docroot/sites/default/settings.local.php ] ; then vi $ocroot/$sn/docroot/sites/default/settings.local.php
     else if [ -f $ocroot/$sn/html/sites/default/settings.local.php ] ; then vi $ocroot/$sn/html/sites/default/settings.local.php
     else if [ -f $ocroot/$sn/web/sites/default/settings.local.php ] ; then vi $ocroot/$sn/web/sites/default/settings.local.php
-    else "sites/default directory for $sn can't be found"
+    else if [ -f $ocwroot/$sn/docroot/sites/default/settings.local.php ] ; then vi $ocwroot/$sn/docroot/sites/default/settings.local.php
+    else if [ -f $ocwroot/$sn/html/sites/default/settings.local.php ] ; then vi $ocwroot/$sn/html/sites/default/settings.local.php
+    else if [ -f $ocwroot/$sn/web/sites/default/settings.local.php ] ; then vi $ocwroot/$sn/web/sites/default/settings.local.php
+    else echo "sites/default directory for $sn can't be found"
+    fi
+    fi
+    fi
     fi
     fi
     fi
@@ -157,4 +183,5 @@ source ~/.bashrc
 }
 
 function addc () {
-
+ssh-add ~/.ssh/github
+}
