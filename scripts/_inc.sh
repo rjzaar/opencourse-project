@@ -58,8 +58,10 @@ if [ "$dbpass" == "" ] ; then dbpass=$dbuser ;fi
 if [ "$lando" == "y" ]
 then
 private="/home/$user/$folder/$sn/private"
+site_path="/home/$user/$folder"
 else
-private="/home/$user/$folder/$sn/private"
+private="$www_path/$sn/private"
+site_path=$www_path
 fi
 
 }
