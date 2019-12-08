@@ -48,15 +48,15 @@ parse_pl_yml
 import_site_config $sn
 
 ocmsg "Composer update"
-cd $folderpath/$sn
+cd $site_path/$sn
 composer update
 
 ocmsg "Run db updates"
 drush @$sn dbup
 
 ocmsg "Export config: drush cex will need sudo"
-sudo chown $user:www-data $folderpath/$sn -R
-chmod g+w $folderpath/$sn/cmi -R
+sudo chown $user:www-data $site_path/$sn -R
+chmod g+w $site_path/$sn/cmi -R
 drush @$sn cex --destination=../cmi -y
 
 # Check?

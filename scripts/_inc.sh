@@ -173,7 +173,7 @@ EOL
 
   cat >> $user_home/.drush/$folder.aliases.drushrc.php <<EOL
 \$aliases['$site'] = array (
-  'root' => '$folderpath/$site/$webroot',
+  'root' => '$site_path/$site/$webroot',
   'uri' => 'http://$folder.$site',
   'path-aliases' =>
   array (
@@ -186,7 +186,7 @@ EOL
   #Now add drupal console aliases.
   cat >> $user_home/.console/sites/$folder.yml <<EOL
 $sn:
-  root: $folderpath/$sn
+  root: $site_path/$sn
   type: local
 EOL
 
@@ -209,21 +209,21 @@ fix_site_settings () {
 # $folder
 # $sn
 # $webroot
-# $folderpath
+# $site_path
 
 # Check that settings.php has reference to local.settings.php
-if [ ! -f "$folderpath/$sn/$webroot/sites/default/settings.php" ]
+if [ ! -f "$site_path/$sn/$webroot/sites/default/settings.php" ]
 then
-cp "$folderpath/$sn/$webroot/sites/default/default.settings.php" "$folderpath/$sn/$webroot/sites/default/settings.php"
+cp "$site_path/$sn/$webroot/sites/default/default.settings.php" "$site_path/$sn/$webroot/sites/default/settings.php"
 fi
 
-sfile=$(<"$folderpath/$sn/$webroot/sites/default/settings.php")
+sfile=$(<"$site_path/$sn/$webroot/sites/default/settings.php")
 if [[ $sfile =~ (\{[[:space:]]*include) ]]
 then
 echo "settings.php is correct"
 else
 echo "settings.php: added reference to settings.local.php"
-cat >> $folderpath/$sn/$webroot/sites/default/settings.php <<EOL
+cat >> $site_path/$sn/$webroot/sites/default/settings.php <<EOL
  if (file_exists(\$app_root . '/' . \$site_path . '/settings.local.php')) {
        include \$app_root . '/' . \$site_path . '/settings.local.php';
     }
@@ -232,7 +232,7 @@ EOL
 fi
 
 
-cat > $folderpath/$sn/$webroot/sites/default/settings.local.php <<EOL
+cat > $site_path/$sn/$webroot/sites/default/settings.local.php <<EOL
 <?php
 
 \$settings['install_profile'] = '$profile';
@@ -251,7 +251,7 @@ cat > $folderpath/$sn/$webroot/sites/default/settings.local.php <<EOL
 EOL
 if [ "$dev" == "y" ]
 then
-cat >> $folderpath/$sn/$webroot/sites/default/settings.local.php <<EOL
+cat >> $site_path/$sn/$webroot/sites/default/settings.local.php <<EOL
 \$settings['container_yamls'][] = DRUPAL_ROOT . '/sites/development.services.yml';
 \$settings['cache']['bins']['render'] = 'cache.backend.null';
 \$settings['cache']['bins']['dynamic_page_cache'] = 'cache.backend.null';
@@ -261,14 +261,14 @@ fi
 echo "Added local.settings.php to $sn"
 
 # Make sure the hash is present so drush sql will work.
-sfile=$(<"$folderpath/$sn/$webroot/sites/default/settings.php")
-slfile=$(<"$folderpath/$sn/$webroot/sites/default/settings.local.php")
+sfile=$(<"$site_path/$sn/$webroot/sites/default/settings.php")
+slfile=$(<"$site_path/$sn/$webroot/sites/default/settings.local.php")
 if [[ ! $sfile =~ (\'hash_salt\'\] = \') ]]
 then
 if [[ ! $slfile =~ (\'hash_salt\'\] = \') ]]
 then
   hash=$(drush php-eval 'echo \Drupal\Component\Utility\Crypt::randomBytesBase64(55)')
-echo "\$settings['hash_salt'] = '$hash';" >> "$folderpath/$sn/$webroot/sites/default/settings.local.php"
+echo "\$settings['hash_salt'] = '$hash';" >> "$site_path/$sn/$webroot/sites/default/settings.local.php"
 fi
 fi
 
@@ -290,7 +290,7 @@ set_site_permissions () {
 # $webroot
 if [ $dev = "y" ] ; then devp="--dev" ; fi ;
 
-sudo d8fp.sh --drupal_path="$folderpath/$sn/$webroot" --drupal_user=$user --httpd_group=www-data $devp
+sudo d8fp.sh --drupal_path="$site_path/$sn/$webroot" --drupal_user=$user --httpd_group=www-data $devp
 
 }
 
@@ -321,7 +321,7 @@ if [ $theme != "" ]
 then
 echo "Install theme for $sn using uri $uri and theme $theme"
 cd
-cd $folderpath/$sn/$webroot
+cd $site_path/$sn/$webroot
 drupal --target=$uri theme:install  $theme
 drush @$sn config-set system.theme default $theme -y
 fi
@@ -434,7 +434,7 @@ if [ ! -d "$folderpath/sitebackups/$sn" ]; then
   mkdir "$folderpath/sitebackups/$sn"
 fi
 cd
-cd "$folderpath/$sn"
+cd "$site_path/$sn"
 #this will not affect a current git present
 git init
 cd "$webroot"
@@ -528,14 +528,14 @@ from=$1
 sn=$2
 echo "From $from to $sn"
 
-if [ -d $folderpath/$sn ]
+if [ -d $site_path/$sn ]
 then
-chown $user:www-data $folderpath/$sn -R
-chmod +w $folderpath/$sn -R
-rm -rf $folderpath/$sn
+chown $user:www-data $site_path/$sn -R
+chmod +w $site_path/$sn -R
+rm -rf $site_path/$sn
 fi
 
-cp -rf "$folderpath/$from" "$folderpath/$sn"
+cp -rf "$site_path/$from" "$site_path/$sn"
 
 }
 
@@ -544,16 +544,16 @@ from=$1
 sn=$2
 echo "Copy site folder from $from to $sn"
 
-if [ -d $folderpath/$sn/$webroot/sites ]
+if [ -d $site_path/$sn/$webroot/sites ]
 then
-chown $user:www-data $folderpath/$sn/$webroot/sites -R
-chmod +w $folderpath/$sn/$webroot/sites -R
-rm -rf $folderpath/$sn/$webroot/sites
+chown $user:www-data $site_path/$sn/$webroot/sites -R
+chmod +w $site_path/$sn/$webroot/sites -R
+rm -rf $site_path/$sn/$webroot/sites
 fi
 
 echo -e "\e[34mcopy private files from $from\e[39m"
-rm -rf $folderpath/$sn/private
-cp -rf "$folderpath/$from/private" "$folderpath/$sn/private"
-cp -rf "$folderpath/$from/$webroot/sites" "$folderpath/$sn/$webroot/sites"
+rm -rf $site_path/$sn/private
+cp -rf "$site_path/$from/private" "$site_path/$sn/private"
+cp -rf "$site_path/$from/$webroot/sites" "$site_path/$sn/$webroot/sites"
 
 }

@@ -21,15 +21,15 @@ HELP
 exit 0
 }
 
-rm -rf "$folderpath/$sn/$webroot/modules/custom"
-rm -rf "$folderpath/$sn/$webroot/themes/custom"
-cp -rf "$folderpath/$from/$webroot/modules/custom" "$folderpath/$sn/$webroot/modules/custom"
-cp -rf "$folderpath/$from/$webroot/themes/custom" "$folderpath/$sn/$webroot/themes/custom"
+rm -rf "$site_path/$sn/$webroot/modules/custom"
+rm -rf "$site_path/$sn/$webroot/themes/custom"
+cp -rf "$site_path/$from/$webroot/modules/custom" "$site_path/$sn/$webroot/modules/custom"
+cp -rf "$site_path/$from/$webroot/themes/custom" "$site_path/$sn/$webroot/themes/custom"
 
-chown $user:www-data $folderpath/$sn/$webroot/modules/custom -R
-chown $user:www-data $folderpath/$sn/$webroot/themes/custom -R
-chmod g+w $folderpath/$sn/$webroot/modules/custom -R
-chmod g+w $folderpath/$sn/$webroot/themes/custom -R
+chown $user:www-data $site_path/$sn/$webroot/modules/custom -R
+chown $user:www-data $site_path/$sn/$webroot/themes/custom -R
+chmod g+w $site_path/$sn/$webroot/modules/custom -R
+chmod g+w $site_path/$sn/$webroot/themes/custom -R
 drush @$sn -y en  $install_modules
 
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))

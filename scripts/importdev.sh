@@ -30,23 +30,23 @@ echo -e "\e[34mbackup whole $sn site\e[39m"
 
 #export cmi
 echo -e "\e[34mexport cmi will need sudo\e[39m"
-#sudo chown $user:www-data $folderpath/$sn -R
-#chmod g+w $folderpath/$sn/cmi -R
+#sudo chown $user:www-data $site_path/$sn -R
+#chmod g+w $site_path/$sn/cmi -R
 #drush @$from cex --destination=../cmi -y
 
 #copy files from localprod to stg
 echo -e "\e[34mcopy files from localprod may need sudo\e[39m"
-if [ -d $folderpath/$sn ]
+if [ -d $site_path/$sn ]
 then
-sudo chown $user:www-data $folderpath/$sn -R
-chmod +w $folderpath/$sn -R
-rm -rf $folderpath/$sn
+sudo chown $user:www-data $site_path/$sn -R
+chmod +w $site_path/$sn -R
+rm -rf $site_path/$sn
 fi
-cp -rf "$folderpath/localprod" "$folderpath/$sn"
+cp -rf "$site_path/localprod" "$site_path/$sn"
 
 # composer install
 echo -e "\e[34mcomposer install\e[39m"
-cd $folderpath/$sn
+cd $site_path/$sn
 composer require drush/drush:~9.0
 composer install
 set_site_permissions

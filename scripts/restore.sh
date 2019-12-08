@@ -72,7 +72,7 @@ done
 
 
 # Check to see if folder already exits.
-if [ -d "$folderpath/$sn" ]; then
+if [ -d "$site_path/$sn" ]; then
     read -p "$sn exists. If you proceed, $sn will first be deleted. Do you want to proceed?(Y/n)" question
         case $question in
             n|c|no|cancel)
@@ -85,23 +85,23 @@ fi
 
 echo -e "\e[34mrestoring files\e[39m"
 # Will need to first move the source folder ($bk) if it exists, so we can create the new folder $sn
-if [ -d "$folderpath/$bk" ]; then
-    if [ -d "$folderpath/$bk.tmp" ]; then
-      echo "$folderpath/$bk.tmp exits. There might have been a problem previously. I suggest you move $folderpath/$bk.tmp to $folderpath/$bk and try again."
+if [ -d "$site_path/$bk" ]; then
+    if [ -d "$site_path/$bk.tmp" ]; then
+      echo "$site_path/$bk.tmp exits. There might have been a problem previously. I suggest you move $site_path/$bk.tmp to $site_path/$bk and try again."
       exit 1
     fi
-    mv "$folderpath/$bk" "$folderpath/$bk.tmp"
+    mv "$site_path/$bk" "$site_path/$bk.tmp"
     echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz"
     tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C $folderpath
-    mv "$folderpath/$bk" "$folderpath/$sn"
-    mv "$folderpath/$bk.tmp" "$folderpath/$bk"
+    mv "$site_path/$bk" "$site_path/$sn"
+    mv "$site_path/$bk.tmp" "$site_path/$bk"
     else
     echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz  fp  $folderpath"
     tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C $folderpath
 fi
 
 # Move settings.php and settings.local.php out the way before they are overwritten just in case you might need them.
-setpath="$folderpath/$sn/$webroot/sites/default"
+setpath="$site_path/$sn/$webroot/sites/default"
 if [ -f "$setpath/settings.php" ] ; then mv "$setpath/settings.php" "$setpath/settings.php.old" ; fi
 if [ -f "$setpath//settings.local.php" ] ; then mv "$setpath//settings.local.php" "$setpath/settings.local.php.old" ; fi
 if [ -f "$setpath//default.settings.php" ] ; then mv "$setpath//default.settings.php" "$setpath//settings.php" ; fi

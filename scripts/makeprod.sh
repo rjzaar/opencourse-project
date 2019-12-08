@@ -36,7 +36,7 @@ drush @$sn pm-uninstall -y $dev_modules
 
 # turn off dev modules (composer)
 
-cd $folderpath/$sn
+cd $site_path/$sn
 echo "Composer install with no dev modules."
 composer install --no-dev --quiet
 

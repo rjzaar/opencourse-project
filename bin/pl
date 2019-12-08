@@ -19,6 +19,7 @@ if [ "${script_root: (-6)}" == "/bin/." ]
 then
 script_root="${script_root:0:-6}/scripts"
 fi
+
 folder=$(basename $(dirname $script_root))
 folderpath=$(dirname $script_root)
 script_root=$folderpath/scripts

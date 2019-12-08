@@ -27,7 +27,32 @@
 ##Now import it
 #result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" localprodopencat < $Name 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 #if [ "$result" = ": 0" ]; then echo "Production database imported into database localprodopencat using root"; else echo "Could not import production database into database $db using root, exiting"; exit 1; fi
-project="git@github.com:rjzaar/opencourse.git"
-echo "${project/git@github.com:/https:\/\/github.com\/}"
+#!/bin/bash
+
+# This will set up pleasy and initialise the sites as per pl.yml, including the current production shared database.
+
+# TODO?
+# install drupal console: run in user home directory:
+# composer require drupal/console:~1.0 --prefer-dist --optimize-autoloader
+
+
+# This is needed to avoid the "awk: line 43: function asorti never defined" error
+
+
+. "$script_root/_inc.sh"
+
+parse_pl_yml
+
+if [ $user="" ]
+then
+  echo "user empty"
+  user="rob"
+  project="opencat"
+fi
+
+
+#add github credentials
+git config --global user.email $github_email
+git config --global user.name $github_user
 
 

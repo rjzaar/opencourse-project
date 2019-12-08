@@ -52,8 +52,8 @@ ocmsg "Backup site $sn with msg premerge"
 backup_site $sn "premerge"
 
 ocmsg "Export config: drush cex will need sudo"
-sudo chown $user:www-data $folderpath/$sn -R
-chmod g+w $folderpath/$sn/cmi -R
+sudo chown $user:www-data $site_path/$sn -R
+chmod g+w $site_path/$sn/cmi -R
 drush @$sn cex --destination=../cmi -y
 
 echo "Add credentials."

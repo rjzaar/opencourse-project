@@ -12,6 +12,7 @@
 #  github:
 #    user: Your github user name
 #    key:  Your github key
+#    email: The email you use for github. This is to provide your identity credentials when setting up git.
 #  prod:
 #    alias: The drush alias for your production server. Pleasy will set this alias up for you.
 #    uri: Your production server URL
@@ -23,8 +24,9 @@ hosts_path: "/etc/hosts"
 vhosts_path: "/etc/apache2/sites-available/"
 user: carlos
 github:
-  user: puregift
+  user: carlos
   key:  github
+  email: carlos@example.com
 prod:
   alias: cathnet
   uri: "opencat.org"

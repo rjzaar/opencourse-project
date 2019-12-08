@@ -54,7 +54,7 @@ import_site_config $sn
 site_url="$folder.$sn"
 site_info
 # construct absolute path
-absolute_doc_root="$folderpath/$sn/$webroot"
+absolute_doc_root="$site_path/$sn/$webroot"
 echo "Site URL: $folder.$sn"
 echo "Site docroot: $absolute_doc_root"
 

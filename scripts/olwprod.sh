@@ -35,14 +35,14 @@ drush -y rsync @prod:../cmi @$sn:../cmi -- --omit-dir-times  --delete
 
 echo "Make sure the hash is present so drush sql will work."
 # Make sure the hash is present so drush sql will work.
-sfile=$(<"$folderpath/$sn/$webroot/sites/default/settings.php")
-slfile=$(<"$folderpath/$sn/$webroot/sites/default/settings.local.php")
+sfile=$(<"$site_path/$sn/$webroot/sites/default/settings.php")
+slfile=$(<"$site_path/$sn/$webroot/sites/default/settings.local.php")
 if [[ ! $sfile =~ (\'hash_salt\'\] = \') ]]
 then
 if [[ ! $slfile =~ (\'hash_salt\'\] = \') ]]
 then
   hash=$(drush php-eval 'echo \Drupal\Component\Utility\Crypt::randomBytesBase64(55)')
-echo "\$settings['hash_salt'] = '$hash';" >> "$folderpath/$sn/$webroot/sites/default/settings.local.php"
+echo "\$settings['hash_salt'] = '$hash';" >> "$site_path/$sn/$webroot/sites/default/settings.local.php"
 fi
 fi
 
