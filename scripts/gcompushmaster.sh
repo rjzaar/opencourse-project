@@ -41,7 +41,7 @@ fi
 
 parse_pl_yml
 import_site_config $sn
-cd $folderpath/$sn
+cd $site_path/$sn
 
 echo "Add credentials."
 ssh-add ~/.ssh/$github_key

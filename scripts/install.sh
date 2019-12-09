@@ -63,7 +63,7 @@ echo "Installing $sn"
 site_info
 
 # Check to see if folder already exits.
-if [ -d "$folderpath/$sn" ]; then
+if [ -d "$site_path/$sn" ]; then
     if [ ! "$#" = 2 ]
     then
     read -p "$sn exists. If you proceed, $sn will first be deleted. Do you want to proceed?(Y/n)" question
@@ -75,13 +75,13 @@ if [ -d "$folderpath/$sn" ]; then
         esac
     fi
     #first change permissions on sites/default
-    result=$(chown $user:www-data $folderpath/$sn -R 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+    result=$(chown $user:www-data $site_path/$sn -R 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
     if [ "$result" = ": 0" ]; then echo "Changed ownership of $sn to $user:www-data"
     else echo "Had errors changing ownership of $sn to $user:www-data so will need to use sudo"
-    sudo chown $user:www-data $folderpath/$sn -R
+    sudo chown $user:www-data $site_path/$sn -R
     fi
-    chmod 770 $folderpath/$sn/$webroot/sites/default -R
-    rm -rf "$folderpath/$sn"
+    chmod 770 $site_path/$sn/$webroot/sites/default -R
+    rm -rf "$site_path/$sn"
 fi
 
 if [ "$install_method" == "git" ]
@@ -91,13 +91,13 @@ then
   then
   ssh-add /home/$user/.ssh/$github_key
     echo "Cloning $project"
-  git clone $project $folderpath/$sn
+  git clone $project $site_path/$sn
   else
     echo "No github key present. Using https instead"
 #    git config --global user.name $user
 #    git config --global user.email "$user@example.com"
   echo "Cloning ${project/git@github.com:/https:\/\/github.com\/}"
-  git clone "${project/git@github.com:/https:\/\/github.com\/}" $folderpath/$sn
+  git clone "${project/git@github.com:/https:\/\/github.com\/}" $site_path/$sn
   fi
 
 
@@ -105,7 +105,7 @@ then
   then
       if [ -f /home/$user/.ssh/$github_key ]
       then
-    cd $folderpath/$sn
+    cd $site_path/$sn
     echo "$sn has upstream git so adding $git_upstream"
     git remote add upstream $git_upstream
     else
@@ -134,14 +134,14 @@ elif [ "$install_method" == "file" ]
   cd "$folderpath/downloads"
   Name="$sn.tar.gz"
   wget -O $Name $project
-  tar -xf $Name -C "$folderpath/$sn"
+  tar -xf $Name -C "$site_path/$sn"
 else
     echo "No install method specified. You need to at least edit the default recipe in pl.yml and specify \"install_method\"."
     exit 1
 fi
 
 
-cd $folderpath/$sn
+cd $site_path/$sn
 
 # Neet to check if composer is installed.
 composer install
@@ -155,10 +155,10 @@ fi
 chmod 770 $private
 
 echo "Create cmi files directory"
-if [ ! -d "$folderpath/$sn/cmi" ]; then
-  mkdir "$folderpath/$sn/cmi"
+if [ ! -d "$site_path/$sn/cmi" ]; then
+  mkdir "$site_path/$sn/cmi"
 fi
-chmod 770 "$folderpath/$sn/cmi"
+chmod 770 "$site_path/$sn/cmi"
 
 set_site_permissions
 

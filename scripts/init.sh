@@ -26,6 +26,8 @@ echo "Adding pl command to bash commands, including plcd"
 schome="/home/$user/$project/bin"
 echo $schome
 sed -i "2s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/plcd.sh"
+sed -i "3s/.*/ocwroot=\"$www_path\"/" "$schome/plcd.sh"
+sed -i "4s/.*/ocscript_root=\"$script_root\"/" "$schome/plcd.sh"
 echo "export PATH=\"\$PATH:$schome\"" >> ~/.bashrc
 echo ". $schome/plcd.sh" >> ~/.bashrc
 cd
@@ -74,6 +76,9 @@ sudo apt-get install apache2 php libapache2-mod-php php-mysql curl php-cli php-g
 #add github credentials
 git config --global user.email $github_email
 git config --global user.name $github_user
+git config --global credential.helper store
+
+
 
 echo -e "$Cyan \n Installing MySQL $Color_Off"
 # From: https://stackoverflow.com/questions/7739645/install-mysql-on-ubuntu-without-a-password-prompt
@@ -116,6 +121,11 @@ sudo chown -R $user .composer/
 
 #set up d8fp to run without password
 sudo $folderpath/scripts/lib/installd8fp.sh "$folderpath/scripts/lib/d8fp.sh" $user
+
+#set up website folder for apache
+sudo mkdir /var/www/oc
+sudo chown $user:www-data /var/www/oc
+
 
 #Set up vi to not add extra characters
 #From: https://askubuntu.com/questions/353911/hitting-arrow-keys-adds-characters-in-vi-editor

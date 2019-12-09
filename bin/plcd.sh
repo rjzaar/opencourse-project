@@ -1,18 +1,26 @@
 #!/bin/bash
-ocroot="/home/rob/opencat"
-ocwroot="/var/www"
-#Don't touch the above line it will be modified by init.sh
+ocroot="/home/rob/opencatasd"
+ocwroot="/var/wwwasd"
+ocscript_root="/home/rob/opencat/scriptsasd"
+#Don't touch the above lines it will be modified by init.sh
 
 # This will help navigate around the project site
 function plcd () {
 
 ocroots=$ocroot/scripts
-#. $ocroots/_inc.sh;
+
+
+
 if [ $# = 0 ]
 then
 cd $ocroot
 else
+. $script_root/_inc.sh;
+
+parse_pl_yml
 sn=$1
+import_site_config $sn
+
 if [[ $# -eq 1 ]]
 then
   case  $1  in
@@ -37,43 +45,43 @@ then
     s)
     cd $ocroot/scripts
     ;;
+    w)
+    cd $ocwroot/oc
+    ;;
     *)
-    cd $ocroot/$sn
+    cd $site_path/$sn
     ;;
   esac
 
 else
   case  $2  in
     d)
-    if [ -d $ocroot/$sn/docroot ] ; then cd $ocroot/$sn/docroot
-    else if [ -d $ocroot/$sn/html ] ; then cd $ocroot/$sn/html
-    else if [ -d $ocroot/$sn/web ] ; then cd $ocroot/$sn/web
-    else if [ -d $ocwroot/$sn/docroot ] ; then cd $ocwroot/$sn/docroot
-    else if [ -d $ocwroot/$sn/html ] ; then cd $ocwroot/$sn/html
-    else if [ -d $ocwroot/$sn/web ] ; then cd $ocwroot/$sn/web
+    if [ -d $site_path/$sn/docroot ] ; then cd $site_path/$sn/docroot
+    else if [ -d $site_path/$sn/html ] ; then cd $site_path/$sn/html
+    else if [ -d $site_path/$sn/web ] ; then cd $site_path/$sn/web
     else echo "webroot directory for $sn can't be found"
     fi
     fi
-    fi
-    fi
-    fi
+#    fi
+#    fi
+#    fi
     fi
     ;;
     b)
     cd $ocroot/sitebackups/$sn
     ;;
     sd)
-    if [ -d $ocroot/$sn/docroot ] ; then cd $ocroot/$sn/docroot/sites/default
-    else if [ -d $ocroot/$sn/html ] ; then cd $ocroot/$sn/html/sites/default
-    else if [ -d $ocroot/$sn/web ] ; then cd $ocroot/$sn/web/sites/default
-    else if [ -d $ocwroot/$sn/docroot ] ; then cd $ocwroot/$sn/docroot/sites/default
-    else if [ -d $ocwroot/$sn/html ] ; then cd $ocwroot/$sn/html/sites/default
-    else if [ -d $ocwroot/$sn/web ] ; then cd $ocwroot/$sn/web/sites/default\
+    if [ -d $site_path/$sn/docroot ] ; then cd $site_path/$sn/docroot/sites/default
+    else if [ -d $site_path/$sn/html ] ; then cd $site_path/$sn/html/sites/default
+    else if [ -d $site_path/$sn/web ] ; then cd $site_path/$sn/web/sites/default
+#    else if [ -d $ocwroot/$sn/docroot ] ; then cd $ocwroot/$sn/docroot/sites/default
+#    else if [ -d $ocwroot/$sn/html ] ; then cd $ocwroot/$sn/html/sites/default
+#    else if [ -d $ocwroot/$sn/web ] ; then cd $ocwroot/$sn/web/sites/default\
     else echo "sites/default directory for $sn can't be found"
     fi
-    fi
-    fi
-    fi
+#    fi
+#    fi
+#    fi
     fi
     fi
     ;;
@@ -133,32 +141,32 @@ else
     vi /etc/apache2/sites-available/$ocroot.$sn.conf
     ;;
     s)
-    if [ -f $ocroot/$sn/docroot/sites/default/settings.php ] ; then vi $ocroot/$sn/docroot/sites/default/settings.php
-    else if [ -f $ocroot/$sn/html/sites/default/settings.php ] ; then vi $ocroot/$sn/html/sites/default/settings.php
-    else if [ -f $ocroot/$sn/web/sites/default/settings.php ] ; then vi $ocroot/$sn/web/sites/default/settings.php
-    else if [ -f $ocwroot/$sn/docroot/sites/default/settings.php ] ; then vi $ocwroot/$sn/docroot/sites/default/settings.php
-    else if [ -f $ocwroot/$sn/html/sites/default/settings.php ] ; then vi $ocwroot/$sn/html/sites/default/settings.php
-    else if [ -f $ocwroot/$sn/web/sites/default/settings.php ] ; then vi $ocwroot/$sn/web/sites/default/settings.php
+    if [ -f $site_path/$sn/docroot/sites/default/settings.php ] ; then vi $site_path/$sn/docroot/sites/default/settings.php
+    else if [ -f $site_path/$sn/html/sites/default/settings.php ] ; then vi $site_path/$sn/html/sites/default/settings.php
+    else if [ -f $site_path/$sn/web/sites/default/settings.php ] ; then vi $site_path/$sn/web/sites/default/settings.php
+#    else if [ -f $ocwroot/$sn/docroot/sites/default/settings.php ] ; then vi $ocwroot/$sn/docroot/sites/default/settings.php
+#    else if [ -f $ocwroot/$sn/html/sites/default/settings.php ] ; then vi $ocwroot/$sn/html/sites/default/settings.php
+#    else if [ -f $ocwroot/$sn/web/sites/default/settings.php ] ; then vi $ocwroot/$sn/web/sites/default/settings.php
     else echo "sites/default directory for $sn can't be found"
     fi
-    fi
-    fi
-    fi
+#    fi
+#    fi
+#    fi
     fi
     fi
     ;;
     sl)
-    if [ -f $ocroot/$sn/docroot/sites/default/settings.local.php ] ; then vi $ocroot/$sn/docroot/sites/default/settings.local.php
-    else if [ -f $ocroot/$sn/html/sites/default/settings.local.php ] ; then vi $ocroot/$sn/html/sites/default/settings.local.php
-    else if [ -f $ocroot/$sn/web/sites/default/settings.local.php ] ; then vi $ocroot/$sn/web/sites/default/settings.local.php
-    else if [ -f $ocwroot/$sn/docroot/sites/default/settings.local.php ] ; then vi $ocwroot/$sn/docroot/sites/default/settings.local.php
-    else if [ -f $ocwroot/$sn/html/sites/default/settings.local.php ] ; then vi $ocwroot/$sn/html/sites/default/settings.local.php
-    else if [ -f $ocwroot/$sn/web/sites/default/settings.local.php ] ; then vi $ocwroot/$sn/web/sites/default/settings.local.php
+    if [ -f $site_path/$sn/docroot/sites/default/settings.local.php ] ; then vi $site_path/$sn/docroot/sites/default/settings.local.php
+    else if [ -f $site_path/$sn/html/sites/default/settings.local.php ] ; then vi $site_path/$sn/html/sites/default/settings.local.php
+    else if [ -f $site_path/$sn/web/sites/default/settings.local.php ] ; then vi $site_path/$sn/web/sites/default/settings.local.php
+#    else if [ -f $ocwroot/$sn/docroot/sites/default/settings.local.php ] ; then vi $ocwroot/$sn/docroot/sites/default/settings.local.php
+#    else if [ -f $ocwroot/$sn/html/sites/default/settings.local.php ] ; then vi $ocwroot/$sn/html/sites/default/settings.local.php
+#    else if [ -f $ocwroot/$sn/web/sites/default/settings.local.php ] ; then vi $ocwroot/$sn/web/sites/default/settings.local.php
     else echo "sites/default directory for $sn can't be found"
     fi
-    fi
-    fi
-    fi
+#    fi
+#    fi
+#    fi
     fi
     fi
     ;;

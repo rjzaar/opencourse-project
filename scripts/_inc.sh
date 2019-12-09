@@ -61,7 +61,7 @@ private="/home/$user/$folder/$sn/private"
 site_path="/home/$user/$folder"
 else
 private="$www_path/$sn/private"
-site_path=$www_path
+site_path="$www_path/oc"
 fi
 
 }

@@ -14,6 +14,7 @@ whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- 
 whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
 script_root=$(dirname $(whereis_realpath "$0"))
+echo "script root: $script_root"
 # get rid of 'bin'
 if [ "${script_root: (-6)}" == "/bin/." ]
 then
