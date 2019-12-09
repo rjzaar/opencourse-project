@@ -528,15 +528,21 @@ from=$1
 sn=$2
 echo "From $from to $sn"
 
-if [ -d $site_path/$sn ]
+
+#We need to work out where each site is.
+import_site_config $from
+from_sp=$site_path
+import_site_config $sn
+to_sp=$site_path
+
+if [ -d $to_sp/$sn ]
 then
-chown $user:www-data $site_path/$sn -R
-chmod +w $site_path/$sn -R
-rm -rf $site_path/$sn
+sudo chown $user:www-data $to_sp/$sn -R
+chmod +w $to_sp/$sn -R
+rm -rf $to_sp/$sn
 fi
-
-cp -rf "$site_path/$from" "$site_path/$sn"
-
+echo "Move all files from $from to $sn"
+cp -rf "$from_sp/$from" "$to_sp/$sn"
 }
 
 copy_site_folder () {

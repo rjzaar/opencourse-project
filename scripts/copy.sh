@@ -33,14 +33,20 @@ HELP
 exit 0
 }
 
-if [ -d $folderpath/$sn ]
+#We need to work out where each site is.
+import_site_config $from
+from_sp=$site_path
+import_site_config $sn
+to_sp=$site_path
+
+if [ -d $to_sp/$sn ]
 then
-sudo chown $user:www-data $folderpath/$sn -R
-chmod +w $folderpath/$sn -R
-rm -rf $folderpath/$sn
+sudo chown $user:www-data $to_sp/$sn -R
+chmod +w $to_sp/$sn -R
+rm -rf $to_sp/$sn
 fi
 echo "Move all files from $from to $sn"
-cp -rf "$folderpath/$from" "$folderpath/$sn"
+cp -rf "$from_sp/$from" "$to_sp/$sn"
 
 storesn=$sn
 sn=$from
