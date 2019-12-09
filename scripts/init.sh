@@ -9,12 +9,12 @@
 
 # This is needed to avoid the "awk: line 43: function asorti never defined" error
 echo "Will need to install gawk - sudo required"
-sudo apt-get install gawk
+#sudo apt-get install gawk
 
 . "$script_root/_inc.sh"
 
 parse_pl_yml
-
+echo "wwwpath $www_path"
 if [ $user="" ]
 then
   echo "user empty"
@@ -26,8 +26,14 @@ echo "Adding pl command to bash commands, including plcd"
 schome="/home/$user/$project/bin"
 echo $schome
 sed -i "2s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/plcd.sh"
-sed -i "3s/.*/ocwroot=\"$www_path\"/" "$schome/plcd.sh"
-sed -i "4s/.*/ocscript_root=\"$script_root\"/" "$schome/plcd.sh"
+echo "3"
+sed -i "3s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/plcd.sh"
+echo "3a"
+wwwp="${www_path////\\/}"
+sed -i  "3s/.*/ocwroot=\"$wwwp\"/" "$schome/plcd.sh"
+echo "4"
+sr="${script_root////\\/}"
+sed -i "4s/.*/ocscript_root=\"$sr\"/" "$schome/plcd.sh"
 echo "export PATH=\"\$PATH:$schome\"" >> ~/.bashrc
 echo ". $schome/plcd.sh" >> ~/.bashrc
 cd

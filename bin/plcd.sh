@@ -1,7 +1,7 @@
 #!/bin/bash
-ocroot="/home/rob/opencatasd"
-ocwroot="/var/wwwasd"
-ocscript_root="/home/rob/opencat/scriptsasd"
+ocroot="/home/rob/opencat"
+ocwroot="/var/www"
+ocscript_root="/home/rob/opencat/scripts"
 #Don't touch the above lines it will be modified by init.sh
 
 # This will help navigate around the project site
