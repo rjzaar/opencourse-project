@@ -304,9 +304,10 @@ rebuild_site () {
 # $sn
 # $webroot
 #etc
+echo "Create database and user if needed."
+make_db
 
-
-echo "Build the drupal site $sn, ie builds the database for the site."
+echo "Build the drupal site $sn"
 # drush status
 site_info
 # drupal site:install  varbase --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
@@ -442,6 +443,21 @@ msg=${1// /_}
 Name=$(date +%Y%m%d\T%H%M%S-)`git branch | grep \* | cut -d ' ' -f2 | sed -e 's/[^A-Za-z0-9._-]/_/g'`-`git rev-parse HEAD | cut -c 1-8`$msg.sql
 echo -e "\e[34mbackup db $Name\e[39m"
 drush sql-dump --structure-tables-key=common --result-file="../../sitebackups/$sn/$Name"
+
+}
+make_db () {
+  echo "Create database $db and user $dbuser if needed."
+if ! mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; then
+    # This script actually just tries to create the user since the database will be created later anyway.
+    echo "Unable to create the database $db. Check the mysql root credentials in mysql.cnf"
+    exit 1
+    else
+    echo "Database $db created."
+fi
+result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE USER $dbuser@localhost IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+if [ "$result" = ": 0" ]; then echo "Created user $dbuser"; else echo "User $dbuser already exists"; fi
+result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES ON $db.* TO '"$dbuser"'@'localhost' IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+if [ "$result" = ": 0" ]; then echo "Granted user $dbuser permissions on $db"; else echo "Could not grant user $dbuser permissions on $db"; fi
 
 }
 restore_db () {

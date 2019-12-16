@@ -160,7 +160,10 @@ if [ ! -d "$site_path/$sn/cmi" ]; then
 fi
 chmod 770 "$site_path/$sn/cmi"
 
+echo "Set site permissions and drush aliases"
 set_site_permissions
+cd "$site_path/$sn/$webroot"
+drush core:init
 
 rebuild_site
 
