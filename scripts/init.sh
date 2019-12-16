@@ -80,6 +80,7 @@ echo -e "$Cyan \n Installing Apache2 etc $Color_Off"
 sudo apt-get install apache2 php libapache2-mod-php php-mysql curl php-cli php-gd php-mbstring php-xml php-curl php-bz2 git unzip -y
 
 #add github credentials
+echo -e "$Cyan \n Add github credentials $Color_Off"
 git config --global user.email $github_email
 git config --global user.name $github_user
 git config --global credential.helper store
@@ -110,8 +111,10 @@ sudo phpenmod xml
 # Restart Apache
 echo -e "$Cyan \n Restarting Apache $Color_Off"
 sudo service apache2 restart
+
 #Check if composer is installed otherwise install it
 # From https://www.digitalocean.com/community/tutorials/how-to-install-and-use-composer-on-ubuntu-16-04?comment=67716
+echo -e "$Cyan \n Install Composer $Color_Off"
 cd
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 HASH="$(wget -q -O - https://composer.github.io/installer.sig)"
@@ -121,20 +124,30 @@ sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 sudo chown -R $user .composer/
 
 
+# Install drush globally with drush launcher
+# see: https://github.com/drush-ops/drush-launcher  ### xdebug issues?
+echo -e "$Cyan \n Install Drush globally $Color_Off"
+wget -O drush.phar https://github.com/drush-ops/drush-launcher/releases/download/0.6.0/drush.phar
+chmod +x drush.phar
+sudo mv drush.phar /usr/local/bin/drush
+
 # Add npm, nodejs: https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
 # Use node v12: https://stackoverflow.com/questions/41195952/updating-nodejs-on-ubuntu-16-04
 
 
 #set up d8fp to run without password
+echo -e "$Cyan \n Make fixing folder permissions run without sudo $Color_Off"
 sudo $folderpath/scripts/lib/installd8fp.sh "$folderpath/scripts/lib/d8fp.sh" $user
 
 #set up website folder for apache
+echo -e "$Cyan \n setup /var/wwww/oc for websites $Color_Off"
 sudo mkdir /var/www/oc
 sudo chown $user:www-data /var/www/oc
 
 
 #Set up vi to not add extra characters
 #From: https://askubuntu.com/questions/353911/hitting-arrow-keys-adds-characters-in-vi-editor
+echo -e "$Cyan \n Fix adding extra characters for vi $Color_Off"
 cat > $(dirname $script_root)/.vimrc <<EOL
 set nocompatible
 EOL
