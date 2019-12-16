@@ -57,6 +57,7 @@ if [ "$dbpass" == "" ] ; then dbpass=$dbuser ;fi
 
 if [ "$lando" == "y" ]
 then
+folder=$(basename $(dirname $script_root))
 private="/home/$user/$folder/$sn/private"
 site_path="/home/$user/$folder"
 else
@@ -83,7 +84,7 @@ fi
 }
 
 update_all_configs () {
-
+echo "update configs"
 # Update all database credentials in case the user changed any.
 # Create a list of recipes
 for f in $recipes_ ; do recipes="$recipes,${f#*_}" ; done

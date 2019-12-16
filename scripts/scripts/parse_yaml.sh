@@ -123,7 +123,6 @@ echo "Config changed, updating"
   cp $ocy "$ocy.bk"
 #else
 # echo "Config not changed. Not updating."
-pass
 fi
 
 
