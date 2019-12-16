@@ -24,14 +24,10 @@ fi
 
 echo "Adding pl command to bash commands, including plcd"
 schome="/home/$user/$project/bin"
-echo $schome
 sed -i "2s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/plcd.sh"
-echo "3"
 sed -i "3s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/plcd.sh"
-echo "3a"
 wwwp="${www_path////\\/}"
 sed -i  "3s/.*/ocwroot=\"$wwwp\"/" "$schome/plcd.sh"
-echo "4"
 sr="${script_root////\\/}"
 sed -i "4s/.*/ocscript_root=\"$sr\"/" "$schome/plcd.sh"
 echo "export PATH=\"\$PATH:$schome\"" >> ~/.bashrc
@@ -127,9 +123,34 @@ sudo chown -R $user .composer/
 # Install drush globally with drush launcher
 # see: https://github.com/drush-ops/drush-launcher  ### xdebug issues?
 echo -e "$Cyan \n Install Drush globally $Color_Off"
+if [! -f /usr/local/bin/drush ]
+then
 wget -O drush.phar https://github.com/drush-ops/drush-launcher/releases/download/0.6.0/drush.phar
-chmod +x drush.phar
+sudo chmod +x drush.phar
 sudo mv drush.phar /usr/local/bin/drush
+else
+  echo "drush already present."
+fi
+
+## Install drupal console
+## see https://drupalconsole.com/articles/how-to-install-drupal-console
+#echo -e "$Cyan \n Install Drupal console globally $Color_Off"
+#if [ ! -f /usr/local/bin/drupal ]
+#then
+#curl https://drupalconsole.com/installer -L -o drupal.phar
+##could test it
+## php drupal.phar
+#sudo mv drupal.phar /usr/local/bin/drupal
+#sudo chmod +x /usr/local/bin/drupal
+#drupal init
+##Bash or Zsh: Add this line to your shell configuration file:
+#source "$HOME/.console/console.rc" 2>/dev/null
+##Fish: Create a symbolic link
+#ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish
+#drupal self-update
+#else
+#  echo "Drupal console already present"
+#fi
 
 # Add npm, nodejs: https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
 # Use node v12: https://stackoverflow.com/questions/41195952/updating-nodejs-on-ubuntu-16-04
@@ -141,8 +162,13 @@ sudo $folderpath/scripts/lib/installd8fp.sh "$folderpath/scripts/lib/d8fp.sh" $u
 
 #set up website folder for apache
 echo -e "$Cyan \n setup /var/wwww/oc for websites $Color_Off"
+if [ ! -d /var/www/oc ]
+then
 sudo mkdir /var/www/oc
 sudo chown $user:www-data /var/www/oc
+else
+  echo "/var/wwww/oc already exists"
+fi
 
 
 #Set up vi to not add extra characters

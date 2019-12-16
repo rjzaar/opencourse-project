@@ -75,7 +75,6 @@ update_config="n"
 . $script_root/scripts/parse_yaml.sh "pl.yml" $script_root
 # Project is no longer set in pl.yml. It is collected from the context.
 project=$folder
-echo $user
 if [ $update_config == "y" ]
 then
 update_all_configs

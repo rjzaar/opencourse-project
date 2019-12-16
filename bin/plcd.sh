@@ -1,7 +1,7 @@
 #!/bin/bash
 ocroot="/home/rob/opencat"
 ocwroot="/var/www"
-ocscript_root="/home/rob/opencat/scripts"
+script_root="/home/rob/opencat/scripts"
 #Don't touch the above lines it will be modified by init.sh
 
 # This will help navigate around the project site
@@ -16,7 +16,6 @@ then
 cd $ocroot
 else
 . $script_root/_inc.sh;
-
 parse_pl_yml
 sn=$1
 import_site_config $sn
@@ -41,6 +40,9 @@ then
     ;;
     dcs)
     cd $ocroot/../.console/sites
+    ;;
+    l)
+    cd /usr/local/bin
     ;;
     s)
     cd $ocroot/scripts
