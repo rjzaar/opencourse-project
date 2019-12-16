@@ -165,8 +165,6 @@ set_site_permissions
 cd "$site_path/$sn/$webroot"
 drush core:init
 
-rebuild_site
-
 echo "Set up uri $uri. This will require sudo"
 pl sudoeuri $sn
 
