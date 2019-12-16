@@ -148,11 +148,12 @@ composer install
 
 fix_site_settings
 
-echo "Create private files directory"
-if [ ! -d $private ]; then
-  mkdir $private
+echo "Create private files directory $site_path/$sn/private"
+echo "BTW private is $private"
+if [ ! -d "$site_path/$sn/private" ]; then
+  mkdir ""$site_path/$sn/private""
 fi
-chmod 770 $private
+chmod 770 "$site_path/$sn/private"
 
 echo "Create cmi files directory"
 if [ ! -d "$site_path/$sn/cmi" ]; then
