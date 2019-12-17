@@ -212,9 +212,16 @@ fix_site_settings () {
 # $site_path
 
 # Check that settings.php has reference to local.settings.php
+echo "Making sure settings.php exists"
 if [ ! -f "$site_path/$sn/$webroot/sites/default/settings.php" ]
 then
-cp "$site_path/$sn/$webroot/sites/default/default.settings.php" "$site_path/$sn/$webroot/sites/default/settings.php"
+  if [ ! -f "$site_path/$sn/$webroot/sites/default/default.settings.php" ]
+  then
+    echo "$site_path/$sn/$webroot/sites/default/default.settings.php does not exist. Please add it and try again."
+    exit 1
+    else
+    cp "$site_path/$sn/$webroot/sites/default/default.settings.php" "$site_path/$sn/$webroot/sites/default/settings.php"
+fi
 fi
 
 sfile=$(<"$site_path/$sn/$webroot/sites/default/settings.php")
@@ -372,6 +379,11 @@ backup_site () {
 #use git: https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/set-up-a-local-development-drupal-0-7
 cd
 # Check if site backup folder exists
+if [ ! -d "$folder/sitebackups" ]; then
+  mkdir "$folder/sitebackups"
+fi
+
+# Check if site backup folder exists
 if [ ! -d "$folder/sitebackups/$sn" ]; then
   mkdir "$folder/sitebackups/$sn"
 fi
@@ -416,12 +428,17 @@ fi
 Name="prod$(date +%Y%m%d\T%H%M%S-)$msg"
 Namesql="$folderpath/sitebackups/prod/$Name.sql"
 echo -e "\e[34mbackup db $Name.sql\e[39m"
-drush @prod sql-dump   > "$Namesql"
+echo "Trying $Namesql "
+#drush @prod sql-dump   > "$Namesql"
+drush @prod sql-dump  --result-file="$prod_docroot/../../../$Name.sql"
+scp "$prod_alias:$Name.sql" "$folderpath/sitebackups/prod/$Name.sql"
 #gzip -d "$Namesql.gz"
 
 Namef=$Name.tar
 echo -e "\e[34mbackup files $Namef\e[39m"
-drush @prod ard --destination="$prod_docroot/../../../$Name"
+# drush ard doesn't work in drush 9 onwards. so use tar instead
+#drush @prod ard --destination="$prod_docroot/../../../$Name"
+ssh $prod_alias "tar --exclude='$prod_docroot/sites/default/settings.local.php' -zcf \"$prod_docroot/../../../$Name\" \"$prod_docroot/..\""
 scp "$prod_alias:$Name" "$folderpath/sitebackups/prod/$Name.tar"
 tar -czf  $folderpath/sitebackups/prod/$Name.tar.gz $folderpath/sitebackups/prod/$Name.tar
 rm $folderpath/sitebackups/prod/$Name.tar

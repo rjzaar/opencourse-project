@@ -14,22 +14,38 @@ fi
 
 #start timer
 SECONDS=0
-if [ $1 == "restore" ] && [ -z "$2" ]
+if [ $1 = "restore" ] && [ -z "$2" ]
   then
     echo "No site specified"
     print_help
     exit 1
 fi
+auto="no"
 if [ -z "$2" ]
   then
     sn=$1
     bk=$1
     echo -e "\e[34mrestore $1 \e[39m"
-   else
-    bk=$1
-    sn=$2
-    echo -e "\e[34mrestoring $1 to $2 \e[39m"
-fi
+   elif [ "$2" = "-y" ]
+     then
+        auto="yes"
+        sn=$1
+        bk=$1
+        echo -e "\e[34mrestore $1 with latest backup\e[39m"
+      else
+        if [ "$3" = "-y" ]
+        then
+          bk=$1
+          sn=$2
+          echo -e "\e[34mrestoring $1 to $2 with latest backup\e[39m"
+          auto="yes"
+        else
+          bk=$1
+          sn=$2
+          echo -e "\e[34mrestoring $1 to $2 \e[39m"
+        fi
+    fi
+
 
 # Help menu
 print_help() {
@@ -54,9 +70,13 @@ import_site_config $sn
 prompt="Please select a backup:"
 cd
 cd "$folder/sitebackups/$bk"
-
+echo "auto is $auto"
 options=( $(find -maxdepth 1 -name "*.sql" -print0 | xargs -0 ls -1 -t ) )
-
+if [ $auto = "yes" ]
+then
+  Name=${options[0]:2}
+  echo "Restoring with $Name"
+else
 PS3="$prompt "
 select opt in "${options[@]}" "Quit" ; do
     if (( REPLY == 1 + ${#options[@]} )) ; then
@@ -69,10 +89,12 @@ select opt in "${options[@]}" "Quit" ; do
         echo "Invalid option. Try another one."
     fi
 done
-
+fi
 
 # Check to see if folder already exits.
 if [ -d "$site_path/$sn" ]; then
+    if [ $auto = "no" ]
+    then
     read -p "$sn exists. If you proceed, $sn will first be deleted. Do you want to proceed?(Y/n)" question
         case $question in
             n|c|no|cancel)
@@ -80,6 +102,7 @@ if [ -d "$site_path/$sn" ]; then
             exit 1
             ;;
         esac
+    fi
     rm -rf $sn
 fi
 
@@ -101,6 +124,7 @@ if [ -d "$site_path/$bk" ]; then
 fi
 
 # Move settings.php and settings.local.php out the way before they are overwritten just in case you might need them.
+echo "Moving settings.php and settings.local.php"
 setpath="$site_path/$sn/$webroot/sites/default"
 if [ -f "$setpath/settings.php" ] ; then mv "$setpath/settings.php" "$setpath/settings.php.old" ; fi
 if [ -f "$setpath//settings.local.php" ] ; then mv "$setpath//settings.local.php" "$setpath/settings.local.php.old" ; fi
@@ -108,7 +132,7 @@ if [ -f "$setpath//default.settings.php" ] ; then mv "$setpath//default.settings
 
 ### do I need to deal with services.yml?
 
-. $folderpath/scripts/fixss.sh $sn
+pl fixss $sn
 
 
 

@@ -132,6 +132,13 @@ else
   echo "drush already present."
 fi
 
+# Also need to install drush globally so drush will work outside of drupal sites
+# see https://www.jeffgeerling.com/blog/2018/drupal-vm-48-and-drush-900-some-major-changes
+cd
+composer global require drush/drush
+echo "export DRUSH_LAUNCHER_FALLBACK=~/.composer/vendor/bin/drush" >> ~/.bashrc
+
+
 ## Install drupal console
 ## see https://drupalconsole.com/articles/how-to-install-drupal-console
 #echo -e "$Cyan \n Install Drupal console globally $Color_Off"

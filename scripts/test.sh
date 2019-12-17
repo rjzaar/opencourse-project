@@ -39,20 +39,41 @@
 # This is needed to avoid the "awk: line 43: function asorti never defined" error
 
 
-. "$script_root/_inc.sh"
 
-parse_pl_yml
 
-if [ $user="" ]
+
+auto="no"
+if [ -z "$2" ]
+  then
+    sn=$1
+    bk=$1
+    echo -e "\e[34mrestore $1 \e[39m"
+   elif [ "$2" = "-y" ]
+     then
+        auto="yes"
+        sn=$1
+        bk=$1
+        echo -e "\e[34mrestore $1 with latest backup\e[39m"
+      else
+        if [ "$3" = "-y" ]
+        then
+          bk=$1
+          sn=$2
+          echo -e "\e[34mrestoring $1 to $2 with latest backup\e[39m"
+          auto="yes"
+        else
+          bk=$1
+          sn=$2
+          echo -e "\e[34mrestoring $1 to $2 \e[39m"
+        fi
+    fi
+
+echo "sn = $sn bk = $bk auto = $auto"
+
+if [ $auto = "yes" ]
 then
-  echo "user empty"
-  user="rob"
-  project="opencat"
+  Name="hello"
+  echo "Restoring with $Name"
+else
+echo "prompt"
 fi
-
-
-#add github credentials
-git config --global user.email $github_email
-git config --global user.name $github_user
-
-
