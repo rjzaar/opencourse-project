@@ -33,6 +33,7 @@ prod:
   user: puregift
   docroot: "/home/puregift/opencat.org/opencourse/docroot"
 verbose: y
+www_path: "/var/www/oc"
 #
 # Since you can create many different sites, each in its own folder. There are certain commands that work with dev, stg and localprod
 # So these need to be specified. Therefore you can change them as you like.
@@ -87,9 +88,11 @@ recipes:
     theme_admin: octheme_admin
     install_modules: oc_prod
     dev_modules: oc_dev
+    lando: n
   loc:
-    install_modules: oc_prod
   stg:
+  locl:
+    lando: y
   localprod:
     dev:  n
   ins:
