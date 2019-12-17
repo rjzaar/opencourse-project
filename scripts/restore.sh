@@ -20,7 +20,7 @@ if [ $1 = "restore" ] && [ -z "$2" ]
     print_help
     exit 1
 fi
-auto="no"
+bauto="no"
 if [ -z "$2" ]
   then
     sn=$1
@@ -28,7 +28,7 @@ if [ -z "$2" ]
     echo -e "\e[34mrestore $1 \e[39m"
    elif [ "$2" = "-y" ]
      then
-        auto="yes"
+        bauto="yes"
         sn=$1
         bk=$1
         echo -e "\e[34mrestore $1 with latest backup\e[39m"
@@ -38,7 +38,7 @@ if [ -z "$2" ]
           bk=$1
           sn=$2
           echo -e "\e[34mrestoring $1 to $2 with latest backup\e[39m"
-          auto="yes"
+          bauto="yes"
         else
           bk=$1
           sn=$2
@@ -70,9 +70,9 @@ import_site_config $sn
 prompt="Please select a backup:"
 cd
 cd "$folder/sitebackups/$bk"
-echo "auto is $auto"
+echo "auto is $bauto"
 options=( $(find -maxdepth 1 -name "*.sql" -print0 | xargs -0 ls -1 -t ) )
-if [ $auto = "yes" ]
+if [ $bauto = "yes" ]
 then
   Name=${options[0]:2}
   echo "Restoring with $Name"

@@ -217,9 +217,14 @@ if [ ! -f "$site_path/$sn/$webroot/sites/default/settings.php" ]
 then
   if [ ! -f "$site_path/$sn/$webroot/sites/default/default.settings.php" ]
   then
+    if [ -f "$site_path/$sn/$webroot/sites/default/settings.php.old" ]
+    then
+      cp "$site_path/$sn/$webroot/sites/default/settings.php.old" "$site_path/$sn/$webroot/sites/default/settings.php"
+    else
     echo "$site_path/$sn/$webroot/sites/default/default.settings.php does not exist. Please add it and try again."
     exit 1
-    else
+    fi
+   else
     cp "$site_path/$sn/$webroot/sites/default/default.settings.php" "$site_path/$sn/$webroot/sites/default/settings.php"
 fi
 fi

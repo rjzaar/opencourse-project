@@ -77,3 +77,9 @@ then
 else
 echo "prompt"
 fi
+  hash=$(echo -n $RANDOM | md5sum)
+  hash2=$(echo -n $RANDOM | md5sum)
+  hash="${hash::-3}${hash2::-3}"
+  hash="${hash:0:55}"
+
+  echo $hash

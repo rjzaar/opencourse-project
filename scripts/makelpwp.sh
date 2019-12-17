@@ -8,6 +8,21 @@ sn="$sites_localprod"
 echo "Importing production site into $sn"
 
 import_site_config $sn
+step=1
+for i in "$@"
+do
+case $i in
+    -s=*|--step=*)
+    step="${i#*=}"
+    shift # past argument=value
+    ;;
+    -h|--help) print_help;;
+    *)
+    shift # past argument=value
+    ;;
+esac
+done
+
 
 # Help menu
 print_help() {
@@ -20,42 +35,66 @@ HELP
 exit 0
 }
 
+if [ $step -gt 1 ] ; then
+  echo "Starting from step $step"
+fi
 
 #First backup the current localprod site if it exists
+if [ $step -lt 2 ] ; then
 echo "step 1: backup current sn"
 pl backup $sn "presync"
-
+fi
 #pull db and all files from prod
 ### going to need to fix security. settings.local.php only have hash. all other cred in settings so not shared.
 #echo "pre rsync"
 #drush -y rsync @prod @$sn -- --omit-dir-times --delete
+if [ $step -lt 3 ] ; then
 echo "step 2: backup production"
 to=$sn
 backup_prod
 # sql file: $Namesql
 # all files: $folderpath/sitebackups/prod/$Name.tar.gz
 sn=$to
+fi
 
+if [ $step -lt 4 ] ; then
 echo "step 3: restore production to $sn"
 pl restore prod $sn -y
+fi
 
-
-echo "post first rsync"
-pl fixss $sn
-#drush -y rsync @prod:../private @$sn:../private -- --omit-dir-times  --delete
-#drush -y rsync @prod:../cmi @$sn:../cmi -- --omit-dir-times  --delete
-
-echo "Make sure the hash is present so drush sql will work."
+if [ $step -lt 5 ] ; then
+echo "step 4: Fix site settings"
+fix_site_settings
+echo "Make sure the hash is present so drush sql will work in $site_path/$sn/$webroot/sites/default/."
 # Make sure the hash is present so drush sql will work.
 sfile=$(<"$site_path/$sn/$webroot/sites/default/settings.php")
 slfile=$(<"$site_path/$sn/$webroot/sites/default/settings.local.php")
+echo "sfile $site_path/$sn/$webroot/sites/default/settings.php  slfile $site_path/$sn/$webroot/sites/default/settings.local.php"
+cd "$site_path/$sn/$webroot"
 if [[ ! $sfile =~ (\'hash_salt\'\] = \') ]]
 then
 if [[ ! $slfile =~ (\'hash_salt\'\] = \') ]]
 then
-  hash=$(drush php-eval 'echo \Drupal\Component\Utility\Crypt::randomBytesBase64(55)')
+  hash=$(echo -n $RANDOM | md5sum)
+  hash2=$(echo -n $RANDOM | md5sum)
+  hash="${hash::-3}${hash2::-3}"
+  hash="${hash:0:55}"
+#  hash=$(drush php-eval 'echo \Drupal\Component\Utility\Crypt::randomBytesBase64(55)')
 echo "\$settings['hash_salt'] = '$hash';" >> "$site_path/$sn/$webroot/sites/default/settings.local.php"
+echo "Added hash salt"
 fi
+fi
+fi
+
+if [ $step -lt 6 ] ; then
+echo "step 5: rsync private and cmi folders"
+drush -y rsync @prod:../private @$sn:../ -- --omit-dir-times  --delete
+drush -y rsync @prod:../cmi @$sn:../ -- --omit-dir-times  --delete
+fi
+
+if [ $step -lt 7 ] ; then
+echo "step 6: Fix site permissions"
+set_site_permissions
 fi
 
 # Now get the database
