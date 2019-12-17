@@ -305,6 +305,7 @@ rebuild_site () {
 # $webroot
 #etc
 echo "Create database and user if needed."
+
 make_db
 
 echo "Build the drupal site $sn"

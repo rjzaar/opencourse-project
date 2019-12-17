@@ -162,9 +162,12 @@ fi
 chmod 770 "$site_path/$sn/cmi"
 
 echo "Set site permissions and drush aliases"
-set_site_permissions
 cd "$site_path/$sn/$webroot"
 drush core:init
+set_site_permissions
+
+echo "Now building site."
+rebuild_site $sn
 
 echo "Set up uri $uri. This will require sudo"
 pl sudoeuri $sn
