@@ -103,25 +103,15 @@ if [ -d "$site_path/$sn" ]; then
             ;;
         esac
     fi
-    rm -rf $sn
-fi
+    rm -rf "$site_path/$sn"
 
+fi
+mkdir "$site_path/$sn"
 echo -e "\e[34mrestoring files\e[39m"
 # Will need to first move the source folder ($bk) if it exists, so we can create the new folder $sn
-if [ -d "$site_path/$bk" ]; then
-    if [ -d "$site_path/$bk.tmp" ]; then
-      echo "$site_path/$bk.tmp exits. There might have been a problem previously. I suggest you move $site_path/$bk.tmp to $site_path/$bk and try again."
-      exit 1
-    fi
-    mv "$site_path/$bk" "$site_path/$bk.tmp"
-    echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz"
-    tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C $folderpath
-    mv "$site_path/$bk" "$site_path/$sn"
-    mv "$site_path/$bk.tmp" "$site_path/$bk"
-    else
-    echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz  fp  $folderpath"
-    tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C $folderpath
-fi
+echo "path $site_path/$bk folderpath $folderpath"
+echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz into $site_path/$sn"
+tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C "$site_path/$sn"
 
 # Move settings.php and settings.local.php out the way before they are overwritten just in case you might need them.
 echo "Moving settings.php and settings.local.php"
@@ -143,6 +133,26 @@ db_defaults
 
 restore_db
 
+exit 0
+
+# Old way
+echo -e "\e[34mrestoring files\e[39m"
+# Will need to first move the source folder ($bk) if it exists, so we can create the new folder $sn
+echo "path $site_path/$bk folderpath $folderpath"
+if [ -d "$site_path/$bk" ]; then
+    if [ -d "$site_path/$bk.tmp" ]; then
+      echo "$site_path/$bk.tmp exits. There might have been a problem previously. I suggest you move $site_path/$bk.tmp to $site_path/$bk and try again."
+      exit 1
+    fi
+    mv "$site_path/$bk" "$site_path/$bk.tmp"
+    echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz"
+    tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C $folderpath
+    mv "$site_path/$bk" "$site_path/$sn"
+    mv "$site_path/$bk.tmp" "$site_path/$bk"
+    else
+    echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz  fp  $folderpath"
+    tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C $folderpath
+fi
 
 
 

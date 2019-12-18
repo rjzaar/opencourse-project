@@ -439,14 +439,14 @@ drush @prod sql-dump  --result-file="$prod_docroot/../../../$Name.sql"
 scp "$prod_alias:$Name.sql" "$folderpath/sitebackups/prod/$Name.sql"
 #gzip -d "$Namesql.gz"
 
-Namef=$Name.tar
+Namef=$Name.tar.gz
 echo -e "\e[34mbackup files $Namef\e[39m"
 # drush ard doesn't work in drush 9 onwards. so use tar instead
 #drush @prod ard --destination="$prod_docroot/../../../$Name"
-ssh $prod_alias "tar --exclude='$prod_docroot/sites/default/settings.local.php' -zcf \"$prod_docroot/../../../$Name\" \"$prod_docroot/..\""
-scp "$prod_alias:$Name" "$folderpath/sitebackups/prod/$Name.tar"
-tar -czf  $folderpath/sitebackups/prod/$Name.tar.gz $folderpath/sitebackups/prod/$Name.tar
-rm $folderpath/sitebackups/prod/$Name.tar
+ssh $prod_alias "tar --exclude='$prod_docroot/sites/default/settings.local.php' -zcf \"$Namef\" \"$prod_docroot/..\""
+scp "$prod_alias:$Namef" "$folderpath/sitebackups/prod/$Namef"
+#tar -czf  $folderpath/sitebackups/prod/$Name.tar.gz $folderpath/sitebackups/prod/$Name.tar
+#rm $folderpath/sitebackups/prod/$Name.tar
 }
 
 backup_db () {
