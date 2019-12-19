@@ -34,8 +34,9 @@ echo "export PATH=\"\$PATH:$schome\"" >> ~/.bashrc
 echo ". $schome/plextras.sh" >> ~/.bashrc
 
 #prep up the debug command with cli and apached locations
-ocbin="/home/$user/$project/lib"
-sed -i "2s|.*|phpcli=\"$phpcl\"|" "$ocbin/debug.sh"
+echo "adding debug command"
+ocbin="/home/$user/$project/scripts/lib"
+sed -i "2s|.*|phpcli=\"$phpcli\"|" "$ocbin/debug.sh"
 sed -i "3s|.*|phpapache=\"$phpapache\"|" "$ocbin/debug.sh"
 
 cd
