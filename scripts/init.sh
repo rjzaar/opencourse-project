@@ -29,7 +29,7 @@ sed -i "3s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/plcd.sh"
 wwwp="${www_path////\\/}"
 sed -i  "3s/.*/ocwroot=\"$wwwp\"/" "$schome/plcd.sh"
 sr="${script_root////\\/}"
-sed -i "4s/.*/ocscript_root=\"$sr\"/" "$schome/plcd.sh"
+sed -i "4s/.*/script_root=\"$sr\"/" "$schome/plcd.sh"
 echo "export PATH=\"\$PATH:$schome\"" >> ~/.bashrc
 echo ". $schome/plcd.sh" >> ~/.bashrc
 cd
@@ -52,19 +52,6 @@ echo "mysql.cnf already exists"
 fi
 
 #Could check install of drush, drupal console, etc.
-
-# Modified from: https://gist.github.com/aamnah/f03c266d715ed479eb46
-#COLORS
-# Reset
-Color_Off='\033[0m'       # Text Reset
-
-# Regular Colors
-Red='\033[0;31m'          # Red
-Green='\033[0;32m'        # Green
-Yellow='\033[0;33m'       # Yellow
-Purple='\033[0;35m'       # Purple
-Cyan='\033[0;36m'         # Cyan
-
 
 # see: https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/installing-php-mysql-and-apache-under
 # Update packages and Upgrade system
@@ -123,7 +110,7 @@ sudo chown -R $user .composer/
 # Install drush globally with drush launcher
 # see: https://github.com/drush-ops/drush-launcher  ### xdebug issues?
 echo -e "$Cyan \n Install Drush globally $Color_Off"
-if [! -f /usr/local/bin/drush ]
+if [ ! -f /usr/local/bin/drush ]
 then
 wget -O drush.phar https://github.com/drush-ops/drush-launcher/releases/download/0.6.0/drush.phar
 sudo chmod +x drush.phar
@@ -134,8 +121,13 @@ fi
 
 # Also need to install drush globally so drush will work outside of drupal sites
 # see https://www.jeffgeerling.com/blog/2018/drupal-vm-48-and-drush-900-some-major-changes
+# see https://docs.drush.org/en/8.x/install-alternative/  and
+# see https://github.com/consolidation/cgr
 cd
-composer global require drush/drush
+#composer global require drush/drush
+composer global require consolidation/cgr
+echo "export PATH=\"\$(composer config -g home)/vendor/bin:$PATH\"" >> ~/.bashrc
+cgr drush/drush
 echo "export DRUSH_LAUNCHER_FALLBACK=~/.composer/vendor/bin/drush" >> ~/.bashrc
 
 

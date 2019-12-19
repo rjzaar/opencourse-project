@@ -34,32 +34,33 @@ exit 0
 }
 
 #We need to work out where each site is.
+to=$sn
 import_site_config $from
+backup_db
 from_sp=$site_path
-import_site_config $sn
+sn=$to
+import_site_config $to
 to_sp=$site_path
 
-if [ -d $to_sp/$sn ]
+if [ -d $to_sp/$to ]
 then
-sudo chown $user:www-data $to_sp/$sn -R
-chmod +w $to_sp/$sn -R
-rm -rf $to_sp/$sn
+sudo chown $user:www-data $to_sp/$to -R
+chmod +w $to_sp/$to -R
+rm -rf $to_sp/$to
 fi
-echo "Move all files from $from to $sn"
-cp -rf "$from_sp/$from" "$to_sp/$sn"
+echo "Move all files from $from to $to"
+cp -rf "$from_sp/$from" "$to_sp/$to"
 
-storesn=$sn
-sn=$from
-import_site_config $sn
-backup_db $from
-sn=$storesn
-import_site_config $sn
-bk=$from
+## Now get the name of the backup.
+#cd
+#cd "$folder/sitebackups/$from"
+#options=( $(find -maxdepth 1 -name "*.sql" -print0 | xargs -0 ls -1 -t ) )
+#Name=${options[0]:2}
+
 #Note $Name was set in backup_db and will now be used in the restore_db. Nice hey.
-
-
 fix_site_settings
 set_site_permissions
+bk=$from
 restore_db
 
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))

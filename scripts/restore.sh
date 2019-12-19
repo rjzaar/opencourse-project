@@ -91,6 +91,7 @@ select opt in "${options[@]}" "Quit" ; do
 done
 fi
 
+echo " site_path: $site_path/$sn"
 # Check to see if folder already exits.
 if [ -d "$site_path/$sn" ]; then
     if [ $auto = "no" ]
@@ -109,7 +110,7 @@ fi
 mkdir "$site_path/$sn"
 echo -e "\e[34mrestoring files\e[39m"
 # Will need to first move the source folder ($bk) if it exists, so we can create the new folder $sn
-echo "path $site_path/$bk folderpath $folderpath"
+echo "path $site_path/$sn folderpath $folderpath"
 echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz into $site_path/$sn"
 tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C "$site_path/$sn"
 

@@ -7,6 +7,18 @@ myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -
 whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
 whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
+# Modified from: https://gist.github.com/aamnah/f03c266d715ed479eb46
+#COLORS
+# Reset
+Color_Off='\033[0m'       # Text Reset
+
+# Regular Colors
+Red='\033[0;31m'          # Red
+Green='\033[0;32m'        # Green
+Yellow='\033[0;33m'       # Yellow
+Purple='\033[0;35m'       # Purple
+Cyan='\033[0;36m'         # Cyan
+
 import_site_config () {
 # setup basic defaults
 sn=$1
@@ -51,11 +63,11 @@ rp="recipes_${sn}_install_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then ins
 rp="recipes_${sn}_dev_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev_modules=${!rp} ; fi
 rp="recipes_${sn}_lando" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then lando=${!rp} ; fi
 
-if [ "$db" == "" ] ; then db="$sn$folder" ; fi
-if [ "$dbuser" == "" ] ; then dbuser=$db ; fi
-if [ "$dbpass" == "" ] ; then dbpass=$dbuser ;fi
+if [ "$db" = "" ] ; then db="$sn$folder" ; fi
+if [ "$dbuser" = "" ] ; then dbuser=$db ; fi
+if [ "$dbpass" = "" ] ; then dbpass=$dbuser ;fi
 
-if [ "$lando" == "y" ]
+if [ "$lando" = "y" ]
 then
 folder=$(basename $(dirname $script_root))
 private="/home/$user/$folder/$sn/private"
@@ -272,17 +284,33 @@ EOL
 fi
 echo "Added local.settings.php to $sn"
 
+#echo "Make sure the hash is present so drush sql will work in $site_path/$sn/$webroot/sites/default/."
 # Make sure the hash is present so drush sql will work.
+#cd "$site_path/$sn/$webroot"
+
+#remove empty hash_salt if it exists
+ sed -i "s/\$settings\['hash_salt'\] = '';//g" "$site_path/$sn/$webroot/sites/default/settings.php"
 sfile=$(<"$site_path/$sn/$webroot/sites/default/settings.php")
 slfile=$(<"$site_path/$sn/$webroot/sites/default/settings.local.php")
+#echo "sfile $site_path/$sn/$webroot/sites/default/settings.php  slfile $site_path/$sn/$webroot/sites/default/settings.local.php"
+
 if [[ ! $sfile =~ (\'hash_salt\'\] = \') ]]
 then
+#  echo "settings.php does not have hash_salt"
 if [[ ! $slfile =~ (\'hash_salt\'\] = \') ]]
 then
-  hash=$(drush php-eval 'echo \Drupal\Component\Utility\Crypt::randomBytesBase64(55)')
+#    echo "settings.local.php does not have hash_salt"
+  hash=$(echo -n $RANDOM | md5sum)
+  hash2=$(echo -n $RANDOM | md5sum)
+  hash="${hash::-3}${hash2::-3}"
+  hash="${hash:0:55}"
+# The line below causes an error since drush may not be called from webroot or above, hence the code above.
+#  hash=$(drush php-eval 'echo \Drupal\Component\Utility\Crypt::randomBytesBase64(55)')
 echo "\$settings['hash_salt'] = '$hash';" >> "$site_path/$sn/$webroot/sites/default/settings.local.php"
+echo "Added hash salt"
 fi
 fi
+
 
 }
 ocmsg () {
@@ -450,6 +478,7 @@ scp "$prod_alias:$Namef" "$folderpath/sitebackups/prod/$Namef"
 }
 
 backup_db () {
+echo -e "$Green backing up $sn $Color_Off"
 
 #backup db.
 #use git: https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/set-up-a-local-development-drupal-0-7
@@ -465,7 +494,9 @@ cd "$webroot"
 msg=${1// /_}
 Name=$(date +%Y%m%d\T%H%M%S-)`git branch | grep \* | cut -d ' ' -f2 | sed -e 's/[^A-Za-z0-9._-]/_/g'`-`git rev-parse HEAD | cut -c 1-8`$msg.sql
 echo -e "\e[34mbackup db $Name\e[39m"
-drush sql-dump --structure-tables-key=common --result-file="../../sitebackups/$sn/$Name"
+drush @$sn sset system.maintenance_mode TRUE
+drush @$sn sql-dump --result-file="$folderpath/sitebackups/$sn/$Name"
+drush @$sn sset system.maintenance_mode FALSE
 
 }
 make_db () {
@@ -516,7 +547,8 @@ fi
 echo -e "\e[34mrestore $db database using $folderpath/sitebackups/$bk/$Name\e[39m"
 result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" $db < "$folderpath/sitebackups/$bk/$Name" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 if [ "$result" = ": 0" ]; then echo "Backup database $Name imported into database $db using root"; else echo "Could not import $Name into database $db using root, exiting"; exit 1; fi
-
+drush @$sn cr
+drush @$sn sset system.maintenance_mode TRUE
 }
 
 test_site () {

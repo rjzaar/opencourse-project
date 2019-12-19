@@ -41,7 +41,7 @@ fi
 
 #First backup the current localprod site if it exists
 if [ $step -lt 2 ] ; then
-echo "step 1: backup current sn"
+echo "step 1: backup current sn $sn"
 pl backup $sn "presync"
 fi
 #pull db and all files from prod
@@ -63,34 +63,8 @@ pl restore prod $sn -y
 fi
 
 if [ $step -lt 5 ] ; then
-echo "step 4: Fix site settings"
+echo -e "$Green step 4: Fix site settings $Color_off"
 fix_site_settings
-echo "Make sure the hash is present so drush sql will work in $site_path/$sn/$webroot/sites/default/."
-# Make sure the hash is present so drush sql will work.
-sfile=$(<"$site_path/$sn/$webroot/sites/default/settings.php")
-slfile=$(<"$site_path/$sn/$webroot/sites/default/settings.local.php")
-echo "sfile $site_path/$sn/$webroot/sites/default/settings.php  slfile $site_path/$sn/$webroot/sites/default/settings.local.php"
-cd "$site_path/$sn/$webroot"
-
-#remove empty hash_salt if it exists
- sed -i "s/\$settings\['hash_salt'\] = '';//g" "$site_path/$sn/$webroot/sites/default/settings.php"
-
-if [[ ! $sfile =~ (\'hash_salt\'\] = \') ]]
-then
-  echo "settings.php does not have hash_salt"
-if [[ ! $slfile =~ (\'hash_salt\'\] = \') ]]
-then
-    echo "settings.local.php does not have hash_salt"
-  hash=$(echo -n $RANDOM | md5sum)
-  hash2=$(echo -n $RANDOM | md5sum)
-  hash="${hash::-3}${hash2::-3}"
-  hash="${hash:0:55}"
-  echo "hash $hash"
-#  hash=$(drush php-eval 'echo \Drupal\Component\Utility\Crypt::randomBytesBase64(55)')
-echo "\$settings['hash_salt'] = '$hash';" >> "$site_path/$sn/$webroot/sites/default/settings.local.php"
-echo "Added hash salt"
-fi
-fi
 fi
 
 #if [ $step -lt 6 ] ; then

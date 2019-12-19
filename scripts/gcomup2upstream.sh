@@ -52,13 +52,13 @@ ocmsg "Composer install"
 composer install
 
 ocmsg "Run db updates"
-drush @$sn dbup
+drush @$sn updb
 
 ocmsg "Export config: drush cex will need sudo"
 sudo chown $user:www-data $site_path/$sn -R
 chmod g+w $site_path/$sn/cmi -R
 drush @$sn cex --destination=../cmi -y
-gcom $sn "pre-up2upstream commit"
+pl gcom $sn "pre-up2upstream commit"
 
 # Move Readme out the way for now.
 echo "Move readme out the way"
