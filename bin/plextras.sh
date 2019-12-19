@@ -195,3 +195,4 @@ source ~/.bashrc
 function addc () {
 ssh-add ~/.ssh/github
 }
+

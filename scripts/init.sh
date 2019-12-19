@@ -3,8 +3,8 @@
 # This will set up pleasy and initialise the sites as per pl.yml, including the current production shared database.
 
 # TODO?
-# install drupal console: run in user home directory:
-# composer require drupal/console:~1.0 --prefer-dist --optimize-autoloader
+# Add npm, nodejs: https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
+# Use node v12: https://stackoverflow.com/questions/41195952/updating-nodejs-on-ubuntu-16-04
 
 
 # This is needed to avoid the "awk: line 43: function asorti never defined" error
@@ -15,23 +15,29 @@ echo "Will need to install gawk - sudo required"
 
 parse_pl_yml
 echo "wwwpath $www_path"
-if [ $user="" ]
+if [ $user = "" ]
 then
   echo "user empty"
   user="rob"
   project="opencat"
 fi
 
-echo "Adding pl command to bash commands, including plcd"
+echo "Adding pl command to bash commands, including plextras"
 schome="/home/$user/$project/bin"
-sed -i "2s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/plcd.sh"
-sed -i "3s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/plcd.sh"
+sed -i "2s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/plextras.sh"
+#sed -i "3s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/plextras.sh"
 wwwp="${www_path////\\/}"
-sed -i  "3s/.*/ocwroot=\"$wwwp\"/" "$schome/plcd.sh"
+sed -i  "3s/.*/ocwroot=\"$wwwp\"/" "$schome/plextras.sh"
 sr="${script_root////\\/}"
-sed -i "4s/.*/script_root=\"$sr\"/" "$schome/plcd.sh"
+sed -i "4s/.*/script_root=\"$sr\"/" "$schome/plextras.sh"
 echo "export PATH=\"\$PATH:$schome\"" >> ~/.bashrc
-echo ". $schome/plcd.sh" >> ~/.bashrc
+echo ". $schome/plextras.sh" >> ~/.bashrc
+
+#prep up the debug command with cli and apached locations
+ocbin="/home/$user/$project/lib"
+sed -i "2s|.*|phpcli=\"$phpcl\"|" "$ocbin/debug.sh"
+sed -i "3s|.*|phpapache=\"$phpapache\"|" "$ocbin/debug.sh"
+
 cd
 source ~/.bashrc
 #plsource
@@ -151,13 +157,9 @@ echo "export DRUSH_LAUNCHER_FALLBACK=~/.composer/vendor/bin/drush" >> ~/.bashrc
 #  echo "Drupal console already present"
 #fi
 
-# Add npm, nodejs: https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
-# Use node v12: https://stackoverflow.com/questions/41195952/updating-nodejs-on-ubuntu-16-04
-
-
 #set up d8fp to run without password
-echo -e "$Cyan \n Make fixing folder permissions run without sudo $Color_Off"
-sudo $folderpath/scripts/lib/installd8fp.sh "$folderpath/scripts/lib/d8fp.sh" $user
+echo -e "$Cyan \n Make fixing folder permissions and debug run without sudo $Color_Off"
+sudo $folderpath/scripts/lib/installsudoers.sh "$folderpath/scripts/lib/" $user
 
 #set up website folder for apache
 echo -e "$Cyan \n setup /var/wwww/oc for websites $Color_Off"

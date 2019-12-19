@@ -28,7 +28,7 @@ import_site_config $sn
 
 # turn on dev modules (composer)
 
-cd $folderpath/$sn
+cd $site_path/$sn
 echo "Composer install."
 composer install --quiet
 

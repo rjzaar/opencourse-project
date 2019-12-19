@@ -10,7 +10,10 @@ if [ $(id -u) != 0 ]; then
   print_help
   exit 1
 fi
-cp $1 /usr/local/bin
+cp "$1/d8fp.sh" /usr/local/bin
+cp "$1/debug.sh" /usr/local/bin
 sudo chown root:root /usr/local/bin/d8fp.sh
-sudo echo "$2 ALL = (root) NOPASSWD: /usr/local/bin/d8fp.sh" > /etc/sudoers.d/d8fp
-sudo chmod 0440 /etc/sudoers.d/d8fp
+sudo chown root:root /usr/local/bin/debug.sh
+sudo echo "$2 ALL = (root) NOPASSWD: /usr/local/bin/d8fp.sh" > /etc/sudoers.d/pl
+sudo echo "$2 ALL = (root) NOPASSWD: /usr/local/bin/debug.sh" > /etc/sudoers.d/pl
+sudo chmod 0440 /etc/sudoers.d/pl
