@@ -9,7 +9,7 @@
 
 # This is needed to avoid the "awk: line 43: function asorti never defined" error
 echo "Will need to install gawk - sudo required"
-#sudo apt-get install gawk
+sudo apt-get install gawk
 
 . "$script_root/_inc.sh"
 
