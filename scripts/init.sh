@@ -35,9 +35,17 @@ echo ". $schome/plextras.sh" >> ~/.bashrc
 
 #prep up the debug command with cli and apached locations
 echo "adding debug command"
-ocbin="/home/$user/$project/scripts/lib"
-sed -i "2s|.*|phpcli=\"$phpcli\"|" "$ocbin/debug.sh"
-sed -i "3s|.*|phpapache=\"$phpapache\"|" "$ocbin/debug.sh"
+ocbin="/home/$user/$project/bin"
+sed -i "3s|.*|phpcli=\"$phpcli\"|" "$ocbin/debug.sh"
+sed -i "4s|.*|phpapache=\"$phpapache\"|" "$ocbin/debug.sh"
+
+
+
+#set up d8fp to run without password
+echo -e "$Cyan \n Make fixing folder permissions and debug run without sudo $Color_Off"
+sudo $folderpath/scripts/lib/installsudoers.sh "$folderpath/bin" $user
+echo "export PATH=\"\$PATH:/usr/local/bin/\"" >> ~/.bashrc
+echo ". /usr/local/bin/debug.sh" >> ~/.bashrc
 
 cd
 source ~/.bashrc
@@ -67,7 +75,7 @@ sudo apt-get update -y && sudo apt-get upgrade -y
 
 ## Install AMP
 echo -e "$Cyan \n Installing Apache2 etc $Color_Off"
-sudo apt-get install apache2 php libapache2-mod-php php-mysql curl php-cli php-gd php-mbstring php-xml php-curl php-bz2 git unzip -y
+sudo apt-get install apache2 php libapache2-mod-php php-mysql curl php-cli php-gd php-mbstring php-xml php-curl php-bz2 git unzip php-xdebug -y
 
 #add github credentials
 echo -e "$Cyan \n Add github credentials $Color_Off"
@@ -158,9 +166,7 @@ echo "export DRUSH_LAUNCHER_FALLBACK=~/.composer/vendor/bin/drush" >> ~/.bashrc
 #  echo "Drupal console already present"
 #fi
 
-#set up d8fp to run without password
-echo -e "$Cyan \n Make fixing folder permissions and debug run without sudo $Color_Off"
-sudo $folderpath/scripts/lib/installsudoers.sh "$folderpath/scripts/lib/" $user
+
 
 #set up website folder for apache
 echo -e "$Cyan \n setup /var/wwww/oc for websites $Color_Off"
@@ -179,6 +185,10 @@ echo -e "$Cyan \n Fix adding extra characters for vi $Color_Off"
 cat > $(dirname $script_root)/.vimrc <<EOL
 set nocompatible
 EOL
+
+echo " open this link to add the xdebug extension for the browser you want to use"
+echo "https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extensions.html?utm_campaign=PS&utm_medium=link&utm_source=product&utm_content=2019.3 "
+
 
 
 

@@ -1,6 +1,7 @@
 #!/bin/bash
-# This will install d8fp.sh so the password is not required.
+# This will install d8fp.sh and debug so the password is not required.
 # pass the file location as absolute path then the username,
+# This is for security reasons. Once setup (needing password) it can't be changed without a password.
 
 # Make sure sudo
 if [ $(id -u) != 0 ]; then
@@ -15,5 +16,6 @@ cp "$1/debug.sh" /usr/local/bin
 sudo chown root:root /usr/local/bin/d8fp.sh
 sudo chown root:root /usr/local/bin/debug.sh
 sudo echo "$2 ALL = (root) NOPASSWD: /usr/local/bin/d8fp.sh" > /etc/sudoers.d/pl
-sudo echo "$2 ALL = (root) NOPASSWD: /usr/local/bin/debug.sh" > /etc/sudoers.d/pl
+sudo echo "$2 ALL = (root) NOPASSWD: /usr/local/bin/debug.sh" >> /etc/sudoers.d/pl
 sudo chmod 0440 /etc/sudoers.d/pl
+
