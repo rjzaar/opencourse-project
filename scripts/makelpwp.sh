@@ -48,8 +48,12 @@ fi
 ### going to need to fix security. settings.local.php only have hash. all other cred in settings so not shared.
 #echo "pre rsync"
 #drush -y rsync @prod @$sn -- --omit-dir-times --delete
+
 if [ $step -lt 3 ] ; then
 echo "step 2: backup production"
+# Make sure ssh identity is added
+eval `ssh-agent -s`
+ssh-add ~/.ssh/$prod_alias
 to=$sn
 backup_prod
 # sql file: $Namesql
