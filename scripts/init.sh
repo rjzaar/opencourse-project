@@ -186,6 +186,21 @@ cat > $(dirname $script_root)/.vimrc <<EOL
 set nocompatible
 EOL
 
+#Now add theming tools
+# see https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
+# use recommended version of Node.js
+curl -sL https://deb.nodesource.com/setup_8.x | sudo bash -
+apt install nodejs
+apt install build-essential
+
+curl -L https://npmjs.com/install.sh | sh
+apt install npm
+npm install gulp-cli -g
+npm install gulp -D
+
+
+
+
 echo " open this link to add the xdebug extension for the browser you want to use"
 echo "https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extensions.html?utm_campaign=PS&utm_medium=link&utm_source=product&utm_content=2019.3 "
 

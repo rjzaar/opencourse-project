@@ -52,17 +52,45 @@ exit 1
 fi
 fi
 
-# Check for yes
-if [ "$#" = 2 ] ; then yes="y" ; fi
+step=1
+# Check for options
+if [ "$#" -gt 1 ] ; then
+for i in "$@"
+do
+case $i in
+    -s=*|--step=*)
+    step="${i#*=}"
+    shift # past argument=value
+    ;;
+    -y|--yes)
+    yes="y"
+    shift
+    ;;
+    -h|--help) print_help;;
+    *)
+    shift # past argument=value
+    ;;
+esac
+done
+
+fi
 
 import_site_config $sn
+
 
 #db_defaults
 
 echo "Installing $sn"
 site_info
+if [ $step -gt 1 ] ; then
+  echo "Starting from step $step"
+fi
+
 
 # Check to see if folder already exits.
+if [ $step -lt 2 ] ; then
+echo -e "$Cyan step 1: checking if folder $sn exists $Color_Off"
+
 if [ -d "$site_path/$sn" ]; then
     if [ ! "$#" = 2 ]
     then
@@ -80,9 +108,16 @@ if [ -d "$site_path/$sn" ]; then
     else echo "Had errors changing ownership of $sn to $user:www-data so will need to use sudo"
     sudo chown $user:www-data $site_path/$sn -R
     fi
+    if [ -f $site_path/$sn/$webroot/sites/default ]
+    then
     chmod 770 $site_path/$sn/$webroot/sites/default -R
+    fi
     rm -rf "$site_path/$sn"
 fi
+fi
+
+if [ $step -lt 3 ] ; then
+echo -e "$Cyan step 2: installing with method $install_method $Color_Off"
 
 if [ "$install_method" == "git" ]
 then
@@ -139,12 +174,17 @@ else
     echo "No install method specified. You need to at least edit the default recipe in pl.yml and specify \"install_method\"."
     exit 1
 fi
+fi
 
-
+if [ $step -lt 4 ] ; then
+echo -e "step 3: composer install"
 cd $site_path/$sn
-
 # Neet to check if composer is installed.
 composer install
+fi
+
+if [ $step -lt 5 ] ; then
+echo -e "$Cyan step 4: Setting up folder/file permissions $Color_Off"
 
 fix_site_settings
 
@@ -160,20 +200,29 @@ if [ ! -d "$site_path/$sn/cmi" ]; then
   mkdir "$site_path/$sn/cmi"
 fi
 chmod 770 "$site_path/$sn/cmi"
+fi
 
-echo "Set site permissions and drush aliases"
+if [ $step -lt 6 ] ; then
+echo -e "$Cyan step 5: setting up drush aliases and site permissions $Color_Off"
 cd "$site_path/$sn/$webroot"
 drush core:init
 set_site_permissions
+fi
 
-echo "Now building site."
+if [ $step -lt 7 ] ; then
+echo -e "$Cyan step 6: Now building site. $sn $Color_Off"
 rebuild_site $sn
+fi
 
-echo "Set up uri $uri. This will require sudo"
+if [ $step -lt 8 ] ; then
+echo -e "$Cyan step 7: Set up uri $uri. This will require sudo $Color_Off"
 pl sudoeuri $sn
+fi
 
-echo "Trying to go to URL $uri"
+if [ $step -lt 9 ] ; then
+echo -e "$Cyan Step 8: Trying to go to URL $uri $Color_Off"
 drush uli --uri=$uri
+fi
 
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 echo

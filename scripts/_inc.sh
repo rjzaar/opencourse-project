@@ -412,20 +412,20 @@ backup_site () {
 #use git: https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/set-up-a-local-development-drupal-0-7
 cd
 # Check if site backup folder exists
-if [ ! -d "$folder/sitebackups" ]; then
-  mkdir "$folder/sitebackups"
+if [ ! -d "$folderpath/sitebackups" ]; then
+  mkdir "$folderpath/sitebackups"
 fi
 
 # Check if site backup folder exists
-if [ ! -d "$folder/sitebackups/$sn" ]; then
-  mkdir "$folder/sitebackups/$sn"
+if [ ! -d "$folderpath/sitebackups/$sn" ]; then
+  mkdir "$folderpath/sitebackups/$sn"
 fi
 
 
-if [ ! -d "$folder/$sn" ]; then
+if [ ! -d "$site_path/$sn" ]; then
   echo "No site folder $sn so no need to backup"
 else
-cd "$folder/$sn"
+cd "$site_path/$sn"
 #this will not affect a current git present
 git init
 cd "$webroot"
@@ -433,14 +433,14 @@ msg=${msg// /_}
 Name=$(date +%Y%m%d\T%H%M%S-)`git branch | grep \* | cut -d ' ' -f2 | sed -e 's/[^A-Za-z0-9._-]/_/g'`-`git rev-parse HEAD | cut -c 1-8`$msg.sql
 
 echo -e "\e[34mbackup db $Name\e[39m"
-drush sql-dump --structure-tables-key=common --result-file="../../sitebackups/$sn/$Name"
+drush sql-dump --result-file="$folderpath/sitebackups/$sn/$Name"
 
 #backupfiles
 Name2=${Name::-4}".tar.gz"
 
 echo -e "\e[34mbackup files $Name2\e[39m"
-cd ../../
-tar -czf sitebackups/$sn/$Name2 $sn
+cd $site_path
+tar -czf $folderpath/sitebackups/$sn/$Name2 $sn
 fi
 }
 

@@ -58,34 +58,20 @@ then
 else
   case  $2  in
     d)
-    if [ -d $site_path/$sn/docroot ] ; then cd $site_path/$sn/docroot
-    else if [ -d $site_path/$sn/html ] ; then cd $site_path/$sn/html
-    else if [ -d $site_path/$sn/web ] ; then cd $site_path/$sn/web
+    if [ -d $site_path/$sn/$webroot ] ; then cd $site_path/$sn/$webroot
     else echo "webroot directory for $sn can't be found"
-    fi
-    fi
-#    fi
-#    fi
-#    fi
     fi
     ;;
     b)
     cd $ocroot/sitebackups/$sn
     ;;
     sd)
-    if [ -d $site_path/$sn/docroot ] ; then cd $site_path/$sn/docroot/sites/default
-    else if [ -d $site_path/$sn/html ] ; then cd $site_path/$sn/html/sites/default
-    else if [ -d $site_path/$sn/web ] ; then cd $site_path/$sn/web/sites/default
-#    else if [ -d $ocwroot/$sn/docroot ] ; then cd $ocwroot/$sn/docroot/sites/default
-#    else if [ -d $ocwroot/$sn/html ] ; then cd $ocwroot/$sn/html/sites/default
-#    else if [ -d $ocwroot/$sn/web ] ; then cd $ocwroot/$sn/web/sites/default\
+    if [ -d $site_path/$sn/$webroot ] ; then cd $site_path/$sn/$webroot/sites/default
     else echo "sites/default directory for $sn can't be found"
     fi
-#    fi
-#    fi
-#    fi
-    fi
-    fi
+    ;;
+    t)
+    cd $site_path/$sn/$webroot/themes/custom/$theme
     ;;
     *)
     cd $ocroot/$sn/$2
