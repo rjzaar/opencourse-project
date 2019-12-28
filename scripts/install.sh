@@ -220,7 +220,13 @@ pl sudoeuri $sn
 fi
 
 if [ $step -lt 9 ] ; then
-echo -e "$Cyan Step 8: Trying to go to URL $uri $Color_Off"
+echo -e "$Cyan Step 8: setup npm for gulp support $uri $Color_Off"
+cd "$site_path/$sn/$webroot/themes/custom/$theme"
+npm install
+fi
+
+if [ $step -lt 10 ] ; then
+echo -e "$Cyan Step 9: Trying to go to URL $uri $Color_Off"
 drush uli --uri=$uri
 fi
 

@@ -21,7 +21,7 @@ exit 1
 fi
 
 sn=$1
-msg=$2
+msg="$2"
 #folder=$(basename $(dirname $script_root))
 #webroot="docroot"
 parse_pl_yml

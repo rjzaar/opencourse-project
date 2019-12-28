@@ -102,10 +102,10 @@ done
 # If argument passed presume it is
 if [ $dev = "y" ]
 then
-echo "dev options actioned."
-if [ ! -d $drupal_path/modules/custom ] ; then mkdir $folder/$sn/$webroot/modules/custom ; fi
+echo "dev options actioned.a"
+if [ ! -d $drupal_path/modules/custom ] ; then mkdir $drupal_path/modules/custom ; fi
 chmod g+w $drupal_path/modules/custom -R
-if [ ! -d $drupal_path/themes/custom ] ; then mkdir $folder/$sn/$webroot/themes/custom ; fi
+if [ ! -d $drupal_path/themes/custom ] ; then mkdir $drupal_path/themes/custom ; fi
 chmod g+w $drupal_path/themes/custom -R
 fi
 

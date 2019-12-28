@@ -198,6 +198,9 @@ apt install npm
 npm install gulp-cli -g
 npm install gulp -D
 
+echo "Increase watch speed for gulp: requires sudo."
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
 
 
 

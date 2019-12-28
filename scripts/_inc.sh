@@ -429,7 +429,7 @@ cd "$site_path/$sn"
 #this will not affect a current git present
 git init
 cd "$webroot"
-msg=${msg// /_}
+msg="${msg// /_}"
 Name=$(date +%Y%m%d\T%H%M%S-)`git branch | grep \* | cut -d ' ' -f2 | sed -e 's/[^A-Za-z0-9._-]/_/g'`-`git rev-parse HEAD | cut -c 1-8`$msg.sql
 
 echo -e "\e[34mbackup db $Name\e[39m"
