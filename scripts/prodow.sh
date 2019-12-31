@@ -95,7 +95,7 @@ ssh $prod_alias "cp ${Name::-4}.tar.gz latest.tar.gz -rf"
 fi
 
 if [ $step -lt 5 ] ; then
-echo "$Pcolor step 4: install production files $Color_off"
+echo -e "$Pcolor step 4: install production files $Color_off"
 ssh $prod_alias "rm -rf opencat"
 ssh $prod_alias "mkdir opencat"
 ssh $prod_alias "mkdir opencat/opencourse"
@@ -130,6 +130,7 @@ echo "prod in maintenance mode"
 
 echo "renaming folder to opencat.org to make it live"
 # Now swap them.
+if [ -z $Name ]; then Name=$(date +%Y%m%d\T%H%M%S) ; fi
 ssh $prod_alias "if [ -d opencat.org ]; then mv opencat.org opencat.org.$Name ; fi"
 ssh $prod_alias "if [ -d opencat ]; then mv opencat opencat.org ; fi"
 
