@@ -221,8 +221,18 @@ fi
 
 if [ $step -lt 9 ] ; then
 echo -e "$Cyan Step 8: setup npm for gulp support $uri $Color_Off"
+
+if [ -d "$site_path/$sn/$webroot/themes/custom/$theme" ]
+then
 cd "$site_path/$sn/$webroot/themes/custom/$theme"
 npm install
+elif [ -d "$site_path/$sn/$webroot/themes/contrib/$theme" ]
+then
+cd "$site_path/$sn/$webroot/themes/contrib/$theme"
+npm install
+else
+echo "There is a problem: The theme $theme has not been installed."
+fi
 fi
 
 if [ $step -lt 10 ] ; then

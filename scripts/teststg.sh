@@ -12,12 +12,12 @@ devs="$sites_dev"
 prods="$sites_localprod"
 elif [ -z "$2" ]
   then
-    sn=$1
-    devs="$sites_dev"
+    sn="$sites_stg"
+    devs=$1
     prods="$sites_localprod"
    else
-    sn=$1
-    devs="$sites_dev"
+    sn=$2
+    devs=$1
     prods="$sites_localprod"
 fi
 
@@ -31,6 +31,7 @@ cat <<-HELP
 This script will test the current loc in the stg instance using either the production site (default) or the localprod.
 It will backup the current stg site: $sn, then remove it. Copy the files from dev, copy the private folder from prod,
 import the prod database and then update it.
+If no arguments are given
 HELP
 exit 0
 }

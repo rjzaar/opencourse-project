@@ -352,7 +352,7 @@ echo "Build the drupal site $sn"
 # drush status
 site_info
 # drupal site:install  varbase --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
-drush @$sn -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sn" --sites-subdir=default
+#drush @$sn -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sn" --sites-subdir=default
 #don''t need --db-url=mysql://$dir:$dir@localhost:3306/$dir in drush because the settings.local.php has it.
 
 #sudo bash ./d8fp.sh --drupal_path=$folder/$webroot --drupal_user=$user #shouldn't need this, since files don't need to be changed.
@@ -612,7 +612,7 @@ chmod +w $to_sp/$sn -R
 rm -rf $to_sp/$sn
 fi
 echo "Move all files from $from to $sn"
-cp -rf "$from_sp/$from" "$to_sp/$sn"
+cp -rf "$from_sp/$1" "$to_sp/$2"
 }
 
 copy_site_folder () {
