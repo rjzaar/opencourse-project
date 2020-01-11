@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is the usual file used, but it doesn't allow groups of settings to be selected: https://gist.githubusercontent.com/pkuczynski/8665367/raw/f81e1c9a2e23b302e9246a0820c0210bfe82ee81/parse_yaml.sh
 # So I used: https://github.com/mrbaseman/parse_yaml/blob/master/src/parse_yaml.sh
-
+#echo "parse yml start"
 
 function parse_yaml {
    local prefix=$2
@@ -101,15 +101,20 @@ function parse_yaml {
       }
    }"
 }
-#echo "passing $1"
-ocy=$(find "$(dirname "$2")" -name $1)
+
+#echo "passing $1  ocy $ocy"
+# variables are stored between calls. So no need to find such an important one unless things change.
+# This next line is important since for a new terminal, the variables need to be found again.
+# This will set up those variables. It will be slow the first time. but faster after that, since it is skipped.
+if [ -z "$ocy" ]; then ocy=$(find "$(dirname "$2")" -name $1);  eval "$(parse_yaml $ocy | sed 's/~/$HOME/g')" ; fi
+#echo "found $ocy"
 if [ -z "$ocy"  ]
   then
   echo "Could not find $1. Aborting."
   exit 1
 fi
 #now find backup if it exists and set update if diff.
-ocyb=$(find "$(dirname "$2")" -name "$1.bk")
+if [ -z "$ocyb" ] ; then ocyb=$(find "$(dirname "$2")" -name "$1.bk") ; fi
 if [ -z "$ocyb"  ]
   then
   cp $ocy "$ocy.bk"
@@ -121,11 +126,13 @@ if [ $update_config == "y" ]
 then
 echo "Config changed, updating"
   cp $ocy "$ocy.bk"
+  eval "$(parse_yaml $ocy | sed 's/~/$HOME/g')"
 #else
-# echo "Config not changed. Not updating."
+# echo "Config not changed. Not updating. no need to parse again."
 fi
 
+#echo "parse yml end"
 
-eval "$(parse_yaml $ocy | sed 's/~/$HOME/g')"
+
 
 

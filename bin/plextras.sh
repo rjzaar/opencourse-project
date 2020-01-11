@@ -48,7 +48,7 @@ then
     cd $ocroot/scripts
     ;;
     w)
-    cd $ocwroot/oc
+    cd $ocwroot/
     ;;
     *)
     cd $site_path/$sn
@@ -59,7 +59,7 @@ else
   case  $2  in
     d)
     if [ -d $site_path/$sn/$webroot ] ; then cd $site_path/$sn/$webroot
-    else echo "webroot directory for $sn can't be found"
+    else echo "webroot directory for sitepate: $site_path sn: $sn webroot $webroot can't be found"
     fi
     ;;
     b)
