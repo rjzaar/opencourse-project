@@ -282,7 +282,7 @@ cat >> $site_path/$sn/$webroot/sites/default/settings.local.php <<EOL
 \$config['config_split.config_split.config_dev']['status'] = TRUE;
 EOL
 fi
-echo "Added local.settings.php to $sn"
+echo "Added settings.local.php to $sn"
 
 #echo "Make sure the hash is present so drush sql will work in $site_path/$sn/$webroot/sites/default/."
 # Make sure the hash is present so drush sql will work.

@@ -28,7 +28,7 @@ parse_pl_yml
 import_site_config $sn
 
 echo "Updating varbase"
-cd $folderpath/$sn/
+cd $site_path/$sn/
 ./bin/update-varbase.sh
 
 
