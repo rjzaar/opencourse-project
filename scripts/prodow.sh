@@ -96,25 +96,28 @@ fi
 
 if [ $step -lt 5 ] ; then
 echo -e "$Pcolor step 4: install production files $Color_off"
-ssh $prod_alias "rm -rf opencat"
-ssh $prod_alias "mkdir opencat"
-ssh $prod_alias "mkdir opencat/opencourse"
+prod_root=$(dirname $prod_docroot)
+#ssh $prod_alias "cp -rf $prod_root $prod_root.old"
+#ssh $prod_alias "rm -rf $prod_root"
+#ssh $prod_alias "mkdir $prod_root"
+ssh $prod_alias "if [ -d $prod_root.new ]; then rm -rf $prod_root.new ; fi"
 
 echo -e "\e[34mrestoring files\e[39m"
 if [ -z $Name ]
 then
 echo "Don't know the name so using the lastest.tar.gz on server to extract"
-ssh $prod_alias "tar -zxf latest.tar.gz --directory opencat/opencourse --strip-components=1"
+ssh $prod_alias "tar -zxf latest.tar.gz --directory $prod_root.new --strip-components=1"
 else
-echo "Extracting ${Name::-4}.tar.gz into opencat/opencourse"
-ssh $prod_alias "tar -zxf ${Name::-4}.tar.gz -C opencat/opencourse"
+echo "Extracting ${Name::-4}.tar.gz into $prod_root"
+ssh $prod_alias "tar -zxf ${Name::-4}.tar.gz --directory $prod_root.new --strip-components=1"
 fi
 
 echo "Restoring correct settings.php"
-ssh $prod_alias "cp ocbackup/settings.php opencat/opencourse/docroot/sites/default/settings.php -rf"
+ssh $prod_alias "cp ocbackup/settings.php $prod_root.new/$(basename $prod_docroot)/sites/default/settings.php -rf"
 
 echo fix file permissions, requires sudo on external server
-ssh $prod_alias -t "cd && sudo bash ./fix-p.sh --drupal_user=puregift --drupal_path=opencat/opencourse/docroot"
+ssh $prod_alias -t "sudo chown $prod_user:www-data $prod_root.new -R"
+ssh $prod_alias -t "sudo bash ./fix-p.sh --drupal_user=puregift --drupal_path=$prod_docroot.new"
 fi
 
 if [ $step -lt 6 ] ; then
@@ -126,22 +129,29 @@ echo -e "$Pcolor step 5: install production database $Color_off"
 #else
 echo "Need to overwrite the database the hard way"
 echo "prod in maintenance mode"
-#drush @prod sset system.maintenance_mode TRUE
+drush @prod sset system.maintenance_mode TRUE
 
 echo "renaming folder to opencat.org to make it live"
 # Now swap them.
 if [ -z $Name ]; then Name=$(date +%Y%m%d\T%H%M%S) ; fi
-ssh $prod_alias "if [ -d opencat.org ]; then mv opencat.org opencat.org.$Name ; fi"
-ssh $prod_alias "if [ -d opencat ]; then mv opencat opencat.org ; fi"
+ssh $prod_alias "if [ -d $prod_root.old ]; then rm -rf $prod_root.old ; fi"
+ssh $prod_alias "if [ -d $prod_root ]; then mv $prod_root $prod_root.old ; fi"
+ssh $prod_alias "if [ -d $prod_root.new ]; then mv $prod_root.new $prod_root ; fi"
 
+if [ 1 == 1 ]
+then
+drush sql:sync @$sn @prod
+else
+# old method
 echo "The restoring the database requires sudo on the external server."
 if [ -z $Name ]
 then
 echo "Don't know the name so using the lastest.sql on server to restore"
-ssh $prod_alias -t "sudo ./restoredb.sh latest.tar.gz"
+ssh $prod_alias -t "sudo ./restoredb.sh latest.sql"
 else
 echo "Restoring $Name to production database"
 ssh $prod_alias -t "sudo ./restoredb.sh $Name"
+fi
 fi
 
 echo "prod in production mode"

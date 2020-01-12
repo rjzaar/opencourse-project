@@ -225,20 +225,25 @@ fix_site_settings () {
 
 # Check that settings.php has reference to local.settings.php
 echo "Making sure settings.php exists"
+if [ -f "$site_path/$sn/$webroot/sites/default/settings.php.old" ]
+then
+#      cp "$site_path/$sn/$webroot/sites/default/settings.php.old" "$site_path/$sn/$webroot/sites/default/settings.php"
+   # get rid of any old settings.php
+rm "$site_path/$sn/$webroot/sites/default/settings.php.old"
+fi
+
+
 if [ ! -f "$site_path/$sn/$webroot/sites/default/settings.php" ]
 then
-  if [ ! -f "$site_path/$sn/$webroot/sites/default/default.settings.php" ]
-  then
-    if [ -f "$site_path/$sn/$webroot/sites/default/settings.php.old" ]
-    then
-      cp "$site_path/$sn/$webroot/sites/default/settings.php.old" "$site_path/$sn/$webroot/sites/default/settings.php"
-    else
-    echo "$site_path/$sn/$webroot/sites/default/default.settings.php does not exist. Please add it and try again."
-    exit 1
-    fi
-   else
-    cp "$site_path/$sn/$webroot/sites/default/default.settings.php" "$site_path/$sn/$webroot/sites/default/settings.php"
+if [ ! -f "$site_path/$sn/$webroot/sites/default/default.settings.php" ]
+then
+wget "https://git.drupalcode.org/project/drupal/raw/8.8.x/sites/default/default.settings.php" -P "$site_path/$sn/$webroot/sites/default/"
 fi
+#    echo "$site_path/$sn/$webroot/sites/default/default.settings.php does not exist. Please add it and try again."
+#    exit 1
+
+  cp "$site_path/$sn/$webroot/sites/default/default.settings.php" "$site_path/$sn/$webroot/sites/default/settings.php"
+
 fi
 
 sfile=$(<"$site_path/$sn/$webroot/sites/default/settings.php")
@@ -463,18 +468,26 @@ Namesql="$folderpath/sitebackups/prod/$Name.sql"
 echo -e "\e[34mbackup db $Name.sql\e[39m"
 echo "Trying $Namesql "
 #drush @prod sql-dump   > "$Namesql"
-drush @prod sql-dump  --result-file="$prod_docroot/../../../$Name.sql"
+drush @prod sql-dump  --result-file="/home/$prod_user/$Name.sql"
 scp "$prod_alias:$Name.sql" "$folderpath/sitebackups/prod/$Name.sql"
 #gzip -d "$Namesql.gz"
 
 Namef=$Name.tar.gz
 echo -e "\e[34mbackup files $Namef\e[39m"
+if [ $prod_method == "tar" ]
+then
 # drush ard doesn't work in drush 9 onwards. so use tar instead
 #drush @prod ard --destination="$prod_docroot/../../../$Name"
-ssh $prod_alias "tar --exclude='$prod_docroot/sites/default/settings.local.php' -zcf \"$Namef\" \"$prod_docroot/..\""
+ssh $prod_alias "tar --exclude='$prod_docroot/sites/default/settings.local.php' --exclude='$prod_docroot/sites/default/settings.php' -zcf \"$Namef\" \"$prod_docroot/..\""
 scp "$prod_alias:$Namef" "$folderpath/sitebackups/prod/$Namef"
 #tar -czf  $folderpath/sitebackups/prod/$Name.tar.gz $folderpath/sitebackups/prod/$Name.tar
 #rm $folderpath/sitebackups/prod/$Name.tar
+else
+# presume git
+# This needs work. It's not tested!
+ssh $prod_alias "cd $prod_docroot/.. & addc & git add . & git commit -m \"preupdate\" & git push"
+fi
+
 }
 
 backup_db () {

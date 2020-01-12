@@ -3,7 +3,6 @@
 
 #start timer
 SECONDS=0
-echo -e "\e[34mbackup prod \e[39m"
 . $script_root/_inc.sh;
 
 # Help menu
