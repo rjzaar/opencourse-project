@@ -58,8 +58,9 @@ cp -rf "$from_sp/$from" "$to_sp/$to"
 #Name=${options[0]:2}
 
 #Note $Name was set in backup_db and will now be used in the restore_db. Nice hey.
-fix_site_settings
 set_site_permissions
+fix_site_settings
+
 bk=$from
 restore_db
 

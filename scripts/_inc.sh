@@ -357,17 +357,20 @@ echo "Build the drupal site $sn"
 # drush status
 site_info
 # drupal site:install  varbase --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
-#drush @$sn -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sn" --sites-subdir=default
+drush @$sn -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sn" --sites-subdir=default
 #don''t need --db-url=mysql://$dir:$dir@localhost:3306/$dir in drush because the settings.local.php has it.
 
 #sudo bash ./d8fp.sh --drupal_path=$folder/$webroot --drupal_user=$user #shouldn't need this, since files don't need to be changed.
 #chmod g+w -R $folder/$webroot/modules/custom
 
 # Install any themes
+cd $site_path/$sn/
+composer require drupal/console:~1.0 --prefer-dist --optimize-autoloader
+
 if [ $theme != "" ]
 then
 echo "Install theme for $sn using uri $uri and theme $theme"
-cd
+
 cd $site_path/$sn/$webroot
 drupal --target=$uri theme:install  $theme
 drush @$sn config-set system.theme default $theme -y
@@ -376,6 +379,7 @@ fi
 if [ $theme_admin != "" ]
 then
 echo "Install theme for $sn"
+cd $site_path/$sn/$webroot
 drupal --target=$uri theme:install  $theme_admin
 drush @$sn config-set system.theme admin $theme_admin -y
 fi
@@ -513,26 +517,7 @@ drush @$sn sset system.maintenance_mode FALSE
 
 }
 make_db () {
-  echo "Create database $db and user $dbuser if needed."
-if ! mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; then
-    # This script actually just tries to create the user since the database will be created later anyway.
-    echo "Unable to create the database $db. Check the mysql root credentials in mysql.cnf"
-    else
-    echo "Database $db created."
-fi
-result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE USER $dbuser@localhost IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-if [ "$result" = ": 0" ]; then echo "Created user $dbuser"; else echo "User $dbuser already exists"; fi
-result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES ON $db.* TO '"$dbuser"'@'localhost' IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-if [ "$result" = ": 0" ]; then echo "Granted user $dbuser permissions on $db"; else echo "Could not grant user $dbuser permissions on $db"; fi
-
-}
-restore_db () {
-#presumes that the correct information is already set
-# $Name backup sql file
-# $db
-# $dbuser
-# $dbpass
-echo "restore db start"
+echo "Create database $db and user $dbuser if needed."
 result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "use $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 if [ "$result" != ": 0" ]
  then
@@ -556,6 +541,17 @@ fi
   if [ "$result" = ": 0" ]; then echo "Created user $dbuser"; else echo "User $dbuser already exists"; fi
   result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES ON $db.* TO '"$dbuser"'@'localhost' IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
   if [ "$result" = ": 0" ]; then echo "Granted user $dbuser permissions on $db"; else echo "Could not grant user $dbuser permissions on $db"; fi
+
+}
+restore_db () {
+#presumes that the correct information is already set
+# $Name backup sql file
+# $db
+# $dbuser
+# $dbpass
+echo "restore db start"
+
+make_db
 
 echo -e "\e[34mrestore $db database using $folderpath/sitebackups/$bk/$Name\e[39m"
 result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" $db < "$folderpath/sitebackups/$bk/$Name" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")

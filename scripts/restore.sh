@@ -112,8 +112,15 @@ echo -e "\e[34mrestoring files\e[39m"
 # Will need to first move the source folder ($bk) if it exists, so we can create the new folder $sn
 echo "path $site_path/$sn folderpath $folderpath"
 echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz into $site_path/$sn"
+# Check to see if the backup includes the root folder or not.
+Dir_name=`tar -tzf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" | head -1 | cut -f1 -d"/"`
+#echo "Dir_name = >$Dir_name<"
+if [ $Dir_name == "." ]
+then
+tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C "$site_path/$sn"
+else
 tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C "$site_path/$sn" --strip-components=1
-
+fi
 # Move settings.php and settings.local.php out the way before they are overwritten just in case you might need them.
 echo "Moving settings.php and settings.local.php"
 setpath="$site_path/$sn/$webroot/sites/default"

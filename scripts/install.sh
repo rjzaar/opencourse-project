@@ -110,7 +110,7 @@ if [ -d "$site_path/$sn" ]; then
     fi
     if [ -f $site_path/$sn/$webroot/sites/default ]
     then
-    chmod 770 $site_path/$sn/$webroot/sites/default -R
+    sudo chmod 770 $site_path/$sn/$webroot/sites/default -R
     fi
     rm -rf "$site_path/$sn"
 fi
