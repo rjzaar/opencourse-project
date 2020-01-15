@@ -134,7 +134,7 @@ echo "renaming folder to opencat.org to make it live"
 # Now swap them.
 if [ -z $Name ]; then Name=$(date +%Y%m%d\T%H%M%S) ; fi
 echo "rm .old"
-ssh $prod_alias "if [ -d $prod_root.old ]; then rm -rf $prod_root.old ; fi"
+ssh $prod_alias -t "if [ -d $prod_root.old ]; then sudo rm -rf $prod_root.old ; fi"
 echo "mv $prod_root to $prod_root.old"
 ssh $prod_alias -t "if [ -d $prod_root ]; then sudo mv $prod_root $prod_root.old ; fi"
 echo "mv new to current"
