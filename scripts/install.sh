@@ -51,7 +51,9 @@ echo "No recipe for $sn! Current recipes include $recipes. Please add a recipe t
 exit 1
 fi
 fi
-
+# bstep is for the rebuild steps
+bstep=1
+# step is for the install steps
 step=1
 # Check for options
 if [ "$#" -gt 1 ] ; then
@@ -60,6 +62,10 @@ do
 case $i in
     -s=*|--step=*)
     step="${i#*=}"
+    shift # past argument=value
+    ;;
+    -b=*|--build_step=*)
+    bstep="${i#*=}"
     shift # past argument=value
     ;;
     -y|--yes)
@@ -112,7 +118,7 @@ if [ -d "$site_path/$sn" ]; then
     then
     sudo chmod 770 $site_path/$sn/$webroot/sites/default -R
     fi
-    rm -rf "$site_path/$sn"
+    sudo rm -rf "$site_path/$sn"
 fi
 fi
 
@@ -221,6 +227,7 @@ fi
 
 if [ $step -lt 9 ] ; then
 echo -e "$Cyan Step 8: setup npm for gulp support $uri $Color_Off"
+echo "theme path: $site_path/$sn/$webroot/themes/contrib/$theme"
 
 if [ -d "$site_path/$sn/$webroot/themes/custom/$theme" ]
 then

@@ -44,23 +44,26 @@ rp="recipes_default_dev_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev_m
 rp="recipes_default_lando" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then lando=${!rp} ; else lando=""; fi
 
 # Collect the details from pl.yml if they exist otherwise make blank
+# This first one is to override the defaults, ie default= n so if a site wants to leave it blank, but the default has a value, it will be left blank.
+# Though some values need to have a value and so if blank will get their values from the default recipe.
+rb="recipes_${sn}_default"
 rp="recipes_${sn}_source" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; fi
 rp="recipes_${sn}_dev" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev=${!rp} ; fi
-rp="recipes_${sn}_webroot" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then webroot=${!rp} ; fi
-rp="recipes_${sn}_sitename" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sitename=${!rp} ; fi
+rp="recipes_${sn}_webroot" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then webroot=${!rp} ;  fi
+rp="recipes_${sn}_sitename" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sitename=${!rp} ;  fi
 rp="recipes_${sn}_auto" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then auto=${!rp} ;  fi
-rp="recipes_${sn}_apache" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then apache=${!rp} ; fi
-rp="recipes_${sn}_dbuser" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbuser=${!rp} ; fi
+rp="recipes_${sn}_apache" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then apache=${!rp} ;  fi
+rp="recipes_${sn}_dbuser" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbuser=${!rp} ; elif [ "${!rb}" == "n" ] ; then dbuser=""; fi
 rp="recipes_${sn}_profile" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then profile=${!rp} ; fi
-rp="recipes_${sn}_db" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then db=${!rp} ;  fi
-rp="recipes_${sn}_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbpass=${!rp} ; fi
-rp="recipes_${sn}_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; fi
-rp="recipes_${sn}_install_method" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; fi
-rp="recipes_${sn}_git_upstream" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then git_upstream=${!rp} ; fi
-rp="recipes_${sn}_theme" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme=${!rp} ; fi
-rp="recipes_${sn}_theme_admin" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme_admin=${!rp} ; fi
-rp="recipes_${sn}_install_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_modules=${!rp} ; fi
-rp="recipes_${sn}_dev_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev_modules=${!rp} ; fi
+rp="recipes_${sn}_db" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then db=${!rp} ; elif [ "${!rb}" == "n" ] ; then db=""; fi
+rp="recipes_${sn}_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbpass=${!rp} ; elif [ "${!rb}" == "n" ] ; then dbpass=""; fi
+rp="recipes_${sn}_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ;  fi
+rp="recipes_${sn}_install_method" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_method=${!rp} ; fi
+rp="recipes_${sn}_git_upstream" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then git_upstream=${!rp} ; elif [ "${!rb}" == "n" ] ; then git_upstream=""; fi
+rp="recipes_${sn}_theme" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme=${!rp} ; elif [ "${!rb}" == "n" ] ; then theme=""; fi
+rp="recipes_${sn}_theme_admin" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme_admin=${!rp} ; elif [ "${!rb}" == "n" ] ; then theme_admin=""; fi
+rp="recipes_${sn}_install_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_modules=${!rp} ; elif [ "${!rb}" == "n" ] ; then install_modules="";  fi
+rp="recipes_${sn}_dev_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev_modules=${!rp} ; elif [ "${!rb}" == "n" ] ; then dev_modules=""; fi
 rp="recipes_${sn}_lando" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then lando=${!rp} ; fi
 
 if [ "$db" = "" ] ; then db="$sn$folder" ; fi
@@ -349,24 +352,45 @@ rebuild_site () {
 # $sn
 # $webroot
 #etc
+echo "bstep $bstep"
+if [ -z $bstep ] ; then bstep=1 ; fi
+echo "bstep $bstep"
+
+if [ $bstep -gt 1 ] ; then
+  echo "Starting from build step $step"
+fi
 echo "Create database and user if needed."
-
+if [ $bstep -lt 2 ] ; then
+echo -e "$Purple build step 1: create the database $Color_Off"
 make_db
+fi
 
-echo "Build the drupal site $sn"
+if [ $bstep -lt 3 ] ; then
+echo -e "$Purple build step 2: Build the drupal site $sn $Color_Off"
+
 # drush status
 site_info
 # drupal site:install  varbase --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
 drush @$sn -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sn" --sites-subdir=default
 #don''t need --db-url=mysql://$dir:$dir@localhost:3306/$dir in drush because the settings.local.php has it.
+fi
 
+if [ $bstep -lt 4 ] ; then
+echo -e "$Purple build step 3: set site permissions $Color_Off"
 #sudo bash ./d8fp.sh --drupal_path=$folder/$webroot --drupal_user=$user #shouldn't need this, since files don't need to be changed.
 #chmod g+w -R $folder/$webroot/modules/custom
+set_site_permissions
+fi
 
+if [ $bstep -lt 5 ] ; then
+echo -e "$Purple build step 4: install composer console $Color_Off"
 # Install any themes
 cd $site_path/$sn/
 composer require drupal/console:~1.0 --prefer-dist --optimize-autoloader
+fi
 
+if [ $bstep -lt 6 ] ; then
+echo -e "$Purple build step 5: install themes if required $Color_Off"
 if [ $theme != "" ]
 then
 echo "Install theme for $sn using uri $uri and theme $theme"
@@ -385,7 +409,7 @@ drush @$sn config-set system.theme admin $theme_admin -y
 fi
 #drush cr #is this needed here?
 drush @$sn cr
-
+fi
 ###
 
 #  if [ "$dev" = "y" ]
@@ -397,15 +421,20 @@ drush @$sn cr
 #  drush en -y oc_prod
 #  fi
 
+if [ $bstep -lt 7 ] ; then
+echo -e "$Purple build step 6: install modules $Color_Off"
+
 if [ "$install_modules" != "" ]
 then
 echo "Install modules for $sn"
 drush @$sn en -y $install_modules
 fi
+fi
 
 #drush pm-uninstall -y oc_prod
-
-if [ $dev = "y" ]
+if [ $bstep -lt 8 ] ; then
+echo -e "$Purple build step 7: set to dev or production mode $Color_Off"
+if [ "$dev" == "y" ]
 then
 echo "Setting to dev mode"
 drupal --target=$uri site:mode dev
@@ -413,6 +442,7 @@ drush @$sn php-eval 'node_access_rebuild();'
 drush @$sn en -y $dev_modules
 else
 drupal --target=$uri site:mode prod
+fi
 fi
 }
 

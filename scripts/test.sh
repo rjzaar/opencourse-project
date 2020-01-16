@@ -13,3 +13,29 @@ Cyan='\033[0;36m'         # Cyan
 echo -e "$Red hello red $Color_Off"
 echo -e "hi again."
 echo -e "$Green green $Color_Off"
+sn=loc
+install_locmodules=""
+rp="install_${sn}modules"
+rpv=${!rp}
+if [ "$rpv" != "" ]
+then
+echo " $rp has value"
+fi
+
+if [[ ! -z "${"install_${sn}modules"+x}" ]]
+then
+echo " install_modules exits"
+fi
+
+
+rp="install"
+rpv=${!rp}
+if [ "$rpv" != "" ]
+then
+echo "$rp has value"
+fi
+
+if [[ ! -z "${install+x}" ]]
+then
+echo " install exits"
+fi
