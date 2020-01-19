@@ -75,7 +75,7 @@ sudo apt-get update -y && sudo apt-get upgrade -y
 
 ## Install AMP
 echo -e "$Cyan \n Installing Apache2 etc $Color_Off"
-sudo apt-get install apache2 php libapache2-mod-php php-mysql curl php-cli php-gd php-mbstring php-xml php-curl php-bz2 git unzip php-xdebug -y
+sudo apt-get install apache2 php libapache2-mod-php php-mysql curl php-cli php-gd php-mbstring php-xml php-curl php-bz2 php-zip git unzip php-xdebug -y
 
 #add github credentials
 echo -e "$Cyan \n Add github credentials $Color_Off"

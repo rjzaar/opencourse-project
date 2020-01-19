@@ -70,6 +70,8 @@ if [ "$db" = "" ] ; then db="$sn$folder" ; fi
 if [ "$dbuser" = "" ] ; then dbuser=$db ; fi
 if [ "$dbpass" = "" ] ; then dbpass=$dbuser ;fi
 
+if [[ "$sitename" == "" ]] ; then sitename="$sn" ; fi
+
 if [ "$lando" = "y" ]
 then
 folder=$(basename $(dirname $script_root))
@@ -290,6 +292,13 @@ cat >> $site_path/$sn/$webroot/sites/default/settings.local.php <<EOL
 \$config['config_split.config_split.config_dev']['status'] = TRUE;
 EOL
 fi
+
+#Add site name
+if [  "$sitename" != "default" ]
+then
+echo "\$config['system.site']['name'] = \"$sitename\"; " >>  "$site_path/$sn/$webroot/sites/default/settings.local.php"
+fi
+
 echo "Added settings.local.php to $sn"
 
 #echo "Make sure the hash is present so drush sql will work in $site_path/$sn/$webroot/sites/default/."
@@ -472,6 +481,9 @@ msg="${msg// /_}"
 Name=$(date +%Y%m%d\T%H%M%S-)`git branch | grep \* | cut -d ' ' -f2 | sed -e 's/[^A-Za-z0-9._-]/_/g'`-`git rev-parse HEAD | cut -c 1-8`$msg.sql
 
 echo -e "\e[34mbackup db $Name\e[39m"
+# Make database smaller.
+drush cr
+# Could add more directives to make database even smaller.
 drush sql-dump --result-file="$folderpath/sitebackups/$sn/$Name"
 
 #backupfiles

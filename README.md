@@ -9,7 +9,7 @@ You set it up with the following commands
 ```
 git clone git@github.com:rjzaar/pleasy.git [sitename]  #eg git clone git@github.com:rjzaar/pleasy.git mysite.org
 cd [sitename]
-cp example.pl.yml pl.yml 
+cp example.pl.yml pl.yml
 ```
 Now edit pl.yml with your settings.
 ```
@@ -29,14 +29,14 @@ pl install loc
 ```
 
 It provides various scripts for development processes which incorporate composer, cmi and backup. It includes three stages, dev (called loc for local), stg and prod. Communication with the production server is via drush and scp.
-This project is also based on the varbase two repository structure, varbase and varbase-project. 
-This is a good way to go since most updates to varbase don't need to be updated on a varbase based project. 
-Those that do are included in varbase-project. 
-There are also a lot less files to track in varbase-project than varbase itself. 
-It provides an intelligent separation. 
+This project is also based on the varbase two repository structure, varbase and varbase-project.
+This is a good way to go since most updates to varbase don't need to be updated on a varbase based project.
+Those that do are included in varbase-project.
+There are also a lot less files to track in varbase-project than varbase itself.
+It provides an intelligent separation.
 
-Since a particular site based project needs to include site specific files which should be stored on a private repository for backup, there is one more layer needed. 
-The only difference with this layer is the .gitignore file which includes folders needed on production. Welcome to Drupal 8 development. 
+Since a particular site based project needs to include site specific files which should be stored on a private repository for backup, there is one more layer needed.
+The only difference with this layer is the .gitignore file which includes folders needed on production. Welcome to Drupal 8 development.
 
 #New Commands
 Here is the simple setup for an opencourse development environment
@@ -47,63 +47,28 @@ git clone git@github.com:rjzaar/opencourse-project.git oc
 cd oc
 The next step will give access to the powerful drop command (thanks Alexar!) to setup the site based on the pl.yml file
 cp example.pl.yml pl.yml
-edit the pl.yml file and change accordingly, eg add database credentials. If you don't add database credentials, 
+edit the pl.yml file and change accordingly, eg add database credentials. If you don't add database credentials,
 no problem, it will prompt you as you go.
-./scripts/ocinit.sh  
+./scripts/ocinit.sh
+
+#List of Commands
+
 
 #The Manual Way
-Create a database and user (change db, dbuser and dbpass to whatever you want)
-mysql -u username -p -e "CREATE DATABASE db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
-mysql -u username -p
-CREATE USER dbuser@localhost IDENTIFIED BY 'dbpass';
-GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES ON db.* TO 'dbuser'@'localhost' IDENTIFIED BY 'dbpass'; 
-
-For development you want to set up a local instance on apache
-edit the hosts filea and add "127.0.0.1 address" where address is the URL of your local webserver.
-sudo vi /etc/hosts
-127.0.0.1 address
-
 You will need to add a sitename ssh key for your server. Add the following to your .ssh/config file
 Host sitename
         User serveruser
         Port 22
         Hostname sitename
         IdentityFile ~/.ssh/sitename
-        
+
 Make sure you have a key to your server at ~/.ssh/sitename
 
-Add an apache rule:
-address.conf:
-```<VirtualHost *:80>
-        ServerName address
-        DocumentRoot /home/user/sitename/folder/sfolder
-               <Directory /home/user/sitename/folder/sfolder>
-                                Options None
-                                Require all granted
-                                AllowOverride All
-                </Directory>
-        ErrorLog ${APACHE_LOG_DIR}/error.log
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
-# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
-```
-
-then 
-```
-sudo a2ensite address.conf
-sudo service apache2 restart
-```
-    git clone git@github.com:rjzaar/opencourse-project.git octest
-    cd octest
-    ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=address -db=db -f=octest
-To install varbase:
-
-    ./opencourse-project/scripts/ocinstall.sh 
 
 # REQUIREMENTS
 sudo apt-get install php7.0-zip (for h5p)
 
-# PRODUCTION SERVER 
+# PRODUCTION SERVER
 The production server settings.local.php needs to have
 ```$settings['config_readonly'] = TRUE;```
 
@@ -124,10 +89,10 @@ OPENCOURSE
 This is a fork of varbase-project which includes all the opencourse functionality. It can therefore be extended different ways. This is for all development work on the project itself. This means it can in incorporated into various different staging strategies.
 
 OPENCOURSE-PROJECT
-This is a particular staging strategy taking into account the new complexities (I'm looking at you composer and cmi) Drupal uses. While composer and cmi bring many advantages, they need to be managed properly so errors are properly dealt with and don't end up in production. These should be able to be automated for quicker error finding and prepartion for using tools like docker and travis. The opencourse-project provides a number of scripts that provides automated ways to move between stages dev, stg and prod and (still to be written) ways to revcover from mishaps. 
+This is a particular staging strategy taking into account the new complexities (I'm looking at you composer and cmi) Drupal uses. While composer and cmi bring many advantages, they need to be managed properly so errors are properly dealt with and don't end up in production. These should be able to be automated for quicker error finding and prepartion for using tools like docker and travis. The opencourse-project provides a number of scripts that provides automated ways to move between stages dev, stg and prod and (still to be written) ways to revcover from mishaps.
 
 OCSITE
-Opencourse-project is written for its own development. Anyone wanting to build on it will need to fork it and have it setup as the upstream version. Opencourse-project is setup so all you have to do is fork it. There is then one set of changes for the gitignore so private and cmi are included in the standard gitignore. There is another gitignore for development which is used when working on opencourse-project itself. Database backup folders could also be included. Ocsite is your private site backup on github (or any git server?). 
+Opencourse-project is written for its own development. Anyone wanting to build on it will need to fork it and have it setup as the upstream version. Opencourse-project is setup so all you have to do is fork it. There is then one set of changes for the gitignore so private and cmi are included in the standard gitignore. There is another gitignore for development which is used when working on opencourse-project itself. Database backup folders could also be included. Ocsite is your private site backup on github (or any git server?).
 
 While it appears complex, the structure provides clear separation between each of the layers, with improvements cascading through and the potential to automate these changes with automated tests and auto updates. It must be honestly taken into account that the time period between drupal security updates made available and incorporated on production is critical and the new drupal complexities means this can take time. Any serious update should not break current sites and a 'drush up drupal' should be enough, but I'm not silly enough to guarantee that. I don't know of any other tool that can provide the breadth of possibilities (Drupal framework and modules) I need in a dev environment while building on and incorporating other people's work (Vardot and maybe Opigno later). Drupal is going to be around for a long time and building on D8 should last awhile, this is particularly appealing, though it is yet to be seen that this is a wise choice. The cutting edge is usually the bleeding edge. But so far so good.
 
@@ -210,7 +175,7 @@ This is now defunct. It moved field data into embeded nodes in the body field fo
 This is used to update opencourse to the latest varbase release.
 
 #overwritestg2prod
-this script will overwrite the production site with stg. All data on production will be lost. 
+this script will overwrite the production site with stg. All data on production will be lost.
 This is good for a first setup of production.
 
 
@@ -233,7 +198,7 @@ Could add drupal console config file ~/.console/config.yml
 Important: go through gcom code and add parts to _inc.yml
 set up sudoers properly: https://www.drupal.org/node/244924#script-based-on-guidelines-given-above
 
-install drush using composer: 
+install drush using composer:
 composer global update
 composer global require drush/drush:^9.0.0
 

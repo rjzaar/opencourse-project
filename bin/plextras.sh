@@ -15,9 +15,11 @@ if [ $# = 0 ]
 then
 cd $ocroot
 else
-. $script_root/_inc.sh;
-parse_pl_yml
 sn=$1
+. $script_root/_inc.sh;
+
+parse_pl_yml
+
 import_site_config $sn
 
 if [[ $# -eq 1 ]]

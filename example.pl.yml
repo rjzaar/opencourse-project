@@ -22,6 +22,7 @@
 #
 hosts_path: "/etc/hosts"
 vhosts_path: "/etc/apache2/sites-available/"
+www_path: "/var/www/oc"
 user: carlos
 github:
   user: carlos
@@ -32,8 +33,8 @@ prod:
   uri: "opencat.org"
   user: puregift
   docroot: "/home/puregift/opencat.org/opencourse/docroot"
+  method: tar  # Method could be git or tar.
 verbose: y
-www_path: "/var/www/oc"
 #
 # Since you can create many different sites, each in its own folder. There are certain commands that work with dev, stg and localprod
 # So these need to be specified. Therefore you can change them as you like.
@@ -79,7 +80,7 @@ recipes:
     dev:  y
     profile: varbase
     webroot:  docroot
-    sitename: default
+#    sitename: default # leave blank it will be called the name of the site, eg loc
     auto:  y
     apache: y
     install_method: git
@@ -106,5 +107,13 @@ recipes:
     source: drupal-composer/drupal-project:8.x-dev
     install_method: composer
     profile: standard
-
+  var:
+    source: git@github.com:Vardot/varbase-project.git
+    theme: vartheme_bs4
+    theme_admin: vartheme_admin
+    install_modules:
+    dev_modules: syslog views_ui block_place devel features_ui dblog
+    # This is a special directive that will not load any defaults from the default recipe.
+    # This is so in this case install_modules will remain blank
+    default: n
 
