@@ -10,10 +10,11 @@
 # This is needed to avoid the "awk: line 43: function asorti never defined" error
 echo "Will need to install gawk - sudo required"
 sudo apt-get install gawk
-
+echo running include files...
 . "$script_root/_inc.sh"
-
+echo parsing yml
 parse_pl_yml
+
 echo "wwwpath $www_path"
 if [ $user = "" ]
 then
