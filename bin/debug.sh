@@ -1,7 +1,7 @@
 #!/bin/bash
 function debug () {
-phpcli="/etc/php/7.2/cli/php.ini"
-phpapache="/etc/php/7.2/apache2/php.ini"
+phpcli=""
+phpapache=""
 
 
 
