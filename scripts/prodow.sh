@@ -110,7 +110,7 @@ echo "Don't know the name so using the lastest.tar.gz on server to extract"
 ssh $prod_alias -t "sudo tar -zxf latest.tar.gz --directory $prod_root.new --strip-components=1"
 else
 echo "Extracting ${Name::-4}.tar.gz into $prod_root.new"
-ssh $prod_alias "tar -zxf ${Name::-4}.tar.gz --directory $prod_root.new --strip-components=1"
+ssh $prod_alias "sudo tar -zxf ${Name::-4}.tar.gz --directory $prod_root.new --strip-components=1"
 fi
 
 echo "fix file permissions, requires sudo on external server and Restoring correct settings.php"

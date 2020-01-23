@@ -13,7 +13,9 @@ then
 print_help
 exit 1
 fi
-# ps -ef | grep "browser-sync start"
+ ps -ef | grep "browser-sync start"
+ ps -ef | grep "gulp"
+ echo "Now trying to stop the processes"
 ps -ef | grep "browser-sync start" | awk '{print $2, $6}' | \
 while read i
 do
@@ -33,6 +35,8 @@ then
 kill $1
 fi
 done
-
+echo "Check to see if they have been stopped."
+ ps -ef | grep "browser-sync start"
+ ps -ef | grep "gulp"
 
 

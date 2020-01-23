@@ -85,10 +85,10 @@ recipes:
     apache: y
     install_method: git
     git_upstream: git@github.com:Vardot/varbase-project.git
-    theme: oc_theme
+    theme: octheme_bs4
     theme_admin: octheme_admin
     install_modules: oc_prod
-    dev_modules: oc_dev
+    dev_modules: oc_dev syslog views_ui block_place devel features_ui dblog search_kint twig_xdebug
     lando: n
   loc:
   stg:
