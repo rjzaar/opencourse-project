@@ -26,6 +26,9 @@ folderpath=$(dirname $script_root)
 script_root=$folderpath/scripts
 user_home=$(dirname $folderpath)
 
+#echo "user_home: $user_home"
+#echo "folderpath: $folderpath"
+
 . $script_root/_inc.sh;
 ocmsg "Finished initalising the defaults for pl command. Found script_root is $script_root"
 pl_run_task() {
