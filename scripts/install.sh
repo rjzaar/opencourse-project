@@ -40,7 +40,7 @@ recipes=${recipes#","}
 if [ "$#" = 0 ]; then
   sn="default"
 else
-  if [ $1 == "-h" || "--help" ]; then
+  if [ $1 == "-h" -o $1 == "--help" ]; then
     print_help
   fi
   # Check to see if recipe is present
@@ -96,7 +96,7 @@ if [ $step -lt 2 ]; then
   echo -e "$Cyan step 1: checking if folder $sn exists $Color_Off"
 
   if [ -d "$site_path/$sn" ]; then
-    if [ ! "$#" = 2 ]; then
+    if [ $yes != "y" ]; then
       read -p "$sn exists. If you proceed, $sn will first be deleted. Do you want to proceed?(Y/n)" question
       case $question in
       n | c | no | cancel)
@@ -167,7 +167,13 @@ if [ $step -lt 3 ]; then
     cd "$folderpath/downloads"
     Name="$sn.tar.gz"
     wget -O $Name $project
-    tar -xf $Name -C "$site_path/$sn"
+        if [ -d "$site_path/$sn" ]; then
+        rm "$site_path/$sn" -rf
+         fi
+    mkdir "$site_path/$sn"
+    mkdir "$site_path/$sn/$webroot"
+
+    tar -zxf $Name -C "$site_path/$sn/$webroot" --strip 1
   else
     echo "No install method specified. You need to at least edit the default recipe in pl.yml and specify \"install_method\"."
     exit 1
@@ -177,8 +183,16 @@ fi
 if [ $step -lt 4 ]; then
   echo -e "step 3: composer install"
   cd $site_path/$sn
-  # Neet to check if composer is installed.
-  composer install
+  # Need to check if composer is installed.
+  if [ -f composer.json ] ; then composer install
+  else
+  cd $webroot
+  if [ -f composer.json ] ; then composer install
+  else
+  echo "Can't find composer.json in $site_path/$sn or $webroot. Exiting. "
+  exit 1
+  fi
+  fi
 fi
 
 if [ $step -lt 5 ]; then

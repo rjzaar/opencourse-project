@@ -260,6 +260,7 @@ fi
 fi
 
 sfile=$(<"$site_path/$sn/$webroot/sites/default/settings.php")
+echo "sfile: "$site_path/$sn/$webroot/sites/default/settings.php""
 if [[ $sfile =~ (\{[[:space:]]*include) ]]
 then
 echo "settings.php is correct"
@@ -388,7 +389,11 @@ echo -e "$Purple build step 2: Build the drupal site $sn $Color_Off"
 # drush status
 site_info
 # drupal site:install  varbase --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
-drush @$sn -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sn" --sites-subdir=default
+cd $site_path/$sn/$webroot
+
+#echo "drush -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sn" --sites-subdir=default"
+
+drush -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sn" --sites-subdir=default
 #don''t need --db-url=mysql://$dir:$dir@localhost:3306/$dir in drush because the settings.local.php has it.
 fi
 
