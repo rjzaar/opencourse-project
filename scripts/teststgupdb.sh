@@ -7,21 +7,21 @@ parse_pl_yml
 
 if [ $1 == "teststgupdb" ] && [ -z "$2" ]
   then
-sn="$sites_stg"
+sitename_var="$sites_stg"
 devs="$sites_dev"
 prods="$sites_localprod"
 elif [ -z "$2" ]
   then
-    sn=$1
+    sitename_var=$1
     devs="$sites_dev"
     prods="$sites_localprod"
    else
-    sn=$1
+    sitename_var=$1
     devs="$sites_dev"
     prods="$sites_localprod"
 fi
 
-import_site_config $sn
+import_site_config $sitename_var
 
 echo "This presumes stg has all the files copied and will rerun the database update."
 
@@ -34,16 +34,16 @@ exit 0
 }
 
 echo "Make sure permissions are correct"
-pl fixp $sn
+pl fixp $sitename_var
 
 echo -e "\e[34m update database\e[39m"
-drush @$sn updb -y
+drush @$sitename_var updb -y
 #echo -e "\e[34m fra\e[39m"
-#drush @$sn fra -y
+#drush @$sitename_var fra -y
 echo -e "\e[34m import config\e[39m"
-drush @$sn cim -y #--source=../cmi
+drush @$sitename_var cim -y #--source=../cmi
 echo -e "\e[34m get out of maintenance mode\e[39m"
-drush @$sn sset system.maintenance_mode FALSE
+drush @$sitename_var sset system.maintenance_mode FALSE
 drush cr
 
 # Not needed since patched.

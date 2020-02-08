@@ -11,13 +11,13 @@ parse_pl_yml
 
 if [ $1 == "stg2prod" ] && [ -z "$2" ]
   then
-  sn="$sites_stg"
+  sitename_var="$sites_stg"
 elif [ -z "$2" ]
   then
-    sn=$1
+    sitename_var=$1
 fi
 
-import_site_config $sn
+import_site_config $sitename_var
 
 # Help menu
 print_help() {
@@ -45,9 +45,9 @@ esac
 
 #put prod in maintenance mode
 drush @prod sset system.maintenance_mode TRUE
-drush -y rsync @$sn @prod -- -O  --delete
+drush -y rsync @$sitename_var @prod -- -O  --delete
 #Private files are the latest there anyway.
-drush -y rsync @$sn:../cmi @prod:../cmi -- -O  --delete
+drush -y rsync @$sitename_var:../cmi @prod:../cmi -- -O  --delete
 
 # Now sync the database
 

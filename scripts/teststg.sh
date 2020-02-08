@@ -7,51 +7,51 @@ parse_pl_yml
 
 if [ $1 == "teststg" ] && [ -z "$2" ]
   then
-sn="$sites_stg"
+sitename_var="$sites_stg"
 devs="$sites_dev"
 prods="$sites_localprod"
 elif [ -z "$2" ]
   then
-    sn="$sites_stg"
+    sitename_var="$sites_stg"
     devs=$1
     prods="$sites_localprod"
    else
-    sn=$2
+    sitename_var=$2
     devs=$1
     prods="$sites_localprod"
 fi
 
-import_site_config $sn
+import_site_config $sitename_var
 
-echo "This will backup the current stg site: $sn, then remove it. Copy the files from dev: $devs, import the prod database $prods and then update it."
+echo "This will backup the current stg site: $sitename_var, then remove it. Copy the files from dev: $devs, import the prod database $prods and then update it."
 
 # Help menu
 print_help() {
 cat <<-HELP
 This script will test the current loc in the stg instance using either the production site (default) or the localprod.
-It will backup the current stg site: $sn, then remove it. Copy the files from dev, copy the private folder from prod,
+It will backup the current stg site: $sitename_var, then remove it. Copy the files from dev, copy the private folder from prod,
 import the prod database and then update it.
 If no arguments are given
 HELP
 exit 0
 }
 
-backup_site $sn
+backup_site $sitename_var
 
 echo -e "\e[34mexport cmi\e[39m"
-#sudo chown $user:www-data $folderpath/$sn -R
-#chmod g+w $folderpath/$sn/cmi -R
+#sudo chown $user:www-data $folderpath/$sitename_var -R
+#chmod g+w $folderpath/$sitename_var/cmi -R
 drush @$devs cex -y #--destination=../cmi
 
 echo -e "\e[34mcopy files from $devs\e[39m"
-copy_site_files $devs $sn
+copy_site_files $devs $sitename_var
 
 echo -e "\e[34mcopy site folder from $prods\e[39m"
-copy_site_folder $prods $sn
+copy_site_folder $prods $sitename_var
 
 # composer install
 echo -e "\e[34mcomposer install\e[39m"
-cd $folderpath/$sn
+cd $folderpath/$sitename_var
 composer require drush/drush:~9.0
 composer install
 set_site_permissions
@@ -66,26 +66,26 @@ done
 Name=$(basename $latest)
 
 bk="localprod"
-restore_db $prods $sn
-drush @$sn cr
-drush @$sn sset system.maintenance_mode TRUE
+restore_db $prods $sitename_var
+drush @$sitename_var cr
+drush @$sitename_var sset system.maintenance_mode TRUE
 
 #uninstall modules on stg
-echo "uninstalling $install_modules from $sn"
-drush @$sn pm-uninstall $install_modules -y
+echo "uninstalling $install_modules from $sitename_var"
+drush @$sitename_var pm-uninstall $install_modules -y
 
 #install modules
-echo "installing modules $install_modules on $sn"
-drush @$sn en -y $install_modules
+echo "installing modules $install_modules on $sitename_var"
+drush @$sitename_var en -y $install_modules
 
 echo -e "\e[34m update database\e[39m"
-drush @$sn updb -y
+drush @$sitename_var updb -y
 #echo -e "\e[34m fra\e[39m"
-#drush @$sn fra -y
+#drush @$sitename_var fra -y
 echo -e "\e[34m import config\e[39m"
-drush @$sn cim -y #--source=../cmi
+drush @$sitename_var cim -y #--source=../cmi
 echo -e "\e[34m get out of maintenance mode\e[39m"
-drush @$sn sset system.maintenance_mode FALSE
+drush @$sitename_var sset system.maintenance_mode FALSE
 drush cr
 
 # Not needed since patched.

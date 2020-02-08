@@ -8,19 +8,19 @@ parse_pl_yml
 
 if [ $1 == "copy" ] && [ -z "$2" ]
   then
-  sn="$sites_stg"
+  sitename_var="$sites_stg"
   from="$sites_dev"
 fi
 if [ -z "$2" ]
   then
-    sn=$1
+    sitename_var=$1
     from="$sites_dev"
    else
     from=$1
-    sn=$2
+    sitename_var=$2
 fi
 
-echo "This will copy the site from $from to $sn and then try to import the database"
+echo "This will copy the site from $from to $sitename_var and then try to import the database"
 
 # Help menu
 print_help() {
@@ -34,11 +34,11 @@ exit 0
 }
 
 #We need to work out where each site is.
-to=$sn
+to=$sitename_var
 import_site_config $from
 backup_db
 from_sp=$site_path
-sn=$to
+sitename_var=$to
 import_site_config $to
 to_sp=$site_path
 

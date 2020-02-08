@@ -19,16 +19,16 @@ print_help
 exit 1
 fi
 
-sn=$1
+sitename_var=$1
 
 #folder=$(basename $(dirname $script_root))
 #webroot="docroot"
 parse_pl_yml
-import_site_config $sn
+import_site_config $sitename_var
 
 # turn on dev modules (composer)
 
-cd $site_path/$sn
+cd $site_path/$sitename_var
 echo "Composer install."
 composer install --quiet
 
@@ -39,7 +39,7 @@ set_site_permissions
 
 #install dev modules
 echo "install dev modules"
-drush @$sn en -y $dev_modules
+drush @$sitename_var en -y $dev_modules
 
 #turn on dev settings
 echo "Turn on dev mode"
@@ -47,6 +47,6 @@ drupal --target=$uri site:mode dev
 
 #clear cache
 echo "Clear cache"
-drush @$sn cr
+drush @$sitename_var cr
 
 echo 'H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))

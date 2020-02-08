@@ -2,10 +2,10 @@
 #start timer
 SECONDS=0
 parse_oc_yml
-sn="$sites_localprod"
-echo "Importing production site into $sn"
+sitename_var="$sites_localprod"
+echo "Importing production site into $sitename_var"
 
-import_site_config $sn
+import_site_config $sitename_var
 
 # Help menu
 print_help() {
@@ -20,21 +20,21 @@ exit 0
 
 
 #First backup the current localprod site.
-pl backup $sn
+pl backup $sitename_var
 
 #pull db and all files from prod
-drush -y rsync @prod @$sn -O
-pl fixss $sn
-drush -y rsync @prod:%private @$sn:%private -O  --delete
-drush -y rsync @prod:../cmi @$sn:../cmi -O  --delete
+drush -y rsync @prod @$sitename_var -O
+pl fixss $sitename_var
+drush -y rsync @prod:%private @$sitename_var:%private -O  --delete
+drush -y rsync @prod:../cmi @$sitename_var:../cmi -O  --delete
 
 # Make sure the hash is present so drush sql will work.
 # copy hash from settings.php.old to settings.local.php
-if [ -f "$folderpath/$sn/$webroot/sites/default/settings.php.old" ]
+if [ -f "$folderpath/$sitename_var/$webroot/sites/default/settings.php.old" ]
 then
-hlinenum=$(awk 'match($0,v){print NR; exit}' v="hash_salt'] = '" "$folderpath/$sn/$webroot/sites/default/settings.php.old")
-hline=$(sed "${hlinenum}q;d" "$folderpath/$sn/$webroot/sites/default/settings.php.old")
-echo $hline >> "$folderpath/$sn/$webroot/sites/default/settings.local.php"
+hlinenum=$(awk 'match($0,v){print NR; exit}' v="hash_salt'] = '" "$folderpath/$sitename_var/$webroot/sites/default/settings.php.old")
+hline=$(sed "${hlinenum}q;d" "$folderpath/$sitename_var/$webroot/sites/default/settings.php.old")
+echo $hline >> "$folderpath/$sitename_var/$webroot/sites/default/settings.local.php"
 fi
 
 # Now get the database

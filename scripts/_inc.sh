@@ -21,7 +21,7 @@ Cyan='\033[0;36m'         # Cyan
 
 import_site_config () {
 # setup basic defaults
-sn=$1
+sitename_var=$1
 
 # First load the defaults
 rp="recipes_default_source" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; else project=""; fi
@@ -34,7 +34,7 @@ rp="recipes_default_dbuser" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbuser=${!
 rp="recipes_default_profile" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then profile=${!rp} ; else profile=""; fi
 rp="recipes_default_db" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then db=${!rp} ; else db=""; fi
 rp="recipes_default_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbpass=${!rp} ; else dbpass=""; fi
-rp="recipes_default_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; else uri="$folder.$sn"; fi
+rp="recipes_default_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ; else uri="$folder.$sitename_var"; fi
 rp="recipes_default_install_method" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_method=${!rp} ; else install_method=""; fi
 rp="recipes_default_git_upstream" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then git_upstream=${!rp} ; else git_upstream=""; fi
 rp="recipes_default_theme" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme=${!rp} ; else theme=""; fi
@@ -46,39 +46,39 @@ rp="recipes_default_lando" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then lando=${!rp
 # Collect the details from pl.yml if they exist otherwise make blank
 # This first one is to override the defaults, ie default= n so if a site wants to leave it blank, but the default has a value, it will be left blank.
 # Though some values need to have a value and so if blank will get their values from the default recipe.
-rb="recipes_${sn}_default"
-rp="recipes_${sn}_source" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; fi
-rp="recipes_${sn}_dev" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev=${!rp} ; fi
-rp="recipes_${sn}_webroot" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then webroot=${!rp} ;  fi
-rp="recipes_${sn}_sitename" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sitename=${!rp} ;  fi
-rp="recipes_${sn}_auto" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then auto=${!rp} ;  fi
-rp="recipes_${sn}_apache" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then apache=${!rp} ;  fi
-rp="recipes_${sn}_dbuser" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbuser=${!rp} ; elif [ "${!rb}" == "n" ] ; then dbuser=""; fi
-rp="recipes_${sn}_profile" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then profile=${!rp} ; fi
-rp="recipes_${sn}_db" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then db=${!rp} ; elif [ "${!rb}" == "n" ] ; then db=""; fi
-rp="recipes_${sn}_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbpass=${!rp} ; elif [ "${!rb}" == "n" ] ; then dbpass=""; fi
-rp="recipes_${sn}_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ;  fi
-rp="recipes_${sn}_install_method" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_method=${!rp} ; fi
-rp="recipes_${sn}_git_upstream" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then git_upstream=${!rp} ; elif [ "${!rb}" == "n" ] ; then git_upstream=""; fi
-rp="recipes_${sn}_theme" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme=${!rp} ; elif [ "${!rb}" == "n" ] ; then theme=""; fi
-rp="recipes_${sn}_theme_admin" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme_admin=${!rp} ; elif [ "${!rb}" == "n" ] ; then theme_admin=""; fi
-rp="recipes_${sn}_install_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_modules=${!rp} ; elif [ "${!rb}" == "n" ] ; then install_modules="";  fi
-rp="recipes_${sn}_dev_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev_modules=${!rp} ; elif [ "${!rb}" == "n" ] ; then dev_modules=""; fi
-rp="recipes_${sn}_lando" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then lando=${!rp} ; fi
+rb="recipes_${sitename_var}_default"
+rp="recipes_${sitename_var}_source" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then project=${!rp} ; fi
+rp="recipes_${sitename_var}_dev" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev=${!rp} ; fi
+rp="recipes_${sitename_var}_webroot" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then webroot=${!rp} ;  fi
+rp="recipes_${sitename_var}_sitename" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then sitename=${!rp} ;  fi
+rp="recipes_${sitename_var}_auto" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then auto=${!rp} ;  fi
+rp="recipes_${sitename_var}_apache" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then apache=${!rp} ;  fi
+rp="recipes_${sitename_var}_dbuser" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbuser=${!rp} ; elif [ "${!rb}" == "n" ] ; then dbuser=""; fi
+rp="recipes_${sitename_var}_profile" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then profile=${!rp} ; fi
+rp="recipes_${sitename_var}_db" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then db=${!rp} ; elif [ "${!rb}" == "n" ] ; then db=""; fi
+rp="recipes_${sitename_var}_dbpass" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dbpass=${!rp} ; elif [ "${!rb}" == "n" ] ; then dbpass=""; fi
+rp="recipes_${sitename_var}_uri" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then uri=${!rp} ;  fi
+rp="recipes_${sitename_var}_install_method" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_method=${!rp} ; fi
+rp="recipes_${sitename_var}_git_upstream" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then git_upstream=${!rp} ; elif [ "${!rb}" == "n" ] ; then git_upstream=""; fi
+rp="recipes_${sitename_var}_theme" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme=${!rp} ; elif [ "${!rb}" == "n" ] ; then theme=""; fi
+rp="recipes_${sitename_var}_theme_admin" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then theme_admin=${!rp} ; elif [ "${!rb}" == "n" ] ; then theme_admin=""; fi
+rp="recipes_${sitename_var}_install_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then install_modules=${!rp} ; elif [ "${!rb}" == "n" ] ; then install_modules="";  fi
+rp="recipes_${sitename_var}_dev_modules" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then dev_modules=${!rp} ; elif [ "${!rb}" == "n" ] ; then dev_modules=""; fi
+rp="recipes_${sitename_var}_lando" ; rpv=${!rp}; if [ "$rpv" !=  "" ] ; then lando=${!rp} ; fi
 
-if [ "$db" = "" ] ; then db="$sn$folder" ; fi
+if [ "$db" = "" ] ; then db="$sitename_var$folder" ; fi
 if [ "$dbuser" = "" ] ; then dbuser=$db ; fi
 if [ "$dbpass" = "" ] ; then dbpass=$dbuser ;fi
 
-if [[ "$sitename" == "" ]] ; then sitename="$sn" ; fi
+if [[ "$sitename" == "" ]] ; then sitename="$sitename_var" ; fi
 
 if [ "$lando" = "y" ]
 then
 folder=$(basename $(dirname $script_root))
-private="/home/$user/$folder/$sn/private"
+private="/home/$user/$folder/$sitename_var/private"
 site_path="/home/$user/$folder"
 else
-private="$www_path/$sn/private"
+private="$www_path/$sitename_var/private"
 site_path="$www_path"
 fi
 
@@ -116,7 +116,7 @@ for f in $recipes_ ; do recipes="$recipes,${f#*_}" ; done
 recipes=${recipes#","}
 
 # Store the site name to restore it later
-storesn=$sn
+storesn=$sitename_var
 
 # Setup drupal console if it is installed.
 drupalconsole="y"
@@ -210,8 +210,8 @@ EOL
 
   #Now add drupal console aliases.
   cat >> $user_home/.console/sites/$folder.yml <<EOL
-$sn:
-  root: $site_path/$sn
+$sitename_var:
+  root: $site_path/$sitename_var
   type: local
 EOL
 
@@ -224,7 +224,7 @@ echo "?>" >> "$user_home/.drush/$folder.aliases.drushrc.php"
 # Now convert it to drush 9 yml
 drush sac "$user_home/.drush/sites/" -q
 
-sn=$storesn
+sitename_var=$storesn
 }
 
 fix_site_settings () {
@@ -232,41 +232,41 @@ fix_site_settings () {
 # Presumes the following information is set
 # $user
 # $folder
-# $sn
+# $sitename_var
 # $webroot
 # $site_path
 
 # Check that settings.php has reference to local.settings.php
 echo "Making sure settings.php exists"
-if [ -f "$site_path/$sn/$webroot/sites/default/settings.php.old" ]
+if [ -f "$site_path/$sitename_var/$webroot/sites/default/settings.php.old" ]
 then
-#      cp "$site_path/$sn/$webroot/sites/default/settings.php.old" "$site_path/$sn/$webroot/sites/default/settings.php"
+#      cp "$site_path/$sitename_var/$webroot/sites/default/settings.php.old" "$site_path/$sitename_var/$webroot/sites/default/settings.php"
    # get rid of any old settings.php
-rm "$site_path/$sn/$webroot/sites/default/settings.php.old"
+rm "$site_path/$sitename_var/$webroot/sites/default/settings.php.old"
 fi
 
 
-if [ ! -f "$site_path/$sn/$webroot/sites/default/settings.php" ]
+if [ ! -f "$site_path/$sitename_var/$webroot/sites/default/settings.php" ]
 then
-if [ ! -f "$site_path/$sn/$webroot/sites/default/default.settings.php" ]
+if [ ! -f "$site_path/$sitename_var/$webroot/sites/default/default.settings.php" ]
 then
-wget "https://git.drupalcode.org/project/drupal/raw/8.8.x/sites/default/default.settings.php" -P "$site_path/$sn/$webroot/sites/default/"
+wget "https://git.drupalcode.org/project/drupal/raw/8.8.x/sites/default/default.settings.php" -P "$site_path/$sitename_var/$webroot/sites/default/"
 fi
-#    echo "$site_path/$sn/$webroot/sites/default/default.settings.php does not exist. Please add it and try again."
+#    echo "$site_path/$sitename_var/$webroot/sites/default/default.settings.php does not exist. Please add it and try again."
 #    exit 1
 
-  cp "$site_path/$sn/$webroot/sites/default/default.settings.php" "$site_path/$sn/$webroot/sites/default/settings.php"
+  cp "$site_path/$sitename_var/$webroot/sites/default/default.settings.php" "$site_path/$sitename_var/$webroot/sites/default/settings.php"
 
 fi
 
-sfile=$(<"$site_path/$sn/$webroot/sites/default/settings.php")
-echo "sfile: "$site_path/$sn/$webroot/sites/default/settings.php""
+sfile=$(<"$site_path/$sitename_var/$webroot/sites/default/settings.php")
+echo "sfile: "$site_path/$sitename_var/$webroot/sites/default/settings.php""
 if [[ $sfile =~ (\{[[:space:]]*include) ]]
 then
 echo "settings.php is correct"
 else
 echo "settings.php: added reference to settings.local.php"
-cat >> $site_path/$sn/$webroot/sites/default/settings.php <<EOL
+cat >> $site_path/$sitename_var/$webroot/sites/default/settings.php <<EOL
  if (file_exists(\$app_root . '/' . \$site_path . '/settings.local.php')) {
        include \$app_root . '/' . \$site_path . '/settings.local.php';
     }
@@ -275,7 +275,7 @@ EOL
 fi
 
 
-cat > $site_path/$sn/$webroot/sites/default/settings.local.php <<EOL
+cat > $site_path/$sitename_var/$webroot/sites/default/settings.local.php <<EOL
 <?php
 
 \$settings['install_profile'] = '$profile';
@@ -294,7 +294,7 @@ cat > $site_path/$sn/$webroot/sites/default/settings.local.php <<EOL
 EOL
 if [ "$dev" == "y" ]
 then
-cat >> $site_path/$sn/$webroot/sites/default/settings.local.php <<EOL
+cat >> $site_path/$sitename_var/$webroot/sites/default/settings.local.php <<EOL
 \$settings['container_yamls'][] = DRUPAL_ROOT . '/sites/development.services.yml';
 \$settings['cache']['bins']['render'] = 'cache.backend.null';
 \$settings['cache']['bins']['dynamic_page_cache'] = 'cache.backend.null';
@@ -305,20 +305,20 @@ fi
 #Add site name
 if [  "$sitename" != "default" ]
 then
-echo "\$config['system.site']['name'] = \"$sitename\"; " >>  "$site_path/$sn/$webroot/sites/default/settings.local.php"
+echo "\$config['system.site']['name'] = \"$sitename\"; " >>  "$site_path/$sitename_var/$webroot/sites/default/settings.local.php"
 fi
 
-echo "Added settings.local.php to $sn"
+echo "Added settings.local.php to $sitename_var"
 
-#echo "Make sure the hash is present so drush sql will work in $site_path/$sn/$webroot/sites/default/."
+#echo "Make sure the hash is present so drush sql will work in $site_path/$sitename_var/$webroot/sites/default/."
 # Make sure the hash is present so drush sql will work.
-#cd "$site_path/$sn/$webroot"
+#cd "$site_path/$sitename_var/$webroot"
 
 #remove empty hash_salt if it exists
- sed -i "s/\$settings\['hash_salt'\] = '';//g" "$site_path/$sn/$webroot/sites/default/settings.php"
-sfile=$(<"$site_path/$sn/$webroot/sites/default/settings.php")
-slfile=$(<"$site_path/$sn/$webroot/sites/default/settings.local.php")
-#echo "sfile $site_path/$sn/$webroot/sites/default/settings.php  slfile $site_path/$sn/$webroot/sites/default/settings.local.php"
+ sed -i "s/\$settings\['hash_salt'\] = '';//g" "$site_path/$sitename_var/$webroot/sites/default/settings.php"
+sfile=$(<"$site_path/$sitename_var/$webroot/sites/default/settings.php")
+slfile=$(<"$site_path/$sitename_var/$webroot/sites/default/settings.local.php")
+#echo "sfile $site_path/$sitename_var/$webroot/sites/default/settings.php  slfile $site_path/$sitename_var/$webroot/sites/default/settings.local.php"
 
 if [[ ! $sfile =~ (\'hash_salt\'\] = \') ]]
 then
@@ -332,7 +332,7 @@ then
   hash="${hash:0:55}"
 # The line below causes an error since drush may not be called from webroot or above, hence the code above.
 #  hash=$(drush php-eval 'echo \Drupal\Component\Utility\Crypt::randomBytesBase64(55)')
-echo "\$settings['hash_salt'] = '$hash';" >> "$site_path/$sn/$webroot/sites/default/settings.local.php"
+echo "\$settings['hash_salt'] = '$hash';" >> "$site_path/$sitename_var/$webroot/sites/default/settings.local.php"
 echo "Added hash salt"
 fi
 fi
@@ -352,11 +352,11 @@ set_site_permissions () {
 # Presumes the following information is set
 # $user
 # $folder
-# $sn
+# $sitename_var
 # $webroot
 if [ $dev = "y" ] ; then devp="--dev" ; fi ;
 
-sudo d8fp.sh --drupal_path="$site_path/$sn/$webroot" --drupal_user=$user --httpd_group=www-data $devp
+sudo d8fp.sh --drupal_path="$site_path/$sitename_var/$webroot" --drupal_user=$user --httpd_group=www-data $devp
 
 }
 
@@ -367,7 +367,7 @@ rebuild_site () {
 # Persumes the following information is set
 # $user
 # $folder
-# $sn
+# $sitename_var
 # $webroot
 #etc
 echo "bstep $bstep"
@@ -384,16 +384,16 @@ make_db
 fi
 
 if [ $bstep -lt 3 ] ; then
-echo -e "$Purple build step 2: Build the drupal site $sn $Color_Off"
+echo -e "$Purple build step 2: Build the drupal site $sitename_var $Color_Off"
 
 # drush status
 site_info
 # drupal site:install  varbase --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
-cd $site_path/$sn/$webroot
+cd $site_path/$sitename_var/$webroot
 
-#echo "drush -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sn" --sites-subdir=default"
+#echo "drush -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sitename_var" --sites-subdir=default"
 
-drush -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sn" --sites-subdir=default
+drush -y site-install $profile  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sitename_var" --sites-subdir=default
 #don''t need --db-url=mysql://$dir:$dir@localhost:3306/$dir in drush because the settings.local.php has it.
 fi
 
@@ -407,7 +407,7 @@ fi
 if [ $bstep -lt 5 ] ; then
 echo -e "$Purple build step 4: install composer console $Color_Off"
 # Install any themes
-cd $site_path/$sn/
+cd $site_path/$sitename_var/
 composer require drupal/console:~1.0 --prefer-dist --optimize-autoloader
 fi
 
@@ -415,22 +415,22 @@ if [ $bstep -lt 6 ] ; then
 echo -e "$Purple build step 5: install themes if required $Color_Off"
 if [ $theme != "" ]
 then
-echo "Install theme for $sn using uri $uri and theme $theme"
+echo "Install theme for $sitename_var using uri $uri and theme $theme"
 
-cd $site_path/$sn/$webroot
+cd $site_path/$sitename_var/$webroot
 drupal --target=$uri theme:install  $theme
-drush @$sn config-set system.theme default $theme -y
+drush @$sitename_var config-set system.theme default $theme -y
 fi
 
 if [ $theme_admin != "" ]
 then
-echo "Install theme for $sn"
-cd $site_path/$sn/$webroot
+echo "Install theme for $sitename_var"
+cd $site_path/$sitename_var/$webroot
 drupal --target=$uri theme:install  $theme_admin
-drush @$sn config-set system.theme admin $theme_admin -y
+drush @$sitename_var config-set system.theme admin $theme_admin -y
 fi
 #drush cr #is this needed here?
-drush @$sn cr
+drush @$sitename_var cr
 fi
 ###
 
@@ -448,8 +448,8 @@ echo -e "$Purple build step 6: install modules $Color_Off"
 
 if [ "$install_modules" != "" ]
 then
-echo "Install modules for $sn"
-drush @$sn en -y $install_modules
+echo "Install modules for $sitename_var"
+drush @$sitename_var en -y $install_modules
 fi
 fi
 
@@ -460,8 +460,8 @@ if [ "$dev" == "y" ]
 then
 echo "Setting to dev mode"
 drupal --target=$uri site:mode dev
-drush @$sn php-eval 'node_access_rebuild();'
-drush @$sn en -y $dev_modules
+drush @$sitename_var php-eval 'node_access_rebuild();'
+drush @$sitename_var en -y $dev_modules
 else
 drupal --target=$uri site:mode prod
 fi
@@ -478,15 +478,15 @@ if [ ! -d "$folderpath/sitebackups" ]; then
 fi
 
 # Check if site backup folder exists
-if [ ! -d "$folderpath/sitebackups/$sn" ]; then
-  mkdir "$folderpath/sitebackups/$sn"
+if [ ! -d "$folderpath/sitebackups/$sitename_var" ]; then
+  mkdir "$folderpath/sitebackups/$sitename_var"
 fi
 
 
-if [ ! -d "$site_path/$sn" ]; then
-  echo "No site folder $sn so no need to backup"
+if [ ! -d "$site_path/$sitename_var" ]; then
+  echo "No site folder $sitename_var so no need to backup"
 else
-cd "$site_path/$sn"
+cd "$site_path/$sitename_var"
 #this will not affect a current git present
 git init
 cd "$webroot"
@@ -497,26 +497,26 @@ echo -e "\e[34mbackup db $Name\e[39m"
 # Make database smaller.
 drush cr
 # Could add more directives to make database even smaller.
-drush sql-dump --result-file="$folderpath/sitebackups/$sn/$Name"
+drush sql-dump --result-file="$folderpath/sitebackups/$sitename_var/$Name"
 
 #backupfiles
 Name2=${Name::-4}".tar.gz"
 
 echo -e "\e[34mbackup files $Name2\e[39m"
 cd $site_path
-tar -czf $folderpath/sitebackups/$sn/$Name2 $sn
+tar -czf $folderpath/sitebackups/$sitename_var/$Name2 $sitename_var
 fi
 }
 
 backup_prod () {
 #backup db.
 #use git: https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/set-up-a-local-development-drupal-0-7
-sn="prod"
+sitename_var="prod"
 msg=${1// /_}
 cd
 # Check if site backup folder exists
-if [ ! -d "$folder/sitebackups/$sn" ]; then
-  mkdir "$folder/sitebackups/$sn"
+if [ ! -d "$folder/sitebackups/$sitename_var" ]; then
+  mkdir "$folder/sitebackups/$sitename_var"
 fi
 
 #cd "$webroot"
@@ -550,25 +550,25 @@ fi
 }
 
 backup_db () {
-echo -e "$Green backing up $sn $Color_Off"
+echo -e "$Green backing up $sitename_var $Color_Off"
 
 #backup db.
 #use git: https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/set-up-a-local-development-drupal-0-7
 # Check if site backup folder exists
-if [ ! -d "$folderpath/sitebackups/$sn" ]; then
-  mkdir "$folderpath/sitebackups/$sn"
+if [ ! -d "$folderpath/sitebackups/$sitename_var" ]; then
+  mkdir "$folderpath/sitebackups/$sitename_var"
 fi
 cd
-cd "$site_path/$sn"
+cd "$site_path/$sitename_var"
 #this will not affect a current git present
 git init
 cd "$webroot"
 msg=${1// /_}
 Name=$(date +%Y%m%d\T%H%M%S-)`git branch | grep \* | cut -d ' ' -f2 | sed -e 's/[^A-Za-z0-9._-]/_/g'`-`git rev-parse HEAD | cut -c 1-8`$msg.sql
 echo -e "\e[34mbackup db $Name\e[39m"
-drush @$sn sset system.maintenance_mode TRUE
-drush @$sn sql-dump --result-file="$folderpath/sitebackups/$sn/$Name"
-drush @$sn sset system.maintenance_mode FALSE
+drush @$sitename_var sset system.maintenance_mode TRUE
+drush @$sitename_var sql-dump --result-file="$folderpath/sitebackups/$sitename_var/$Name"
+drush @$sitename_var sset system.maintenance_mode FALSE
 
 }
 make_db () {
@@ -611,12 +611,12 @@ make_db
 echo -e "\e[34mrestore $db database using $folderpath/sitebackups/$bk/$Name\e[39m"
 result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" $db < "$folderpath/sitebackups/$bk/$Name" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 if [ "$result" = ": 0" ]; then echo "Backup database $Name imported into database $db using root"; else echo "Could not import $Name into database $db using root, exiting"; exit 1; fi
-drush @$sn cr
-drush @$sn sset system.maintenance_mode TRUE
+drush @$sitename_var cr
+drush @$sitename_var sset system.maintenance_mode TRUE
 }
 
 test_site () {
-echo $sn, $db, $dbuser, $dbpass
+echo $sitename_var, $db, $dbuser, $dbpass
 }
 
 db_defaults () {
@@ -624,7 +624,7 @@ db_defaults () {
 echo "db defaults: db $db dbuser $dbuser dbpass $dbpass"
 if [ -z ${db+x} ]
 then
-    db="$sn$folder"
+    db="$sitename_var$folder"
 fi
 if [ -z ${dbuser+x} ]
 then
@@ -640,7 +640,7 @@ echo "db defaults: db $db dbuser $dbuser dbpass $dbpass"
 site_info () {
 echo "Source  = $project"
 echo "Project folder = $folder"
-echo "Site folder = $sn"
+echo "Site folder = $sitename_var"
 echo "webroot = $webroot"
 echo "Profile  = $profile"
 echo "uri      = $uri"
@@ -659,41 +659,41 @@ echo "dev_modules = $dev_modules"
 
 copy_site_files () {
 from=$1
-sn=$2
-echo "From $from to $sn"
+sitename_var=$2
+echo "From $from to $sitename_var"
 
 
 #We need to work out where each site is.
 import_site_config $from
 from_sp=$site_path
-import_site_config $sn
+import_site_config $sitename_var
 to_sp=$site_path
 
-if [ -d $to_sp/$sn ]
+if [ -d $to_sp/$sitename_var ]
 then
-sudo chown $user:www-data $to_sp/$sn -R
-chmod +w $to_sp/$sn -R
-rm -rf $to_sp/$sn
+sudo chown $user:www-data $to_sp/$sitename_var -R
+chmod +w $to_sp/$sitename_var -R
+rm -rf $to_sp/$sitename_var
 fi
-echo "Move all files from $from to $sn"
+echo "Move all files from $from to $sitename_var"
 cp -rf "$from_sp/$1" "$to_sp/$2"
 }
 
 copy_site_folder () {
 from=$1
-sn=$2
-echo "Copy site folder from $from to $sn"
+sitename_var=$2
+echo "Copy site folder from $from to $sitename_var"
 
-if [ -d $site_path/$sn/$webroot/sites ]
+if [ -d $site_path/$sitename_var/$webroot/sites ]
 then
-chown $user:www-data $site_path/$sn/$webroot/sites -R
-chmod +w $site_path/$sn/$webroot/sites -R
-rm -rf $site_path/$sn/$webroot/sites
+chown $user:www-data $site_path/$sitename_var/$webroot/sites -R
+chmod +w $site_path/$sitename_var/$webroot/sites -R
+rm -rf $site_path/$sitename_var/$webroot/sites
 fi
 
 echo -e "\e[34mcopy private files from $from\e[39m"
-rm -rf $site_path/$sn/private
-cp -rf "$site_path/$from/private" "$site_path/$sn/private"
-cp -rf "$site_path/$from/$webroot/sites" "$site_path/$sn/$webroot/sites"
+rm -rf $site_path/$sitename_var/private
+cp -rf "$site_path/$from/private" "$site_path/$sitename_var/private"
+cp -rf "$site_path/$from/$webroot/sites" "$site_path/$sitename_var/$webroot/sites"
 
 }

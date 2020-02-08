@@ -15,14 +15,14 @@ if [ -z "$2" ]
 echo "You have only given one argument. You need to specify the site and the module in that order"
 print_help
    else
-    sn=$1
+    sitename_var=$1
     main=$2
 fi
 
-echo "This will turn $main maintenance mode on the $sn site."
+echo "This will turn $main maintenance mode on the $sitename_var site."
 # Don't need to parse site since all we need is in the command, though we presume site name is correct.
 #parse_pl_yml
-#import_site_config $sn
+#import_site_config $sitename_var
 # Help menu
 print_help() {
 cat <<-HELP

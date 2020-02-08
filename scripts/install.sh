@@ -26,7 +26,7 @@ HELP
 #project="rjzaar/opencourse:8.7.x-dev"
 ## For a private setup, either it is a test setup which means private is in the usual location <site root>/site/default/files/private or
 ## there is a proper setup with opencat, which means private is as below. $secure is the switch, so if $secure and
-#sn="dev"
+#sitename_var="dev"
 #profile="varbase"
 #dev="y"
 
@@ -38,17 +38,17 @@ for f in $recipes_; do recipes="$recipes,${f#*_}"; done
 recipes=${recipes#","}
 
 if [ "$#" = 0 ]; then
-  sn="default"
+  sitename_var="default"
 else
   if [ $1 == "-h" -o $1 == "--help" ]; then
     print_help
   fi
   # Check to see if recipe is present
   # Get the sitename
-  sn=$1
-  echo "Looking for recipe $sn"
-  if [[ $recipes != *"$sn"* ]]; then
-    echo "No recipe for $sn! Current recipes include $recipes. Please add a recipe to pl.yml for $sn"
+  sitename_var=$1
+  echo "Looking for recipe $sitename_var"
+  if [[ $recipes != *"$sitename_var"* ]]; then
+    echo "No recipe for $sitename_var! Current recipes include $recipes. Please add a recipe to pl.yml for $sitename_var"
     exit 1
   fi
 fi
@@ -81,11 +81,11 @@ if [ "$#" -gt 1 ]; then
 
 fi
 
-import_site_config $sn
+import_site_config $sitename_var
 
 #db_defaults
 
-echo "Installing $sn"
+echo "Installing $sitename_var"
 site_info
 if [ $step -gt 1 ]; then
   echo "Starting from step $step"
@@ -93,11 +93,11 @@ fi
 
 # Check to see if folder already exits.
 if [ $step -lt 2 ]; then
-  echo -e "$Cyan step 1: checking if folder $sn exists $Color_Off"
+  echo -e "$Cyan step 1: checking if folder $sitename_var exists $Color_Off"
 
-  if [ -d "$site_path/$sn" ]; then
+  if [ -d "$site_path/$sitename_var" ]; then
     if [ $yes != "y" ]; then
-      read -p "$sn exists. If you proceed, $sn will first be deleted. Do you want to proceed?(Y/n)" question
+      read -p "$sitename_var exists. If you proceed, $sitename_var will first be deleted. Do you want to proceed?(Y/n)" question
       case $question in
       n | c | no | cancel)
         echo exiting immediately, no changes made
@@ -107,19 +107,19 @@ if [ $step -lt 2 ]; then
     fi
     #first change permissions on sites/default
     result=$(
-      chown $user:www-data $site_path/$sn -R 2>/dev/null | grep -v '+' | cut -d' ' -f2
+      chown $user:www-data $site_path/$sitename_var -R 2>/dev/null | grep -v '+' | cut -d' ' -f2
       echo ": ${PIPESTATUS[0]}"
     )
     if [ "$result" = ": 0" ]; then
-      echo "Changed ownership of $sn to $user:www-data"
+      echo "Changed ownership of $sitename_var to $user:www-data"
     else
-      echo "Had errors changing ownership of $sn to $user:www-data so will need to use sudo"
-      sudo chown $user:www-data $site_path/$sn -R
+      echo "Had errors changing ownership of $sitename_var to $user:www-data so will need to use sudo"
+      sudo chown $user:www-data $site_path/$sitename_var -R
     fi
-    if [ -f $site_path/$sn/$webroot/sites/default ]; then
-      sudo chmod 770 $site_path/$sn/$webroot/sites/default -R
+    if [ -f $site_path/$sitename_var/$webroot/sites/default ]; then
+      sudo chmod 770 $site_path/$sitename_var/$webroot/sites/default -R
     fi
-    sudo rm -rf "$site_path/$sn"
+    sudo rm -rf "$site_path/$sitename_var"
   fi
 fi
 
@@ -131,19 +131,19 @@ if [ $step -lt 3 ]; then
     if [ -f /home/$user/.ssh/$github_key ]; then
       ssh-add /home/$user/.ssh/$github_key
       echo "Cloning $project"
-      git clone $project $site_path/$sn
+      git clone $project $site_path/$sitename_var
     else
       echo "No github key present. Using https instead"
       #    git config --global user.name $user
       #    git config --global user.email "$user@example.com"
       echo "Cloning ${project/git@github.com:/https:\/\/github.com\/}"
-      git clone "${project/git@github.com:/https:\/\/github.com\/}" $site_path/$sn
+      git clone "${project/git@github.com:/https:\/\/github.com\/}" $site_path/$sitename_var
     fi
 
     if [ "$git_upstream" != "" ]; then
       if [ -f /home/$user/.ssh/$github_key ]; then
-        cd $site_path/$sn
-        echo "$sn has upstream git so adding $git_upstream"
+        cd $site_path/$sitename_var
+        echo "$sitename_var has upstream git so adding $git_upstream"
         git remote add upstream $git_upstream
       else
         echo "Have not added upstream since no key present."
@@ -159,21 +159,21 @@ if [ $step -lt 3 ]; then
     fi
 
     echo "Run composer create project: $project"
-    composer create-project $project $sn $devs --no-interaction
+    composer create-project $project $sitename_var $devs --no-interaction
   elif [ "$install_method" == "file" ]; then
     if [ ! -d "$folderpath/downloads" ]; then
       mkdir "$folderpath/downloads"
     fi
     cd "$folderpath/downloads"
-    Name="$sn.tar.gz"
+    Name="$sitename_var.tar.gz"
     wget -O $Name $project
-        if [ -d "$site_path/$sn" ]; then
-        rm "$site_path/$sn" -rf
+        if [ -d "$site_path/$sitename_var" ]; then
+        rm "$site_path/$sitename_var" -rf
          fi
-    mkdir "$site_path/$sn"
-    mkdir "$site_path/$sn/$webroot"
+    mkdir "$site_path/$sitename_var"
+    mkdir "$site_path/$sitename_var/$webroot"
 
-    tar -zxf $Name -C "$site_path/$sn/$webroot" --strip 1
+    tar -zxf $Name -C "$site_path/$sitename_var/$webroot" --strip 1
   else
     echo "No install method specified. You need to at least edit the default recipe in pl.yml and specify \"install_method\"."
     exit 1
@@ -182,14 +182,14 @@ fi
 
 if [ $step -lt 4 ]; then
   echo -e "step 3: composer install"
-  cd $site_path/$sn
+  cd $site_path/$sitename_var
   # Need to check if composer is installed.
   if [ -f composer.json ] ; then composer install
   else
   cd $webroot
   if [ -f composer.json ] ; then composer install
   else
-  echo "Can't find composer.json in $site_path/$sn or $webroot. Exiting. "
+  echo "Can't find composer.json in $site_path/$sitename_var or $webroot. Exiting. "
   exit 1
   fi
   fi
@@ -200,46 +200,46 @@ if [ $step -lt 5 ]; then
 
   fix_site_settings
 
-  echo "Create private files directory $site_path/$sn/private"
+  echo "Create private files directory $site_path/$sitename_var/private"
   echo "BTW private is $private"
-  if [ ! -d "$site_path/$sn/private" ]; then
-    mkdir ""$site_path/$sn/private""
+  if [ ! -d "$site_path/$sitename_var/private" ]; then
+    mkdir ""$site_path/$sitename_var/private""
   fi
-  chmod 770 "$site_path/$sn/private"
+  chmod 770 "$site_path/$sitename_var/private"
 
   echo "Create cmi files directory"
-  if [ ! -d "$site_path/$sn/cmi" ]; then
-    mkdir "$site_path/$sn/cmi"
+  if [ ! -d "$site_path/$sitename_var/cmi" ]; then
+    mkdir "$site_path/$sitename_var/cmi"
   fi
-  chmod 770 "$site_path/$sn/cmi"
+  chmod 770 "$site_path/$sitename_var/cmi"
 fi
 
 if [ $step -lt 6 ]; then
   echo -e "$Cyan step 5: setting up drush aliases and site permissions $Color_Off"
-  cd "$site_path/$sn/$webroot"
+  cd "$site_path/$sitename_var/$webroot"
   drush core:init
   set_site_permissions
 fi
 
 if [ $step -lt 7 ]; then
-  echo -e "$Cyan step 6: Now building site. $sn $Color_Off"
-  rebuild_site $sn
+  echo -e "$Cyan step 6: Now building site. $sitename_var $Color_Off"
+  rebuild_site $sitename_var
 fi
 
 if [ $step -lt 8 ]; then
   echo -e "$Cyan step 7: Set up uri $uri. This will require sudo $Color_Off"
-  pl sudoeuri $sn
+  pl sudoeuri $sitename_var
 fi
 
 if [ $step -lt 9 ]; then
   echo -e "$Cyan Step 8: setup npm for gulp support $uri $Color_Off"
-  echo "theme path: $site_path/$sn/$webroot/themes/contrib/$theme"
+  echo "theme path: $site_path/$sitename_var/$webroot/themes/contrib/$theme"
 
-  if [ -d "$site_path/$sn/$webroot/themes/custom/$theme" ]; then
-    cd "$site_path/$sn/$webroot/themes/custom/$theme"
+  if [ -d "$site_path/$sitename_var/$webroot/themes/custom/$theme" ]; then
+    cd "$site_path/$sitename_var/$webroot/themes/custom/$theme"
     npm install
-  elif [ -d "$site_path/$sn/$webroot/themes/contrib/$theme" ]; then
-    cd "$site_path/$sn/$webroot/themes/contrib/$theme"
+  elif [ -d "$site_path/$sitename_var/$webroot/themes/contrib/$theme" ]; then
+    cd "$site_path/$sitename_var/$webroot/themes/contrib/$theme"
     npm install
   else
     echo "There is a problem: The theme $theme has not been installed."

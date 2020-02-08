@@ -26,7 +26,7 @@ exit 0
 #project="rjzaar/opencourse:8.7.x-dev"
 ## For a private setup, either it is a test setup which means private is in the usual location <site root>/site/default/files/private or
 ## there is a proper setup with opencat, which means private is as below. $secure is the switch, so if $secure and
-#sn="dev"
+#sitename_var="dev"
 #profile="varbase"
 #dev="y"
 
@@ -39,15 +39,15 @@ recipes=${recipes#","}
 
 if [ "$#" = 0 ]
 then
-sn="default"
+sitename_var="default"
 else
 # Check to see if recipe is present
 # Get the sitename
-sn=$1
-echo "Looking for recipe $sn"
-if [[ $recipes != *"$sn"* ]]
+sitename_var=$1
+echo "Looking for recipe $sitename_var"
+if [[ $recipes != *"$sitename_var"* ]]
 then
-echo "No recipe for $sn! Current recipes include $recipes. Please add a recipe to pl.yml for $sn"
+echo "No recipe for $sitename_var! Current recipes include $recipes. Please add a recipe to pl.yml for $sitename_var"
 exit 1
 fi
 fi
@@ -55,18 +55,18 @@ fi
 # Check for yes
 if [ "$#" = 2 ] ; then yes="y" ; fi
 
-import_site_config $sn
+import_site_config $sitename_var
 
 #db_defaults
 
-echo "Installing $sn"
+echo "Installing $sitename_var"
 site_info
 
 # Check to see if folder already exits.
-if [ -d "$site_path/$sn" ]; then
+if [ -d "$site_path/$sitename_var" ]; then
     if [ ! "$#" = 2 ]
     then
-    read -p "$sn exists. If you proceed, $sn will first be deleted. Do you want to proceed?(Y/n)" question
+    read -p "$sitename_var exists. If you proceed, $sitename_var will first be deleted. Do you want to proceed?(Y/n)" question
         case $question in
             n|c|no|cancel)
             echo exiting immediately, no changes made
@@ -75,13 +75,13 @@ if [ -d "$site_path/$sn" ]; then
         esac
     fi
     #first change permissions on sites/default
-    result=$(chown $user:www-data $site_path/$sn -R 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-    if [ "$result" = ": 0" ]; then echo "Changed ownership of $sn to $user:www-data"
-    else echo "Had errors changing ownership of $sn to $user:www-data so will need to use sudo"
-    sudo chown $user:www-data $site_path/$sn -R
+    result=$(chown $user:www-data $site_path/$sitename_var -R 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+    if [ "$result" = ": 0" ]; then echo "Changed ownership of $sitename_var to $user:www-data"
+    else echo "Had errors changing ownership of $sitename_var to $user:www-data so will need to use sudo"
+    sudo chown $user:www-data $site_path/$sitename_var -R
     fi
-    chmod 770 $site_path/$sn/$webroot/sites/default -R
-    rm -rf "$site_path/$sn"
+    chmod 770 $site_path/$sitename_var/$webroot/sites/default -R
+    rm -rf "$site_path/$sitename_var"
 fi
 
 if [ "$install_method" == "git" ]
@@ -89,12 +89,12 @@ then
   echo "Adding git credentials"
   ssh-add /home/$user/.ssh/$github_key
   echo "Cloning $project"
-  git clone $project $site_path/$sn
+  git clone $project $site_path/$sitename_var
 
   if [ "$git_upstream" != "" ]
   then
-    cd $site_path/$sn
-    echo "$sn has upstream git so adding $git_upstream"
+    cd $site_path/$sitename_var
+    echo "$sitename_var has upstream git so adding $git_upstream"
     git remote add upstream $git_upstream
   fi
 
@@ -109,7 +109,7 @@ elif [ "$install_method" == "composer" ]
   fi
 
   echo "Run composer create project: $project"
-  composer create-project $project $sn $devs --no-interaction
+  composer create-project $project $sitename_var $devs --no-interaction
 elif [ "$install_method" == "file" ]
   then
   if [ ! -d "$folderpath/downloads" ]
@@ -117,16 +117,16 @@ elif [ "$install_method" == "file" ]
     mkdir "$folderpath/downloads"
   fi
   cd "$folderpath/downloads"
-  Name="$sn.tar.gz"
+  Name="$sitename_var.tar.gz"
   wget -O $Name $project
-  tar -xf $Name -C "$site_path/$sn"
+  tar -xf $Name -C "$site_path/$sitename_var"
 else
     echo "No install method specified. You need to at least edit the default recipe in pl.yml and specify \"install_method\"."
     exit 1
 fi
 
 
-cd $site_path/$sn
+cd $site_path/$sitename_var
 
 composer install
 
@@ -139,10 +139,10 @@ fi
 chmod 770 $private
 
 echo "Create cmi files directory"
-if [ ! -d "$site_path/$sn/cmi" ]; then
-  mkdir "$site_path/$sn/cmi"
+if [ ! -d "$site_path/$sitename_var/cmi" ]; then
+  mkdir "$site_path/$sitename_var/cmi"
 fi
-chmod 770 "$site_path/$sn/cmi"
+chmod 770 "$site_path/$sitename_var/cmi"
 
 set_site_permissions
 

@@ -14,13 +14,13 @@ parse_pl_yml
 
 if [ $1 == "gcomup2upstream" ] && [ -z "$2" ]
   then
-  sn="$sites_dev"
+  sitename_var="$sites_dev"
   elif [ -z "$2" ]
   then
-    sn=$1
+    sitename_var=$1
     msg="Updating."
    else
-    sn=$1
+    sitename_var=$1
     msg=$2
 fi
 
@@ -40,10 +40,10 @@ exit 1
 fi
 
 parse_pl_yml
-import_site_config $sn
+import_site_config $sitename_var
 #This script will update opencourse to the varbase-project upstream
 cd
-cd $site_path/$sn
+cd $site_path/$sitename_var
 echo "Add credentials."
 ssh-add ~/.ssh/$github_key
 
@@ -52,13 +52,13 @@ ocmsg "Composer install"
 composer install
 
 ocmsg "Run db updates"
-drush @$sn updb
+drush @$sitename_var updb
 
 ocmsg "Export config: drush cex will need sudo"
-sudo chown $user:www-data $site_path/$sn -R
-chmod g+w $site_path/$sn/cmi -R
-drush @$sn cex --destination=../cmi -y
-pl gcom $sn "pre-up2upstream commit"
+sudo chown $user:www-data $site_path/$sitename_var -R
+chmod g+w $site_path/$sitename_var/cmi -R
+drush @$sitename_var cex --destination=../cmi -y
+pl gcom $sitename_var "pre-up2upstream commit"
 
 # Move Readme out the way for now.
 echo "Move readme out the way"
@@ -81,12 +81,12 @@ rm composer.lock
 composer install
 
 ocmsg "Run db updates"
-drush @$sn updb
+drush @$sitename_var updb
 
 ocmsg "Import configuration: drush cim"
-drush @$sn cim
+drush @$sitename_var cim
 
-pl gcom $sn "Updated to lastest varbase"
+pl gcom $sitename_var "Updated to lastest varbase"
 
 
 

@@ -11,13 +11,13 @@ parse_pl_yml
 
 if [ $1 == "stg2prodoverwrite" ] && [ -z "$2" ]
   then
-  sn="$sites_stg"
+  sitename_var="$sites_stg"
 elif [ -z "$2" ]
   then
-    sn=$1
+    sitename_var=$1
 fi
 
-import_site_config $sn
+import_site_config $sitename_var
 
 # Help menu
 print_help() {
@@ -36,11 +36,11 @@ exit 0
 
 #put prod in maintenance mode
 drush @prod sset system.maintenance_mode TRUE
-drush -y rsync @$sn @prod -- -O  --delete
-drush -y rsync @$sn:../cmi @prod:../cmi -- -O  --delete
+drush -y rsync @$sitename_var @prod -- -O  --delete
+drush -y rsync @$sitename_var:../cmi @prod:../cmi -- -O  --delete
 
 # Now sync the database
-drush sql:sync @$sn @prod
+drush sql:sync @$sitename_var @prod
 
 drush @prod cr
 drush @prod sset system.maintenance_mode FALSE

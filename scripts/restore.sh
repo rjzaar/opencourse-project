@@ -9,7 +9,7 @@ fi
 #restore site and database
 # $1 is the backup
 # $2 if present is the site to restore into
-# $sn is the site to import into
+# $sitename_var is the site to import into
 # $bk is the backed up site.
 
 #start timer
@@ -23,25 +23,25 @@ fi
 bauto="no"
 if [ -z "$2" ]
   then
-    sn=$1
+    sitename_var=$1
     bk=$1
     echo -e "\e[34mrestore $1 \e[39m"
    elif [ "$2" = "-y" ]
      then
         bauto="yes"
-        sn=$1
+        sitename_var=$1
         bk=$1
         echo -e "\e[34mrestore $1 with latest backup\e[39m"
       else
         if [ "$3" = "-y" ]
         then
           bk=$1
-          sn=$2
+          sitename_var=$2
           echo -e "\e[34mrestoring $1 to $2 with latest backup\e[39m"
           bauto="yes"
         else
           bk=$1
-          sn=$2
+          sitename_var=$2
           echo -e "\e[34mrestoring $1 to $2 \e[39m"
         fi
     fi
@@ -63,7 +63,7 @@ exit 1
 fi
 
 parse_pl_yml
-import_site_config $sn
+import_site_config $sitename_var
 
 # Prompt to choose which database to backup, 1 will be the latest.
 # Could be a better way to go: https://stackoverflow.com/questions/42789273/bash-choose-default-from-case-when-enter-is-pressed-in-a-select-prompt
@@ -91,12 +91,12 @@ select opt in "${options[@]}" "Quit" ; do
 done
 fi
 
-echo " site_path: $site_path/$sn"
+echo " site_path: $site_path/$sitename_var"
 # Check to see if folder already exits.
-if [ -d "$site_path/$sn" ]; then
+if [ -d "$site_path/$sitename_var" ]; then
     if [ $auto = "no" ]
     then
-    read -p "$sn exists. If you proceed, $sn will first be deleted. Do you want to proceed?(Y/n)" question
+    read -p "$sitename_var exists. If you proceed, $sitename_var will first be deleted. Do you want to proceed?(Y/n)" question
         case $question in
             n|c|no|cancel)
             echo exiting immediately, no changes made
@@ -104,37 +104,37 @@ if [ -d "$site_path/$sn" ]; then
             ;;
         esac
     fi
-    rm -rf "$site_path/$sn"
+    rm -rf "$site_path/$sitename_var"
 
 fi
-mkdir "$site_path/$sn"
+mkdir "$site_path/$sitename_var"
 echo -e "\e[34mrestoring files\e[39m"
-# Will need to first move the source folder ($bk) if it exists, so we can create the new folder $sn
-echo "path $site_path/$sn folderpath $folderpath"
-echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz into $site_path/$sn"
+# Will need to first move the source folder ($bk) if it exists, so we can create the new folder $sitename_var
+echo "path $site_path/$sitename_var folderpath $folderpath"
+echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz into $site_path/$sitename_var"
 # Check to see if the backup includes the root folder or not.
 Dir_name=`tar -tzf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" | head -1 | cut -f1 -d"/"`
 #echo "Dir_name = >$Dir_name<"
 if [ $Dir_name == "." ]
 then
-tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C "$site_path/$sn"
+tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C "$site_path/$sitename_var"
 else
-tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C "$site_path/$sn" --strip-components=1
+tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C "$site_path/$sitename_var" --strip-components=1
 fi
 # Move settings.php and settings.local.php out the way before they are overwritten just in case you might need them.
 echo "Moving settings.php and settings.local.php"
-setpath="$site_path/$sn/$webroot/sites/default"
+setpath="$site_path/$sitename_var/$webroot/sites/default"
 if [ -f "$setpath/settings.php" ] ; then mv "$setpath/settings.php" "$setpath/settings.php.old" ; fi
 if [ -f "$setpath//settings.local.php" ] ; then mv "$setpath//settings.local.php" "$setpath/settings.local.php.old" ; fi
 if [ -f "$setpath//default.settings.php" ] ; then mv "$setpath//default.settings.php" "$setpath//settings.php" ; fi
 
 ### do I need to deal with services.yml?
 
-pl fixss $sn
+pl fixss $sitename_var
 
 
 
-set_site_permissions $sn
+set_site_permissions $sitename_var
 
 #restore db
 db_defaults
@@ -145,7 +145,7 @@ exit 0
 
 # Old way
 echo -e "\e[34mrestoring files\e[39m"
-# Will need to first move the source folder ($bk) if it exists, so we can create the new folder $sn
+# Will need to first move the source folder ($bk) if it exists, so we can create the new folder $sitename_var
 echo "path $site_path/$bk folderpath $folderpath"
 if [ -d "$site_path/$bk" ]; then
     if [ -d "$site_path/$bk.tmp" ]; then
@@ -155,7 +155,7 @@ if [ -d "$site_path/$bk" ]; then
     mv "$site_path/$bk" "$site_path/$bk.tmp"
     echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz"
     tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C $folderpath
-    mv "$site_path/$bk" "$site_path/$sn"
+    mv "$site_path/$bk" "$site_path/$sitename_var"
     mv "$site_path/$bk.tmp" "$site_path/$bk"
     else
     echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz  fp  $folderpath"

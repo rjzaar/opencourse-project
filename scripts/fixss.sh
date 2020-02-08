@@ -19,10 +19,10 @@ print_help
 exit 1
 fi
 
-sn=$1
+sitename_var=$1
 
 parse_pl_yml
 
-import_site_config $sn
+import_site_config $sitename_var
 
 fix_site_settings

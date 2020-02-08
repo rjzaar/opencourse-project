@@ -2,11 +2,11 @@
 #start timer
 SECONDS=0
 parse_pl_yml
-sn="$sites_stg"
+sitename_var="$sites_stg"
 from="$sites_dev"
-import_site_config $sn
+import_site_config $sitename_var
 
-echo "This will copy the custom theme and modules folder from $from to $sn and then try to install $install_modules"
+echo "This will copy the custom theme and modules folder from $from to $sitename_var and then try to install $install_modules"
 
 # Help menu
 print_help() {
@@ -21,16 +21,16 @@ HELP
 exit 0
 }
 
-rm -rf "$site_path/$sn/$webroot/modules/custom"
-rm -rf "$site_path/$sn/$webroot/themes/custom"
-cp -rf "$site_path/$from/$webroot/modules/custom" "$site_path/$sn/$webroot/modules/custom"
-cp -rf "$site_path/$from/$webroot/themes/custom" "$site_path/$sn/$webroot/themes/custom"
+rm -rf "$site_path/$sitename_var/$webroot/modules/custom"
+rm -rf "$site_path/$sitename_var/$webroot/themes/custom"
+cp -rf "$site_path/$from/$webroot/modules/custom" "$site_path/$sitename_var/$webroot/modules/custom"
+cp -rf "$site_path/$from/$webroot/themes/custom" "$site_path/$sitename_var/$webroot/themes/custom"
 
-chown $user:www-data $site_path/$sn/$webroot/modules/custom -R
-chown $user:www-data $site_path/$sn/$webroot/themes/custom -R
-chmod g+w $site_path/$sn/$webroot/modules/custom -R
-chmod g+w $site_path/$sn/$webroot/themes/custom -R
-drush @$sn -y en  $install_modules
+chown $user:www-data $site_path/$sitename_var/$webroot/modules/custom -R
+chown $user:www-data $site_path/$sitename_var/$webroot/themes/custom -R
+chmod g+w $site_path/$sitename_var/$webroot/modules/custom -R
+chmod g+w $site_path/$sitename_var/$webroot/themes/custom -R
+drush @$sitename_var -y en  $install_modules
 
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 

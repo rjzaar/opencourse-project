@@ -20,15 +20,15 @@ print_help
 exit 1
 fi
 
-sn=$1
+sitename_var=$1
 msg="$2"
 #folder=$(basename $(dirname $script_root))
 #webroot="docroot"
 parse_pl_yml
-import_site_config $sn
+import_site_config $sitename_var
 
 echo "Updating varbase"
-cd $site_path/$sn/
+cd $site_path/$sitename_var/
 ./bin/update-varbase.sh
 
 

@@ -20,14 +20,14 @@ print_help
 exit 1
 fi
 
-sn=$1
+sitename_var=$1
 msg="$2"
 #folder=$(basename $(dirname $script_root))
 #webroot="docroot"
 parse_pl_yml
-import_site_config $sn
+import_site_config $sitename_var
 
-backup_site $sn
+backup_site $sitename_var
 
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 

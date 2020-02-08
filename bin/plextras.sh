@@ -15,12 +15,12 @@ if [ $# = 0 ]
 then
 cd $ocroot
 else
-sn=$1
+sitename_var=$1
 . $script_root/_inc.sh;
 
 parse_pl_yml
 
-import_site_config $sn
+import_site_config $sitename_var
 
 if [[ $# -eq 1 ]]
 then
@@ -53,38 +53,38 @@ then
     cd $ocwroot/
     ;;
     *)
-    cd $site_path/$sn
+    cd $site_path/$sitename_var
     ;;
   esac
 
 else
   case  $2  in
     d)
-    if [ -d $site_path/$sn/$webroot ] ; then cd $site_path/$sn/$webroot
-    else echo "webroot directory for sitepate: $site_path sn: $sn webroot $webroot can't be found"
+    if [ -d $site_path/$sitename_var/$webroot ] ; then cd $site_path/$sitename_var/$webroot
+    else echo "webroot directory for sitepate: $site_path sitename_var: $sitename_var webroot $webroot can't be found"
     fi
     ;;
     b)
-    cd $ocroot/sitebackups/$sn
+    cd $ocroot/sitebackups/$sitename_var
     ;;
     sd)
-    if [ -d $site_path/$sn/$webroot ] ; then cd $site_path/$sn/$webroot/sites/default
-    else echo "sites/default directory for $sn can't be found"
+    if [ -d $site_path/$sitename_var/$webroot ] ; then cd $site_path/$sitename_var/$webroot/sites/default
+    else echo "sites/default directory for $sitename_var can't be found"
     fi
     ;;
     t)
-    cd $site_path/$sn/$webroot/themes/custom/$theme
+    cd $site_path/$sitename_var/$webroot/themes/custom/$theme
     ;;
     *)
-    cd $ocroot/$sn/$2
+    cd $ocroot/$sitename_var/$2
     ;;
   esac
 
 #if [[ $2 -eq "d" ]]
 #then
-#cd $ocroot/$sn/docroot
+#cd $ocroot/$sitename_var/docroot
 #else
-#cd $ocroot/$sn/$2
+#cd $ocroot/$sitename_var/$2
 #fi
 fi
 fi
@@ -121,23 +121,23 @@ then
     cd $ocroot/scripts
     ;;
     *)
-    sn=$1
+    sitename_var=$1
     ;;
   esac
 else
-  sn=$1
+  sitename_var=$1
   case  $2  in
     a)
-    vi /etc/apache2/sites-available/$ocroot.$sn.conf
+    vi /etc/apache2/sites-available/$ocroot.$sitename_var.conf
     ;;
     s)
-    if [ -f $site_path/$sn/docroot/sites/default/settings.php ] ; then vi $site_path/$sn/docroot/sites/default/settings.php
-    else if [ -f $site_path/$sn/html/sites/default/settings.php ] ; then vi $site_path/$sn/html/sites/default/settings.php
-    else if [ -f $site_path/$sn/web/sites/default/settings.php ] ; then vi $site_path/$sn/web/sites/default/settings.php
-#    else if [ -f $ocwroot/$sn/docroot/sites/default/settings.php ] ; then vi $ocwroot/$sn/docroot/sites/default/settings.php
-#    else if [ -f $ocwroot/$sn/html/sites/default/settings.php ] ; then vi $ocwroot/$sn/html/sites/default/settings.php
-#    else if [ -f $ocwroot/$sn/web/sites/default/settings.php ] ; then vi $ocwroot/$sn/web/sites/default/settings.php
-    else echo "sites/default directory for $sn can't be found"
+    if [ -f $site_path/$sitename_var/docroot/sites/default/settings.php ] ; then vi $site_path/$sitename_var/docroot/sites/default/settings.php
+    else if [ -f $site_path/$sitename_var/html/sites/default/settings.php ] ; then vi $site_path/$sitename_var/html/sites/default/settings.php
+    else if [ -f $site_path/$sitename_var/web/sites/default/settings.php ] ; then vi $site_path/$sitename_var/web/sites/default/settings.php
+#    else if [ -f $ocwroot/$sitename_var/docroot/sites/default/settings.php ] ; then vi $ocwroot/$sitename_var/docroot/sites/default/settings.php
+#    else if [ -f $ocwroot/$sitename_var/html/sites/default/settings.php ] ; then vi $ocwroot/$sitename_var/html/sites/default/settings.php
+#    else if [ -f $ocwroot/$sitename_var/web/sites/default/settings.php ] ; then vi $ocwroot/$sitename_var/web/sites/default/settings.php
+    else echo "sites/default directory for $sitename_var can't be found"
     fi
 #    fi
 #    fi
@@ -146,13 +146,13 @@ else
     fi
     ;;
     sl)
-    if [ -f $site_path/$sn/docroot/sites/default/settings.local.php ] ; then vi $site_path/$sn/docroot/sites/default/settings.local.php
-    else if [ -f $site_path/$sn/html/sites/default/settings.local.php ] ; then vi $site_path/$sn/html/sites/default/settings.local.php
-    else if [ -f $site_path/$sn/web/sites/default/settings.local.php ] ; then vi $site_path/$sn/web/sites/default/settings.local.php
-#    else if [ -f $ocwroot/$sn/docroot/sites/default/settings.local.php ] ; then vi $ocwroot/$sn/docroot/sites/default/settings.local.php
-#    else if [ -f $ocwroot/$sn/html/sites/default/settings.local.php ] ; then vi $ocwroot/$sn/html/sites/default/settings.local.php
-#    else if [ -f $ocwroot/$sn/web/sites/default/settings.local.php ] ; then vi $ocwroot/$sn/web/sites/default/settings.local.php
-    else echo "sites/default directory for $sn can't be found"
+    if [ -f $site_path/$sitename_var/docroot/sites/default/settings.local.php ] ; then vi $site_path/$sitename_var/docroot/sites/default/settings.local.php
+    else if [ -f $site_path/$sitename_var/html/sites/default/settings.local.php ] ; then vi $site_path/$sitename_var/html/sites/default/settings.local.php
+    else if [ -f $site_path/$sitename_var/web/sites/default/settings.local.php ] ; then vi $site_path/$sitename_var/web/sites/default/settings.local.php
+#    else if [ -f $ocwroot/$sitename_var/docroot/sites/default/settings.local.php ] ; then vi $ocwroot/$sitename_var/docroot/sites/default/settings.local.php
+#    else if [ -f $ocwroot/$sitename_var/html/sites/default/settings.local.php ] ; then vi $ocwroot/$sitename_var/html/sites/default/settings.local.php
+#    else if [ -f $ocwroot/$sitename_var/web/sites/default/settings.local.php ] ; then vi $ocwroot/$sitename_var/web/sites/default/settings.local.php
+    else echo "sites/default directory for $sitename_var can't be found"
     fi
 #    fi
 #    fi
@@ -167,9 +167,9 @@ else
 
 #if [[ $2 -eq "d" ]]
 #then
-#cd $ocroot/$sn/docroot
+#cd $ocroot/$sitename_var/docroot
 #else
-#cd $ocroot/$sn/$2
+#cd $ocroot/$sitename_var/$2
 #fi
 fi
 fi

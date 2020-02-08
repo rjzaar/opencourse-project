@@ -19,12 +19,12 @@ print_help
 exit 1
 fi
 
-sn=$1
+sitename_var=$1
 
 #folder=$(basename $(dirname $script_root))
 #webroot="docroot"
 parse_pl_yml
-import_site_config $sn
+import_site_config $sitename_var
 
 #turn on prod settings
 echo "Turn on prod mode"
@@ -32,11 +32,11 @@ drupal --target=$uri site:mode prod
 
 #uninstall dev modules
 echo "uninstall dev modules"
-drush @$sn pm-uninstall -y $dev_modules
+drush @$sitename_var pm-uninstall -y $dev_modules
 
 # turn off dev modules (composer)
 
-cd $site_path/$sn
+cd $site_path/$sitename_var
 echo "Composer install with no dev modules."
 composer install --no-dev --quiet
 
@@ -47,6 +47,6 @@ set_site_permissions
 
 #clear cache
 echo "Clear cache"
-drush @$sn cr
+drush @$sitename_var cr
 
 echo 'H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))

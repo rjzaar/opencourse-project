@@ -1,53 +1,201 @@
 #!/bin/bash
+################################################################################
+#                      Initialisation For Pleasy Library                       
+#                                                                              
+#  This will set up pleasy and initialise the sites as per                     
+#  pl.yml, including the current production shared database.                   
+#                                                                              
+#  Change History                                                              
+#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,        
+#                                   prelim commenting                          
+#  08/02/2020 James Lim  Getopt parsing implementation, script documentation   
+#  [Insert New]                                                                
+#                                                                              
+#                                                                              
+################################################################################
+################################################################################
+################################################################################
+#                                                                              
+#  Core Maintainer:  Rob Zar                                                   
+#  Email:            rjzaar@gmail.com                                          
+#                                                                              
+################################################################################
+################################################################################
+################################################################################
+#                                TODO LIST                                     
+#                                                                              
+#                                                                              
+# Add npm, nodejs: https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts 
+# Use node v12:                                                                
+# https://stackoverflow.com/questions/41195952/updating-nodejs-on-ubuntu-16-04 
+#                                                                              
+#                                                                              
+################################################################################
+################################################################################
+################################################################################
+#                             Commenting with model                            
 
-# This will set up pleasy and initialise the sites as per pl.yml, including the current production shared database.
+# NAME OF COMMENT
+################################################################################
+# Description - Each bar is 80 #, in vim do 80i#esc                            
+################################################################################
 
-# TODO?
-# Add npm, nodejs: https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
-# Use node v12: https://stackoverflow.com/questions/41195952/updating-nodejs-on-ubuntu-16-04
-step=1
-if [ "$#" -gt 0 ]; then
-  for i in "$@"; do
-    case $i in
-    -s=* | --step=*)
-      step="${i#*=}"
-      shift # past argument=value
-      ;;
-    -y | --yes)
-      yes="y"
-      shift
-      ;;
-    -h | --help) print_help ;;
-    *)
-      shift # past argument=value
-      ;;
-    esac
-  done
+#                                                                               
+################################################################################
+################################################################################
+################################################################################
 
-fi
 
+# User help
+################################################################################
+# Prints user guide
+################################################################################
+print_help() {
+  echo \
+  'Usage: pl init [OPTION]
+  This will set up pleasy and initialise the sites as per  
+  pl.yml, including the current production shared database.
+  This will install many programs, which will be listed at
+  the end.
+  
+  Mandatory arguments to long options are mandatory for short options too.
+    -y --yes                Force all install options to yes (Recommended)
+    -h --help               Display help (Currently displayed)
+    -s --step={1,15}        FOR DEBUG USE, start at step number as seen in code
+  
+  Examples:
+  sudo ./pl init -h
+  sudo ./pl init -y -s=5
+  
+  INSTALL LIST:
+  sudo apt-get install gawk
+  sudo $folderpath/scripts/lib/installsudoers.sh "$folderpath/bin" $user
+  sudo apt-get install apache2 php libapache2-mod-php php-mysql curl php-cli \
+  php-gd php-mbstring php-gettext php-xml php-curl php-bz2 php-zip git unzip
+  php-xdebug -y
+  sudo apt-get -y install mysql-server
+  sudo apt-get install phpmyadmin -y
+  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  HASH="$(wget -q -O - https://composer.github.io/installer.sig)"
+  sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+  curl https://drupalconsole.com/installer -L -o drupal.phar
+  sudo apt install nodejs build-essential
+  curl -L https://npmjs.com/install.sh | sh
+  sudo apt install npm
+  sudo npm install gulp-cli -g
+  sudo npm install gulp -D
+  END OF HELP'
+}
+
+# Step Variable
+################################################################################
+# Variable step is defined for debug purposes. If the init fails, we can,
+# using step, start at the point of the script which had failed
+################################################################################
+step=${step:-1}
+
+# Use of Getopt 
+################################################################################
+# Getopt to parse script and allow arg combinations ie. -yh instead of -h
+# -y. Current accepted args are --yes --help --step
+################################################################################
+args=$(getopt -o yhs: -l yes,help,step: --name "pleasy-init" -- "$@")
+# echo "$args"
+
+################################################################################
+# If getopt outputs error to error variable, quit program displaying error
+################################################################################
+[ $? -eq 0 ] || {
+    echo "please do './pl init --help' for more options"
+    exit 1
+}
+
+################################################################################
+# Arguments are parsed by getopt, are then set back into $@
+################################################################################
+eval set -- "$args"
+
+################################################################################
+# Case through each argument passed into script
+# if no argument passed, default is -- and break loop
+################################################################################
+while true; do
+  case "$1" in
+  -s | --step)
+    shift;  
+    step=$(echo "$1" | sed 's/=//g')
+    #echo "$step"
+    # If step is in an invalid range, display invalid and exit program
+    if [[ $step -gt 15 || $step -lt 1 ]]; then {
+      echo "Invalid step value "$step" - valid range [1,15]"
+      exit 1
+    }
+    fi
+    ;;
+  -y | --yes)
+    yes="y"
+    ;;
+  -h | --help)
+    print_help
+    exit 0
+    ;;
+  --)
+    shift
+    break
+    ;;
+  *)
+    # *) should not occur with getopt, if it does, there is a bug
+    echo "Programming error! Parse argument should not be passed"
+    exit 1
+    ;;
+  esac
+  shift
+done
+
+# Step Display 
+################################################################################
+# Display to user which step is chosen if step option is defined
+################################################################################
 if [ $step -gt 1 ]; then
   echo "Starting from step $step"
 fi
 
+# Step 1
+################################################################################
+# Attempt to install gawk 
+################################################################################
 if [ $step -lt 2 ]; then
   echo -e "$Cyan step 1: Will need to install gawk - sudo required $Color_Off"
-# This is needed to avoid the "awk: line 43: functionWill need to install gawk - sudo required asorti never defined" error
+# This is needed to avoid the "awk: line 43: functionWill
+# need to install gawk - sudo required asorti never
+# defined" error
 sudo apt-get install gawk
 fi
 
-
-echo -e "$Cyan step 2 (must be run): checking if folder $sn exists $Color_Off"
+# Step 2
+################################################################################
+# This step must run, regardless of if statement. ROB PLEASE ADD WHY HERE 
+################################################################################
+echo -e "$Cyan step 2 (must be run): checking if folder $sitename_var exists $Color_Off"
 echo running include files...
+# WHAT DOES THIS DO?
 . "$script_root/_inc.sh"
 echo parsing yml
 echo "location: $folderpath/pl.yml"
-if [ ! -f "$folderpath/pl.yml" ] ; then echo " Please copy example.pl.yml to pl.yml and modify. exiting. "; exit 1 ; fi
+if [ ! -f "$folderpath/pl.yml" ]; then
+  echo " Please copy example.pl.yml to pl.yml and modify. exiting. "
+  exit 1
+fi
+# WHAT IS THIS FOR?
 no_config_update="true"
+# Import yaml, presumes $script_root is set
 parse_pl_yml
-
 #echo "wwwpath $www_path"
 
+# Step 3
+################################################################################
+#  
+################################################################################
 if [ $step -lt 4 ]; then
   echo -e "$Cyan step 3: Adding pl command to bash commands, including plextras $Color_Off"
 # Check correct user name
@@ -82,6 +230,10 @@ source ~/.bashrc
 #plsource
 fi
 
+# Step 4
+################################################################################
+# 
+################################################################################
 if [ $step -lt 5 ]; then
   echo -e "$Cyan step 4: Create mysql root password file $Color_Off"
 # Create mysql root password file
@@ -101,6 +253,10 @@ fi
 fi
 #Could check install of drush, drupal console, etc.
 
+# Step 5
+################################################################################
+# 
+################################################################################
 if [ $step -lt 6 ]; then
   echo -e "$Cyan step 5: Updating System..  $Color_Off"
 # see: https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/installing-php-mysql-and-apache-under
@@ -112,6 +268,10 @@ echo -e "$Cyan \n Installing Apache2 etc $Color_Off"
 sudo apt-get install apache2 php libapache2-mod-php php-mysql curl php-cli php-gd php-mbstring php-gettext php-xml php-curl php-bz2 php-zip git unzip php-xdebug -y
 fi
 
+# Step 6
+################################################################################
+# 
+################################################################################
 if [ $step -lt 7 ]; then
   echo -e "$Cyan step 6: Add github credentials $Color_Off"
 #add github credentials
@@ -121,6 +281,10 @@ git config --global credential.helper store
 fi
 
 
+# Step 7
+################################################################################
+# 
+################################################################################
 if [ $step -lt 8 ]; then
   echo -e "$Cyan step 7: Installing MySQL $Color_Off"
 # From: https://stackoverflow.com/questions/7739645/install-mysql-on-ubuntu-without-a-password-prompt
@@ -129,6 +293,10 @@ sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again p
 sudo apt-get -y install mysql-server
 fi
 
+# Step 8
+################################################################################
+# 
+################################################################################
 if [ $step -lt 9 ]; then
   echo -e "$Cyan step 8: Installing phpMyAdmin $Color_Off"
 sudo apt-get install phpmyadmin -y
@@ -140,6 +308,10 @@ fi
 #sudo chown -R www-data:www-data /var/www
 #echo -e "$Green \n Permissions have been set $Color_Off"
 
+# Step 9
+################################################################################
+# 
+################################################################################
 if [ $step -lt 10 ]; then
   echo -e "$Cyan step 9: Enabling Modules  $Color_Off"
 # Enabling Mod Rewrite, required for WordPress permalinks and .htaccess files
@@ -151,6 +323,10 @@ echo -e "$Cyan \n Restarting Apache $Color_Off"
 sudo service apache2 restart
 fi
 
+# Step 10
+################################################################################
+# 
+################################################################################
 if [ $step -lt 11 ]; then
   echo -e "$Cyan step 10: Install Composer  $Color_Off"
 #Check if composer is installed otherwise install it
@@ -166,6 +342,10 @@ sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 #sudo chown -R $user .composer/
 fi
 
+# Step 11
+################################################################################
+# 
+################################################################################
 if [ $step -lt 12 ]; then
   echo -e "$Cyan step 11: Install Drush globally $Color_Off"
 # Install drush globally with drush launcher
@@ -195,6 +375,10 @@ source ~/.bashrc
 
 fi
 
+# Step 12
+################################################################################
+# 
+################################################################################
 if [ $step -lt 13 ]; then
   echo -e "$Cyan step 12: Install Drupal console globally  $Color_Off"
 # Install drupal console
@@ -217,6 +401,10 @@ else
 fi
 fi
 
+# Step 13
+################################################################################
+# 
+################################################################################
 if [ $step -lt 14 ]; then
   echo -e "$Cyan step 13: setup /var/wwww/oc for websites  $Color_Off"
 #set up website folder for apache
@@ -232,6 +420,10 @@ no_config_update="false"
 update_all_configs
 fi
 
+# Step 14
+################################################################################
+# 
+################################################################################
 if [ $step -lt 15 ]; then
   echo -e "$Cyan step 14: Fix adding extra characters for vi  $Color_Off"
 #Set up vi to not add extra characters
@@ -242,6 +434,10 @@ set nocompatible
 EOL
 fi
 
+# Step 15
+################################################################################
+# 
+################################################################################
 if [ $step -lt 16 ]; then
   echo -e "$Cyan step 15: Now add theming tools $Color_Off"
 #Now add theming tools
@@ -264,7 +460,3 @@ fi
 
 echo " open this link to add the xdebug extension for the browser you want to use"
 echo "https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extensions.html?utm_campaign=PS&utm_medium=link&utm_source=product&utm_content=2019.3 "
-
-
-
-

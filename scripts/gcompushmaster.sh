@@ -14,13 +14,13 @@ parse_pl_yml
 
 if [ $1 == "gcompushmaster" ] && [ -z "$2" ]
   then
-  sn="$sites_dev"
+  sitename_var="$sites_dev"
   elif [ -z "$2" ]
   then
-    sn=$1
+    sitename_var=$1
     msg="Updating."
    else
-    sn=$1
+    sitename_var=$1
     msg=$2
 fi
 
@@ -40,8 +40,8 @@ exit 1
 fi
 
 parse_pl_yml
-import_site_config $sn
-cd $site_path/$sn
+import_site_config $sitename_var
+cd $site_path/$sitename_var
 
 echo "Add credentials."
 ssh-add ~/.ssh/$github_key

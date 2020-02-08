@@ -9,7 +9,7 @@ fi
 #restore site and database
 # $1 is the backup
 # $2 if present is the site to restore into
-# $sn is the site to import into
+# $sitename_var is the site to import into
 # $bk is the backed up site.
 
 #start timer
@@ -20,7 +20,7 @@ if [ $1 == "rebuild" ] && [ -z "$2" ]
     print_help
     exit 1
 fi
-sn=$1
+sitename_var=$1
 
 # Help menu
 print_help() {
@@ -37,7 +37,7 @@ exit 1
 fi
 
 parse_pl_yml
-import_site_config $sn
+import_site_config $sitename_var
 
 rebuild_site
 

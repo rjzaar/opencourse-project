@@ -8,45 +8,45 @@ parse_pl_yml
 
 if [ $1 == "importdev" ] && [ -z "$2" ]
   then
-  sn="$sites_stg"
+  sitename_var="$sites_stg"
   from="$sites_dev"
 elif [ -z "$2" ]
   then
-    sn=$1
+    sitename_var=$1
     from="$sites_dev"
    else
     from=$1
-    sn=$2
+    sitename_var=$2
 fi
 
-echo "Importing from site $from to site $sn"
-import_site_config $sn
+echo "Importing from site $from to site $sitename_var"
+import_site_config $sitename_var
 
 #This will backup stg site and import dev into stage.
 
 #backup whole site
-echo -e "\e[34mbackup whole $sn site\e[39m"
-#backup_site $sn
+echo -e "\e[34mbackup whole $sitename_var site\e[39m"
+#backup_site $sitename_var
 
 #export cmi
 echo -e "\e[34mexport cmi will need sudo\e[39m"
-#sudo chown $user:www-data $site_path/$sn -R
-#chmod g+w $site_path/$sn/cmi -R
+#sudo chown $user:www-data $site_path/$sitename_var -R
+#chmod g+w $site_path/$sitename_var/cmi -R
 #drush @$from cex --destination=../cmi -y
 
 #copy files from localprod to stg
 echo -e "\e[34mcopy files from localprod may need sudo\e[39m"
-if [ -d $site_path/$sn ]
+if [ -d $site_path/$sitename_var ]
 then
-sudo chown $user:www-data $site_path/$sn -R
-chmod +w $site_path/$sn -R
-rm -rf $site_path/$sn
+sudo chown $user:www-data $site_path/$sitename_var -R
+chmod +w $site_path/$sitename_var -R
+rm -rf $site_path/$sitename_var
 fi
-cp -rf "$site_path/localprod" "$site_path/$sn"
+cp -rf "$site_path/localprod" "$site_path/$sitename_var"
 
 # composer install
 echo -e "\e[34mcomposer install\e[39m"
-cd $site_path/$sn
+cd $site_path/$sitename_var
 composer require drush/drush:~9.0
 composer install
 set_site_permissions
@@ -62,35 +62,35 @@ Name=$(basename $latest)
 
 bk="localprod"
 restore_db localprod stg
-drush @$sn cr
+drush @$sitename_var cr
 
 
 #uninstall modules on stg
-echo "uninstalling $install_modules from $sn"
-drush @$sn pm-uninstall $install_modules -y
+echo "uninstalling $install_modules from $sitename_var"
+drush @$sitename_var pm-uninstall $install_modules -y
 
 
 #copy files over
-copy_site_files $from $sn
+copy_site_files $from $sitename_var
 set_site_permissions
 fix_site_settings
 
 #updatedb
-drush @$sn cr
-drush @$sn sset system.maintenance_mode TRUE
+drush @$sitename_var cr
+drush @$sitename_var sset system.maintenance_mode TRUE
 echo -e "\e[34m update database\e[39m"
 
 #install modules
-echo "installing modules $recipes_loc_install_modules on $sn"
-drush @$sn en -y $recipes_loc_install_modules
+echo "installing modules $recipes_loc_install_modules on $sitename_var"
+drush @$sitename_var en -y $recipes_loc_install_modules
 
-drush @$sn updb -y
+drush @$sitename_var updb -y
 #echo -e "\e[34m fra\e[39m"
-#drush @$sn fra -y
+#drush @$sitename_var fra -y
 echo -e "\e[34m import config\e[39m"
-drush @$sn cim --source=../cmi -y
+drush @$sitename_var cim --source=../cmi -y
 echo -e "\e[34m get out of maintenance mode\e[39m"
-drush @$sn sset system.maintenance_mode FALSE
+drush @$sitename_var sset system.maintenance_mode FALSE
 drush cr
 
 

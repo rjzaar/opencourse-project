@@ -16,13 +16,13 @@ if [ -z "$2" ]
 echo "You have only given one argument. You need to specify the site and the module in that order"
 print_help
    else
-    sn=$1
+    sitename_var=$1
     mod=$2
 fi
 
-echo "This will install and enable the $mod module for the site $sn using both composer and drush en automatically."
+echo "This will install and enable the $mod module for the site $sitename_var using both composer and drush en automatically."
 parse_pl_yml
-import_site_config $sn
+import_site_config $sitename_var
 # Help menu
 print_help() {
 cat <<-HELP
@@ -32,15 +32,15 @@ HELP
 exit 0
 }
 
-cd $site_path/$sn
+cd $site_path/$sitename_var
 echo "Installing module using composer"
 composer require drupal/$mod
 
 echo "Fixing site permissions."
-sudo chown :www-data $site_path/$sn -R
+sudo chown :www-data $site_path/$sitename_var -R
 
 echo "installing using drush"
-drush @$sn en -y $mod
+drush @$sitename_var en -y $mod
 
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 

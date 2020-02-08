@@ -18,14 +18,14 @@ print_help
 exit 1
 fi
 
-sn=$1
+sitename_var=$1
 parse_pl_yml
-import_site_config $sn
+import_site_config $sitename_var
 
 
 # This code could be better integrated.
-sed -i "1s|.*|var page = \"$2\";|" "$site_path/$sn/$webroot/themes/custom/$theme/gulpfile.js"
-cd "$site_path/$sn/$webroot/themes/custom/$theme/"
+sed -i "1s|.*|var page = \"$2\";|" "$site_path/$sitename_var/$webroot/themes/custom/$theme/gulpfile.js"
+cd "$site_path/$sitename_var/$webroot/themes/custom/$theme/"
 gulp & #This will start the scss syncing.
 browser-sync start --proxy "$2" --files "**/*.twig, **/*.css, **/*.js" --reload-delay 1000 & # This will start browser sync.
 echo "gulp and browser-sync started."

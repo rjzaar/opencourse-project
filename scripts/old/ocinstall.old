@@ -22,7 +22,7 @@ you can provide the following arguments:
 -db|--database Database name. If no database name is given then the foldername is used.
 -dbuser|--databaseuser Database user name. If no username is given then the username is the same as the database name.
 -dbpass|--databasepassword Database password If no password is given then the password is the same as the username.
--sn|--sitename This is the site name. It could be the URL of the site.
+-sitename_var|--sitename This is the site name. It could be the URL of the site.
 -ap|--apache This will set up apache and hosts infrastructure based on your settings
 
 Options for project
@@ -38,8 +38,8 @@ or provide something else: rjzaar/opencourse:8.7.x-dev
 Example (for varbase): ./scripts/ocinstall.sh -i -g -p=v -d -y -u=rob -s -a=v.b -db=vb -n
 for opencourse: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c -db=oc
 for opencourse test: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1 -db=oc1 -f=octest
-for testing (migration): ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1 -db=oc1 -sn=testmig -m
-for testing alt: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1 -db=oc1 -sn=o.c1
+for testing (migration): ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1 -db=oc1 -sitename_var=testmig -m
+for testing alt: ./scripts/ocinstall.sh -i -g -p=oc -d -y -u=rob -s -a=o.c1 -db=oc1 -sitename_var=o.c1
 HELP
 exit 0
 }
@@ -52,13 +52,13 @@ yes="n"
 secure="n"
 user="rob"
 uri="o.c"
-sn="opencourse-project"
+sitename_var="opencourse-project"
 ofolder=false #This is to check if the user chose a folder or not. If not use the standard one for that install.
 sfolder=false #site folder, folder where the site sits, not the site folder where default is.
 project="opencourse"
 # For a private setup, either it is a test setup which means private is in the usual location <site root>/site/default/files/private or
 # there is a proper setup with opencat, which means private is as below. $secure is the switch, so if $secure and 
-private="/home/$user/$sn/private"
+private="/home/$user/$sitename_var/private"
 oc="n" #add opencourse modules etc.
 cat="n" #add opencat setup.
 # db is for database. It is used for db name, db user, db password to simplify things. It is the same as folder unless opencat setup.
@@ -132,8 +132,8 @@ case $i in
     dbpass="${i#*=}"
     shift # past argument=value
     ;;
-    -sn=*|--sitename=*)
-    sn="${i#*=}"
+    -sitename_var=*|--sitename=*)
+    sitename_var="${i#*=}"
     shift # past argument=value
     ;;
     -ap|--apache)
@@ -242,8 +242,8 @@ read -p "You need to choose the right site folder name (d(docroot)/h(html)/w(web
 else
 sfolder=$sfolder
 fi
-private="/home/$user/$sn/private"
-echo "Note the project will always be in the opencourse-project folder (unless you choose another name for it via the -sn=choice)"
+private="/home/$user/$sitename_var/private"
+echo "Note the project will always be in the opencourse-project folder (unless you choose another name for it via the -sitename_var=choice)"
 echo "than the install folder."
 echo "Install  = $install"
 echo "Migrate  = $migrate"
@@ -260,22 +260,22 @@ echo "nodownload = $nodown"
 echo "Database = $db"
 echo "Database user = $dbuser"
 echo "Database password = $dbpass"
-echo "Site name = $sn"
+echo "Site name = $sitename_var"
 echo "Apache and hosts setup = $apache"
 echo
 
-if [ "$sn" != "opencourse-project" ]
+if [ "$sitename_var" != "opencourse-project" ]
 then
     echo "folder needs to be changed and site name established."
     cd
-    if [ ! -d "$sn" ]; then
-    echo "Site folder $sn doesn't exist"
-    mv opencourse-project $sn
+    if [ ! -d "$sitename_var" ]; then
+    echo "Site folder $sitename_var doesn't exist"
+    mv opencourse-project $sitename_var
     else
-    echo "Site folder $sn already exists"
+    echo "Site folder $sitename_var already exists"
     fi
     echo "Record sitename in file ocvariables.txt"
-    cd $sn
+    cd $sitename_var
 if [ ! -e "ocvariables.txt" ]; then
     echo "Creating ocvariables.txt"
 
@@ -284,7 +284,7 @@ fi
 fi
 
 #storing sitename so other scripts can use it.
-echo "$sn" > "ocvariables.txt"
+echo "$sitename_var" > "ocvariables.txt"
 
 #Apache and hosts setup: set up apache conf and hosts conf.
 
@@ -309,7 +309,7 @@ then
 
         echo "Move to opencourse-project folder"
         cd
-        cd $sn
+        cd $sitename_var
         echo "remove $folder: May need sudo password."
         sudo rm -rf $folder
         #if [ "$cat" = "y" ]
@@ -331,7 +331,7 @@ then
 
             echo "move to project folder $folder"
             cd
-            cd $sn/$folder/
+            cd $sitename_var/$folder/
             if [ "$folder" = "opencourse" ]
             then
                 echo "Opencouse so add upstream varbase-project.git"
@@ -357,7 +357,7 @@ then
         if [ "$cat" = "y" ]
         then
             cd
-            cd $sn/$folder
+            cd $sitename_var/$folder
             echo "initialising and adding git to opencourse"
             git init
             git remote add origin git@github.com:rjzaar/opencourse.git
@@ -394,8 +394,8 @@ then
             esac
              git remote add upstream git@github.com:Vardot/varbase.git
              cd
-            sudo chown $user:www-data -R $sn
-            cd $sn/$folder
+            sudo chown $user:www-data -R $sitename_var
+            cd $sitename_var/$folder
             echo "Composer install"
              composer install
 
@@ -404,12 +404,12 @@ then
     #end of nodown can now continue to install
     echo "change file permissions add www-data as group"
     cd
-    sudo chown $user:www-data -R $sn
+    sudo chown $user:www-data -R $sitename_var
 
 	echo "patch .htaccess"
-    sed -i '4iOptions +FollowSymLinks' $sn/$folder/$sfolder/.htaccess
+    sed -i '4iOptions +FollowSymLinks' $sitename_var/$folder/$sfolder/.htaccess
     echo "install site"
-    cd $sn/$folder/$sfolder
+    cd $sitename_var/$folder/$sfolder
 
     #set up settings.local.php so drush won''t add database connections to settings.php
     echo "create settings.local.php"
@@ -487,11 +487,11 @@ then
     $devp
     " > settings.local.php
     cd
-    dpath="/home/$user/$sn/$folder/$sfolder"
+    dpath="/home/$user/$sitename_var/$folder/$sfolder"
     echo "drupal path $dpath"
 	echo "Fixing permissions requires sudo password."
-    sudo bash ./$sn/scripts/d8fp.sh --drupal_user=$user --drupal_path=$dpath
-    #chmod g+w -R $sn/$folder/$sfolder/modules/custom
+    sudo bash ./$sitename_var/scripts/d8fp.sh --drupal_user=$user --drupal_path=$dpath
+    #chmod g+w -R $sitename_var/$folder/$sfolder/modules/custom
 
 
 fi
@@ -514,7 +514,7 @@ fi
 #mysql -u $dbuser -p$dbpass -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
 
 cd
-cd $sn/$folder/$sfolder
+cd $sitename_var/$folder/$sfolder
 echo "install drupal site"
 # drush status
 # drupal site:install  varbase --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
@@ -553,11 +553,11 @@ then
     chmod g+w -R $folder/$sfolder/modules/custom
     chmod g+w $folder/private -R
     fi
-    cd $sn/$folder/$sfolder
+    cd $sitename_var/$folder/$sfolder
     drush config-set system.theme default oc_theme -y
 fi
 cd
-cd $sn/$folder/$sfolder
+cd $sitename_var/$folder/$sfolder
 if [ "$dev" = "y" ]
 then
 echo "Setting to dev mode"
@@ -568,7 +568,7 @@ if [ "$migrate" = "y" ] && [ "$oc" = "y" ]
 then
     echo "Run migrations"
     cd
-    cd $sn/$folder/$sfolder
+    cd $sitename_var/$folder/$sfolder
     ../../scripts/resoc.sh install
     #Now run the script to embed the videos, external and internal links into the body.
     echo "Incorporate video and links into ocdoc body."

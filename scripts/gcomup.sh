@@ -18,13 +18,13 @@ parse_pl_yml
 
 if [ $1 == "gcomup" ] && [ -z "$2" ]
   then
-  sn="$sites_dev"
+  sitename_var="$sites_dev"
   elif [ -z "$2" ]
   then
-    sn=$1
+    sitename_var=$1
     msg="Updating."
    else
-    sn=$1
+    sitename_var=$1
     msg=$2
 fi
 
@@ -45,19 +45,19 @@ exit 1
 fi
 
 parse_pl_yml
-import_site_config $sn
+import_site_config $sitename_var
 
 ocmsg "Composer update"
-cd $site_path/$sn
+cd $site_path/$sitename_var
 composer update
 
 ocmsg "Run db updates"
-drush @$sn dbup
+drush @$sitename_var dbup
 
 ocmsg "Export config: drush cex will need sudo"
-sudo chown $user:www-data $site_path/$sn -R
-chmod g+w $site_path/$sn/cmi -R
-drush @$sn cex --destination=../cmi -y
+sudo chown $user:www-data $site_path/$sitename_var -R
+chmod g+w $site_path/$sitename_var/cmi -R
+drush @$sitename_var cex --destination=../cmi -y
 
 # Check?
 
@@ -68,8 +68,8 @@ ocmsg "Commit git add && git commit with msg $msg"
 git add .
 git commit -m msg
 
-ocmsg "Backup site $sn with msg $msg"
-backup_site $sn $msg
+ocmsg "Backup site $sitename_var with msg $msg"
+backup_site $sitename_var $msg
 
 
 

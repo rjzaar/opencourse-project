@@ -13,7 +13,7 @@ if [ $1 = "prodow" ] && [ -z "$2" ]
     print_help
     exit 1
 fi
-sn=$1
+sitename_var=$1
 if [ -z "$3" ]
   then
 for i in "$@"
@@ -35,11 +35,11 @@ esac
 done
 fi
 
-echo "overwriting production server with $sn site"
+echo "overwriting production server with $sitename_var site"
 . $script_root/_inc.sh;
 parse_pl_yml
 
-import_site_config $sn
+import_site_config $sitename_var
 
 
 # Help menu
@@ -58,32 +58,32 @@ fi
 
 #First backup the current dev site if it exists
 if [ $step -lt 2 ] ; then
-echo -e "$Pcolor step 1: backup current sn $sn $Color_off"
-pl backup $sn "presync"
+echo -e "$Pcolor step 1: backup current sitename_var $sitename_var $Color_off"
+pl backup $sitename_var "presync"
 fi
 #pull db and all files from prod
 ### going to need to fix security. settings.local.php only have hash. all other cred in settings so not shared.
 #echo "pre rsync"
-#drush -y rsync @prod @$sn -- --omit-dir-times --delete
+#drush -y rsync @prod @$sitename_var -- --omit-dir-times --delete
 
 if [ $step -lt 3 ] ; then
 echo -e "$Pcolor step 2: backup production $Color_off"
 # Make sure ssh identity is added
 eval `ssh-agent -s`
 ssh-add ~/.ssh/$prod_alias
-to=$sn
+to=$sitename_var
 backup_prod
 # sql file: $Namesql
 # all files: $folderpath/sitebackups/prod/$Name.tar.gz
-sn=$to
+sitename_var=$to
 fi
 
 if [ $step -lt 4 ] ; then
-echo -e "$Pcolor step 3: replace production files with $sn $Color_off"
+echo -e "$Pcolor step 3: replace production files with $sitename_var $Color_off"
 
 Name=$(date +%Y%m%d\T%H%M%S)
 cd
-cd "$folder/sitebackups/$sn"
+cd "$folder/sitebackups/$sitename_var"
 options=( $(find -maxdepth 1 -name "*.sql" -print0 | xargs -0 ls -1 -t ) )
 Name=${options[0]:2}
 echo "uploading $Name"
@@ -123,7 +123,7 @@ if [ $step -lt 6 ] ; then
 echo -e "$Pcolor step 5: move site folders $Color_off"
 prod_root=$(dirname $prod_docroot)
 # Try the easy way
-#result=$(drush sql:sync @$sn @prod)
+#result=$(drush sql:sync @$sitename_var @prod)
 #if [ "$result" = ": 0" ]; then echo "Database synced"
 #else
 echo "Need to overwrite the database the hard way"
@@ -145,7 +145,7 @@ if [ $step -lt 7 ] ; then
 echo -e "$Pcolor step 6: install production database $Color_off"
 if [ 1 == 0 ]
 then
-drush sql:sync @$sn @prod
+drush sql:sync @$sitename_var @prod
 else
 # old method
 echo "The restoring the database requires sudo on the external server."
@@ -189,20 +189,20 @@ exit 0
 
 
 echo "docroot"
-drush -y rsync @$sn @prod -- -O  --delete
+drush -y rsync @$sitename_var @prod -- -O  --delete
 echo "cmi"
-drush -y rsync @$sn:../cmi @prod:../cmi -- -O  --delete
+drush -y rsync @$sitename_var:../cmi @prod:../cmi -- -O  --delete
 echo "vendor"
-drush -y rsync @$sn:../vendor @prod:../vendor -- -O  --delete
+drush -y rsync @$sitename_var:../vendor @prod:../vendor -- -O  --delete
 echo "bin"
-drush -y rsync @$sn:../bin @prod:../bin -- -O  --delete
+drush -y rsync @$sitename_var:../bin @prod:../bin -- -O  --delete
 echo "composer.json"
-drush -y rsync @$sn:../composer.json @prod:../composer.json -- -O  --delete
+drush -y rsync @$sitename_var:../composer.json @prod:../composer.json -- -O  --delete
 echo "composer.lock"
-drush -y rsync @$sn:../composer.lock @prod:../composer.lock -- -O  --delete
+drush -y rsync @$sitename_var:../composer.lock @prod:../composer.lock -- -O  --delete
 
 # Now sync the database
-drush sql:sync @$sn @prod
+drush sql:sync @$sitename_var @prod
 
 drush @prod cr
 drush @prod sset system.maintenance_mode FALSE

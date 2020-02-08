@@ -26,7 +26,7 @@ exit 0
 #project="rjzaar/opencourse:8.7.x-dev"
 ## For a private setup, either it is a test setup which means private is in the usual location <site root>/site/default/files/private or
 ## there is a proper setup with opencat, which means private is as below. $secure is the switch, so if $secure and
-#sn="dev"
+#sitename_var="dev"
 #profile="varbase"
 #dev="y"
 
@@ -39,7 +39,7 @@ recipes=${recipes#","}
 
 if [ "$#" = 0 ]
 then
-sn="default"
+sitename_var="default"
 else
 # Check to see if recipe is present
 # Get the sitename
@@ -49,22 +49,22 @@ case $i in
     *[^[:alnum:]]*)
     ;;
     *)
-    sn=$i
+    sitename_var=$i
     ;;
 esac
 done
-echo "Looking for recipe $sn"
-if [[ $recipes != *"$sn"* ]]
+echo "Looking for recipe $sitename_var"
+if [[ $recipes != *"$sitename_var"* ]]
 then
-echo "No recipe for $sn! Current recipes include $recipes. Please add a recipe to oc.yml for $sn"
+echo "No recipe for $sitename_var! Current recipes include $recipes. Please add a recipe to oc.yml for $sitename_var"
 fi
 fi
 
-import_site_config $sn
+import_site_config $sitename_var
 
 #db_defaults
 
-echo "Installing $sn"
+echo "Installing $sitename_var"
 echo "About to install:"
 site_info
 echo
@@ -92,7 +92,7 @@ then
 
         echo "Move to opencourse-project folder"
         cd
-        cd $sn
+        cd $sitename_var
         echo "remove $folder: May need sudo password."
         sudo rm -rf $folder
         #if [ "$cat" = "y" ]
@@ -114,7 +114,7 @@ then
 
             echo "move to project folder $folder"
             cd
-            cd $sn/$folder/
+            cd $sitename_var/$folder/
             if [ "$folder" = "opencourse" ]
             then
                 echo "Opencouse so add upstream varbase-project.git"
@@ -140,7 +140,7 @@ then
         if [ "$cat" = "y" ]
         then
             cd
-            cd $sn/$folder
+            cd $sitename_var/$folder
             echo "initialising and adding git to opencourse"
             git init
             git remote add origin git@github.com:rjzaar/opencourse.git
@@ -177,8 +177,8 @@ then
             esac
              git remote add upstream git@github.com:Vardot/varbase.git
              cd
-            sudo chown $user:www-data -R $sn
-            cd $sn/$folder
+            sudo chown $user:www-data -R $sitename_var
+            cd $sitename_var/$folder
             echo "Composer install"
              composer install
 
@@ -187,12 +187,12 @@ then
     #end of nodown can now continue to install
     echo "change file permissions add www-data as group"
     cd
-    sudo chown $user:www-data -R $sn
+    sudo chown $user:www-data -R $sitename_var
 
 	echo "patch .htaccess"
-    sed -i '4iOptions +FollowSymLinks' $sn/$folder/$webroot/.htaccess
+    sed -i '4iOptions +FollowSymLinks' $sitename_var/$folder/$webroot/.htaccess
     echo "install site"
-    cd $sn/$folder/$webroot
+    cd $sitename_var/$folder/$webroot
 
     #set up settings.local.php so drush won''t add database connections to settings.php
     echo "create settings.local.php"
@@ -241,11 +241,11 @@ then
     $devp
     " > settings.local.php
     cd
-    dpath="/home/$user/$sn/$folder/$webroot"
+    dpath="/home/$user/$sitename_var/$folder/$webroot"
     echo "drupal path $dpath"
 	echo "Fixing permissions requires sudo password."
-    sudo bash ./$sn/scripts/d8fp.sh --drupal_user=$user --drupal_path=$dpath
-    #chmod g+w -R $sn/$folder/$webroot/modules/custom
+    sudo bash ./$sitename_var/scripts/d8fp.sh --drupal_user=$user --drupal_path=$dpath
+    #chmod g+w -R $sitename_var/$folder/$webroot/modules/custom
 
 
 fi
@@ -268,7 +268,7 @@ fi
 #mysql -u $dbuser -p$dbpass -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
 
 cd
-cd $sn/$folder/$webroot
+cd $sitename_var/$folder/$webroot
 echo "install drupal site"
 # drush status
 # drupal site:install  varbase --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
@@ -307,11 +307,11 @@ then
     chmod g+w -R $folder/$webroot/modules/custom
     chmod g+w $folder/private -R
     fi
-    cd $sn/$folder/$webroot
+    cd $sitename_var/$folder/$webroot
     drush config-set system.theme default oc_theme -y
 fi
 cd
-cd $sn/$folder/$webroot
+cd $sitename_var/$folder/$webroot
 if [ "$dev" = "y" ]
 then
 echo "Setting to dev mode"
@@ -322,7 +322,7 @@ if [ "$migrate" = "y" ] && [ "$oc" = "y" ]
 then
     echo "Run migrations"
     cd
-    cd $sn/$folder/$webroot
+    cd $sitename_var/$folder/$webroot
     ../../scripts/resoc.sh install
     #Now run the script to embed the videos, external and internal links into the body.
     echo "Incorporate video and links into ocdoc body."

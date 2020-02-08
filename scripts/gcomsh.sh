@@ -20,17 +20,17 @@ parse_pl_yml
 
 if [ $1 == "gcomsh" ] && [ -z "$2" ]
   then
-  sn="$sites_dev"
+  sitename_var="$sites_dev"
   elif [ -z "$2" ]
   then
-    sn=$1
+    sitename_var=$1
     msg="Sharing."
    else
-    sn=$1
+    sitename_var=$1
     msg=$2
 fi
 
-echo "This will git commit changes on site $sn with msg $msg after merging with master."
+echo "This will git commit changes on site $sitename_var with msg $msg after merging with master."
 # Help menu
 print_help() {
 cat <<-HELP
@@ -46,15 +46,15 @@ exit 1
 fi
 
 parse_pl_yml
-import_site_config $sn
+import_site_config $sitename_var
 
-ocmsg "Backup site $sn with msg premerge"
-backup_site $sn "premerge"
+ocmsg "Backup site $sitename_var with msg premerge"
+backup_site $sitename_var "premerge"
 
 ocmsg "Export config: drush cex will need sudo"
-sudo chown $user:www-data $site_path/$sn -R
-chmod g+w $site_path/$sn/cmi -R
-drush @$sn cex --destination=../cmi -y
+sudo chown $user:www-data $site_path/$sitename_var -R
+chmod g+w $site_path/$sitename_var/cmi -R
+drush @$sitename_var cex --destination=../cmi -y
 
 echo "Add credentials."
 ssh-add ~/.ssh/$github_key
@@ -74,10 +74,10 @@ ocmsg "Update dependencies: composer install"
 composer install
 
 ocmsg "Run db updates"
-drush @$sn dbup
+drush @$sitename_var dbup
 
 ocmsg "Import configuration: drush cim"
-drush @$sn cim
+drush @$sitename_var cim
 
 ocmsg "Push: git push"
 git push # Include latest master commits in remote feature branch

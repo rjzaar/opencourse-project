@@ -8,19 +8,19 @@ parse_pl_yml
 
 if [ $1 == "copy" ] && [ -z "$2" ]
   then
-  sn="$sites_stg"
+  sitename_var="$sites_stg"
   from="$sites_dev"
 fi
 if [ -z "$2" ]
   then
-    sn=$1
+    sitename_var=$1
     from="$sites_dev"
    else
     from=$1
-    sn=$2
+    sitename_var=$2
 fi
 
-echo "This will copy the site from $from to $sn and set permissions and site settings"
+echo "This will copy the site from $from to $sitename_var and set permissions and site settings"
 
 # Help menu
 print_help() {
@@ -33,9 +33,9 @@ HELP
 exit 0
 }
 
-copy_site_files $from $sn
+copy_site_files $from $sitename_var
 
-import_site_config $sn
+import_site_config $sitename_var
 set_site_permissions
 fix_site_settings
 

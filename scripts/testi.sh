@@ -8,20 +8,20 @@ parse_pl_yml
 
 if [ $1 == "testi" ] && [ -z "$2" ]
   then
-  sn="$sites_stg"
+  sitename_var="$sites_stg"
   from="$sites_dev"
 elif [ -z "$2" ]
   then
-    sn=$1
+    sitename_var=$1
     from="$sites_dev"
    else
     from=$1
-    sn=$2
+    sitename_var=$2
 fi
 
-import_site_config $sn
+import_site_config $sitename_var
 
-echo "This will copy the custom theme and modules folder from $from to $sn and then try to rebuild the database"
+echo "This will copy the custom theme and modules folder from $from to $sitename_var and then try to rebuild the database"
 
 # Help menu
 print_help() {
@@ -39,15 +39,15 @@ HELP
 exit 0
 }
 
-rm -rf "$site_path/$sn/$webroot/modules/custom"
-rm -rf "$site_path/$sn/$webroot/themes/custom"
-cp -rf "$site_path/$from/$webroot/modules/custom" "$site_path/$sn/$webroot/modules/custom"
-cp -rf "$site_path/$from/$webroot/themes/custom" "$site_path/$sn/$webroot/themes/custom"
+rm -rf "$site_path/$sitename_var/$webroot/modules/custom"
+rm -rf "$site_path/$sitename_var/$webroot/themes/custom"
+cp -rf "$site_path/$from/$webroot/modules/custom" "$site_path/$sitename_var/$webroot/modules/custom"
+cp -rf "$site_path/$from/$webroot/themes/custom" "$site_path/$sitename_var/$webroot/themes/custom"
 
-chown $user:www-data $site_path/$sn/$webroot/modules/custom -R
-chown $user:www-data $site_path/$sn/$webroot/themes/custom -R
-chmod g+w $site_path/$sn/$webroot/modules/custom -R
-chmod g+w $site_path/$sn/$webroot/themes/custom -R
+chown $user:www-data $site_path/$sitename_var/$webroot/modules/custom -R
+chown $user:www-data $site_path/$sitename_var/$webroot/themes/custom -R
+chmod g+w $site_path/$sitename_var/$webroot/modules/custom -R
+chmod g+w $site_path/$sitename_var/$webroot/themes/custom -R
 
 rebuild_site
 

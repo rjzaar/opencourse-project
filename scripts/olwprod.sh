@@ -4,10 +4,10 @@
 #start timer
 SECONDS=0
 parse_pl_yml
-sn="$sites_localprod"
-echo "Importing production site into $sn"
+sitename_var="$sites_localprod"
+echo "Importing production site into $sitename_var"
 
-import_site_config $sn
+import_site_config $sitename_var
 
 # Help menu
 print_help() {
@@ -22,27 +22,27 @@ exit 0
 
 
 #First backup the current localprod site.
-pl backup $sn "presync"
+pl backup $sitename_var "presync"
 
 #pull db and all files from prod
 ### going to need to fix security. settings.local.php only have hash. all other cred in settings so not shared.
 echo "pre rsync"
-drush -y rsync @prod @$sn -- --omit-dir-times --delete
+drush -y rsync @prod @$sitename_var -- --omit-dir-times --delete
 echo "post first rsync"
-pl fixss $sn
-drush -y rsync @prod:../private @$sn:../private -- --omit-dir-times  --delete
-drush -y rsync @prod:../cmi @$sn:../cmi -- --omit-dir-times  --delete
+pl fixss $sitename_var
+drush -y rsync @prod:../private @$sitename_var:../private -- --omit-dir-times  --delete
+drush -y rsync @prod:../cmi @$sitename_var:../cmi -- --omit-dir-times  --delete
 
 echo "Make sure the hash is present so drush sql will work."
 # Make sure the hash is present so drush sql will work.
-sfile=$(<"$site_path/$sn/$webroot/sites/default/settings.php")
-slfile=$(<"$site_path/$sn/$webroot/sites/default/settings.local.php")
+sfile=$(<"$site_path/$sitename_var/$webroot/sites/default/settings.php")
+slfile=$(<"$site_path/$sitename_var/$webroot/sites/default/settings.local.php")
 if [[ ! $sfile =~ (\'hash_salt\'\] = \') ]]
 then
 if [[ ! $slfile =~ (\'hash_salt\'\] = \') ]]
 then
   hash=$(drush php-eval 'echo \Drupal\Component\Utility\Crypt::randomBytesBase64(55)')
-echo "\$settings['hash_salt'] = '$hash';" >> "$site_path/$sn/$webroot/sites/default/settings.local.php"
+echo "\$settings['hash_salt'] = '$hash';" >> "$site_path/$sitename_var/$webroot/sites/default/settings.local.php"
 fi
 fi
 
@@ -69,7 +69,7 @@ if [ "$result" = ": 0" ]; then echo "Production database imported into database 
 
 drush @localprod cr
 
-pl backup $sn "postsync"
+pl backup $sitename_var "postsync"
 
 # Make sure url is setup and open it!
 pl sudoeuri localprod

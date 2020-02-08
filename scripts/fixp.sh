@@ -18,15 +18,15 @@ print_help
 exit 1
 fi
 
-sn=$1
+sitename_var=$1
 parse_pl_yml
-import_site_config $sn
+import_site_config $sitename_var
 
 # This will set the correct permissions
 # Persumes the following information is set
 # $user
 # $folder
-# $sn
+# $sitename_var
 # $webroot
 set_site_permissions
 

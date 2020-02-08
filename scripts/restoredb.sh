@@ -2,7 +2,7 @@
 #restore database
 # $1 is the backup
 # $2 if present is the site to restore into
-# $sn is the site to import into
+# $sitename_var is the site to import into
 # $bk is the backed up site.
 
 #start timer
@@ -15,12 +15,12 @@ if [ $1 == "restore" ] && [ -z "$2" ]
 fi
 if [ -z "$2" ]
   then
-    sn=$1
+    sitename_var=$1
     bk=$1
     echo -e "\e[34mrestore $1 \e[39m"
    else
     bk=$1
-    sn=$2
+    sitename_var=$2
     echo -e "\e[34mrestoring $1 to $2 \e[39m"
 fi
 
@@ -45,7 +45,7 @@ folder=$(basename $(dirname $script_root))
 folderpath=$(dirname $script_root)
 webroot="docroot"
 parse_pl_yml
-import_site_config $sn
+import_site_config $sitename_var
 
 # Prompt to choose which database to backup, 1 will be the latest.
 prompt="Please select a backup:"

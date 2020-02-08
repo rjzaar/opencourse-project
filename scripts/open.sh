@@ -9,8 +9,8 @@ if [ $1 == "open" ] && [ -z "$2" ]
     exit 1
 fi
 
-sn=$1
-echo "about to open $sn"
-drush @$sn uli
+sitename_var=$1
+echo "about to open $sitename_var"
+drush @$sitename_var uli
 
 

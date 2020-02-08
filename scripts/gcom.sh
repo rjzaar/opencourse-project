@@ -8,17 +8,17 @@ parse_pl_yml
 
 if [ $1 == "gcom" ] && [ -z "$2" ]
   then
-  sn="$sites_dev"
+  sitename_var="$sites_dev"
   elif [ -z "$2" ]
   then
-    sn=$1
+    sitename_var=$1
     msg="Commit."
    else
-    sn=$1
+    sitename_var=$1
     msg=$2
 fi
 
-echo "This will git commit changes on site $sn with msg $msg and run an backup to capture it."
+echo "This will git commit changes on site $sitename_var with msg $msg and run an backup to capture it."
 # Help menu
 print_help() {
 cat <<-HELP
@@ -34,7 +34,7 @@ exit 1
 fi
 
 parse_pl_yml
-import_site_config $sn
+import_site_config $sitename_var
 
 echo "Add credentials."
 ssh-add ~/.ssh/$github_key
@@ -44,8 +44,8 @@ git add .
 git commit -m msg
 git push
 
-ocmsg "Backup site $sn with msg $msg"
-backup_site $sn $msg
+ocmsg "Backup site $sitename_var with msg $msg"
+backup_site $sitename_var $msg
 
 
 

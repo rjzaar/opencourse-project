@@ -21,8 +21,8 @@ exit 1
 fi
 
 parse_pl_yml
-sn=$1
-import_site_config $sn
+sitename_var=$1
+import_site_config $sitename_var
 
 backup_db
 

@@ -7,7 +7,7 @@ cat <<-HELP
 This script will set up a new site, including local hosts, apache, database name. Must be run as sudo.
 You can provide the following arguments:
 
--sn|--sitename This is the site name. It is the URL of the site. The database name will be the sn without any '.'.
+-sitename_var|--sitename This is the site name. It is the URL of the site. The database name will be the sitename_var without any '.'.
 
 eg dev.oc site URL: dev.oc database: devoc folder: dev.oc
 
@@ -46,16 +46,16 @@ folderpath=$(dirname $script_root)
 user_home=$(dirname $folderpath)
 . $script_root/_inc.sh;
 
-sn=$1
+sitename_var=$1
 
 parse_pl_yml
-import_site_config $sn
+import_site_config $sitename_var
 
-site_url="$folder.$sn"
+site_url="$folder.$sitename_var"
 site_info
 # construct absolute path
-absolute_doc_root="$site_path/$sn/$webroot"
-echo "Site URL: $folder.$sn"
+absolute_doc_root="$site_path/$sitename_var/$webroot"
+echo "Site URL: $folder.$sitename_var"
 echo "Site docroot: $absolute_doc_root"
 
 # update vhost

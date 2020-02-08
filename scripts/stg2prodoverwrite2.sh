@@ -11,13 +11,13 @@ parse_pl_yml
 
 if [ $1 == "stg2prodoverwrite2" ] && [ -z "$2" ]
   then
-  sn="$sites_stg"
+  sitename_var="$sites_stg"
 elif [ -z "$2" ]
   then
-    sn=$1
+    sitename_var=$1
 fi
 
-import_site_config $sn
+import_site_config $sitename_var
 
 # Help menu
 print_help() {
@@ -31,27 +31,27 @@ exit 0
 
 
 #First backup the current stg site.
-#pl backup $sn
+#pl backup $sitename_var
 #alternatively could use pl olwprod
 
 #put prod in maintenance mode
 echo "maintenance mode"
 drush @prod sset system.maintenance_mode TRUE
 echo "docroot"
-drush -y rsync @$sn @prod -- -O  --delete
+drush -y rsync @$sitename_var @prod -- -O  --delete
 echo "cmi"
-drush -y rsync @$sn:../cmi @prod:../cmi -- -O  --delete
+drush -y rsync @$sitename_var:../cmi @prod:../cmi -- -O  --delete
 echo "vendor"
-drush -y rsync @$sn:../vendor @prod:../vendor -- -O  --delete
+drush -y rsync @$sitename_var:../vendor @prod:../vendor -- -O  --delete
 echo "bin"
-drush -y rsync @$sn:../bin @prod:../bin -- -O  --delete
+drush -y rsync @$sitename_var:../bin @prod:../bin -- -O  --delete
 echo "composer.json"
-drush -y rsync @$sn:../composer.json @prod:../composer.json -- -O  --delete
+drush -y rsync @$sitename_var:../composer.json @prod:../composer.json -- -O  --delete
 echo "composer.lock"
-drush -y rsync @$sn:../composer.lock @prod:../composer.lock -- -O  --delete
+drush -y rsync @$sitename_var:../composer.lock @prod:../composer.lock -- -O  --delete
 
 # Now sync the database
-drush sql:sync @$sn @prod
+drush sql:sync @$sitename_var @prod
 
 drush @prod cr
 drush @prod sset system.maintenance_mode FALSE

@@ -9,9 +9,9 @@ if [ $1 == "makedb" ] && [ -z "$2" ]
     exit 1
 fi
 
-sn=$1
-echo "create db for $sn"
-import_site_config $sn
+sitename_var=$1
+echo "create db for $sitename_var"
+import_site_config $sitename_var
 make_db
 
 
