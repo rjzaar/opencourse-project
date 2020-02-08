@@ -85,8 +85,6 @@ fi
 }
 
 parse_pl_yml () {
-# Import yaml
-# presumes $script_root is set
 # $userhome
 update_config="n"
 
