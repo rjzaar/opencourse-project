@@ -84,9 +84,11 @@ fi
 
 }
 
+################################################################################
+# Import yaml, presumes $script_root is set
+################################################################################
+
 parse_pl_yml () {
-# Import yaml
-# presumes $script_root is set
 # $userhome
 update_config="n"
 
@@ -320,11 +322,18 @@ sfile=$(<"$site_path/$sitename_var/$webroot/sites/default/settings.php")
 slfile=$(<"$site_path/$sitename_var/$webroot/sites/default/settings.local.php")
 #echo "sfile $site_path/$sitename_var/$webroot/sites/default/settings.php  slfile $site_path/$sitename_var/$webroot/sites/default/settings.local.php"
 
+################################################################################
+# IDE says these lines are broken, are they working as intended?
+
 if [[ ! $sfile =~ (\'hash_salt\'\] = \') ]]
 then
 #  echo "settings.php does not have hash_salt"
 if [[ ! $slfile =~ (\'hash_salt\'\] = \') ]]
 then
+
+################################################################################
+
+
 #    echo "settings.local.php does not have hash_salt"
   hash=$(echo -n $RANDOM | md5sum)
   hash2=$(echo -n $RANDOM | md5sum)
