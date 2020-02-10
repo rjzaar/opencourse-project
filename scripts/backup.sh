@@ -2,8 +2,8 @@
 ################################################################################
 #                 Backup db and files For Pleasy Library                       
 #                                                                              
-# This script is used to backup a particular site's files and database.
-# You just need to state the sitename, eg dev
+#  This script is used to backup a particular site's files and database.
+#  You just need to state the sitename, eg dev
 #
 #  Change History                                                              
 #  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,        
@@ -60,6 +60,13 @@ echo \
   pl backup --message='Love' ~/love"
 exit 0
 }
+
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
+SECONDS=0
+
 # Use of Getopt 
 ################################################################################
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
@@ -83,7 +90,7 @@ eval set -- "$args"
 
 ################################################################################
 # Case through each argument passed into script
-# if no argument passed, default is -- and break loop
+# If no argument passed, default is -- and break loop
 ################################################################################
 while true; do
   case "$1" in
@@ -95,7 +102,8 @@ while true; do
     shift
     msg="$(echo "$1" | sed 's/^=//g')"
     echo "Msg = $msg"
-    #MESSAGE FUNCTION NOT IMPLEMENTED
+    echo "#MESSAGE FUNCTION NOT IMPLEMENTED"
+    shift
     ;;
   -- )
   shift
@@ -106,9 +114,7 @@ while true; do
   exit 1
   ;;
   esac
-  shift
 done
-
 
 # No arguments
 ################################################################################
@@ -123,11 +129,7 @@ elif [[ ! -d "$1" ]]; then
   echo "Cannot find directory "$1", please try again or use --help for more options"
 fi
 
-# start timer
-################################################################################
-# Timer to show how long it took to run the script
-################################################################################
-SECONDS=0
+# (what do these do?)
 echo -e "\e[34mbackup $1 \e[39m"
 . $script_root/_inc.sh;
 
@@ -142,6 +144,7 @@ sitename_var=$1
 # It it interesting to note that parse_pl_yml is run in many scripts. What does
 # it do?
 parse_pl_yml
+
 # What do these do?
 ################################################################################
 # 
