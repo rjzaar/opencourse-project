@@ -1,7 +1,10 @@
 #!/bin/bash
 #teststg
 
-#start timer
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
 SECONDS=0
 . $script_root/_inc.sh;
 parse_pl_yml

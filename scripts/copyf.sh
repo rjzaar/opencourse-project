@@ -1,11 +1,80 @@
 #!/bin/bash
+################################################################################
+#                      Backup prod For Pleasy Library                       
+#
+#  This script will copy one site to another site. It will copy all
+#  files, set up the site settings and import the database. If no
+#  argument is given, it will copy dev to stg. If one argument is given it
+#  will copy dev to the site specified. If two arguments are give it will
+#  copy the first to the second.
+#
+#  Change History                                                              
+#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,        
+#                                   prelim commenting                          
+#  15/02/2020 James Lim  Getopt parsing implementation, script documentation   
+#  [Insert New]                                                                
+#                                                                              
+################################################################################
+################################################################################
+#                                                                              
+#  Core Maintainer:  Rob Zar                                                   
+#  Email:            rjzaar@gmail.com                                          
+#                                                                              
+################################################################################
+################################################################################
+#                                TODO LIST                                     
+#                                                                              
+################################################################################
+################################################################################
+#                             Commenting with model                            
+#
+# NAME OF COMMENT (USE FOR RATHER SIGNIFICANT COMMENTS)
+################################################################################
+# Description - Each bar is 80 #, in vim do 80i#esc                            
+################################################################################
+#
+################################################################################
+################################################################################
 
-# See help
+# Set script name for general file use
+scriptname='pleasy-site-file-copy'
 
-#start timer
+# Help menu
+################################################################################
+# Prints user guide
+################################################################################
+print_help() {
+echo \
+"Usage: pl copyf [OPTION] ... [SOURCE]
+This script will copy one site to another site. It will copy only the files
+but will set up the site settings. If no argument is given, it will copy dev
+to stg If one argument is given it will copy dev to the site specified If two
+arguments are give it will copy the first to the second.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+
+Examples:"
+exit 0
+}
+
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
+SECONDS=0
+
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
 SECONDS=0
 parse_pl_yml
 
+# LOOKBACK and implement getopt!!!
+################################################################################
+# Unsure what this is for, and how to parse this properly
+################################################################################
 if [ $1 == "copy" ] && [ -z "$2" ]
   then
   sitename_var="$sites_stg"
@@ -22,22 +91,15 @@ fi
 
 echo "This will copy the site from $from to $sitename_var and set permissions and site settings"
 
-# Help menu
-print_help() {
-cat <<-HELP
-This script will copy one site to another site. It will copy only the files but will set up the site settings.
-If no argument is given, it will copy dev to stg
-If one argument is given it will copy dev to the site specified
-If two arguments are give it will copy the first to the second.
-HELP
-exit 0
-}
-
 copy_site_files $from $sitename_var
 
 import_site_config $sitename_var
 set_site_permissions
 fix_site_settings
 
+# End timer
+################################################################################
+# Finish script, display time taken
+################################################################################
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 

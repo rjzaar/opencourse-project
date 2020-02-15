@@ -1,6 +1,9 @@
 #!/bin/bash
 
-#start timer
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
 SECONDS=0
 . $script_root/_inc.sh;
 parse_pl_yml
@@ -53,4 +56,8 @@ drush cr
 #echo -e "\e[34mpatch .htaccess\e[39m"
 #sed -i 's/Options +FollowSymLinks/Options +FollowSymLinks/g' .htaccess
 
+# End timer
+################################################################################
+# Finish script, display time taken
+################################################################################
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))

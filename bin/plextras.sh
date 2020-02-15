@@ -181,6 +181,10 @@ source ~/.bashrc
 }
 
 function addc () {
-ssh-add ~/.ssh/github
+if [ -f ~/.ssh/github ]; then
+    ssh-add ~/.ssh/github
+else
+    echo "could not add git credentials, recommended to create github credentials in .ssh folder"
+fi
 }
 

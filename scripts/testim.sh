@@ -1,5 +1,8 @@
 #!/bin/bash
-#start timer
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
 SECONDS=0
 parse_pl_yml
 sitename_var="$sites_stg"
@@ -32,5 +35,9 @@ chmod g+w $site_path/$sitename_var/$webroot/modules/custom -R
 chmod g+w $site_path/$sitename_var/$webroot/themes/custom -R
 drush @$sitename_var -y en  $install_modules
 
+# End timer
+################################################################################
+# Finish script, display time taken
+################################################################################
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 

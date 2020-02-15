@@ -4,7 +4,10 @@
 #This is the same folder with the same database, just some changes are made to setup.
 #This presumes a single dev is able to work on dev and stg on his own, without a common stg server (for now).
 
-# Start Timer
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
 SECONDS=0
 
 #turn off dev settings
@@ -42,7 +45,11 @@ cd opencat/opencourse
 #remove any extra options. Since each reinstall may add an extra one.
 #following line has been fixed with a patch
 #sed -i 's/Options +FollowSymLinks/Options +FollowSymLinks/g' .htaccess
-ssh-add ~/.ssh/github
+if [ -f ~/.ssh/github ]; then
+    ssh-add ~/.ssh/github
+else
+    echo "could not add git credentials, recommended to create github credentials in .ssh folder"
+fi
 git add .
 git commit -m "Backup."
 git push

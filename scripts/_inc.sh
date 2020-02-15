@@ -97,17 +97,10 @@ update_config="n"
 project=$folder
 if [ $update_config == "y" ]
 then
-  if [ ! -z "$no_config_update" ]
-  then
+  if [ ! -z "$no_config_update" || "$no_config_update" != "true" ]; then
     update_all_configs
-  else
-    if [ "$no_config_update" != "true" ]
-then
-update_all_configs
+  fi
 fi
-fi
-fi
-
 }
 
 update_all_configs () {

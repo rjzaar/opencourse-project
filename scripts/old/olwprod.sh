@@ -1,5 +1,8 @@
 #!/bin/bash
-#start timer
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
 SECONDS=0
 parse_oc_yml
 sitename_var="$sites_localprod"
@@ -55,6 +58,10 @@ drush @localprod cr
 # Make sure url is setup and open it!
 pl sudoeuri localprod
 pl open localprod
+# End timer
+################################################################################
+# Finish script, display time taken
+################################################################################
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 rm "$Name.gz"
 exit 0

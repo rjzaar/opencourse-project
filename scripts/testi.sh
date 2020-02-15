@@ -2,7 +2,10 @@
 
 # See help
 
-#start timer
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
 SECONDS=0
 parse_pl_yml
 
@@ -51,5 +54,9 @@ chmod g+w $site_path/$sitename_var/$webroot/themes/custom -R
 
 rebuild_site
 
+# End timer
+################################################################################
+# Finish script, display time taken
+################################################################################
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 

@@ -5,7 +5,10 @@
 # $sitename_var is the site to import into
 # $bk is the backed up site.
 
-#start timer
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
 SECONDS=0
 if [ $1 == "restore" ] && [ -z "$2" ]
   then
@@ -35,10 +38,13 @@ You can alternatively restore the site into a different site which is the second
 HELP
 exit 0
 }
-if [ "$#" = 0 ]
-then
-print_help
-exit 1
+# Check number of arguments
+################################################################################
+# If no arguments given, prompt user for arguments
+################################################################################
+if [ "$#" = 0 ]; then
+  print_help
+  exit 2
 fi
 
 folder=$(basename $(dirname $script_root))
