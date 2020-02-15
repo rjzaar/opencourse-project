@@ -64,10 +64,13 @@ cat="n" #add opencat setup.
 # db is for database. It is used for db name, db user, db password to simplify things. It is the same as folder unless opencat setup.
 apache="n"
 
-if [ "$#" = 0 ]
-then
-print_help
-exit 1
+# Check number of arguments
+################################################################################
+# If no arguments given, prompt user for arguments
+################################################################################
+if [ "$#" = 0 ]; then
+  print_help
+  exit 2
 fi
 for i in "$@"
 do

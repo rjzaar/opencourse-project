@@ -45,19 +45,20 @@ scriptname='pleasy-backup'
 print_help() {
 echo \
 "Usage: pl backup [OPTION] ... [SOURCE]
-  This script is used to backup a particular site's files and database.
-  You just need to state the sitename, eg dev. 
+This script is used to backup a particular site's files and database.
+You just need to state the sitename, eg dev. 
 
-  Mandatory arguments to long options are mandatory for short options too.
-    -h --help               Display help (Currently displayed)
-    -m --message='msg'      Enter a message to accompany the backup (IS THIS
-                            OPTIONAL ROB?)
-  
-  Examples:
-  pl backup -h
-  pl backup ./dev (relative dev folder)
-  pl backup ./tim -m 'First tim backup'
-  pl backup --message='Love' ~/love"
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+  -m --message='msg'      Enter a message to accompany the backup (IS THIS
+                          OPTIONAL ROB?)
+
+Examples:
+pl backup -h
+pl backup ./dev (relative dev folder)
+pl backup ./tim -m 'First tim backup'
+pl backup --message='Love' ~/love
+END HELP"
 exit 0
 }
 
@@ -73,7 +74,7 @@ SECONDS=0
 # -y. Current accepted args are -h and --help
 ################################################################################
 args=$(getopt -o hm: -l help,message: --name "$scriptname" -- "$@")
-echo "$args"
+# echo "$args"
 
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
@@ -105,7 +106,7 @@ while true; do
     echo "#MESSAGE FUNCTION NOT IMPLEMENTED"
     shift
     ;;
-  -- )
+  --)
   shift
   break
   ;;

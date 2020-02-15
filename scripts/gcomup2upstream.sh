@@ -8,7 +8,10 @@
 #  git push origin master
 #
 
-#start timer
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
 SECONDS=0
 parse_pl_yml
 
@@ -33,10 +36,13 @@ You just need to state the sitename, eg dev.
 HELP
 exit 0
 }
-if [ "$#" = 0 ]
-then
-print_help
-exit 1
+# Check number of arguments
+################################################################################
+# If no arguments given, prompt user for arguments
+################################################################################
+if [ "$#" = 0 ]; then
+  print_help
+  exit 2
 fi
 
 parse_pl_yml

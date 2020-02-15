@@ -1,6 +1,9 @@
 #!/bin/bash
 #stg2dev
-# Start Timer
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
 SECONDS=0
 echo -e "\e[34m Give site $1 dev mode and modules \e[39m"
 . $script_root/_inc.sh;
@@ -13,10 +16,13 @@ You just need to state the sitename, eg stg.
 HELP
 exit 0
 }
-if [ "$#" = 0 ]
-then
-print_help
-exit 1
+# Check number of arguments
+################################################################################
+# If no arguments given, prompt user for arguments
+################################################################################
+if [ "$#" = 0 ]; then
+  print_help
+  exit 2
 fi
 
 sitename_var=$1

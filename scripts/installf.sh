@@ -146,6 +146,10 @@ chmod 770 "$site_path/$sitename_var/cmi"
 
 set_site_permissions
 
+# End timer
+################################################################################
+# Finish script, display time taken
+################################################################################
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 echo
 

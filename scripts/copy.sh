@@ -1,39 +1,134 @@
 #!/bin/bash
+################################################################################
+#                      Backup prod For Pleasy Library                       
+#
+#  This script will copy one site to another site. It will copy all files,
+#  set up the site settings and import the database. If no argument is
+#  given, it will copy dev to stg If one argument is given it will copy dev
+#  to the site specified If two arguments are give it will copy the first
+#  to the second.
+#
+#  Change History                                                              
+#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,        
+#                                   prelim commenting                          
+#  11/02/2020 James Lim  Getopt parsing implementation, script documentation   
+#  [Insert New]                                                                
+#                                                                              
+################################################################################
+################################################################################
+#                                                                              
+#  Core Maintainer:  Rob Zar                                                   
+#  Email:            rjzaar@gmail.com                                          
+#                                                                              
+################################################################################
+################################################################################
+#                                TODO LIST                                     
+#                                                                              
+################################################################################
+################################################################################
+#                             Commenting with model                            
+#
+# NAME OF COMMENT (USE FOR RATHER SIGNIFICANT COMMENTS)
+################################################################################
+# Description - Each bar is 80 #, in vim do 80i#esc                            
+################################################################################
+#
+################################################################################
+################################################################################
 
-# See help
+# Set script name for general file use
+scriptname='pleasy-site-copy'
 
-#start timer
+# Help menu
+################################################################################
+# Prints user guide
+################################################################################
+print_help() {
+echo \
+"Usage: pl copy [OPTION] ... [SOURCE] [DESTINATION]
+This script will copy one site to another site. It will copy all
+files, set up the site settings and import the database. If no
+argument is given, it will copy dev to stg. If one argument is given it
+will copy dev to the site specified. If two arguments are give it will
+copy the first to the second.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+
+Examples:"
+exit 0
+}
+
+# Use of Getopt 
+################################################################################
+# Getopt to parse script and allow arg combinations ie. -yh instead of -h
+# -y. Current accepted args are -h and --help
+################################################################################
+args=$(getopt -o h -l help --name "$scriptname" -- "$@")
+# echo "$args"
+
+################################################################################
+# If getopt outputs error to error variable, quit program displaying error
+################################################################################
+[ $? -eq 0 ] || {
+    echo "please do 'pl copy --help' for more options"
+    exit 1
+}
+
+################################################################################
+# Arguments are parsed by getopt, are then set back into $@
+################################################################################
+eval set -- "$args"
+
+################################################################################
+# Case through each argument passed into script
+# If no argument passed, default is -- and break loop
+################################################################################
+while true; do
+  case "$1" in
+  -h | --help)
+    print_help
+    exit 0
+    ;;
+  --)
+    shift
+    break
+    ;;
+  *)
+    "Programming error, this should not show up!"
+    exit 1
+    ;;
+  esac
+done
+
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
 SECONDS=0
-parse_pl_yml
 
-if [ $1 == "copy" ] && [ -z "$2" ]
-  then
+parse_pl_yml
+# Check number of user arguments
+################################################################################
+# Depending on number of user arguments, set copy condition
+################################################################################
+if [ $1 == "copy" ] && [ -z "$2" ]; then
   sitename_var="$sites_stg"
   from="$sites_dev"
-fi
-if [ -z "$2" ]
-  then
+elif [ -z "$2" ]; then
     sitename_var=$1
     from="$sites_dev"
-   else
+else
     from=$1
     sitename_var=$2
 fi
 
 echo "This will copy the site from $from to $sitename_var and then try to import the database"
 
-# Help menu
-print_help() {
-cat <<-HELP
-This script will copy one site to another site. It will copy all files, set up the site settings and import the database.
-If no argument is given, it will copy dev to stg
-If one argument is given it will copy dev to the site specified
-If two arguments are give it will copy the first to the second.
-HELP
-exit 0
-}
-
-#We need to work out where each site is.
+# Working out site locations
+################################################################################
+# We need to work out where each site is.
+################################################################################
 to=$sitename_var
 import_site_config $from
 backup_db
@@ -52,11 +147,18 @@ echo "Move all files from $from to $to"
 cp -rf "$from_sp/$from" "$to_sp/$to"
 
 ## Now get the name of the backup.
+#-------------------------------------------------------------------------------
 #cd
 #cd "$folder/sitebackups/$from"
 #options=( $(find -maxdepth 1 -name "*.sql" -print0 | xargs -0 ls -1 -t ) )
 #Name=${options[0]:2}
+#-------------------------------------------------------------------------------
 
+
+# NOT NICE ROB :(
+################################################################################
+# Global variables are very hard to keep track of for newcomers!!!
+################################################################################
 #Note $Name was set in backup_db and will now be used in the restore_db. Nice hey.
 set_site_permissions
 fix_site_settings
@@ -64,5 +166,8 @@ fix_site_settings
 bk=$from
 restore_db
 
+# End timer
+################################################################################
+# Finish script, display time taken
+################################################################################
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
-

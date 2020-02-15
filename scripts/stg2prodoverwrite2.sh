@@ -3,7 +3,10 @@
 #This will backup prod, and overwrite prodution with stg.
 #This presumes teststg.sh worked, therefore opencat git is upto date with cmi export and all files.
 
-#start timer
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
 SECONDS=0
 parse_pl_yml
 
@@ -56,6 +59,10 @@ drush sql:sync @$sitename_var @prod
 drush @prod cr
 drush @prod sset system.maintenance_mode FALSE
 
+# End timer
+################################################################################
+# Finish script, display time taken
+################################################################################
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 exit 0
 
