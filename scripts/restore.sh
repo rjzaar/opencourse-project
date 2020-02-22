@@ -139,7 +139,7 @@ if [ -f "$setpath//default.settings.php" ] ; then mv "$setpath//default.settings
 pl fixss $sitename_var
 
 
-
+echo "Set site permissions"
 set_site_permissions $sitename_var
 
 #restore db

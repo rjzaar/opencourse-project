@@ -228,7 +228,7 @@ fi
 
 if [ $step -lt 8 ]; then
   echo -e "$Cyan step 7: Set up uri $uri. This will require sudo $Color_Off"
-  sudoeuri $sitename_var
+  pl sudoeuri $sitename_var
 fi
 
 if [ $step -lt 9 ]; then

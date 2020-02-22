@@ -1,35 +1,35 @@
 #!/bin/bash
 ################################################################################
-#                 Backup db and files For Pleasy Library                       
-#                                                                              
+#                 Backup db and files For Pleasy Library
+#
 #  This script is used to backup a particular site's files and database.
 #  You just need to state the sitename, eg dev
 #
-#  Change History                                                              
-#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,        
-#                                   prelim commenting                          
-#  09/02/2020 James Lim  Getopt parsing implementation, script documentation   
-#  [Insert New]                                                                
-#                                                                              
-#                                                                              
+#  Change History
+#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
+#                                   prelim commenting
+#  09/02/2020 James Lim  Getopt parsing implementation, script documentation
+#  [Insert New]
+#
+#
 ################################################################################
 ################################################################################
-#                                                                              
-#  Core Maintainer:  Rob Zar                                                   
-#  Email:            rjzaar@gmail.com                                          
-#                                                                              
+#
+#  Core Maintainer:  Rob Zar
+#  Email:            rjzaar@gmail.com
+#
 ################################################################################
 ################################################################################
-#                                TODO LIST                                     
+#                                TODO LIST
 # Implement message function
-#                                                                              
+#
 ################################################################################
 ################################################################################
-#                             Commenting with model                            
+#                             Commenting with model
 #
 # NAME OF COMMENT (USE FOR RATHER SIGNIFICANT COMMENTS)
 ################################################################################
-# Description - Each bar is 80 #, in vim do 80i#esc                            
+# Description - Each bar is 80 #, in vim do 80i#esc
 ################################################################################
 #
 ################################################################################
@@ -46,18 +46,17 @@ print_help() {
 echo \
 "Usage: pl backup [OPTION] ... [SOURCE]
 This script is used to backup a particular site's files and database.
-You just need to state the sitename, eg dev. 
+You just need to state the sitename, eg dev.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
-  -m --message='msg'      Enter a message to accompany the backup (IS THIS
-                          OPTIONAL ROB?)
+  -m --message='msg'      Enter an optional message to accompany the backup
 
 Examples:
 pl backup -h
-pl backup ./dev (relative dev folder)
-pl backup ./tim -m 'First tim backup'
-pl backup --message='Love' ~/love
+pl backup dev (relative dev folder)
+pl backup tim -m 'First tim backup'
+pl backup --message='Love' love
 END HELP"
 exit 0
 }
@@ -68,7 +67,7 @@ exit 0
 ################################################################################
 SECONDS=0
 
-# Use of Getopt 
+# Use of Getopt
 ################################################################################
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
@@ -103,7 +102,6 @@ while true; do
     shift
     msg="$(echo "$1" | sed 's/^=//g')"
     echo "Msg = $msg"
-    echo "#MESSAGE FUNCTION NOT IMPLEMENTED"
     shift
     ;;
   --)
@@ -148,10 +146,10 @@ parse_pl_yml
 
 # What do these do?
 ################################################################################
-# 
+#
 ################################################################################
 import_site_config $sitename_var
-backup_site $sitename_var
+backup_site $sitename_var $msg
 
 # End timer
 ################################################################################
