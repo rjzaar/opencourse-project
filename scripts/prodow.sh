@@ -55,7 +55,7 @@ exit 0
 if [ $step -gt 1 ] ; then
   echo -e "Starting from step $step"
 fi
-
+prod_root=$(dirname $prod_docroot)
 #First backup the current dev site if it exists
 if [ $step -lt 2 ] ; then
 echo -e "$Pcolor step 1: backup current sitename_var $sitename_var $Color_off"
@@ -110,13 +110,13 @@ echo "Don't know the name so using the lastest.tar.gz on server to extract"
 ssh $prod_alias -t "sudo tar -zxf latest.tar.gz --directory $prod_root.new --strip-components=1"
 else
 echo "Extracting ${Name::-4}.tar.gz into $prod_root.new"
-ssh $prod_alias "sudo tar -zxf ${Name::-4}.tar.gz --directory $prod_root.new --strip-components=1"
+ssh $prod_alias -t "sudo tar -zxf ${Name::-4}.tar.gz --directory $prod_root.new --strip-components=1"
 fi
 
 echo "fix file permissions, requires sudo on external server and Restoring correct settings.php"
 ssh $prod_alias -t "sudo chown $prod_user:www-data $prod_root.new -R"
 ssh $prod_alias "cp ocbackup/settings.php $prod_root.new/$(basename $prod_docroot)/sites/default/settings.php -rf"
-ssh $prod_alias -t "sudo bash ./fix-p.sh --drupal_user=puregift --drupal_path=$prod_docroot.new"
+ssh $prod_alias -t "sudo bash ./fix-p.sh --drupal_user=puregift --drupal_path=$prod_docroot.new/docroot"
 fi
 
 if [ $step -lt 6 ] ; then
@@ -127,8 +127,8 @@ prod_root=$(dirname $prod_docroot)
 #if [ "$result" = ": 0" ]; then echo "Database synced"
 #else
 echo "Need to overwrite the database the hard way"
-echo "prod in maintenance mode"
-drush @prod sset system.maintenance_mode TRUE
+#echo "prod in maintenance mode"
+#drush @prod sset system.maintenance_mode TRUE
 
 echo "renaming folder to opencat.org to make it live"
 # Now swap them.
