@@ -18,10 +18,13 @@ you can provide the following arguments:
 HELP
 exit 0
 }
-if [ "$#" = 0 ]
-then
-print_help
-exit 1
+# Check number of arguments
+################################################################################
+# If no arguments given, prompt user for arguments
+################################################################################
+if [ "$#" = 0 ]; then
+  print_help
+  exit 2
 fi
 
 ofolder="opencourse-project"

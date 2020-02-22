@@ -4,7 +4,11 @@
 cd
 cd opencat/opencourse
 echo "Add credentials."
-ssh-add ~/.ssh/github
+if [ -f ~/.ssh/github ]; then
+    ssh-add ~/.ssh/github
+else
+    echo "could not add git credentials, recommended to create github credentials in .ssh folder"
+fi
 echo "Make sure any changes are pushed up. "
 git push
 

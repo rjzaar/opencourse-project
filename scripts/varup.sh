@@ -1,7 +1,10 @@
 #!/bin/bash
 #backup db and files
 
-#start timer
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
 SECONDS=0
 echo -e "\e[34m update varbase on $1 site\e[39m"
 . $script_root/_inc.sh;
@@ -14,10 +17,13 @@ You just need to state the sitename, eg dev.
 HELP
 exit 0
 }
-if [ "$#" = 0 ]
-then
-print_help
-exit 1
+# Check number of arguments
+################################################################################
+# If no arguments given, prompt user for arguments
+################################################################################
+if [ "$#" = 0 ]; then
+  print_help
+  exit 2
 fi
 
 sitename_var=$1
@@ -33,6 +39,10 @@ cd $site_path/$sitename_var/
 
 
 
+# End timer
+################################################################################
+# Finish script, display time taken
+################################################################################
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 
 

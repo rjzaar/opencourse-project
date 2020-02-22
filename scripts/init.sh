@@ -11,8 +11,6 @@
 #  08/02/2020 James Lim  Getopt parsing implementation, script documentation   
 #  [Insert New]                                                                
 #                                                                              
-#                                                                              
-################################################################################
 ################################################################################
 ################################################################################
 #                                                                              
@@ -21,30 +19,25 @@
 #                                                                              
 ################################################################################
 ################################################################################
-################################################################################
 #                                TODO LIST                                     
-#                                                                              
 #                                                                              
 # Add npm, nodejs: https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts 
 # Use node v12:                                                                
 # https://stackoverflow.com/questions/41195952/updating-nodejs-on-ubuntu-16-04 
 #                                                                              
-#                                                                              
-################################################################################
 ################################################################################
 ################################################################################
 #                             Commenting with model                            
-
 # NAME OF COMMENT
 ################################################################################
 # Description - Each bar is 80 #, in vim do 80i#esc                            
 ################################################################################
-
 #                                                                               
 ################################################################################
 ################################################################################
-################################################################################
 
+# Set script name for general file use
+scriptname='pleasy-init'
 
 # User help
 ################################################################################
@@ -53,38 +46,38 @@
 print_help() {
   echo \
   'Usage: pl init [OPTION]
-  This will set up pleasy and initialise the sites as per  
-  pl.yml, including the current production shared database.
-  This will install many programs, which will be listed at
-  the end.
-  
-  Mandatory arguments to long options are mandatory for short options too.
+This will set up pleasy and initialise the sites as per  
+pl.yml, including the current production shared database.
+This will install many programs, which will be listed at
+the end.
+
+Mandatory arguments to long options are mandatory for short options too.
     -y --yes                Force all install options to yes (Recommended)
     -h --help               Display help (Currently displayed)
     -s --step={1,15}        FOR DEBUG USE, start at step number as seen in code
-  
-  Examples:
-  sudo ./pl init -h
-  sudo ./pl init -y -s=5
-  
-  INSTALL LIST:
-  sudo apt-get install gawk
-  sudo $folderpath/scripts/lib/installsudoers.sh "$folderpath/bin" $user
-  sudo apt-get install apache2 php libapache2-mod-php php-mysql curl php-cli \
-  php-gd php-mbstring php-gettext php-xml php-curl php-bz2 php-zip git unzip
-  php-xdebug -y
-  sudo apt-get -y install mysql-server
-  sudo apt-get install phpmyadmin -y
-  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-  HASH="$(wget -q -O - https://composer.github.io/installer.sig)"
-  sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-  curl https://drupalconsole.com/installer -L -o drupal.phar
-  sudo apt install nodejs build-essential
-  curl -L https://npmjs.com/install.sh | sh
-  sudo apt install npm
-  sudo npm install gulp-cli -g
-  sudo npm install gulp -D
-  END OF HELP'
+
+Examples:
+    sudo ./pl init -h
+    sudo ./pl init -y -s=5
+
+INSTALL LIST:
+    sudo apt-get install gawk
+    sudo $folderpath/scripts/lib/installsudoers.sh "$folderpath/bin" $user
+    sudo apt-get install apache2 php libapache2-mod-php php-mysql curl php-cli \
+    php-gd php-mbstring php-gettext php-xml php-curl php-bz2 php-zip git unzip
+    php-xdebug -y
+    sudo apt-get -y install mysql-server
+    sudo apt-get install phpmyadmin -y
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    HASH="$(wget -q -O - https://composer.github.io/installer.sig)"
+    sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+    curl https://drupalconsole.com/installer -L -o drupal.phar
+    sudo apt install nodejs build-essential
+    curl -L https://npmjs.com/install.sh | sh
+    sudo apt install npm
+    sudo npm install gulp-cli -g
+    sudo npm install gulp -D
+END OF HELP'
 }
 
 # Step Variable
@@ -99,7 +92,7 @@ step=${step:-1}
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are --yes --help --step
 ################################################################################
-args=$(getopt -o yhs: -l yes,help,step: --name "pleasy-init" -- "$@")
+args=$(getopt -o yhs: -l yes,help,step: --name "$scriptname" -- "$@")
 # echo "$args"
 
 ################################################################################
@@ -110,6 +103,7 @@ args=$(getopt -o yhs: -l yes,help,step: --name "pleasy-init" -- "$@")
     exit 1
 }
 
+# Set getopt parse backup into $@
 ################################################################################
 # Arguments are parsed by getopt, are then set back into $@
 ################################################################################
@@ -123,7 +117,7 @@ while true; do
   case "$1" in
   -s | --step)
     shift;  
-    step=$(echo "$1" | sed 's/=//g')
+    step="$(echo "$1" | sed 's/^=//g')"
     #echo "$step"
     # If step is in an invalid range, display invalid and exit program
     if [[ $step -gt 15 || $step -lt 1 ]]; then {
