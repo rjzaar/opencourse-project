@@ -22,6 +22,7 @@ script_root="${script_root:0:-6}/scripts"
 fi
 
 folder=$(basename $(dirname $script_root))
+
 folderpath=$(dirname $script_root)
 script_root=$folderpath/scripts
 user_home=$(dirname $folderpath)
@@ -35,11 +36,15 @@ pl_run_task() {
 	local task=$1
 	local task_args="${@:2}"
 	task_script_path=$script_root/$task.sh
+	if [[ $task == *"sudo"* ]]; then
+	task_script_path="/usr/local/bin/$task.sh" ; fi
 	if [ ! -e "$task_script_path" ]
 		then
 		echo "Pleasy task '$task' was not found. (Expected at $task_script_path)"
 		exit 1
 	fi
+
+
 if [[ $task_script_path == *"sudo"* ]]; then
  	sudo $task_script_path $task_args
 	else

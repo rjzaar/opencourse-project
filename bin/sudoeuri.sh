@@ -1,4 +1,9 @@
 #!/bin/bash
+ocroot="$HOME/opencat"
+ocwroot="/var/www/oc"
+script_root="$HOME/opencat/scripts"
+#Don't touch the above lines it will be modified by init.sh
+
 #This will set up a new uri
 
 # Help menu
@@ -36,17 +41,7 @@ if [ $(id -u) != 0 ]; then
   print_help
   exit 1
 fi
-# Helper functions to get the abolute path for the command
-# Copyright http://stackoverflow.com/a/7400673/257479
-myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -ld -- "$1")" : '.*-> \(.*\)$')"; cd $(dirname $1); myreadlink "$link" | sed "s|^\([^/].*\)\$|$(dirname $1)/\1|"); }
-whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
-whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
-script_root=$(dirname $(whereis_realpath "$0"))
-script_root=$(dirname $(whereis_realpath "$0"))
-folder=$(basename $(dirname $script_root))
-folderpath=$(dirname $script_root)
-user_home=$(dirname $folderpath)
 . $script_root/_inc.sh;
 
 sitename_var=$1
@@ -55,6 +50,7 @@ parse_pl_yml
 import_site_config $sitename_var
 
 site_url="$folder.$sitename_var"
+uri=$site_url
 site_info
 # construct absolute path
 absolute_doc_root="$site_path/$sitename_var/$webroot"

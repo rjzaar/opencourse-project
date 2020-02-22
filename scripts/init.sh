@@ -1,38 +1,38 @@
 #!/bin/bash
 ################################################################################
-#                      Initialisation For Pleasy Library                       
-#                                                                              
-#  This will set up pleasy and initialise the sites as per                     
-#  pl.yml, including the current production shared database.                   
-#                                                                              
-#  Change History                                                              
-#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,        
-#                                   prelim commenting                          
-#  08/02/2020 James Lim  Getopt parsing implementation, script documentation   
-#  [Insert New]                                                                
-#                                                                              
+#                      Initialisation For Pleasy Library
+#
+#  This will set up pleasy and initialise the sites as per
+#  pl.yml, including the current production shared database.
+#
+#  Change History
+#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
+#                                   prelim commenting
+#  08/02/2020 James Lim  Getopt parsing implementation, script documentation
+#  [Insert New]
+#
 ################################################################################
 ################################################################################
-#                                                                              
-#  Core Maintainer:  Rob Zar                                                   
-#  Email:            rjzaar@gmail.com                                          
-#                                                                              
+#
+#  Core Maintainer:  Rob Zaar
+#  Email:            rjzaar@gmail.com
+#
 ################################################################################
 ################################################################################
-#                                TODO LIST                                     
-#                                                                              
-# Add npm, nodejs: https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts 
-# Use node v12:                                                                
-# https://stackoverflow.com/questions/41195952/updating-nodejs-on-ubuntu-16-04 
-#                                                                              
+#                                TODO LIST
+#
+# Add npm, nodejs: https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
+# Use node v12:
+# https://stackoverflow.com/questions/41195952/updating-nodejs-on-ubuntu-16-04
+#
 ################################################################################
 ################################################################################
-#                             Commenting with model                            
+#                             Commenting with model
 # NAME OF COMMENT
 ################################################################################
-# Description - Each bar is 80 #, in vim do 80i#esc                            
+# Description - Each bar is 80 #, in vim do 80i#esc
 ################################################################################
-#                                                                               
+#
 ################################################################################
 ################################################################################
 
@@ -46,7 +46,7 @@ scriptname='pleasy-init'
 print_help() {
   echo \
   'Usage: pl init [OPTION]
-This will set up pleasy and initialise the sites as per  
+This will set up pleasy and initialise the sites as per
 pl.yml, including the current production shared database.
 This will install many programs, which will be listed at
 the end.
@@ -87,7 +87,7 @@ END OF HELP'
 ################################################################################
 step=${step:-1}
 
-# Use of Getopt 
+# Use of Getopt
 ################################################################################
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are --yes --help --step
@@ -116,7 +116,7 @@ eval set -- "$args"
 while true; do
   case "$1" in
   -s | --step)
-    shift;  
+    shift;
     step="$(echo "$1" | sed 's/^=//g')"
     #echo "$step"
     # If step is in an invalid range, display invalid and exit program
@@ -146,7 +146,7 @@ while true; do
   shift
 done
 
-# Step Display 
+# Step Display
 ################################################################################
 # Display to user which step is chosen if step option is defined
 ################################################################################
@@ -156,7 +156,7 @@ fi
 
 # Step 1
 ################################################################################
-# Attempt to install gawk 
+# Attempt to install gawk
 ################################################################################
 if [ $step -lt 2 ]; then
   echo -e "$Cyan step 1: Will need to install gawk - sudo required $Color_Off"
@@ -168,7 +168,7 @@ fi
 
 # Step 2
 ################################################################################
-# This step must run, regardless of if statement. ROB PLEASE ADD WHY HERE 
+# This step must run, regardless of if statement. ROB PLEASE ADD WHY HERE
 ################################################################################
 echo -e "$Cyan step 2 (must be run): checking if folder $sitename_var exists $Color_Off"
 echo running include files...
@@ -188,7 +188,7 @@ parse_pl_yml
 
 # Step 3
 ################################################################################
-#  
+#
 ################################################################################
 if [ $step -lt 4 ]; then
   echo -e "$Cyan step 3: Adding pl command to bash commands, including plextras $Color_Off"
@@ -197,11 +197,14 @@ if [ ! -d "/home/$user" ] ; then echo "User name in pl.yml $user does not match 
 
 schome="/home/$user/$project/bin"
 sed -i "2s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/plextras.sh"
+sed -i "2s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/sudoeuri.sh"
 #sed -i "3s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/plextras.sh"
 wwwp="${www_path////\\/}"
 sed -i  "3s/.*/ocwroot=\"$wwwp\"/" "$schome/plextras.sh"
+sed -i  "3s/.*/ocwroot=\"$wwwp\"/" "$schome/sudoeuri.sh"
 sr="${script_root////\\/}"
 sed -i "4s/.*/script_root=\"$sr\"/" "$schome/plextras.sh"
+sed -i "4s/.*/script_root=\"$sr\"/" "$schome/sudoeuri.sh"
 echo "export PATH=\"\$PATH:$schome\"" >> ~/.bashrc
 echo ". $schome/plextras.sh" >> ~/.bashrc
 
@@ -213,7 +216,7 @@ sed -i "4s|.*|phpapache=\"$phpapache\"|" "$ocbin/debug.sh"
 
 
 
-#set up d8fp to run without password
+#set up d8fp, debug and sudoeuri to run without password
 echo -e "$Cyan \n Make fixing folder permissions and debug run without sudo $Color_Off"
 sudo $folderpath/scripts/lib/installsudoers.sh "$folderpath/bin" $user
 echo "export PATH=\"\$PATH:/usr/local/bin/\"" >> ~/.bashrc
@@ -226,7 +229,7 @@ fi
 
 # Step 4
 ################################################################################
-# 
+#
 ################################################################################
 if [ $step -lt 5 ]; then
   echo -e "$Cyan step 4: Create mysql root password file $Color_Off"
@@ -249,7 +252,7 @@ fi
 
 # Step 5
 ################################################################################
-# 
+#
 ################################################################################
 if [ $step -lt 6 ]; then
   echo -e "$Cyan step 5: Updating System..  $Color_Off"
@@ -264,7 +267,7 @@ fi
 
 # Step 6
 ################################################################################
-# 
+#
 ################################################################################
 if [ $step -lt 7 ]; then
   echo -e "$Cyan step 6: Add github credentials $Color_Off"
@@ -277,7 +280,7 @@ fi
 
 # Step 7
 ################################################################################
-# 
+#
 ################################################################################
 if [ $step -lt 8 ]; then
   echo -e "$Cyan step 7: Installing MySQL $Color_Off"
@@ -289,7 +292,7 @@ fi
 
 # Step 8
 ################################################################################
-# 
+#
 ################################################################################
 if [ $step -lt 9 ]; then
   echo -e "$Cyan step 8: Installing phpMyAdmin $Color_Off"
@@ -304,7 +307,7 @@ fi
 
 # Step 9
 ################################################################################
-# 
+#
 ################################################################################
 if [ $step -lt 10 ]; then
   echo -e "$Cyan step 9: Enabling Modules  $Color_Off"
@@ -319,7 +322,7 @@ fi
 
 # Step 10
 ################################################################################
-# 
+#
 ################################################################################
 if [ $step -lt 11 ]; then
   echo -e "$Cyan step 10: Install Composer  $Color_Off"
@@ -338,7 +341,7 @@ fi
 
 # Step 11
 ################################################################################
-# 
+#
 ################################################################################
 if [ $step -lt 12 ]; then
   echo -e "$Cyan step 11: Install Drush globally $Color_Off"
@@ -371,7 +374,7 @@ fi
 
 # Step 12
 ################################################################################
-# 
+#
 ################################################################################
 if [ $step -lt 13 ]; then
   echo -e "$Cyan step 12: Install Drupal console globally  $Color_Off"
@@ -397,7 +400,7 @@ fi
 
 # Step 13
 ################################################################################
-# 
+#
 ################################################################################
 if [ $step -lt 14 ]; then
   echo -e "$Cyan step 13: setup /var/wwww/oc for websites  $Color_Off"
@@ -416,7 +419,7 @@ fi
 
 # Step 14
 ################################################################################
-# 
+#
 ################################################################################
 if [ $step -lt 15 ]; then
   echo -e "$Cyan step 14: Fix adding extra characters for vi  $Color_Off"
@@ -430,7 +433,7 @@ fi
 
 # Step 15
 ################################################################################
-# 
+#
 ################################################################################
 if [ $step -lt 16 ]; then
   echo -e "$Cyan step 15: Now add theming tools $Color_Off"

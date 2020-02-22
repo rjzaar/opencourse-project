@@ -19,6 +19,11 @@ Yellow='\033[0;33m'       # Yellow
 Purple='\033[0;35m'       # Purple
 Cyan='\033[0;36m'         # Cyan
 
+# Should use more descriptive colors for messages
+Alert='\033[0;31m'        # Red
+Warn='\033[0;33m'         # Yellow
+
+
 import_site_config () {
 # setup basic defaults
 sitename_var=$1
@@ -78,6 +83,7 @@ folder=$(basename $(dirname $script_root))
 private="/home/$user/$folder/$sitename_var/private"
 site_path="/home/$user/$folder"
 else
+folder=$(basename $(dirname $script_root)) #Should this be it?
 private="$www_path/$sitename_var/private"
 site_path="$www_path"
 fi
@@ -341,6 +347,7 @@ fi
 
 
 }
+
 ocmsg () {
 # This is to provide extra messaging if the verbose variable in pl.yml is set to y.
 if [ "$verbose" == "y" ]
@@ -361,8 +368,6 @@ if [ $dev = "y" ] ; then devp="--dev" ; fi ;
 sudo d8fp.sh --drupal_path="$site_path/$sitename_var/$webroot" --drupal_user=$user --httpd_group=www-data $devp
 
 }
-
-
 
 rebuild_site () {
 #This will delete current site database and rebuild it
@@ -573,6 +578,7 @@ drush @$sitename_var sql-dump --result-file="$folderpath/sitebackups/$sitename_v
 drush @$sitename_var sset system.maintenance_mode FALSE
 
 }
+
 make_db () {
 echo "Create database $db and user $dbuser if needed."
 result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "use $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
@@ -600,6 +606,7 @@ fi
   if [ "$result" = ": 0" ]; then echo "Granted user $dbuser permissions on $db"; else echo "Could not grant user $dbuser permissions on $db"; fi
 
 }
+
 restore_db () {
 #presumes that the correct information is already set
 # $Name backup sql file

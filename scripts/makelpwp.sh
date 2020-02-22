@@ -111,7 +111,7 @@ drush @localprod cr
 pl backup $sitename_var "postsync"
 
 # Make sure url is setup and open it!
-pl sudoeuri localprod
+sudoeuri localprod
 pl open localprod
 # End timer
 ################################################################################
