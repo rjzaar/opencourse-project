@@ -103,9 +103,10 @@ update_config="n"
 project=$folder
 if [ $update_config == "y" ]
 then
-  if [ ! -z "$no_config_update" || "$no_config_update" != "true" ]; then
+  # @JamesCHLim Not sure what this next line is for?
+ # if [ ! -z "$no_config_update" || "$no_config_update" != "true" ] ; then
     update_all_configs
-  fi
+ # fi
 fi
 }
 
@@ -135,8 +136,10 @@ fi
 fi
 # Clear current file
 ocmsg "$user_home/.console/sites/$folder.yml"
+if [ -f "$user_home/.console/sites/$folder.yml" ]
+then
 echo "" > "$user_home/.console/sites/$folder.yml"
-
+fi
 #Collect the drush location: messy but it works!
 # This command might list some warnings. It is a bug with drush: https://github.com/drush-ops/drush/issues/3226
 ocmsg $folderpath/drush.tmp

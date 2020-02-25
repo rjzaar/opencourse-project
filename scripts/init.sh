@@ -211,8 +211,8 @@ echo ". $schome/plextras.sh" >> ~/.bashrc
 #prep up the debug command with cli and apached locations
 echo "adding debug command"
 ocbin="/home/$user/$project/bin"
-sed -i "3s|.*|phpcli=\"$phpcli\"|" "$ocbin/debug.sh"
-sed -i "4s|.*|phpapache=\"$phpapache\"|" "$ocbin/debug.sh"
+sed -i "3s|.*|phpcli=\"$phpcli\"|" "$ocbin/debug"
+sed -i "4s|.*|phpapache=\"$phpapache\"|" "$ocbin/debug"
 
 
 
@@ -220,7 +220,7 @@ sed -i "4s|.*|phpapache=\"$phpapache\"|" "$ocbin/debug.sh"
 echo -e "$Cyan \n Make fixing folder permissions and debug run without sudo $Color_Off"
 sudo $folderpath/scripts/lib/installsudoers.sh "$folderpath/bin" $user
 echo "export PATH=\"\$PATH:/usr/local/bin/\"" >> ~/.bashrc
-echo ". /usr/local/bin/debug.sh" >> ~/.bashrc
+echo ". /usr/local/bin/debug" >> ~/.bashrc
 
 cd
 source ~/.bashrc
@@ -336,7 +336,7 @@ sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 #mv composer.phar /usr/local/bin/composer
 
 # Not sure why this next line might be needed....
-#sudo chown -R $user .composer/
+sudo chown -R $user .composer/
 fi
 
 # Step 11
@@ -352,6 +352,7 @@ then
 wget -O drush.phar https://github.com/drush-ops/drush-launcher/releases/download/0.6.0/drush.phar
 sudo chmod +x drush.phar
 sudo mv drush.phar /usr/local/bin/drush
+echo "drush installed"
 else
   echo "drush already present."
 fi
@@ -360,10 +361,15 @@ fi
 # see https://www.jeffgeerling.com/blog/2018/drupal-vm-48-and-drush-900-some-major-changes
 # see https://docs.drush.org/en/8.x/install-alternative/  and
 # see https://github.com/consolidation/cgr
+#
+# if there is an issue with swap use this to fix it: https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-16-04
+
 cd
 #composer global require drush/drush
+echo "composer install consoildation/cgr"
 composer global require consolidation/cgr
-echo "export PATH=\"\$(composer config -g home)/vendor/bin:$PATH\"" >> ~/.bashrc
+echo "echo path into bashrc"
+echo "export PATH=\"$(composer config -g home)/vendor/bin:$PATH\"" >> ~/.bashrc
 source ~/.bashrc
 
 cgr drush/drush
