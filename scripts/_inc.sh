@@ -330,44 +330,40 @@ fi
 # 
 ################################################################################
 update_all_configs () {
-echo "update configs"
-# Update all database credentials in case the user changed any.
-# Create a list of recipes
-for f in $recipes_ ; do recipes="$recipes,${f#*_}" ; done
-recipes=${recipes#","}
+  echo "update configs"
+  # Update all database credentials in case the user changed any.
+  # Create a list of recipes
+  for f in $recipes_; do
+    recipes="$recipes,${f#*_}";
+  done
+  recipes=${recipes#","}
 
-# Store the site name to restore it later
-storesn=$sitename_var
+  # Store the site name to restore it later
+  storesn=$sitename_var
 
-# Setup drupal console if it is installed.
-drupalconsole="y"
+  # Setup drupal console if it is installed.
+  drupalconsole="y"
 
-# Create drupal console file
-if [ ! -d "$user_home/.console" ]
-then
-ocmsg "Drupal console is not installed."
-drupalconsole="n"
-else
-if [ ! -d $user_home/.console/sites ]
-then
-mkdir $user_home/.console/sites
-fi
-fi
-# Clear current file
-ocmsg "$user_home/.console/sites/$folder.yml"
-if [ -f "$user_home/.console/sites/$folder.yml" ]
-then
-echo "" > "$user_home/.console/sites/$folder.yml"
-fi
-#Collect the drush location: messy but it works!
-# This command might list some warnings. It is a bug with drush: https://github.com/drush-ops/drush/issues/3226
-ocmsg $folderpath/drush.tmp
-if [[ $folderpath/drush.tmp =~ (@dev) ]] ;
-then
-drush @dev status > "$folderpath/drush.tmp"
-else
-drush status > "$folderpath/drush.tmp"
-fi
+  # Create drupal console file
+  if [ ! -d "$user_home/.console" ]; then
+    ocmsg "Drupal console is not installed."
+    drupalconsole="n"
+  elif [ ! -d $user_home/.console/sites ]; then
+    mkdir $user_home/.console/sites
+  fi
+  # Clear current file
+  ocmsg "$user_home/.console/sites/$folder.yml"
+  if [ -f "$user_home/.console/sites/$folder.yml" ]; then
+    echo "" > "$user_home/.console/sites/$folder.yml"
+  fi
+  #Collect the drush location: messy but it works!
+  # This command might list some warnings. It is a bug with drush: https://github.com/drush-ops/drush/issues/3226
+  ocmsg $folderpath/drush.tmp
+  if [[ $folderpath/drush.tmp =~ (@dev) ]] ;; then
+    drush @dev status > "$folderpath/drush.tmp"
+  else
+    drush status > "$folderpath/drush.tmp"
+  fi
 
   dline=$(awk 'match($0,v){print NR; exit}' v="Drush script" "$folderpath/drush.tmp")
   dlinec=$(sed "${dline}q;d" "$folderpath/drush.tmp")
@@ -375,9 +371,8 @@ fi
   drushloc=${dlined::-11}
   rm "$folderpath/drush.tmp"
 
-  if [ -f $user_home/.drush/$folder.aliases.drushrc.php ]
-  then
-  rm  $user_home/.drush/$folder.aliases.drushrc.php
+  if [ -f $user_home/.drush/$folder.aliases.drushrc.php ]; then
+    rm  $user_home/.drush/$folder.aliases.drushrc.php
   fi
 
 cat > $user_home/.drush/$folder.aliases.drushrc.php <<EOL
@@ -814,36 +809,34 @@ backup_db () {
 #
 ################################################################################
 make_db () {
-echo "Create database $db and user $dbuser if needed."
-result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "use $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+  echo "Create database $db and user $dbuser if needed."
+  result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "use $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 
-if [ "$result" != ": 0" ]; then
-  echo "The database $db does not exist. I will try to create it."
-  if ! mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; then
-    # This script actually just tries to create the user since the database will be created later anyway.
-    echo "Unable to create the database $db. Check the mysql root credentials in mysql.cnf"
-    exit 1
+  if [ "$result" != ": 0" ]; then
+    echo "The database $db does not exist. I will try to create it."
+    if ! mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; then
+      # This script actually just tries to create the user since the database will be created later anyway.
+      echo "Unable to create the database $db. Check the mysql root credentials in mysql.cnf"
+      exit 1
+    else
+      echo "Database $db created."
+    fi
   else
-    echo "Database $db created."
+    echo "Database $db exists so I will drop it."
+    result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "DROP DATABASE $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+    if [ "$result" = ": 0" ]; then 
+      echo "Database $db dropped"
+    else 
+      echo "Could not drop database $db: exiting"; exit 1
+    fi
+    result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+    if [ "$result" = ": 0" ]; then
+      echo "Created database $db using user root"
+    else
+      echo "Could not create database $db using user root, exiting"
+      exit 1
+    fi
   fi
-else
-
-  echo "Database $db exists so I will drop it."
-  result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "DROP DATABASE $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-  if [ "$result" = ": 0" ]; then 
-    echo "Database $db dropped"
-  else 
-    echo "Could not drop database $db: exiting"; exit 1
-  fi
-
-  result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-  if [ "$result" = ": 0" ]; then
-    echo "Created database $db using user root"
-  else
-    echo "Could not create database $db using user root, exiting"
-    exit 1
-  fi
-fi
 
   result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE USER $dbuser@localhost IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
   if [ "$result" = ": 0" ]; then
