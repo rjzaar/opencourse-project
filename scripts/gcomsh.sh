@@ -46,24 +46,34 @@
 ################################################################################
 
 # Set script name for general file use
-scriptname='pleasy-gcomsh'
+scriptname='gcomsh'
 
 # Help menu
 ################################################################################
 # Prints user guide
 ################################################################################
 print_help() {
-echo \
-"Usage: pl gcomsh [OPTION] ... [SITE] [MESSAGE]
+    cat << HEREDOC
+Usage: pl $scriptname [OPTION] ... [SITE] [MESSAGE]
 This will git commit changes with msg after merging with master. You just
 need to state the sitename, eg dev.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
-Examples:"
-exit 0
+Examples:
+pl $scriptname -h
+pl $scriptname dev (relative dev folder)
+pl $scriptname tim 'First tim backup'
+HEREDOC
+    exit 0
 }
+
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
+SECONDS=0
 
 # Use of Getopt 
 ################################################################################
@@ -101,11 +111,6 @@ while true; do
   esac
 done
 
-# start timer
-################################################################################
-# Timer to show how long it took to run the script
-################################################################################
-SECONDS=0
 parse_pl_yml
 
 if [ $1 == "gcomsh" ] && [ -z "$2" ]; then
@@ -119,6 +124,7 @@ else
 fi
 
 echo "This will git commit changes on site $sitename_var with msg $msg after merging with master."
+
 # Check number of arguments
 ################################################################################
 # If no arguments given, prompt user for arguments

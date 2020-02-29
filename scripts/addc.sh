@@ -1,6 +1,6 @@
 #!/bin/bash
 ################################################################################
-#                 Addc(What does this mean) For Pleasy Library                       
+#                 Addc(What does this mean) For Pleasy Library                  
 #                                                                              
 #  This will set the correct folder and file permissions for a drupal site.
 #  (I found these two definitions in the script folder, which is the right one?
@@ -100,8 +100,3 @@ parse_pl_yml
 # this script - JL
 echo "Adding key $github_key"
 ssh-add ~/.ssh/$github_key
-
-
-
-
-

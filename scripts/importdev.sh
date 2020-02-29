@@ -1,11 +1,95 @@
 #!/bin/bash
-#teststg
+################################################################################
+#                            ImportDev For Pleasy Library
+#
+#  @ROB add description to this script and to the print_help function!
+#
+#  Change History
+#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
+#                                   prelim commenting
+#  29/02/2020 James Lim  Getopt parsing implementation, script documentation
+#  [Insert New]
+#
+#
+################################################################################
+################################################################################
+#
+#  Core Maintainer:  Rob Zaar
+#  Email:            rjzaar@gmail.com
+#
+################################################################################
+################################################################################
+#                                TODO LIST
+#
+################################################################################
+################################################################################
+
+# Set script name for general file use
+scriptname='gulp'
+
+# Help menu
+################################################################################
+# Prints user guide
+################################################################################
+print_help() {
+    cat << HEREDOC
+Usage: pl $scriptname [OPTION] ... [SOURCE-SITE] [DEST-SITE]
+@ROB add description please
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+
+Examples:
+pl $scriptname 
+END HELP
+HEREDOC
+    exit 0
+}
 
 # start timer
 ################################################################################
 # Timer to show how long it took to run the script
 ################################################################################
 SECONDS=0
+
+# Use of Getopt
+################################################################################
+# Getopt to parse script and allow arg combinations ie. -yh instead of -h
+# -y. Current accepted args are -h and --help
+################################################################################
+args=$(getopt -o h -l help, --name "$scriptname" -- "$@")
+# echo "$args"
+
+################################################################################
+# If getopt outputs error to error variable, quit program displaying error
+################################################################################
+[ $? -eq 0 ] || {
+    echo "please do '$scriptname --help' for more options"
+    exit 1
+}
+
+################################################################################
+# Arguments are parsed by getopt, are then set back into $@
+################################################################################
+eval set -- "$args"
+
+################################################################################
+# Case through each argument passed into script
+# If no argument passed, default is -- and break loop
+################################################################################
+while true; do
+  case "$1" in
+  -h | --help)
+    print_help; exit 0; ;;
+  --)
+  shift; break; ;;
+  *)
+  "Programming error, this should not show up!"
+  exit 1; ;;
+  esac
+done
+
+################################################################################
 . $script_root/_inc.sh;
 parse_pl_yml
 
@@ -107,6 +191,3 @@ drush cr
 
 echo 'H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 #test
-
-
-

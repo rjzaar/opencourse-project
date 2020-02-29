@@ -1,5 +1,52 @@
 #!/bin/bash
-# This will set the correct folder and file permissions for a drupal site.
+################################################################################
+#                            Gulp For Pleasy Library
+#
+#  This script is used to set upl gulp browser sync for a particular page. You
+#  just need to state the sitename, eg loc and the page, eg opencat.loc
+#
+#  Change History
+#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
+#                                   prelim commenting
+#  29/02/2020 James Lim  Getopt parsing implementation, script documentation
+#  [Insert New]
+#
+#
+################################################################################
+################################################################################
+#
+#  Core Maintainer:  Rob Zar
+#  Email:            rjzaar@gmail.com
+#
+################################################################################
+################################################################################
+#                                TODO LIST
+#
+################################################################################
+################################################################################
+
+# Set script name for general file use
+scriptname='gulp'
+
+# Help menu
+################################################################################
+# Prints user guide
+################################################################################
+print_help() {
+    cat << HEREDOC
+Usage: pl $scriptname [OPTION] ... [SITE]
+This script is used to set upl gulp browser sync for a particular page. You
+just need to state the sitename, eg loc and the page, eg opencat.loc
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+
+Examples:
+pl $scriptname 
+END HELP
+HEREDOC
+    exit 0
+}
 
 # start timer
 ################################################################################
@@ -7,13 +54,45 @@
 ################################################################################
 SECONDS=0
 
-# Help menu
-print_help() {
-cat <<-HELP
-This script is used to set upl gulp browser sync for a particular page.
-You just need to state the sitename, eg loc and the page, eg opencat.loc
-HELP
-exit 0
+# Use of Getopt
+################################################################################
+# Getopt to parse script and allow arg combinations ie. -yh instead of -h
+# -y. Current accepted args are -h and --help
+################################################################################
+args=$(getopt -o h -l help, --name "$scriptname" -- "$@")
+# echo "$args"
+
+################################################################################
+# If getopt outputs error to error variable, quit program displaying error
+################################################################################
+[ $? -eq 0 ] || {
+    echo "please do '$scriptname --help' for more options"
+    exit 1
+}
+
+################################################################################
+# Arguments are parsed by getopt, are then set back into $@
+################################################################################
+eval set -- "$args"
+
+################################################################################
+# Case through each argument passed into script
+# If no argument passed, default is -- and break loop
+################################################################################
+while true; do
+  case "$1" in
+  -h | --help)
+    print_help; exit 0; ;;
+  --)
+  shift; break; ;;
+  *)
+  "Programming error, this should not show up!"
+  exit 1; ;;
+  esac
+done
+
+################################################################################
+
 }
 # Check number of arguments
 ################################################################################

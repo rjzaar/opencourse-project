@@ -95,23 +95,18 @@ eval set -- "$args"
 while true; do
   case "$1" in
   -h | --help)
-    print_help
-    exit 0
-    ;;
+    print_help; exit 0; ;;
   -m | --message)
     shift
     msg="$(echo "$1" | sed 's/^=//g')"
     echo "Msg = $msg"
-    shift
-    ;;
+    shift; ;;
   --)
   shift
-  break
-  ;;
+  break; ;;
   *)
   "Programming error, this should not show up!"
-  exit 1
-  ;;
+  exit 1; ;;
   esac
 done
 
