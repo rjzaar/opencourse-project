@@ -103,6 +103,9 @@ recipes:
     source: https://www.drupal.org/download-latest/tar.gz
     install_method: file
     profile: standard
+    default: n
+    install_modules:
+    dev_modules: syslog views_ui block_place devel features_ui dblog
   d8c:
     source: drupal-composer/drupal-project:8.x-dev
     install_method: composer

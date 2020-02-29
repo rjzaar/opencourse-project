@@ -310,18 +310,19 @@ import_site_config () {
 # Import yaml, which provides global variables. presumes $script_root is set
 ################################################################################
 parse_pl_yml () {
-  # $userhome
-  update_config="n"
+# $userhome
+update_config="n"
 
-  . $script_root/scripts/parse_yaml.sh "pl.yml" $script_root
-  # Project is no longer set in pl.yml. It is collected from the context.
-  project=$folder
-  if [ $update_config == "y" ]
-  then
-      if [ ! -z "$no_config_update" || "$no_config_update" != "true" ]; then
-          update_all_configs
-      fi
-  fi
+. $script_root/scripts/parse_yaml.sh "pl.yml" $script_root
+# Project is no longer set in pl.yml. It is collected from the context.
+project=$folder
+if [ $update_config == "y" ]
+then
+  # @JamesCHLim Not sure what this next line is for?
+ # if [ ! -z "$no_config_update" || "$no_config_update" != "true" ] ; then
+    update_all_configs
+ # fi
+fi
 }
 
 # 
@@ -329,40 +330,44 @@ parse_pl_yml () {
 # 
 ################################################################################
 update_all_configs () {
-  echo "update configs"
-  # Update all database credentials in case the user changed any.
-  # Create a list of recipes
-  for f in $recipes_ ; do recipes="$recipes,${f#*_}" ; done
-  recipes=${recipes#","}
+echo "update configs"
+# Update all database credentials in case the user changed any.
+# Create a list of recipes
+for f in $recipes_ ; do recipes="$recipes,${f#*_}" ; done
+recipes=${recipes#","}
 
-  # Store the site name to restore it later
-  storesn=$sitename_var
+# Store the site name to restore it later
+storesn=$sitename_var
 
-  # Setup drupal console if it is installed.
-  drupalconsole="y"
+# Setup drupal console if it is installed.
+drupalconsole="y"
 
-  # Create drupal console file
-  if [ ! -d "$user_home/.console" ]; then
-    ocmsg "Drupal console is not installed."
-    drupalconsole="n"
-  else
-    if [ ! -d $user_home/.console/sites ]; then
-      mkdir $user_home/.console/sites
-    fi
-  fi
-  # Clear current file
-  ocmsg "$user_home/.console/sites/$folder.yml"
-  echo "" > "$user_home/.console/sites/$folder.yml"
-
-  #Collect the drush location: messy but it works!
-  # This command might list some warnings. It is a bug with drush:
-  # https://github.com/drush-ops/drush/issues/3226
-  ocmsg $folderpath/drush.tmp
-  if [[ $folderpath/drush.tmp =~ (@dev) ]]; then
-    drush @dev status > "$folderpath/drush.tmp"
-  else
-    drush status > "$folderpath/drush.tmp"
-  fi
+# Create drupal console file
+if [ ! -d "$user_home/.console" ]
+then
+ocmsg "Drupal console is not installed."
+drupalconsole="n"
+else
+if [ ! -d $user_home/.console/sites ]
+then
+mkdir $user_home/.console/sites
+fi
+fi
+# Clear current file
+ocmsg "$user_home/.console/sites/$folder.yml"
+if [ -f "$user_home/.console/sites/$folder.yml" ]
+then
+echo "" > "$user_home/.console/sites/$folder.yml"
+fi
+#Collect the drush location: messy but it works!
+# This command might list some warnings. It is a bug with drush: https://github.com/drush-ops/drush/issues/3226
+ocmsg $folderpath/drush.tmp
+if [[ $folderpath/drush.tmp =~ (@dev) ]] ;
+then
+drush @dev status > "$folderpath/drush.tmp"
+else
+drush status > "$folderpath/drush.tmp"
+fi
 
   dline=$(awk 'match($0,v){print NR; exit}' v="Drush script" "$folderpath/drush.tmp")
   dlinec=$(sed "${dline}q;d" "$folderpath/drush.tmp")
