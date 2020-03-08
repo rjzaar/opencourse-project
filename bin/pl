@@ -16,9 +16,14 @@ whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} 
 script_root=$(dirname $(whereis_realpath "$0"))
 
 # get rid of 'bin'
-if [ "${script_root: (-6)}" == "/bin/." ]
+if [ "${script_root: (-6)}" == "/bin/."  ]
 then
 script_root="${script_root:0:-6}/scripts"
+fi
+
+if [ "${script_root: (-4)}" == "/bin"  ]
+then
+script_root="${script_root:0:-4}/scripts"
 fi
 
 folder=$(basename $(dirname $script_root))

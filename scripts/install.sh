@@ -96,7 +96,7 @@ if [ $step -lt 2 ]; then
   echo -e "$Cyan step 1: checking if folder $sitename_var exists $Color_Off"
 
   if [ -d "$site_path/$sitename_var" ]; then
-    if [ $yes != "y" ]; then
+    if [ "$yes" != "y" ] ; then
       read -p "$sitename_var exists. If you proceed, $sitename_var will first be deleted. Do you want to proceed?(Y/n)" question
       case $question in
       n | c | no | cancel)
@@ -155,10 +155,11 @@ if [ $step -lt 3 ]; then
       echo "Setting composer install to dev."
       devs="--stability dev"
     else
-      devs=""
+      devs="--no-dev"
     fi
 
-    echo "Run composer create project: $project"
+    echo "Run composer create project: $project $sitename_var $devs --no-interaction"
+    cd $site_path
     composer create-project $project $sitename_var $devs --no-interaction
   elif [ "$install_method" == "file" ]; then
     if [ ! -d "$folderpath/downloads" ]; then
