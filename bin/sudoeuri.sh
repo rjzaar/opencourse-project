@@ -1,7 +1,7 @@
 #!/bin/bash
-ocroot="/home/ubuntu/pleasy"
+ocroot="/home/rob/opencat"
 ocwroot="/var/www/oc"
-script_root="/home/ubuntu/pleasy/scripts"
+script_root="/home/rob/opencat/scripts"
 #Don't touch the above lines it will be modified by init.sh
 
 #This will set up a new uri

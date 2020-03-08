@@ -37,6 +37,10 @@ Thumbs.db
 .bashrc
 errors.log
 
+# Ignore pl_var.sh since it is created only for local environment variables and updated as appropriate.
+# It is included in plextras.sh. Though the directives below mean it is ignored anyway. :)
+pl_var.sh
+
 # These are now ignored so opencourse-project can be public, ie these are for the development version.
 /*
 !/bin

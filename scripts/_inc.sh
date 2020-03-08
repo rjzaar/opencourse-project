@@ -27,7 +27,7 @@
 # Helper functions to get the abolute path for the command
 # Copyright http://stackoverflow.com/a/7400673/257479
 
-# 
+#
 ################################################################################
 #
 ################################################################################
@@ -45,7 +45,7 @@ whereis() {
   echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"
 }
 
-whereis_realpath() { 
+whereis_realpath() {
   local SCRIPT_PATH=$(whereis $1)
   myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"
 }
@@ -67,7 +67,7 @@ Alert='\033[0;31m'        # Red
 Warn='\033[0;33m'         # Yellow
 
 
-# 
+#
 ################################################################################
 #
 ################################################################################
@@ -79,109 +79,109 @@ import_site_config () {
   rp="recipes_default_source" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     project=${!rp}
-  else 
+  else
     project=""
   fi
   rp="recipes_default_dev" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     dev=${!rp}
-  else 
+  else
     dev=""
   fi
   rp="recipes_default_webroot" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     webroot=${!rp}
-  else 
+  else
     webroot=""
   fi
   rp="recipes_default_sitename" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     sitename=${!rp}
-  else 
+  else
     sitename=""
   fi
   rp="recipes_default_auto" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     auto=${!rp}
-  else 
+  else
     auto=""
   fi
   rp="recipes_default_apache" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     apache=${!rp}
-  else 
+  else
     apache=""
   fi
   rp="recipes_default_dbuser" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     dbuser=${!rp}
-  else 
+  else
     dbuser=""
   fi
   rp="recipes_default_profile" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     profile=${!rp}
-  else 
+  else
     profile=""
   fi
   rp="recipes_default_db" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     db=${!rp}
-  else 
+  else
     db=""
   fi
   rp="recipes_default_dbpass" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     dbpass=${!rp}
-  else 
+  else
     dbpass=""
   fi
   rp="recipes_default_uri" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     uri=${!rp}
-  else 
+  else
     uri="$folder.$sitename_var"
   fi
   rp="recipes_default_install_method" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     install_method=${!rp}
-  else 
+  else
     install_method=""
   fi
   rp="recipes_default_git_upstream" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     git_upstream=${!rp}
-  else 
+  else
     git_upstream=""
   fi
   rp="recipes_default_theme" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     theme=${!rp}
-  else 
+  else
     theme=""
   fi
   rp="recipes_default_theme_admin" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     theme_admin=${!rp}
-  else 
+  else
     theme_admin=""
   fi
   rp="recipes_default_install_modules" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     install_modules=${!rp}
-  else 
+  else
     install_modules=""
   fi
   rp="recipes_default_dev_modules" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     dev_modules=${!rp}
-  else 
+  else
     dev_modules=""
   fi
   rp="recipes_default_lando" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     lando=${!rp}
-  else 
+  else
     lando=""
   fi
 
@@ -254,8 +254,8 @@ import_site_config () {
   rp="recipes_${sitename_var}_theme" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
     theme=${!rp}
-  elif 
-    [ "${!rb}" == "n" ] 
+  elif
+    [ "${!rb}" == "n" ]
   then theme=""; fi
   rp="recipes_${sitename_var}_theme_admin" ; rpv=${!rp}
   if [ "$rpv" !=  "" ]; then
@@ -318,16 +318,20 @@ update_config="n"
 project=$folder
 if [ $update_config == "y" ]
 then
-  # @JamesCHLim Not sure what this next line is for?
- # if [ ! -z "$no_config_update" || "$no_config_update" != "true" ] ; then
-    update_all_configs
- # fi
+ # If parse_pl_yml is being called from init.sh (ie for the first time) then we don't want update_all_configs being run
+ # since there is no need to update them since it is bring run for the first time. update_all_configs is set to false
+ # before the end of init.sh
+  if [ ! -z "$no_config_update" ] ; then
+  update_all_configs
+  elif [ "$no_config_update" != "true" ] ; then
+  update_all_configs
+  fi
 fi
 }
 
-# 
+#
 ################################################################################
-# 
+#
 ################################################################################
 update_all_configs () {
   echo "update configs"
@@ -359,7 +363,7 @@ update_all_configs () {
   #Collect the drush location: messy but it works!
   # This command might list some warnings. It is a bug with drush: https://github.com/drush-ops/drush/issues/3226
   ocmsg $folderpath/drush.tmp
-  if [[ $folderpath/drush.tmp =~ (@dev) ]] ;; then
+  if [[ $folderpath/drush.tmp =~ (@dev) ]] ; then
     drush @dev status > "$folderpath/drush.tmp"
   else
     drush status > "$folderpath/drush.tmp"
@@ -555,7 +559,7 @@ EOL
   fi
 }
 
-# 
+#
 ################################################################################
 #
 ################################################################################
@@ -592,7 +596,7 @@ set_site_permissions () {
 rebuild_site () {
   #etc
   echo "bstep $bstep"
-  if [ -z $bstep ]; then 
+  if [ -z $bstep ]; then
     bstep=1
   fi
   echo "bstep $bstep"
@@ -688,7 +692,7 @@ rebuild_site () {
   fi
 }
 
-# 
+#
 ################################################################################
 #
 ################################################################################
@@ -732,7 +736,7 @@ backup_site () {
   fi
 }
 
-# 
+#
 ################################################################################
 #
 ################################################################################
@@ -776,7 +780,7 @@ backup_prod () {
   fi
 }
 
-# 
+#
 ################################################################################
 #
 ################################################################################
@@ -804,7 +808,7 @@ backup_db () {
   drush @$sitename_var sset system.maintenance_mode FALSE
 }
 
-# 
+#
 ################################################################################
 #
 ################################################################################
@@ -824,9 +828,9 @@ make_db () {
   else
     echo "Database $db exists so I will drop it."
     result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "DROP DATABASE $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-    if [ "$result" = ": 0" ]; then 
+    if [ "$result" = ": 0" ]; then
       echo "Database $db dropped"
-    else 
+    else
       echo "Could not drop database $db: exiting"; exit 1
     fi
     result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
@@ -842,18 +846,18 @@ make_db () {
   if [ "$result" = ": 0" ]; then
     echo "Created user $dbuser"
   else
-    echo "User $dbuser already exists" 
+    echo "User $dbuser already exists"
   fi
 
   result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES ON $db.* TO '"$dbuser"'@'localhost' IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
   if [ "$result" = ": 0" ]; then
     echo "Granted user $dbuser permissions on $db"
-  else 
+  else
     echo "Could not grant user $dbuser permissions on $db"
   fi
 }
 
-# 
+#
 ################################################################################
 # presumes that the correct information is already set:
 # $Name backup sql file
@@ -868,7 +872,7 @@ restore_db () {
 
   echo -e "\e[34mrestore $db database using $folderpath/sitebackups/$bk/$Name\e[39m"
   result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" $db < "$folderpath/sitebackups/$bk/$Name" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-  if [ "$result" = ": 0" ]; then 
+  if [ "$result" = ": 0" ]; then
     echo "Backup database $Name imported into database $db using root"
   else
     echo "Could not import $Name into database $db using root, exiting"; exit 1
@@ -877,7 +881,7 @@ restore_db () {
   drush @$sitename_var sset system.maintenance_mode TRUE
 }
 
-# 
+#
 ################################################################################
 #
 ################################################################################
@@ -885,7 +889,7 @@ test_site () {
   echo $sitename_var, $db, $dbuser, $dbpass
 }
 
-# 
+#
 ################################################################################
 #
 ################################################################################
@@ -906,7 +910,7 @@ db_defaults () {
   echo "db defaults: db $db dbuser $dbuser dbpass $dbpass"
 }
 
-# 
+#
 ################################################################################
 #
 ################################################################################
@@ -930,7 +934,7 @@ site_info () {
   echo "dev_modules = $dev_modules"
 }
 
-# 
+#
 ################################################################################
 #
 ################################################################################
@@ -955,7 +959,7 @@ copy_site_files () {
   cp -rf "$from_sp/$1" "$to_sp/$2"
 }
 
-# 
+#
 ################################################################################
 #
 ################################################################################
@@ -974,4 +978,57 @@ copy_site_folder () {
   rm -rf $site_path/$sitename_var/private
   cp -rf "$site_path/$from/private" "$site_path/$sitename_var/private"
   cp -rf "$site_path/$from/$webroot/sites" "$site_path/$sitename_var/$webroot/sites"
+}
+
+#
+################################################################################
+#
+################################################################################
+update_locations () {
+# This will update the key directory locations set by the environment and pl.yml
+# It presumes that _inc.sh has already been run and parse_pl_yml has been run.
+
+DIRECTORY=$(cd `dirname $0` && pwd)
+IFS="/" read -ra PARTS <<< "$(pwd)"
+user=${PARTS[2]}
+project=${PARTS[3]}
+
+# Check correct user name
+if [ ! -d "/home/$user" ] ; then echo "User name in pl.yml $user does not match the current user's home directory name. Please fix pl.yml."; exit 1; fi
+
+# Create the pl_var file if it doesn't exist yet.
+if [ ! -f "/home/$user/$project/pl_var.sh" ]
+then
+cat > /home/$user/$project/pl_var.sh <<EOL
+#!/bin/bash
+# Do not modify anything here. It is automatically created and updated as needed. Change settings in pl.yml or mysql.cnf
+
+
+
+EOL
+fi
+
+script_root="/home/$user/$project/scripts"
+echo "Project: $project"
+# This will collect www_path
+parse_pl_yml
+project=${PARTS[3]}
+echo "Project: $project"
+echo "www_path: $www_path"
+schome="/home/$user/$project/bin"
+plhome="/home/$user/$project"
+sed -i "3s/.*/ocroot=\"\/home\/$user\/$project\"/" "$plhome/pl_var.sh"
+sed -i "2s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/sudoeuri.sh"
+wwwp="${www_path////\\/}"
+sed -i  "4s/.*/ocwroot=\"$wwwp\"/" "$plhome/pl_var.sh"
+sed -i  "3s/.*/ocwroot=\"$wwwp\"/" "$schome/sudoeuri.sh"
+sr="${script_root////\\/}"
+sed -i "5s/.*/script_root=\"$sr\"/" "$plhome/pl_var.sh"
+sed -i "4s/.*/script_root=\"$sr\"/" "$schome/sudoeuri.sh"
+
+# todo: If locations have been changed, then old paths need to be removed
+# todo: sudoeuri.sh will need to be moved again to its proper location
+echo "export PATH=\"\$PATH:$schome\"" >> ~/.bashrc
+echo ". $schome/plextras.sh" >> ~/.bashrc
+
 }

@@ -1,8 +1,8 @@
 #!/bin/bash
-ocroot="/home/ubuntu/pleasy"
-ocwroot="/var/www/oc"
-script_root="/home/ubuntu/pleasy/scripts"
-#Don't touch the above lines it will be modified by init.sh
+
+# This includes any environment specific variables. These are auto generated from pl.yml and the environment.
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+ . $(dirname $DIR)/pl_var.sh
 
 # This will help navigate around the project site
 function plcd () {

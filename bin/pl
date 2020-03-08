@@ -24,7 +24,6 @@ fi
 folder=$(basename $(dirname $script_root))
 
 folderpath=$(dirname $script_root)
-script_root=$folderpath/scripts
 user_home=$(dirname $folderpath)
 
 #echo "user_home: $user_home"

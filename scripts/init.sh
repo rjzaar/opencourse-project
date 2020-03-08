@@ -168,19 +168,23 @@ fi
 
 # Step 2
 ################################################################################
-# This step must run, regardless of if statement. ROB PLEASE ADD WHY HERE
+# This step must run, regardless of statement since the functions must be included for any other steps to be able to run
+# Since the following steps will need the variables that will be accessible only if parse_pl_yml is run.
 ################################################################################
 echo -e "$Cyan step 2 (must be run): checking if folder $sitename_var exists $Color_Off"
 echo running include files...
-# WHAT DOES THIS DO?
+# This includes all the functions in _inc.sh for use by init.sh @JamesCHLim
 . "$script_root/_inc.sh"
 echo parsing yml
 echo "location: $folderpath/pl.yml"
-if [ ! -f "$folderpath/pl.yml" ]; then
+if [ ! -f "$folderpath/pl.yml" ] ; then
   echo " Please copy example.pl.yml to pl.yml and modify. exiting. "
-  exit 1
+  return 1
 fi
-# WHAT IS THIS FOR?
+# When using parse_pl_yml for the first time, ie as part init.sh, there is no need to update the script, since it
+# doesn't need updating. Updating will cause problems. So we need to make sure it doesn't update by setting the
+# no_config_update to "true". This is the only time it is set to true. We also don't want it to run if we are
+# rerunning the init.sh script.
 no_config_update="true"
 # Import yaml, presumes $script_root is set
 parse_pl_yml
@@ -190,23 +194,11 @@ parse_pl_yml
 ################################################################################
 #
 ################################################################################
-if [ $step -lt 4 ]; then
+if [ $step -lt 4 ] ; then
   echo -e "$Cyan step 3: Adding pl command to bash commands, including plextras $Color_Off"
-# Check correct user name
-if [ ! -d "/home/$user" ] ; then echo "User name in pl.yml $user does not match the current user's home directory name. Please fix pl.yml."; exit 1; fi
 
-schome="/home/$user/$project/bin"
-sed -i "2s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/plextras.sh"
-sed -i "2s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/sudoeuri.sh"
-#sed -i "3s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/plextras.sh"
-wwwp="${www_path////\\/}"
-sed -i  "3s/.*/ocwroot=\"$wwwp\"/" "$schome/plextras.sh"
-sed -i  "3s/.*/ocwroot=\"$wwwp\"/" "$schome/sudoeuri.sh"
-sr="${script_root////\\/}"
-sed -i "4s/.*/script_root=\"$sr\"/" "$schome/plextras.sh"
-sed -i "4s/.*/script_root=\"$sr\"/" "$schome/sudoeuri.sh"
-echo "export PATH=\"\$PATH:$schome\"" >> ~/.bashrc
-echo ". $schome/plextras.sh" >> ~/.bashrc
+update_locations
+
 
 #prep up the debug command with cli and apached locations
 echo "adding debug command"
@@ -439,7 +431,7 @@ fi
 
 # Step 15
 ################################################################################
-#
+# I don't think this step is needed since theming tools are added to each instance via pl install
 ################################################################################
 if [ $step -lt 16 ]; then
   echo -e "$Cyan step 15: Now add theming tools $Color_Off"
@@ -459,6 +451,7 @@ echo "Increase watch speed for gulp: requires sudo."
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
 fi
+
 
 
 echo " open this link to add the xdebug extension for the browser you want to use"
