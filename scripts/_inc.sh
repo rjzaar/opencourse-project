@@ -309,10 +309,12 @@ import_site_config () {
 ################################################################################
 # Import yaml, which provides global variables. presumes $script_root is set
 ################################################################################
+# SCRIPT IS BROKEN FOR JAMES
 parse_pl_yml () {
 # $userhome
 update_config="n"
 
+echo parse_pl_yml debug 1
 . $script_root/scripts/parse_yaml.sh "pl.yml" $script_root
 # Project is no longer set in pl.yml. It is collected from the context.
 project=$folder
@@ -987,8 +989,9 @@ copy_site_folder () {
 update_locations () {
   # This will update the key directory locations set by the environment and pl.yml
   # It presumes that _inc.sh has already been run and parse_pl_yml has been run.
-  if [[ "$(pwd)" != 'scripts' ]]; then
+  if [[ "$(basename $(pwd))" != 'scripts' ]]; then
       echo "UPDATE LOCATIONS FUNCTION SHOULD RUN FROM INIT SCRIPT"
+      exit 1
   fi
 
   # predefined variables for updating the location of pleasy on user drive
@@ -1027,8 +1030,8 @@ EOL
   sed -i  "3s#.*#ocwroot=\"$wwwp\"#" "$bin_home/sudoeuri.sh"
   # Hi @Rob, what does this do?
   sr="${script_root////\\/}"
-  sed -i "5s#.*#script_root=\"$sr\"#" "$plhome/pl_var.sh"
-  sed -i "4s#.*#script_root=\"$sr\"#" "$bin_home/sudoeuri.sh"
+  sed -i "5s#.*#script_root="$sr"#" "$plhome/pl_var.sh"
+  sed -i "4s#.*#script_root="$sr"#" "$bin_home/sudoeuri.sh"
 
   # todo: If locations have been changed, then old paths need to be removed
   # todo: sudoeuri.sh will need to be moved again to its proper location

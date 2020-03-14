@@ -30,7 +30,7 @@
 . $script_root/_inc.sh;
 
 # Set script name for general file use
-scriptname='installf.sh'
+scriptname='pl-install'
 
 # Help menu
 ################################################################################
@@ -38,7 +38,7 @@ scriptname='installf.sh'
 ################################################################################
 print_help() {
 cat << HEREDOC
-Usage: pl $scriptname [OPTION]
+Usage: pl install [OPTION]
 This script is used to install a variety of drupal flavours particularly
 opencourse This will use opencourse-project as a wrapper. It is presumed you
 have already cloned opencourse-project.  You just need to specify the site name
