@@ -1,24 +1,139 @@
 #!/bin/bash
+################################################################################
+#                      Install Drupal For Pleasy Library
+#
+#  This script is used to install a variety of drupal flavours particularly
+#  opencourse This will use opencourse-project as a wrapper. It is presumed you
+#  have already cloned opencourse-project.  You just need to specify the site name
+#  as a single argument.  All the settings for that site are in pl.yml If no site
+#  name is given then the default site is created.
+#
+#  Change History
+#  2019 - 2020 Robert Zaar   Original code creation and testing,
+#                                   prelim commenting
+#  2020 James Lim  Getopt parsing implementation, script documentation
+#  [Insert New]
+#
+################################################################################
+################################################################################
+#
+#  Core Maintainer:  Rob Zaar
+#  Email:            rjzaar@gmail.com
+#
+################################################################################
+################################################################################
+#                                TODO LIST
+#
+################################################################################
 
 # Get the helper functions etc.
-. $script_root/_inc.sh
+. $script_root/_inc.sh;
 
-#. $script_root/lib/common.inc.sh;
-#. $script_root/lib/db.inc.sh;
-#. $script_root/scripts/_inc.sh;
+# Set script name for general file use
+scriptname='installf.sh'
 
 # Help menu
+################################################################################
+# Prints user guide
+################################################################################
 print_help() {
-  cat <<-HELP
-This script is used to install a variety of drupal flavours particularly opencourse
-This will use opencourse-project as a wrapper. It is presumed you have already cloned opencourse-project.
-You just need to specify the site name as a single argument.
-All the settings for that site are in pl.yml
-If no site name is given then the default site is created.
+cat << HEREDOC
+Usage: pl $scriptname [OPTION]
+This script is used to install a variety of drupal flavours particularly
+opencourse This will use opencourse-project as a wrapper. It is presumed you
+have already cloned opencourse-project.  You just need to specify the site name
+as a single argument.  All the settings for that site are in pl.yml If no site
+name is given then the default site is created.
 
-HELP
-  exit 0
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+  -d --default	          Use default Drupal flavour
+  -f --from=[Flavour]     Choose drupal flavour
+  -y --yes                Auto Yes to all options
+  -s --step=[INT]         <FILL THIS>
+  -b --build-step=[INT]   <FILL THIS>
+
+Examples:
+END HELP
+HEREDOC
+exit 0
 }
+
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
+SECONDS=0
+
+# Use of Getopt
+################################################################################
+# Getopt to parse script and allow arg combinations ie. -yh instead of -h
+# -y. Current accepted args are -h and --help
+################################################################################
+args=$(getopt -o hf:ydb:s: -l help,from:,yes,default,build-step:,step: --name "$scriptname" -- "$@")
+
+################################################################################
+# If getopt outputs error to error variable, quit program displaying error
+################################################################################
+[ $? -eq 0 ] || {
+    echo "please do 'pl backup --help' for more options"
+    exit 1
+}
+
+################################################################################
+# Arguments are parsed by getopt, are then set back into $@
+################################################################################
+eval set -- "$args"
+
+################################################################################
+# Case through each argument passed into script
+# If no argument passed, default is -- and break loop
+################################################################################
+# build_step is for the rebuild steps
+build_step=1
+# step is for the install steps
+step=1
+# Check for options
+while true; do
+  case "$1" in
+  -h | --help)
+    print_help; exit 0; ;;
+  -d | --default)
+    flag_default=1
+    drupal_flavour="default"
+    shift; ;;
+  -f | --from)
+    flag_from=1
+    shift
+    drupal_flavour="$1"
+    shift; ;;
+  -y | --yes)
+    flag_yes=1
+    shift; ;;
+  -s | --step)
+    flag_step=1
+    shift
+    step=$1
+    shift; ;;
+  -b | --build-step)
+    flag_buildstep=1
+    shift
+    build_step=$1
+    shift; ;;
+  --)
+  shift
+  break; ;;
+  *)
+  "Programming error, this should not show up!"
+  exit 1; ;;
+  esac
+done
+
+if [[ -z $flag_default && -z $flag_from ]]; then
+  echo "ERROR: Must choose Drupal Flavour!"
+  echo "--default or --from=[Flavour]"
+  exit 1
+fi
 
 #auto="y"
 #folder=$(basename $(dirname $script_root))
@@ -37,48 +152,13 @@ parse_pl_yml
 for f in $recipes_; do recipes="$recipes,${f#*_}"; done
 recipes=${recipes#","}
 
-if [ "$#" = 0 ]; then
-  sitename_var="default"
-else
-  if [ $1 == "-h" -o $1 == "--help" ]; then
-    print_help
-  fi
-  # Check to see if recipe is present
-  # Get the sitename
-  sitename_var=$1
-  echo "Looking for recipe $sitename_var"
-  if [[ $recipes != *"$sitename_var"* ]]; then
-    echo "No recipe for $sitename_var! Current recipes include $recipes. Please add a recipe to pl.yml for $sitename_var"
-    exit 1
-  fi
-fi
-# bstep is for the rebuild steps
-bstep=1
-# step is for the install steps
-step=1
-# Check for options
-if [ "$#" -gt 1 ]; then
-  for i in "$@"; do
-    case $i in
-    -s=* | --step=*)
-      step="${i#*=}"
-      shift # past argument=value
-      ;;
-    -b=* | --build_step=*)
-      bstep="${i#*=}"
-      shift # past argument=value
-      ;;
-    -y | --yes)
-      yes="y"
-      shift
-      ;;
-    -h | --help) print_help ;;
-    *)
-      shift # past argument=value
-      ;;
-    esac
-  done
+sitename_var="$drupal_flavour"
+# Check to see if recipe is present
+echo "Looking for recipe $sitename_var"
 
+if [[ $recipes != *"$sitename_var"* ]]; then
+  echo "No recipe for $sitename_var! Current recipes include $recipes. Please add a recipe to pl.yml for $sitename_var"
+  exit 1
 fi
 
 import_site_config $sitename_var
@@ -96,7 +176,7 @@ if [ $step -lt 2 ]; then
   echo -e "$Cyan step 1: checking if folder $sitename_var exists $Color_Off"
 
   if [ -d "$site_path/$sitename_var" ]; then
-    if [ "$yes" != "y" ] ; then
+    if [ "$flag_yes" != "y" ] ; then
       read -p "$sitename_var exists. If you proceed, $sitename_var will first be deleted. Do you want to proceed?(Y/n)" question
       case $question in
       n | c | no | cancel)

@@ -985,50 +985,69 @@ copy_site_folder () {
 #
 ################################################################################
 update_locations () {
-# This will update the key directory locations set by the environment and pl.yml
-# It presumes that _inc.sh has already been run and parse_pl_yml has been run.
+  # This will update the key directory locations set by the environment and pl.yml
+  # It presumes that _inc.sh has already been run and parse_pl_yml has been run.
+  if [[ "$(pwd)" != 'scripts' ]]; then
+      echo "UPDATE LOCATIONS FUNCTION SHOULD RUN FROM INIT SCRIPT"
+  fi
 
-DIRECTORY=$(cd `dirname $0` && pwd)
-IFS="/" read -ra PARTS <<< "$(pwd)"
-user=${PARTS[2]}
-project=${PARTS[3]}
+  # predefined variables for updating the location of pleasy on user drive
+  plhome="$(dirname $(pwd))"
+  project="$(basename "$plhome")"
+  script_root="$(pwd)"
+  bin_home="$plhome/bin"
 
-# Check correct user name
-if [ ! -d "/home/$user" ] ; then echo "User name in pl.yml $user does not match the current user's home directory name. Please fix pl.yml."; exit 1; fi
+  parse_pl_yml
 
-# Create the pl_var file if it doesn't exist yet.
-if [ ! -f "/home/$user/$project/pl_var.sh" ]
-then
-cat > /home/$user/$project/pl_var.sh <<EOL
+  # Check correct user name
+  if [ ! -d "/home/$user" ]; then
+      echo "User name in pl.yml $user does not match the current user's home directory name. Please fix pl.yml."
+      exit 1
+  fi
+
+  # Create the pl_var file if it doesn't exist yet.
+  if [ ! -f "$plhome/pl_var.sh" ]; then
+  cat > "$plhome/pl_var.sh" <<EOL
 #!/bin/bash
 # Do not modify anything here. It is automatically created and updated as needed. Change settings in pl.yml or mysql.cnf
 
 
-
 EOL
-fi
+  fi
 
-script_root="/home/$user/$project/scripts"
-echo "Project: $project"
-# This will collect www_path
-parse_pl_yml
-project=${PARTS[3]}
-echo "Project: $project"
-echo "www_path: $www_path"
-schome="/home/$user/$project/bin"
-plhome="/home/$user/$project"
-sed -i "3s/.*/ocroot=\"\/home\/$user\/$project\"/" "$plhome/pl_var.sh"
-sed -i "2s/.*/ocroot=\"\/home\/$user\/$project\"/" "$schome/sudoeuri.sh"
-wwwp="${www_path////\\/}"
-sed -i  "4s/.*/ocwroot=\"$wwwp\"/" "$plhome/pl_var.sh"
-sed -i  "3s/.*/ocwroot=\"$wwwp\"/" "$schome/sudoeuri.sh"
-sr="${script_root////\\/}"
-sed -i "5s/.*/script_root=\"$sr\"/" "$plhome/pl_var.sh"
-sed -i "4s/.*/script_root=\"$sr\"/" "$schome/sudoeuri.sh"
+  echo "Project: $project"
+  # This will collect www_path
+  echo "Project: $project"
+  echo "www_path: $www_path"
+  sed -i "3s#.*#ocroot=\"/home/$user/$project\"#" "$plhome/pl_var.sh"
+  sed -i "2s#.*#ocroot=\"/home/$user/$project\"#" "$bin_home/sudoeuri.sh"
+  # Hi @Rob, what does this do?
+  wwwp="${www_path////\\/}"
+  sed -i  "4s#.*#ocwroot=\"$wwwp\"#" "$plhome/pl_var.sh"
+  sed -i  "3s#.*#ocwroot=\"$wwwp\"#" "$bin_home/sudoeuri.sh"
+  # Hi @Rob, what does this do?
+  sr="${script_root////\\/}"
+  sed -i "5s#.*#script_root=\"$sr\"#" "$plhome/pl_var.sh"
+  sed -i "4s#.*#script_root=\"$sr\"#" "$bin_home/sudoeuri.sh"
 
-# todo: If locations have been changed, then old paths need to be removed
-# todo: sudoeuri.sh will need to be moved again to its proper location
-echo "export PATH=\"\$PATH:$schome\"" >> ~/.bashrc
-echo ". $schome/plextras.sh" >> ~/.bashrc
+  # todo: If locations have been changed, then old paths need to be removed
+  # todo: sudoeuri.sh will need to be moved again to its proper location
+  EXPORT_PATH="export PATH=\"\$PATH:$bin_home\""
+  SOURCE_PATH=". $bin_home/plextras.sh"
+  if [[ $(grep "$EXPORT_PATH" ~/.bashrc) ]]; then
+    echo "$EXPORT_PATH" >> ~/.bashrc
+  fi
+  if [[ $(grep "$SOURCE_PATH" ~/.bashrc) ]]; then
+    echo "$SOURCE_PATH" >> ~/.bashrc
+  fi
 
+  # ZSH Support
+  if [[ -f ~/.zshrc ]]; then
+    if [[ $(grep "$EXPORT_PATH" ~/.zshrc) ]]; then
+      echo "$EXPORT_PATH" >> ~/.zshrc
+    fi
+    if [[ $(grep "$SOURCE_PATH" ~/.zshrc) ]]; then
+      echo "$SOURCE_PATH" >> ~/.zshrc
+    fi
+  fi
 }

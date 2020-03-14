@@ -6,9 +6,9 @@
 #  You just need to state the sitename, eg dev
 #
 #  Change History
-#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
+#  2019 - 2020  Robert Zaar   Original code creation and testing,
 #                                   prelim commenting
-#  09/02/2020 James Lim  Getopt parsing implementation, script documentation
+#  2020 James Lim  Getopt parsing implementation, script documentation
 #  [Insert New]
 #
 #
@@ -22,15 +22,6 @@
 ################################################################################
 #                                TODO LIST
 # Implement message function
-#
-################################################################################
-################################################################################
-#                             Commenting with model
-#
-# NAME OF COMMENT (USE FOR RATHER SIGNIFICANT COMMENTS)
-################################################################################
-# Description - Each bar is 80 #, in vim do 80i#esc
-################################################################################
 #
 ################################################################################
 ################################################################################
