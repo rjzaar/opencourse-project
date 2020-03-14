@@ -1,28 +1,105 @@
 #!/bin/bash
-# Overwrite Localprod With PRODuction
+################################################################################
+#                         olwprod For Pleasy Library
+#
+#  This script is used to overwrite localprod with the actual external
+#  production site.  The choice of localprod is set in pl.yml under sites:
+#  localprod: The external site details are also set in pl.yml under prod:
+#  Note: once localprod has been locally backedup, then it can just be restored
+#  from there if need be.
+#
+#  Change History
+#  2019 - 2020  Robert Zaar   Original code creation and testing,
+#                                   prelim commenting
+#  2020 James Lim  Getopt parsing implementation, script documentation
+#  [Insert New]
+#
+#
+################################################################################
+################################################################################
+#
+#  Core Maintainer:  Rob Zar
+#  Email:            rjzaar@gmail.com
+#
+################################################################################
+################################################################################
+#                                TODO LIST
+#
+################################################################################
+################################################################################
+
+# Set script name for general file use
+scriptname='pleasy-olwprod'
+
+# Help menu
+################################################################################
+# Prints user guide
+################################################################################
+print_help() {
+cat << HEREDOC
+Usage: pl olwprod [OPTION] ... [SITE]
+This script is used to overwrite localprod with the actual external production
+site.  The choice of localprod is set in pl.yml under sites: localprod: The
+external site details are also set in pl.yml under prod: Note: once localprod
+has been locally backedup, then it can just be restored from there if need be.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+
+Examples:
+END HELP
+HEREDOC
+exit 0
+}
 
 # start timer
 ################################################################################
 # Timer to show how long it took to run the script
 ################################################################################
 SECONDS=0
+
+# Use of Getopt
+################################################################################
+# Getopt to parse script and allow arg combinations ie. -yh instead of -h
+# -y. Current accepted args are -h and --help
+################################################################################
+args=$(getopt -o h -l help --name "$scriptname" -- "$@")
+
+################################################################################
+# If getopt outputs error to error variable, quit program displaying error
+################################################################################
+[ $? -eq 0 ] || {
+    echo "please do 'pl olwprod --help' for more options"
+    exit 1
+}
+
+################################################################################
+# Arguments are parsed by getopt, are then set back into $@
+################################################################################
+eval set -- "$args"
+
+################################################################################
+# Case through each argument passed into script
+# If no argument passed, default is -- and break loop
+################################################################################
+while true; do
+  case "$1" in
+  -h | --help)
+    print_help; exit 0; ;;
+  --)
+    shift
+    break; ;;
+  *)
+    "Programming error, this should not show up!"
+    exit 1; ;;
+  esac
+done
+
 parse_pl_yml
 sitename_var="$sites_localprod"
 echo "Importing production site into $sitename_var"
 
 import_site_config $sitename_var
-
-# Help menu
-print_help() {
-cat <<-HELP
-This script is used to overwrite localprod with the actual external production site.
-The choice of localprod is set in pl.yml under sites: localprod:
-The external site details are also set in pl.yml under prod:
-Note: once localprod has been locally backedup, then it can just be restored from there if need be.
-HELP
-exit 0
-}
-
 
 #First backup the current localprod site.
 pl backup $sitename_var "presync"

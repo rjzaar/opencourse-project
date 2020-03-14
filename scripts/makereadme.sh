@@ -19,8 +19,3 @@ fi
 for entry in `ls $folderpath/scripts`; do
     echo $entry
 done
-
-
-
-
-
