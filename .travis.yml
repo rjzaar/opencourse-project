@@ -1,0 +1,12 @@
+language: bash
+
+dist: trusty
+
+before_install:
+  - sudo apt-get update
+  - sudo apt-get upgrade --allow-unauthenticated
+  - sudo apt-get install git
+  - git clone https://github.com/rjzaar/pleasy.git
+
+script:
+  - bash ./pleasy/bin/pl init

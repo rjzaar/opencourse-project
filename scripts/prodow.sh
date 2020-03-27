@@ -1,59 +1,122 @@
 #!/bin/bash
-#prodow
-#This will backup prod, and overwrite prodution with site chosen
-#This presumes teststg.sh worked, therefore opencat git is upto date with cmi export and all files.
+################################################################################
+#                          prodow For Pleasy Library
+#
+#  This script will overwrite production with the site chosen It will first
+#  backup prod The external site details are also set in pl.yml under prod:
+#
+#  This script is used to turn off dev mode and uninstall dev modules.  You
+#  just need to state the sitename, eg stg.
+#
+#  Change History
+#  2019 - 2020  Robert Zaar   Original code creation and testing,
+#                                   prelim commenting
+#  2020 James Lim  Getopt parsing implementation, script documentation
+#  [Insert New]
+#
+#
+################################################################################
+################################################################################
+#
+#  Core Maintainer:  Rob Zar
+#  Email:            rjzaar@gmail.com
+#
+################################################################################
+################################################################################
+#                                TODO LIST
+#
+################################################################################
+################################################################################
+
+# Set script name for general file use
+scriptname='pleasy-prodow'
+
+# Help menu
+################################################################################
+# Prints user guide
+################################################################################
+print_help() {
+cat << HEREDOC
+Usage: pl prodow [OPTION] ... [SITE]
+This script will overwrite production with the site chosen It will first backup
+prod The external site details are also set in pl.yml under prod:
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+
+Examples:
+END HELP
+HEREDOC
+exit 0
+}
 
 # start timer
 ################################################################################
 # Timer to show how long it took to run the script
 ################################################################################
 SECONDS=0
+
+# Use of Getopt
+################################################################################
+# Getopt to parse script and allow arg combinations ie. -yh instead of -h
+# -y. Current accepted args are -h and --help
+################################################################################
+args=$(getopt -o hs:y -l help,step:,yes --name "$scriptname" -- "$@")
+
+################################################################################
+# If getopt outputs error to error variable, quit program displaying error
+################################################################################
+[ $? -eq 0 ] || {
+    echo "please do 'pl prodow --help' for more options"
+    exit 1
+}
+
+################################################################################
+# Arguments are parsed by getopt, are then set back into $@
+################################################################################
+eval set -- "$args"
+
+################################################################################
+# Case through each argument passed into script
+# If no argument passed, default is -- and break loop
+################################################################################
+while true; do
+  case "$1" in
+  -h | --help)
+    print_help; exit 0; ;;
+  -s | --step)
+    flag_step=1
+    shift
+    step="$1"
+    shift; ;;
+  -y | --yes)
+    yes=1
+    shift; ;;
+  --)
+    shift
+    break; ;;
+  *)
+    "Programming error, this should not show up!"
+    exit 1; ;;
+  esac
+done
+
 Pcolor=$Cyan
 step=1
-if [ $1 = "prodow" ] && [ -z "$2" ]
-  then
-    echo "No site specified"
-    print_help
-    exit 1
+
+if [ $1 = "prodow" ] && [ -z "$2" ]; then
+  echo "No site specified"
+  print_help
+  exit 1
 fi
+
 sitename_var=$1
-if [ -z "$3" ]
-  then
-for i in "$@"
-do
-case $i in
-    -s=*|--step=*)
-    step="${i#*=}"
-    shift # past argument=value
-    ;;
-    -y|--yes)
-    yes="y"
-    shift
-    ;;
-    -h|--help) print_help;;
-    *)
-    shift # past argument=value
-    ;;
-esac
-done
-fi
 
 echo "overwriting production server with $sitename_var site"
 . $script_root/_inc.sh;
 parse_pl_yml
 
 import_site_config $sitename_var
-
-
-# Help menu
-print_help() {
-cat <<-HELP
-This script will overwrite production with the site chosen
-It will first backup prod
-The external site details are also set in pl.yml under prod:
-HELP
-exit 0
-}
 
 if [ $step -gt 1 ] ; then
   echo -e "Starting from step $step"
