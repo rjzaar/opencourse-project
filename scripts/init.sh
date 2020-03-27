@@ -357,8 +357,13 @@ sudo chown -R $USER /home/travis/.config
 # sudo chown -R $USER /home/travis/.composer/
 composer global require consolidation/cgr
 echo "echo path into bashrc"
+cd
+ls -la
+
 echo "export PATH=\"$(composer config -g home)/vendor/bin:$PATH\"" >> ~/.bashrc
 source ~/.bashrc
+cat .bashrc
+
 
 cgr drush/drush
 echo "export DRUSH_LAUNCHER_FALLBACK=~/.composer/vendor/bin/drush" >> ~/.bashrc
