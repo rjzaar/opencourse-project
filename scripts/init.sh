@@ -352,16 +352,8 @@ fi
 cd
 #composer global require drush/drush
 echo "composer install consoildation/cgr"
-ls -la
-cd build/rjzaar
-ls -la
-cd
-cd build
-ls -la
-cd
-composer
 
-sudo chown -R $USER /user/travis/.composer/
+# sudo chown -R $USER /user/travis/.composer/
 composer global require consolidation/cgr
 echo "echo path into bashrc"
 echo "export PATH=\"$(composer config -g home)/vendor/bin:$PATH\"" >> ~/.bashrc
