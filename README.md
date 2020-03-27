@@ -1,5 +1,7 @@
 # Pleasy
 
+[![Build Status](https://travis-ci.com/rjzaar/pleasy.svg?branch=master)](https://travis-ci.com/rjzaar/pleasy)
+
 This is a Devops framework for drupal sites, particularly based on varbase.
 The framework is run through the pl (short for please), plcd and plvi commands.
 The pl command has been added to bash commands so can be accessed anywhere. It is followed by the script name and usually which instance to be worked on, eg "pl backup stg" will backup the stage instance.

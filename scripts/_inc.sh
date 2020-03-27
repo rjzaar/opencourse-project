@@ -314,7 +314,6 @@ parse_pl_yml () {
 # $userhome
 update_config="n"
 
-echo parse_pl_yml debug 1
 . $script_root/scripts/parse_yaml.sh "pl.yml" $script_root
 # Project is no longer set in pl.yml. It is collected from the context.
 project=$folder
@@ -991,9 +990,11 @@ update_locations () {
   # It presumes that _inc.sh has already been run and parse_pl_yml has been run.
 
 DIRECTORY=$(cd `dirname $0` && pwd)
+echo "Directory: $DIRECTORY"
 IFS="/" read -ra PARTS <<< "$(pwd)"
 user=${PARTS[2]}
 project=${PARTS[3]}
+echo "user: $user  project: $project"
 
 # Check correct user name
 if [ ! -d "/home/$user" ] ; then echo "User name in pl.yml $user does not match the current user's home directory name. Please fix pl.yml."; exit 1; fi
@@ -1011,7 +1012,7 @@ EOL
 fi
 
 script_root="/home/$user/$project/scripts"
-echo "Project: $project"
+echo "script_root: $script_root"
 # This will collect www_path
   parse_pl_yml
 
