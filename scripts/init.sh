@@ -185,7 +185,7 @@ parse_pl_yml
 
 # Step 3
 ################################################################################
-#
+# Adding pl command to bash commands, including plextras
 ################################################################################
 if [ $step -lt 4 ] ; then
   echo -e "$Cyan step 3: Adding pl command to bash commands, including plextras $Color_Off"
@@ -214,7 +214,7 @@ fi
 
 # Step 4
 ################################################################################
-#
+# Create mysql root password file
 ################################################################################
 if [ $step -lt 5 ]; then
   echo -e "$Cyan step 4: Create mysql root password file $Color_Off"
@@ -237,7 +237,7 @@ fi
 
 # Step 5
 ################################################################################
-#
+# Updating System..
 ################################################################################
 if [ $step -lt 6 ]; then
   echo -e "$Cyan step 5: Updating System..  $Color_Off"
@@ -252,7 +252,7 @@ fi
 
 # Step 6
 ################################################################################
-#
+# Add github credentials
 ################################################################################
 if [ $step -lt 7 ]; then
   echo -e "$Cyan step 6: Add github credentials $Color_Off"
@@ -265,7 +265,7 @@ fi
 
 # Step 7
 ################################################################################
-#
+# Installing MySQL
 ################################################################################
 if [ $step -lt 8 ]; then
   echo -e "$Cyan step 7: Installing MySQL $Color_Off"
@@ -277,7 +277,7 @@ fi
 
 # Step 8
 ################################################################################
-#
+# Installing phpMyAdmin
 ################################################################################
 if [ $step -lt 9 ]; then
   echo -e "$Cyan step 8: Installing phpMyAdmin $Color_Off"
@@ -292,7 +292,7 @@ fi
 
 # Step 9
 ################################################################################
-#
+# Enabling Modules
 ################################################################################
 if [ $step -lt 10 ]; then
   echo -e "$Cyan step 9: Enabling Modules  $Color_Off"
@@ -307,7 +307,7 @@ fi
 
 # Step 10
 ################################################################################
-#
+#  Install Composer
 ################################################################################
 if [ $step -lt 11 ]; then
   echo -e "$Cyan step 10: Install Composer  $Color_Off"
@@ -326,7 +326,7 @@ fi
 
 # Step 11
 ################################################################################
-#
+# Install Drush globally
 ################################################################################
 if [ $step -lt 12 ]; then
   echo -e "$Cyan step 11: Install Drush globally $Color_Off"
@@ -365,9 +365,13 @@ echo "composer home: $(composer config -g home)"
 echo "export PATH=\"$(composer config -g home)/vendor/bin:$PATH\"" >> ~/.bashrc
 source ~/.bashrc
 cat .bashrc
+
+# https://github.com/consolidation/cgr/issues/29#issuecomment-422852318
+if [[ "$USER" == "travis" ]] ; then
 cd /usr/local/bin
 sudo ln -s ~/.config/composer/vendor/bin/cgr .
-sudo ln -s ~/.config/composer/vendor/bin/drush .
+#sudo ln -s ~/.config/composer/vendor/bin/drush .
+fi
 
 cd
 cgr drush/drush
@@ -378,7 +382,7 @@ fi
 
 # Step 12
 ################################################################################
-#
+# Install Drupal console globally
 ################################################################################
 if [ $step -lt 13 ]; then
   echo -e "$Cyan step 12: Install Drupal console globally  $Color_Off"
@@ -404,7 +408,7 @@ fi
 
 # Step 13
 ################################################################################
-#
+# setup /var/wwww/oc for websites
 ################################################################################
 if [ $step -lt 14 ]; then
   echo -e "$Cyan step 13: setup /var/wwww/oc for websites  $Color_Off"
@@ -423,7 +427,7 @@ fi
 
 # Step 14
 ################################################################################
-#
+# Fix adding extra characters for vi
 ################################################################################
 if [ $step -lt 15 ]; then
   echo -e "$Cyan step 14: Fix adding extra characters for vi  $Color_Off"
