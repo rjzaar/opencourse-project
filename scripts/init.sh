@@ -320,8 +320,8 @@ php -r "if (hash_file('SHA384', 'composer-setup.php') === '$HASH') { echo 'Insta
 sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 #mv composer.phar /usr/local/bin/composer
 
-# Not sure why this next line might be needed....
-sudo chown -R $user .composer/
+# Not sure why this next line might be needed.... @rjzaar
+#sudo chown -R $user .composer/
 fi
 
 # Step 11
