@@ -169,8 +169,10 @@ echo running include files...
 echo parsing yml
 echo "location: $folderpath/pl.yml"
 if [ ! -f "$folderpath/pl.yml" ] ; then
-  echo " Please copy example.pl.yml to pl.yml and modify. exiting. "
-  return 1
+  echo "Copying example.pl.yml to pl.yml and setting some defaults based on the system."
+  cp $folderpath/example.pl.yml $folderpath/pl.yml
+  # set the user
+  sed -i "s/stcarlos/$USER/g" $folderpath/pl.yml
 fi
 # When using parse_pl_yml for the first time, ie as part init.sh, there is no need to update the script, since it
 # doesn't need updating. Updating will cause problems. So we need to make sure it doesn't update by setting the

@@ -23,7 +23,7 @@
 hosts_path: "/etc/hosts"
 vhosts_path: "/etc/apache2/sites-available/"
 www_path: "/var/www/oc"
-user: carlos
+user: stcarlos
 github:
   user: carlos
   key:  github
