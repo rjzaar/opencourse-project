@@ -356,7 +356,12 @@ ls -la
 cd build/rjzaar
 ls -la
 cd
-sudo chown -R $USER ~/.composer/
+cd build
+ls -la
+cd
+composer
+
+sudo chown -R $USER /user/travis/.composer/
 composer global require consolidation/cgr
 echo "echo path into bashrc"
 echo "export PATH=\"$(composer config -g home)/vendor/bin:$PATH\"" >> ~/.bashrc
