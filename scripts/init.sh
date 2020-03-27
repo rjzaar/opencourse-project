@@ -400,7 +400,11 @@ echo "drupal init"
 drupal init --override --no-interaction
 #Bash or Zsh: Add this line to your shell configuration file:
 source "$HOME/.console/console.rc" 2>/dev/null
+echo "source \"$HOME/.console/console.rc\" 2>/dev/null" >> ~/.bashrc
+source ~/.bashrc
+
 #Fish: Create a symbolic link
+mkdir -p ~/.config/fish/completions/
 ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish
 echo "drupal self-update"
 drupal self-update
