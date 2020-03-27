@@ -982,7 +982,7 @@ copy_site_folder () {
 
 #
 ################################################################################
-#
+# 
 ################################################################################
 update_locations () {
 # This will update the key directory locations set by the environment and pl.yml
