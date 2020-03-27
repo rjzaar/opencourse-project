@@ -994,6 +994,11 @@ echo "Directory: $DIRECTORY"
 IFS="/" read -ra PARTS <<< "$(pwd)"
 user=${PARTS[2]}
 project=${PARTS[3]}
+if [[ "$project" == "build" ]] && [[ "$user" == "travis" ]]
+then
+# Must be a travis build
+project="build/rjzaar/pleasy/pleasy"
+fi
 echo "user: $user  project: $project"
 
 # Check correct user name
