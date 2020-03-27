@@ -1024,8 +1024,8 @@ echo "script_root: $script_root"
 project=$store_project
 echo "Project: $project"
 echo "www_path: $www_path"
-schome="/home/$user/$project/bin"
 plhome="/home/$user/$project"
+bin_home="/home/$user/$project/bin"
   sed -i "3s#.*#ocroot=\"/home/$user/$project\"#" "$plhome/pl_var.sh"
   sed -i "2s#.*#ocroot=\"/home/$user/$project\"#" "$bin_home/sudoeuri.sh"
   # Hi @Rob, what does this do?
