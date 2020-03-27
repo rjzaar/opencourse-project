@@ -352,6 +352,10 @@ fi
 cd
 #composer global require drush/drush
 echo "composer install consoildation/cgr"
+ls -la
+cd build/rjzaar
+ls -la
+cd
 sudo chown -R $USER ~/.composer/
 composer global require consolidation/cgr
 echo "echo path into bashrc"
