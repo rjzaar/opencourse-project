@@ -352,19 +352,21 @@ fi
 cd
 #composer global require drush/drush
 echo "composer install consoildation/cgr"
-sudo ls -la .config
-sudo chown -R $USER /home/travis/.config
+# sudo ls -la .config
+if [[ "$USER" == "travis" ]] ; then
+sudo chown -R $USER "/home/$USER/.config"
+fi
 # sudo chown -R $USER /home/travis/.composer/
 composer global require consolidation/cgr
 echo "echo path into bashrc"
 cd
-ls -la
+# ls -la
 
 echo "composer home: $(composer config -g home)"
 
 echo "export PATH=\"$(composer config -g home)/vendor/bin:$PATH\"" >> ~/.bashrc
 source ~/.bashrc
-cat .bashrc
+# cat .bashrc
 
 # https://github.com/consolidation/cgr/issues/29#issuecomment-422852318
 if [[ "$USER" == "travis" ]] ; then
@@ -400,13 +402,13 @@ echo "drupal init"
 drupal init --override --no-interaction
 echo "drupal init finished"
 #Bash or Zsh: Add this line to your shell configuration file:
-source "$HOME/.console/console.rc" 2>/dev/null
-echo "source \"$HOME/.console/console.rc\" 2>/dev/null" >> ~/.bashrc
-source ~/.bashrc
+# source "$HOME/.console/console.rc" 2>/dev/null
+# echo "source \"$HOME/.console/console.rc\" 2>/dev/null" >> ~/.bashrc
+# source ~/.bashrc
 
 #Fish: Create a symbolic link
-mkdir -p ~/.config/fish/completions/
-ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish
+# mkdir -p ~/.config/fish/completions/
+# ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish
 echo "drupal self-update"
 drupal self-update
 else
