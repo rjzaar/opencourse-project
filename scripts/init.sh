@@ -352,6 +352,7 @@ fi
 cd
 #composer global require drush/drush
 echo "composer install consoildation/cgr"
+sudo chown -R $USER ~/.composer/
 composer global require consolidation/cgr
 echo "echo path into bashrc"
 echo "export PATH=\"$(composer config -g home)/vendor/bin:$PATH\"" >> ~/.bashrc
