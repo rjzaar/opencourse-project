@@ -984,44 +984,42 @@ copy_site_folder () {
 
 #
 ################################################################################
-# 
+#
 ################################################################################
 update_locations () {
   # This will update the key directory locations set by the environment and pl.yml
   # It presumes that _inc.sh has already been run and parse_pl_yml has been run.
-  if [[ "$(basename $(pwd))" != 'scripts' ]]; then
-      echo "UPDATE LOCATIONS FUNCTION SHOULD RUN FROM INIT SCRIPT"
-      exit 1
-  fi
 
-  # predefined variables for updating the location of pleasy on user drive
-  plhome="$(dirname $(pwd))"
-  project="$(basename "$plhome")"
-  script_root="$(pwd)"
-  bin_home="$plhome/bin"
+DIRECTORY=$(cd `dirname $0` && pwd)
+IFS="/" read -ra PARTS <<< "$(pwd)"
+user=${PARTS[2]}
+project=${PARTS[3]}
 
-  parse_pl_yml
+# Check correct user name
+if [ ! -d "/home/$user" ] ; then echo "User name in pl.yml $user does not match the current user's home directory name. Please fix pl.yml."; exit 1; fi
 
-  # Check correct user name
-  if [ ! -d "/home/$user" ]; then
-      echo "User name in pl.yml $user does not match the current user's home directory name. Please fix pl.yml."
-      exit 1
-  fi
-
-  # Create the pl_var file if it doesn't exist yet.
-  if [ ! -f "$plhome/pl_var.sh" ]; then
-  cat > "$plhome/pl_var.sh" <<EOL
+# Create the pl_var file if it doesn't exist yet.
+if [ ! -f "/home/$user/$project/pl_var.sh" ]
+then
+cat > /home/$user/$project/pl_var.sh <<EOL
 #!/bin/bash
 # Do not modify anything here. It is automatically created and updated as needed. Change settings in pl.yml or mysql.cnf
 
 
-EOL
-  fi
 
-  echo "Project: $project"
-  # This will collect www_path
-  echo "Project: $project"
-  echo "www_path: $www_path"
+EOL
+fi
+
+script_root="/home/$user/$project/scripts"
+echo "Project: $project"
+# This will collect www_path
+  parse_pl_yml
+
+project=${PARTS[3]}
+echo "Project: $project"
+echo "www_path: $www_path"
+schome="/home/$user/$project/bin"
+plhome="/home/$user/$project"
   sed -i "3s#.*#ocroot=\"/home/$user/$project\"#" "$plhome/pl_var.sh"
   sed -i "2s#.*#ocroot=\"/home/$user/$project\"#" "$bin_home/sudoeuri.sh"
   # Hi @Rob, what does this do?
