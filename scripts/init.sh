@@ -390,16 +390,19 @@ if [ $step -lt 13 ]; then
 # see https://drupalconsole.com/articles/how-to-install-drupal-console
 if [ ! -f /usr/local/bin/drupal ]
 then
+echo "curl"
 curl https://drupalconsole.com/installer -L -o drupal.phar
 #could test it
 # php drupal.phar
 sudo mv drupal.phar /usr/local/bin/drupal
 sudo chmod +x /usr/local/bin/drupal
+echo "drupal init"
 drupal init
 #Bash or Zsh: Add this line to your shell configuration file:
 source "$HOME/.console/console.rc" 2>/dev/null
 #Fish: Create a symbolic link
 ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish
+echo "drupal self-update"
 drupal self-update
 else
   echo "Drupal console already present"
@@ -438,11 +441,17 @@ cat > $(dirname $script_root)/.vimrc <<EOL
 set nocompatible
 EOL
 fi
+echo " open this link to add the xdebug extension for the browser you want to use"
+echo "https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extensions.html?utm_campaign=PS&utm_medium=link&utm_source=product&utm_content=2019.3 "
+
 
 # Step 15
 ################################################################################
 # I don't think this step is needed since theming tools are added to each instance via pl install
 ################################################################################
+# jump this step
+exit 0
+
 if [ $step -lt 16 ]; then
   echo -e "$Cyan step 15: Now add theming tools $Color_Off"
 #Now add theming tools
@@ -464,5 +473,3 @@ fi
 
 
 
-echo " open this link to add the xdebug extension for the browser you want to use"
-echo "https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extensions.html?utm_campaign=PS&utm_medium=link&utm_source=product&utm_content=2019.3 "
