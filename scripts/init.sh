@@ -360,11 +360,16 @@ echo "echo path into bashrc"
 cd
 ls -la
 
+echo "composer home: $(composer config -g home)"
+
 echo "export PATH=\"$(composer config -g home)/vendor/bin:$PATH\"" >> ~/.bashrc
 source ~/.bashrc
 cat .bashrc
+cd /usr/local/bin
+sudo ln -s ~/.config/composer/vendor/bin/cgr .
+sudo ln -s ~/.config/composer/vendor/bin/drush .
 
-
+cd
 cgr drush/drush
 echo "export DRUSH_LAUNCHER_FALLBACK=~/.composer/vendor/bin/drush" >> ~/.bashrc
 source ~/.bashrc
