@@ -414,8 +414,13 @@ echo "Make fish dir"
  mkdir -p ~/.config/fish/completions/
 echo "set up symlink"
  ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish
+
+echo "bashrc file"
+
+cd
+cat .bashrc
+
 echo "drupal self-update"
-sudo chown $USER /usr/local/bin/drupal -R
 drupal self-update
 else
   echo "Drupal console already present"

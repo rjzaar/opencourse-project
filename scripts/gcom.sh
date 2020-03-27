@@ -1,36 +1,42 @@
 #!/bin/bash
 ################################################################################
-#                       Git Commit For Pleasy Library                       
+#                       Git Commit For Pleasy Library
 #
 #  This will git commit changes and run an backup to capture it.
 #
-#  Change History                                                              
-#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,        
-#                                   prelim commenting                          
-#  15/02/2020 James Lim  Getopt parsing implementation, script documentation   
-#  [Insert New]                                                                
-#                                                                              
+#  Change History
+#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
+#                                   prelim commenting
+#  15/02/2020 James Lim  Getopt parsing implementation, script documentation
+#  [Insert New]
+#
 ################################################################################
 ################################################################################
-#                                                                              
-#  Core Maintainer:  Rob Zar                                                   
-#  Email:            rjzaar@gmail.com                                          
-#                                                                              
+#
+#  Core Maintainer:  Rob Zar
+#  Email:            rjzaar@gmail.com
+#
 ################################################################################
 ################################################################################
-#                                TODO LIST                                     
-#                                                                              
+#                                TODO LIST
+#
 ################################################################################
 ################################################################################
-#                             Commenting with model                            
+#                             Commenting with model
 #
 # NAME OF COMMENT (USE FOR RATHER SIGNIFICANT COMMENTS)
 ################################################################################
-# Description - Each bar is 80 #, in vim do 80i#esc                            
+# Description - Each bar is 80 #, in vim do 80i#esc
 ################################################################################
 #
 ################################################################################
 ################################################################################
+
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
+SECONDS=0
 
 # Set script name for general file use
 scriptname='pleasy-gcom'
@@ -43,16 +49,17 @@ print_help() {
 echo \
 "Usage: pl gcom [OPTION] ... [SITE] [MESSAGE]
 This script follows the correct path to git commit changes You just need to
-state the sitename, eg dev.
+state the sitename, eg loc.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
+  -b --backup             Backup site after commit
 
 Examples:"
 exit 0
 }
 
-# Use of Getopt 
+# Use of Getopt
 ################################################################################
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
@@ -64,7 +71,7 @@ args=$(getopt -o h -l help --name "$scriptname" -- "$@")
 # If getopt outputs error to error variable, quit program displaying error
 ################################################################################
 [ $? -eq 0 ] || {
-    echo "please do 'pl gcom --help' for more options"
+    echo "please type 'pl gcom --help' for more options"
     exit 1
 }
 
@@ -83,6 +90,10 @@ while true; do
     print_help
     exit 0
     ;;
+   -b | --backup)
+    print_help
+    exit 0
+    ;;
   --)
     shift
     break
@@ -94,11 +105,7 @@ while true; do
   esac
 done
 
-# start timer
-################################################################################
-# Timer to show how long it took to run the script
-################################################################################
-SECONDS=0
+
 parse_pl_yml
 
 if [ $1 == "gcom" ] && [ -z "$2" ]; then
@@ -131,6 +138,7 @@ ocmsg "Commit git add && git commit with msg $msg"
 git add .
 git commit -m msg
 git push
+
 
 ocmsg "Backup site $sitename_var with msg $msg"
 backup_site $sitename_var $msg
