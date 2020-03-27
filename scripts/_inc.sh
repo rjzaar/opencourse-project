@@ -1000,7 +1000,7 @@ then
 project="build/rjzaar/pleasy/pleasy"
 fi
 echo "user: $user  project: $project"
-
+store_project=$project
 # Check correct user name
 if [ ! -d "/home/$user" ] ; then echo "User name in pl.yml $user does not match the current user's home directory name. Please fix pl.yml."; exit 1; fi
 
@@ -1021,7 +1021,7 @@ echo "script_root: $script_root"
 # This will collect www_path
   parse_pl_yml
 
-project=${PARTS[3]}
+project=$store_project
 echo "Project: $project"
 echo "www_path: $www_path"
 schome="/home/$user/$project/bin"
