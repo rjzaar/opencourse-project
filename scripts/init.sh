@@ -397,7 +397,7 @@ curl https://drupalconsole.com/installer -L -o drupal.phar
 sudo mv drupal.phar /usr/local/bin/drupal
 sudo chmod +x /usr/local/bin/drupal
 echo "drupal init"
-drupal init
+drupal init --override --no-interaction
 #Bash or Zsh: Add this line to your shell configuration file:
 source "$HOME/.console/console.rc" 2>/dev/null
 #Fish: Create a symbolic link
