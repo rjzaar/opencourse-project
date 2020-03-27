@@ -402,8 +402,8 @@ echo "drupal init"
 drupal init --override --no-interaction
 echo "drupal init finished"
 #Bash or Zsh: Add this line to your shell configuration file:
-echo "set up source"
- source "$HOME/.console/console.rc" 2>/dev/null
+#echo "set up source"
+ #source "$HOME/.console/console.rc" 2>/dev/null
 echo "put into bashrc"
  echo "source \"$HOME/.console/console.rc\" 2>/dev/null" >> ~/.bashrc
 echo "reset source"
