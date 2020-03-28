@@ -371,10 +371,13 @@ source ~/.bashrc
 # cat .bashrc
 
 # https://github.com/consolidation/cgr/issues/29#issuecomment-422852318
-if [[ "$USER" == "travis" ]] ; then
 cd /usr/local/bin
+if [[ "$USER" == "travis" ]] ; then
+
 sudo ln -s ~/.config/composer/vendor/bin/cgr .
 #sudo ln -s ~/.config/composer/vendor/bin/drush .
+else
+sudo ln -s ~/.composer/vendor/bin/cgr .
 fi
 
 cd
