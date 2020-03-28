@@ -338,6 +338,7 @@ update_all_configs () {
   echo "update configs"
   # Update all database credentials in case the user changed any.
   # Create a list of recipes
+  echo "verbose: $verbose"
   for f in $recipes_; do
     recipes="$recipes,${f#*_}";
     ocmsg "update_all_configs:recipes: f" debug
@@ -348,7 +349,7 @@ update_all_configs () {
     fi
   done
   recipes=${recipes#","}
-
+  echo "recipes collected"
   ocmsg "recipes collected" debug
   # Store the site name to restore it later
   storesn=$sitename_var
