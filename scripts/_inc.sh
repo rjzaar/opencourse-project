@@ -338,7 +338,7 @@ update_all_configs () {
   echo "update configs"
 
   # Don't know where user_home gets it, but it ends with '/.' which needs to be removed
-  ocmsg "user_home before: $user_home" debug
+  ocmsg "user_home before: $user_home  folderpath: $folderpath" debug
   if [ "${user_home: (-2)}" == "/."  ]
 then
 user_home="${user_home:0:-2}"
@@ -350,7 +350,7 @@ fi
     recipes="$recipes,${f#*_}";
     ocmsg "update_all_configs:recipes: $f" debug
     # pl is reserved to pleasy itself. This is for gcom to commit pl commits to pleasy
-    if [[ "$f" == "pl" ]] ; then
+    if [[ "$f" == "recipes_pl" ]] ; then
     echo "pl can't be used for a recipe. It is a reserved keyword for pleasy itself."
     exit 1
     fi
