@@ -10,8 +10,8 @@ You set it up with the following commands
 
 ```
 git clone git@github.com:rjzaar/pleasy.git [sitename]  #eg git clone git@github.com:rjzaar/pleasy.git mysite.org
-cd [sitename]
-cp example.pl.yml pl.yml
+bash ./pleasy/bin/pl  init # or if using [sitename]
+bash ./[sitename]/bin/pl init
 ```
 Now edit pl.yml with your settings.
 ```

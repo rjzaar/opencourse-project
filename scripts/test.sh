@@ -22,10 +22,7 @@ then
 echo " $rp has value"
 fi
 
-if [[ ! -z "${"install_${sitename_var}modules"+x}" ]]
-then
-echo " install_modules exits"
-fi
+
 
 
 rp="install"

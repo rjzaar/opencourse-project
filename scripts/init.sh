@@ -46,10 +46,17 @@ Mandatory arguments to long options are mandatory for short options too.
     -y --yes                Force all install options to yes (Recommended)
     -h --help               Display help (Currently displayed)
     -s --step={1,15}        FOR DEBUG USE, start at step number as seen in code
+    -n --nopassword         Nopassword. This will give the user full sudo access without requireing a password!
+                            This could be a security issue for some setups. Use with caution!
 
 Examples:
-    sudo ./pl init -h
-    sudo ./pl init -y -s=5
+git clone git@github.com:rjzaar/pleasy.git [sitename]  #eg git clone git@github.com:rjzaar/pleasy.git mysite.org
+bash ./pleasy/bin/pl  init # or if using [sitename]
+bash ./[sitename]/bin/pl init
+
+then if debugging:
+
+bash ./[sitename]/bin/pl init -s=6  # to start at step 6.
 
 INSTALL LIST:
     sudo apt-get install gawk
@@ -83,7 +90,7 @@ step=${step:-1}
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are --yes --help --step
 ################################################################################
-args=$(getopt -o yhs: -l yes,help,step: --name "$scriptname" -- "$@")
+args=$(getopt -o yhsn: -l yes,help,step,nopassword: --name "$scriptname" -- "$@")
 # echo "$args"
 
 ################################################################################
@@ -120,6 +127,9 @@ while true; do
   -y | --yes)
     yes="y"
     ;;
+  -n | --nopassword)
+    nopassword="y"
+    ;;
   -h | --help)
     print_help
     exit 0
@@ -151,9 +161,15 @@ fi
 ################################################################################
 if [ $step -lt 2 ]; then
   echo -e "$Cyan step 1: Will need to install gawk - sudo required $Color_Off"
-# This is needed to avoid the "awk: line 43: functionWill
+# This is needed to avoid the awk: line 43: functionWill
 # need to install gawk - sudo required asorti never
-# defined" error
+# defined error
+
+if [[ "$nopassword" == "y" ]] ; then
+# set up user with sudo
+echo "$USER ALL=(ALL:ALL) ALL" | sudo EDITOR="tee -a" visudo
+fi
+
 sudo apt-get install gawk
 fi
 
