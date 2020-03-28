@@ -56,6 +56,14 @@ no problem, it will prompt you as you go.
 #List of Commands
 
 
+
+# Developing pleasy
+
+Messages are kept to a minimum in normal use. You can add a -v --verbose option to recieve messages for all the internal
+steps.
+For any command more messages are provided if you add the -d  --debug option. This will turn on debug mode and provide more
+information for you.
+
 #The Manual Way
 You will need to add a sitename ssh key for your server. Add the following to your .ssh/config file
 Host sitename

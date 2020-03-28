@@ -1,35 +1,35 @@
 #!/bin/bash
 ################################################################################
-#                      Backupdb For Pleasy Library                       
-#                                                                              
+#                      Backupdb For Pleasy Library
+#
 #  Hi Rob, please state what this does, and the difference between this and
 #  backup.sh
-#                                                                              
-#  Change History                                                              
-#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,        
-#                                   prelim commenting                          
-#  11/02/2020 James Lim  Getopt parsing implementation, script documentation   
-#  [Insert New]                                                                
-#                                                                              
-#                                                                              
+#
+#  Change History
+#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
+#                                   prelim commenting
+#  11/02/2020 James Lim  Getopt parsing implementation, script documentation
+#  [Insert New]
+#
+#
 ################################################################################
 ################################################################################
-#                                                                              
-#  Core Maintainer:  Rob Zar                                                   
-#  Email:            rjzaar@gmail.com                                          
-#                                                                              
+#
+#  Core Maintainer:  Rob Zaar
+#  Email:            rjzaar@gmail.com
+#
 ################################################################################
 ################################################################################
-#                                TODO LIST                                     
-#                                                                              
+#                                TODO LIST
+#
 ################################################################################
 ################################################################################
-#                             Commenting with model                            
+#                             Commenting with model
 # NAME OF COMMENT
 ################################################################################
-# Description - Each bar is 80 #, in vim do 80i#esc                            
+# Description - Each bar is 80 #, in vim do 80i#esc
 ################################################################################
-#                                                                               
+#
 ################################################################################
 ################################################################################
 
@@ -49,7 +49,7 @@ echo \
 
   Mandatory arguments to long options are mandatory for short options too.
     -h --help               Display help (Currently displayed)
-  
+
   Examples:
   pl backupdb -h
   pl backupdb ./dev (relative dev folder)"
@@ -64,7 +64,7 @@ SECONDS=0
 echo -e "\e[34mbackup $1 \e[39m"
 . $script_root/_inc.sh;
 
-# Use of Getopt 
+# Use of Getopt
 ################################################################################
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help

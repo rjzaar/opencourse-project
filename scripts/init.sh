@@ -415,13 +415,9 @@ echo "Make fish dir"
 echo "set up symlink"
  ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish
 
-echo "bashrc file"
-
-cd
-cat .bashrc
-
-echo "drupal self-update"
-drupal self-update
+# drupal self-update no longer valid? https://github.com/hechoendrupal/drupal-console/issues/3198
+#echo "drupal self-update"
+#drupal self-update
 else
   echo "Drupal console already present"
 fi

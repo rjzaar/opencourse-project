@@ -566,7 +566,10 @@ EOL
 ################################################################################
 ocmsg () {
   # This is to provide extra messaging if the verbose variable in pl.yml is set to y.
-  if [ "$verbose" == "y" ]; then
+  if [[ "$verbose" == "normal" ]]; then
+    echo $1
+  fi
+  if [[ "$verbose" == "debug" ]] && [[ "$2" == "debug" ]] ; then
     echo $1
   fi
 }
@@ -1057,4 +1060,19 @@ bin_home="/home/$user/$project/bin"
       echo "$SOURCE_PATH" >> ~/.zshrc
     fi
   fi
+}
+
+#
+################################################################################
+# Add git credentials
+################################################################################
+add_git_credentials () {
+ocmsg "Add git credentials."
+if [[ "$verbose" == "debug" ]] ; then
+ssh-add ~/.ssh/$github_key
+else
+ssh-add ~/.ssh/$github_key > /dev/null
+fi
+# Could remove all messages including error, but it is important for that kind of error to turn up in normal operation.
+# so don't do: ssh-add ~/.ssh/$github_key > /dev/null 2>&1
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 ################################################################################
-#                Git Push and merge Master For Pleasy Library                       
+#                Git Push and merge Master For Pleasy Library
 #
 #  This will git share changes, ie merge with master
 #  This follows the suggested sequence by bircher in
@@ -17,29 +17,29 @@
 #  Import configuration: drush cim
 #  Push: git push
 #
-#  Change History                                                              
-#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,        
-#                                   prelim commenting                          
-#  15/02/2020 James Lim  Getopt parsing implementation, script documentation   
-#  [Insert New]                                                                
-#                                                                              
+#  Change History
+#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
+#                                   prelim commenting
+#  15/02/2020 James Lim  Getopt parsing implementation, script documentation
+#  [Insert New]
+#
 ################################################################################
 ################################################################################
-#                                                                              
-#  Core Maintainer:  Rob Zar                                                   
-#  Email:            rjzaar@gmail.com                                          
-#                                                                              
+#
+#  Core Maintainer:  Rob Zaar
+#  Email:            rjzaar@gmail.com
+#
 ################################################################################
 ################################################################################
-#                                TODO LIST                                     
-#                                                                              
+#                                TODO LIST
+#
 ################################################################################
 ################################################################################
-#                             Commenting with model                            
+#                             Commenting with model
 #
 # NAME OF COMMENT (USE FOR RATHER SIGNIFICANT COMMENTS)
 ################################################################################
-# Description - Each bar is 80 #, in vim do 80i#esc                            
+# Description - Each bar is 80 #, in vim do 80i#esc
 ################################################################################
 #
 ################################################################################
@@ -75,7 +75,7 @@ HEREDOC
 ################################################################################
 SECONDS=0
 
-# Use of Getopt 
+# Use of Getopt
 ################################################################################
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help

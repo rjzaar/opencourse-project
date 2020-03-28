@@ -1,36 +1,36 @@
 #!/bin/bash
 ################################################################################
-#                 Addc(What does this mean) For Pleasy Library                  
-#                                                                              
+#                 Addc(What does this mean) For Pleasy Library
+#
 #  This will set the correct folder and file permissions for a drupal site.
 #  (I found these two definitions in the script folder, which is the right one?
 #  This script is used to add github credentials
 #
-#  Change History                                                              
-#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,        
-#                                   prelim commenting                          
-#  09/02/2020 James Lim  Getopt parsing implementation, script documentation   
-#  [Insert New]                                                                
-#                                                                              
-#                                                                              
+#  Change History
+#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
+#                                   prelim commenting
+#  09/02/2020 James Lim  Getopt parsing implementation, script documentation
+#  [Insert New]
+#
+#
 ################################################################################
 ################################################################################
-#                                                                              
-#  Core Maintainer:  Rob Zar                                                   
-#  Email:            rjzaar@gmail.com                                          
-#                                                                              
+#
+#  Core Maintainer:  Rob Zaar
+#  Email:            rjzaar@gmail.com
+#
 ################################################################################
 ################################################################################
-#                                TODO LIST                                     
-#                                                                              
+#                                TODO LIST
+#
 ################################################################################
 ################################################################################
-#                             Commenting with model                            
+#                             Commenting with model
 # NAME OF COMMENT
 ################################################################################
-# Description - Each bar is 80 #, in vim do 80i#esc                            
+# Description - Each bar is 80 #, in vim do 80i#esc
 ################################################################################
-#                                                                               
+#
 ################################################################################
 ################################################################################
 # Set script name for general file use
@@ -44,17 +44,17 @@ print_help() {
 echo \
 "Usage: pl addc [OPTION]
   This script is used to add github credentials
-  
+
   Mandatory arguments to long options are mandatory for short options too.
     -h --help               Display help (Currently displayed)
-  
+
   Examples:
   pl addc -h"
 exit 0
 }
 
 
-# Use of Getopt 
+# Use of Getopt
 ################################################################################
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
