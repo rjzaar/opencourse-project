@@ -349,6 +349,7 @@ update_all_configs () {
   done
   recipes=${recipes#","}
   ocmsg "recipes collected" debug
+  ocmsg "user_home: $user_home" debug
   # Store the site name to restore it later
   storesn=$sitename_var
 
