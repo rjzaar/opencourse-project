@@ -69,9 +69,9 @@ exit 0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o h -l help --name "$scriptname" -- "$@")
+args=$(getopt -a -o hbvd -l help,backup,verbose,debug --name "$scriptname" -- "$@")
 # echo "$args"
-
+ocmsg "args: $args" debug
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
 ################################################################################
@@ -84,11 +84,12 @@ args=$(getopt -o h -l help --name "$scriptname" -- "$@")
 # Arguments are parsed by getopt, are then set back into $@
 ################################################################################
 eval set -- "$args"
-
+ocmsg "\$1: $1" debug
 ################################################################################
 # Case through each argument passed into script
 # If no argument passed, default is -- and break loop
 ################################################################################
+
 while true; do
   case "$1" in
   -h | --help)
@@ -97,12 +98,15 @@ while true; do
     ;;
    -b | --backup)
     gcombackup="backup"
+    shift
     ;;
    -v | --verbose)
     verbose="normal"
+    shift
     ;;
    -d | --debug)
     verbose="debug"
+    shift
     ;;
   --)
     shift
@@ -115,20 +119,29 @@ while true; do
   esac
 done
 
+ocmsg "12 $1 $2" debug
 
-parse_pl_yml
-
-if [ $1 == "gcom" ] && [ -z "$2" ]; then
-  sitename_var="$sites_dev"
-elif [ -z "$2" ]; then
-  sitename_var=$1
-  msg="Commit."
+if [[ "$1" == "gcom" ]] && [[ -z "$2" ]]; then
+ echo "No site specified."
+elif [[ -z "$2" ]]; then
+ echo "No message specified."
 else
   sitename_var=$1
   msg=$2
 fi
 
-echo "This will git commit changes on site $sitename_var with msg $msg and run an backup to capture it."
+if [[ "$sitename_var" == "pl" ]] ; then site="" ; sitename_var="pleasy" ; else site="site "; fi
+
+echo -n "This will git commit changes on $site$sitename_var with msg $msg "
+if [[ "$gcombackup" == "backup" ]] && [[ "$sitename_var" != "pleasy" ]] ; then
+echo "and run a backup to capture it."
+else
+echo " "
+fi
+
+if  [[ "$gcombackup" == "backup" ]] && [[ "$sitename_var" == "pleasy" ]] ; then
+echo "Can't backup pleasy - ignoring backup request."
+fi
 # Check number of arguments
 ################################################################################
 # If no arguments given, prompt user for arguments
@@ -138,18 +151,29 @@ if [ "$#" = 0 ]; then
   exit 2
 fi
 
+ocmsg "folderpath: $folderpath" debug
+
+ocmsg " Now parse pl.yml " debug
 parse_pl_yml
+ocmsg "verbose: $verbose" debug
+
+if [[ "$sitename_var" == "pleasy" ]] ; then
+ocmsg "commiting to pleasy"
+cd $folderpath
+else
 import_site_config $sitename_var
+ocmsg "cd $site_path/$sitename_var" debug
+cd $site_path/$sitename_var
+fi
 
 add_git_credentials
 
-plcd $sitename_var
-ocmsg "Commit git add && git commit with msg $msg"
+ocmsg "Commit git add && git commit with msg $msg" debug
 git add .
 git commit -m $msg
 git push
 
-if [[ "$gcombackup" == "backup" ]] ; then
-  ocmsg "Backup site $sitename_var with msg $msg"
-  backup_site $sitename_var $msg
+if [[ "$gcombackup" == "backup" ]] && [[ "$sitename_var" != "pleasy" ]] ; then
+ocmsg "Backup site $sitename_var with msg $msg"
+backup_site $sitename_var $msg
 fi

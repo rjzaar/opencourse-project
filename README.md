@@ -64,6 +64,9 @@ steps.
 For any command more messages are provided if you add the -d  --debug option. This will turn on debug mode and provide more
 information for you.
 
+If you are debugging the first part of a script you will need to manually change verbose="normal" to verbose="debug" and
+then back again once you have finished. Otherwise the -d option should work.
+
 #The Manual Way
 You will need to add a sitename ssh key for your server. Add the following to your .ssh/config file
 Host sitename

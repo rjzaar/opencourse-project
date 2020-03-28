@@ -340,9 +340,16 @@ update_all_configs () {
   # Create a list of recipes
   for f in $recipes_; do
     recipes="$recipes,${f#*_}";
+    ocmsg "update_all_configs:recipes: f" debug
+    # pl is reserved to pleasy itself. This is for gcom to commit pl commits to pleasy
+    if [[ "$f" == "pl" ]] ; then
+    echo "pl can't be used for a recipe. It is a reserved keyword for pleasy itself."
+    exit 1
+    fi
   done
   recipes=${recipes#","}
 
+  ocmsg "recipes collected" debug
   # Store the site name to restore it later
   storesn=$sitename_var
 
@@ -562,14 +569,18 @@ EOL
 
 #
 ################################################################################
-#
+# ocmsg replaces echo and gives some options. The default is "none" which is set by each script at the start of the
+# command. Options can be passed to the command for ocmsg to provide information
+# normal: To provide information about what is happening.
+# debug: To provide more detailed information such as variables in the script. For debug to work it has to be selected
+# as an option in the command (-d or --debug) and the word debug occurs after the msg, eg ocmsg "var: $var" debug
 ################################################################################
 ocmsg () {
   # This is to provide extra messaging if the verbose variable in pl.yml is set to y.
-  if [[ "$verbose" == "normal" ]]; then
+
+  if [[ "$verbose" == "normal" ]] && [[ -z "$2" ]] ; then
     echo $1
-  fi
-  if [[ "$verbose" == "debug" ]] && [[ "$2" == "debug" ]] ; then
+  elif [[ "$verbose" == "debug" ]] ; then
     echo $1
   fi
 }
@@ -1069,9 +1080,9 @@ bin_home="/home/$user/$project/bin"
 add_git_credentials () {
 ocmsg "Add git credentials."
 if [[ "$verbose" == "debug" ]] ; then
-ssh-add ~/.ssh/$github_key
+ssh-add $user_home/.ssh/$github_key
 else
-ssh-add ~/.ssh/$github_key > /dev/null
+ssh-add $user_home/.ssh/$github_key > /dev/null
 fi
 # Could remove all messages including error, but it is important for that kind of error to turn up in normal operation.
 # so don't do: ssh-add ~/.ssh/$github_key > /dev/null 2>&1

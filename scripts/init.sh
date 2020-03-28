@@ -29,7 +29,7 @@
 
 # Set script name for general file use
 scriptname='pleasy-init'
-
+verbose="debug"
 # User help
 ################################################################################
 # Prints user guide

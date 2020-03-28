@@ -2,7 +2,7 @@
 # stolen from https://github.com/pendashteh/drop
 
 set -e
-
+verbose="none"
 # Usage:
 #	$ pl install dev
 #
@@ -31,14 +31,17 @@ folder=$(basename $(dirname $script_root))
 folderpath=$(dirname $script_root)
 user_home=$(dirname $folderpath)
 
-#echo "user_home: $user_home"
+
 #echo "folderpath: $folderpath"
 
-. $script_root/_inc.sh;
+. $script_root/_inc.sh
+ocmsg "user_home: $user_home" debug
+
 ocmsg "Finished initalising the defaults for pl command. Found script_root is $script_root"
 pl_run_task() {
 	local task=$1
 	local task_args="${@:2}"
+	ocmsg "task: $task task_args: $task_args" debug
 	task_script_path=$script_root/$task.sh
 	if [[ $task == *"sudo"* ]]; then
 	task_script_path="/usr/local/bin/$task.sh" ; fi
