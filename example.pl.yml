@@ -18,7 +18,6 @@
 #    uri: Your production server URL
 #    user: The production server user name
 #    docroot: Full path on the production server to your drupal webroot
-#  verbose: Do you want to see all comments as commands are run?
 #
 hosts_path: "/etc/hosts"
 vhosts_path: "/etc/apache2/sites-available/"
@@ -34,7 +33,6 @@ prod:
   user: puregift
   docroot: "/home/puregift/opencat.org/opencourse/docroot"
   method: tar  # Method could be git or tar.
-verbose: y
 #
 # Since you can create many different sites, each in its own folder. There are certain commands that work with dev, stg and localprod
 # So these need to be specified. Therefore you can change them as you like.

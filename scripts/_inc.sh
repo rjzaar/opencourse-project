@@ -362,6 +362,7 @@ update_all_configs () {
     ocmsg "Drupal console is not installed."
     drupalconsole="n"
   elif [ ! -d $user_home/.console/sites ]; then
+  ocmsg "make dir $user_home/.console/sites" debug
     mkdir $user_home/.console/sites
   fi
   # Clear current file
@@ -378,6 +379,7 @@ update_all_configs () {
     drush status > "$folderpath/drush.tmp"
   fi
 
+  ocmsg "Add correct drush path"
   dline=$(awk 'match($0,v){print NR; exit}' v="Drush script" "$folderpath/drush.tmp")
   dlinec=$(sed "${dline}q;d" "$folderpath/drush.tmp")
   dlined="/$(echo "${dlinec#*/}")"
@@ -388,6 +390,7 @@ update_all_configs () {
     rm  $user_home/.drush/$folder.aliases.drushrc.php
   fi
 
+  ocmsg "Create drush aliases" debug
 cat > $user_home/.drush/$folder.aliases.drushrc.php <<EOL
 <?php
 /**
@@ -402,11 +405,11 @@ cat > $user_home/.drush/$folder.aliases.drushrc.php <<EOL
 );
 EOL
 
-  # Delete old credentials folder if it exists
+  ocmsg "Delete old credentials folder if it exists" debug
   if [ -d $folderpath/credentials ]; then rm $folderpath/credentials -rf ; fi
   mkdir $folderpath/credentials
 
-  # Now go through each site and create settings for each site.
+  ocmsg "Now go through each site and create settings for each site." debug
   Field_Separator=$IFS
   # set comma as internal field separator for the string list
   IFS=,
