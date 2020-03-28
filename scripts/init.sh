@@ -355,6 +355,8 @@ echo "composer install consoildation/cgr"
 # sudo ls -la .config
 if [[ "$USER" == "travis" ]] ; then
 sudo chown -R $USER "/home/$USER/.config"
+else
+sudo chown -R $USER "/home/$USER/.composer"
 fi
 # sudo chown -R $USER /home/travis/.composer/
 composer global require consolidation/cgr
