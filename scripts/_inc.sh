@@ -1005,7 +1005,7 @@ update_locations () {
   # It presumes that _inc.sh has already been run and parse_pl_yml has been run.
 
 DIRECTORY=$(cd `dirname $0` && pwd)
-echo "Directory: $DIRECTORY"
+echo "Directory: $DIRECTORY pwd: pwd"
 IFS="/" read -ra PARTS <<< "$(pwd)"
 user=${PARTS[2]}
 project=${PARTS[3]}
