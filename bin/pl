@@ -26,11 +26,16 @@ then
 script_root="${script_root:0:-4}/scripts"
 fi
 
+if [ "${script_root: (-2)}" == "/."  ]
+then
+script_root="${script_root:0:-2}/scripts"
+fi
+
 folder=$(basename $(dirname $script_root))
 
 folderpath=$(dirname $script_root)
 user_home=$(dirname $folderpath)
-echo "user_home: $user_home"
+echo " folder: $folder  folderpath: $folderpath script_root: $script_root user_home: $user_home"
 
 
 #echo "folderpath: $folderpath"
