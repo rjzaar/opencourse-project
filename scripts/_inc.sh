@@ -336,6 +336,14 @@ fi
 ################################################################################
 update_all_configs () {
   echo "update configs"
+
+  # Don't know where user_home gets it, but it ends with '/.' which needs to be removed
+  ocmsg "user_home before: $user_home" debug
+  if [ "${user_home: (-2)}" == "/."  ]
+then
+user_home="${user_home:0:-2}"
+fi
+    ocmsg "user_home after: $user_home" debug
   # Update all database credentials in case the user changed any.
   # Create a list of recipes
   for f in $recipes_; do

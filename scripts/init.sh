@@ -393,7 +393,9 @@ if [[ "$USER" == "travis" ]] ; then
 sudo ln -s ~/.config/composer/vendor/bin/cgr .
 #sudo ln -s ~/.config/composer/vendor/bin/drush .
 else
+if [[ ! -h ~/.composer/vendor/bin/cgr ]] ; then
 sudo ln -s ~/.composer/vendor/bin/cgr .
+fi
 fi
 
 cd
