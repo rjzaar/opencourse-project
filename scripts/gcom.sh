@@ -127,7 +127,7 @@ elif [[ -z "$2" ]]; then
  echo "No message specified."
 else
   sitename_var=$1
-  msg=$2
+  msg="'$*'"
 fi
 
 ocmsg "msg: $msg" debug
@@ -172,7 +172,7 @@ add_git_credentials
 
 ocmsg "Commit git add && git commit with msg $msg" debug
 git add .
-git commit -m $msg
+git commit -m "\"$msg\""
 git push
 
 if [[ "$gcombackup" == "backup" ]] && [[ "$sitename_var" != "pleasy" ]] ; then
