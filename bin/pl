@@ -35,6 +35,10 @@ folder=$(basename $(dirname $script_root))
 
 folderpath=$(dirname $script_root)
 user_home=$(dirname $folderpath)
+if [ "${user_home: (-2)}" == "/."  ]
+then
+user_home="${user_home:0:-2}"
+fi
 echo " folder: $folder  folderpath: $folderpath script_root: $script_root user_home: $user_home"
 
 
