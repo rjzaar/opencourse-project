@@ -1023,7 +1023,7 @@ project=${PARTS[3]}
 if [[ "$project" == "build" ]] && [[ "$user" == "travis" ]]
 then
 # Must be a travis build
-project="build/rjzaar/pleasy/pleasy"
+project="build/rjzaar/pleasy"
 fi
 echo "user: $user  project: $project"
 store_project=$project
