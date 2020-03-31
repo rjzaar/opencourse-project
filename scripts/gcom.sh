@@ -119,7 +119,7 @@ while true; do
   esac
 done
 
-ocmsg "12 $1 $2" debug
+ocmsg "12: $1 $2" debug
 
 if [[ "$1" == "gcom" ]] && [[ -z "$2" ]]; then
  echo "No site specified."
@@ -134,7 +134,11 @@ ocmsg "msg: $msg" debug
 
 if [[ "$sitename_var" == "pl" ]] ; then site="" ; sitename_var="pleasy" ; else site="site "; fi
 
-echo -n "This will git commit changes on $site$sitename_var with msg $msg "
+msg="{$msg//'}"
+sitename_var_len=$(echo -n $sitename_var | wc -m)
+msg=${msg:$(($sitename_var_len+1))}
+
+echo -n "This will git commit changes on $site$sitename_var with msg \"$msg\" "
 if [[ "$gcombackup" == "backup" ]] && [[ "$sitename_var" != "pleasy" ]] ; then
 echo "and run a backup to capture it."
 else
@@ -170,12 +174,9 @@ fi
 
 add_git_credentials
 
-sitename_var_len=$(echo -n $sitename_var | wc -m)
-msg=${msg:$(($sitename_var_len+1))}
-
-ocmsg "Commit git add && git commit with msg \'$msg\"" debug
+ocmsg "Commit git add && git commit with msg \"$msg\"" debug
 git add .
-git commit -m "\"{$msg//'}\""
+git commit -m "\$msg\""
 git push
 
 if [[ "$gcombackup" == "backup" ]] && [[ "$sitename_var" != "pleasy" ]] ; then
