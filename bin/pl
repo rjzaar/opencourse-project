@@ -30,7 +30,7 @@ if [ "${script_root: (-2)}" == "/."  ]
 then
 script_root="${script_root:0:-2}"
 fi
-# script_root="/home/travis/build/rjzaar/pleasy/./pleasy"
+# script_root="/home/travis/build/rjzaar/pleasy"
 folder=$(basename $script_root)
 
 # Fix script_root on Travis

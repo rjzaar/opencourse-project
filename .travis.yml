@@ -7,4 +7,4 @@ before_install:
   - sudo apt-get upgrade --allow-unauthenticated
 
 script:
-  - bash ./pleasy/bin/pl init -d
+  - bash ./bin/pl init -d
