@@ -377,9 +377,14 @@ fi
   if [ -f "$user_home/.console/sites/$folder.yml" ]; then
     echo "" > "$user_home/.console/sites/$folder.yml"
   fi
+
+  cd $folderpath
+
   #Collect the drush location: messy but it works!
   # This command might list some warnings. It is a bug with drush: https://github.com/drush-ops/drush/issues/3226
+
   ocmsg "$folderpath/drush.tmp" debug
+  drush status
   if [[ $folderpath/drush.tmp =~ (@dev) ]] ; then
     drush @dev status > "$folderpath/drush.tmp"
   else
@@ -1025,7 +1030,7 @@ then
 # Must be a travis build
 project="build/rjzaar/pleasy"
 fi
-echo "user: $user  project: $project"
+ocmsg "user: $user  project: $project" debug
 store_project=$project
 # Check correct user name
 if [ ! -d "/home/$user" ] ; then echo "User name in pl.yml $user does not match the current user's home directory name. Please fix pl.yml."; exit 1; fi
