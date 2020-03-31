@@ -35,6 +35,7 @@ folder=$(basename $(dirname $script_root))
 
 # Fix script_root on Travis
 #length of string: $(echo -n script_root | wc -m)
+echo "script_root pre fix: $script_root"
 folder_len=$(echo -n $folder | wc -m)
 script_roottest=${script_root:0:$((-$folder_len-3))}
 if [[ "${script_roottest: ($((-$folder_len)))}" == $folder ]] ; then
