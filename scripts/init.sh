@@ -90,7 +90,7 @@ step=${step:-1}
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are --yes --help --step
 ################################################################################
-args=$(getopt -o yhsn: -l yes,help,step,nopassword: --name "$scriptname" -- "$@")
+args=$(getopt -o yhsnd: -l yes,help,step,nopassword,debug: --name "$scriptname" -- "$@")
 # echo "$args"
 
 ################################################################################
@@ -126,6 +126,9 @@ while true; do
     ;;
   -y | --yes)
     yes="y"
+    ;;
+   -d | --debug)
+    verbose="debug"
     ;;
   -n | --nopassword)
     nopassword="y"
@@ -182,10 +185,10 @@ echo -e "$Cyan step 2 (must be run): checking if folder $sitename_var exists $Co
 echo running include files...
 # This includes all the functions in _inc.sh for use by init.sh @JamesCHLim
 . "$script_root/_inc.sh"
-echo parsing yml
-echo "location: $folderpath/pl.yml"
+ocmsg "parsing yml" debug
+ocmsg "location: $folderpath/pl.yml" ocmsg
 if [ ! -f "$folderpath/pl.yml" ] ; then
-  echo "Copying example.pl.yml to pl.yml and setting some defaults based on the system."
+  ocmsg "Copying example.pl.yml to pl.yml and setting some defaults based on the system." debug
   cp $folderpath/example.pl.yml $folderpath/pl.yml
   # set the user
   sed -i "s/stcarlos/$USER/g" $folderpath/pl.yml

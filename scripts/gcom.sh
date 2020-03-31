@@ -132,11 +132,12 @@ fi
 
 ocmsg "msg: $msg" debug
 
-if [[ "$sitename_var" == "pl" ]] ; then site="" ; sitename_var="pleasy" ; else site="site "; fi
-
-msg="{$msg//'}"
 sitename_var_len=$(echo -n $sitename_var | wc -m)
-msg=${msg:$(($sitename_var_len+1))}
+ocmsg "sitename_var_len: $sitename_var_len" debug
+msg=${msg:$(($sitename_var_len+2)):-1}
+ocmsg " msg: $msg" debug
+
+if [[ "$sitename_var" == "pl" ]] ; then site="" ; sitename_var="pleasy" ; else site="site "; fi
 
 echo -n "This will git commit changes on $site$sitename_var with msg \"$msg\" "
 if [[ "$gcombackup" == "backup" ]] && [[ "$sitename_var" != "pleasy" ]] ; then
@@ -175,11 +176,19 @@ fi
 add_git_credentials
 
 ocmsg "Commit git add && git commit with msg \"$msg\"" debug
+if [[ "$verbose" == "debug" ]] ; then
+"Not actually committing since we are in debug mode."
+else
 git add .
 git commit -m "\$msg\""
 git push
+fi
 
 if [[ "$gcombackup" == "backup" ]] && [[ "$sitename_var" != "pleasy" ]] ; then
 ocmsg "Backup site $sitename_var with msg $msg"
+if [[ "$verbose" == "debug" ]] ; then
+"Not actually backing up since we are in debug mode."
+else
 backup_site $sitename_var $msg
+fi
 fi
