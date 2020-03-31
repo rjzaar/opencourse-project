@@ -3,6 +3,13 @@ language: bash
 dist: bionic
 
 before_install:
+  - echo "pwd"
+  - pwd
+  - echo "ls -la"
+  - ls -la
+  - echo " cd ~ ls -la"
+  - cd ~
+  - ls -la
   - sudo apt-get update
   - sudo apt-get upgrade --allow-unauthenticated
   - sudo apt-get install git
