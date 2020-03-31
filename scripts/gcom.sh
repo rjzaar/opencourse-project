@@ -180,7 +180,7 @@ if [[ "$verbose" == "debug" ]] ; then
 "Not actually committing since we are in debug mode."
 else
 git add .
-git commit -m "\$msg\""
+git commit -m "\"$msg\""
 git push
 fi
 

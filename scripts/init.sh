@@ -90,7 +90,7 @@ step=${step:-1}
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are --yes --help --step
 ################################################################################
-args=$(getopt -o yhsnd: -l yes,help,step,nopassword,debug: --name "$scriptname" -- "$@")
+args=$(getopt -o yhs:nd -l yes,help,step:,nopassword,debug --name "$scriptname" -- "$@")
 # echo "$args"
 
 ################################################################################
