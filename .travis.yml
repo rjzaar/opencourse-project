@@ -9,4 +9,4 @@ before_install:
   - git clone https://github.com/rjzaar/pleasy.git
 
 script:
-  - bash ./pleasy/bin/pl init
+  - bash ./pleasy/bin/pl init -d

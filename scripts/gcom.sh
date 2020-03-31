@@ -170,9 +170,12 @@ fi
 
 add_git_credentials
 
-ocmsg "Commit git add && git commit with msg $msg" debug
+sitename_var_len=$(echo -n $sitename_var | wc -m)
+msg=${msg:$(($sitename_var_len+1))}
+
+ocmsg "Commit git add && git commit with msg \'$msg\"" debug
 git add .
-git commit -m "\"$msg\""
+git commit -m "\"{$msg//'}\""
 git push
 
 if [[ "$gcombackup" == "backup" ]] && [[ "$sitename_var" != "pleasy" ]] ; then
