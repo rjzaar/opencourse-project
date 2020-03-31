@@ -2,9 +2,5 @@ language: bash
 
 dist: bionic
 
-#before_install:
-#  - sudo apt-get update
-#  - sudo apt-get upgrade --allow-unauthenticated
-
 script:
   - bash ./bin/pl init -d

@@ -29,7 +29,8 @@
 
 # Set script name for general file use
 scriptname='pleasy-init'
-verbose="debug"
+# Change this to debug to debug this script
+verbose="none"
 # User help
 ################################################################################
 # Prints user guide
