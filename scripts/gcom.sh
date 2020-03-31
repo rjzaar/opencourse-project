@@ -130,6 +130,8 @@ else
   msg=$2
 fi
 
+ocmsg "msg: $msg" debug
+
 if [[ "$sitename_var" == "pl" ]] ; then site="" ; sitename_var="pleasy" ; else site="site "; fi
 
 echo -n "This will git commit changes on $site$sitename_var with msg $msg "
