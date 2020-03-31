@@ -379,7 +379,7 @@ fi
   fi
   #Collect the drush location: messy but it works!
   # This command might list some warnings. It is a bug with drush: https://github.com/drush-ops/drush/issues/3226
-  ocmsg $folderpath/drush.tmp
+  ocmsg "$folderpath/drush.tmp" debug
   if [[ $folderpath/drush.tmp =~ (@dev) ]] ; then
     drush @dev status > "$folderpath/drush.tmp"
   else

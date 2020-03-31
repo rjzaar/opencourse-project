@@ -18,20 +18,20 @@ script_root=$(dirname $(whereis_realpath "$0"))
 # get rid of 'bin'
 if [ "${script_root: (-6)}" == "/bin/."  ]
 then
-script_root="${script_root:0:-6}/scripts"
+script_root="${script_root:0:-6}"
 fi
 
 if [ "${script_root: (-4)}" == "/bin"  ]
 then
-script_root="${script_root:0:-4}/scripts"
+script_root="${script_root:0:-4}"
 fi
 
 if [ "${script_root: (-2)}" == "/."  ]
 then
-script_root="${script_root:0:-2}/scripts"
+script_root="${script_root:0:-2}"
 fi
 
-folder=$(basename $(dirname $script_root))
+folder=$(basename $script_root)
 
 # Fix script_root on Travis
 #length of string: $(echo -n script_root | wc -m)
@@ -41,13 +41,13 @@ script_roottest=${script_root:0:$((-$folder_len-3))}
 if [[ "${script_roottest: ($((-$folder_len)))}" == $folder ]] ; then
 # Probably on Travis so use script_roottest
 script_root="$script_roottest/scripts"
+else
+script_root="$script_root/scripts"
 fi
 echo "folder_len: $folder_len script_roottest: $script_roottest script_root $script_root"
 
 folderpath=$(dirname $script_root)
 user_home=$(dirname $folderpath)
-
-
 
 if [ "${user_home: (-2)}" == "/."  ]
 then
