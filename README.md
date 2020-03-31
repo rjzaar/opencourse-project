@@ -13,17 +13,9 @@ git clone git@github.com:rjzaar/pleasy.git [sitename]  #eg git clone git@github.
 bash ./pleasy/bin/pl  init # or if using [sitename]
 bash ./[sitename]/bin/pl init
 ```
-Now edit pl.yml with your settings.
-```
-cd bin
-./pl init  #This will setup the necessary variables.
-```
-You will now have a functioning pleasy.
-If there is an error "function asorti never defined" then run the following command and it should now work
-```
-sudo apt install gawk
-```
+Now edit pl.yml with your settings or just use the defaults
 
+You will now have a functioning pleasy.
 
 You should now be able to install your first site:
 ```
