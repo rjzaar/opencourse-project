@@ -51,13 +51,7 @@ folderpath=$(dirname $script_root)
 
 user_home=$HOME
 
-#if [ "${user_home: (-2)}" == "/."  ]
-#then
-#user_home="${user_home:0:-2}"
-#fi
-echo " folder: $folder  folderpath: $folderpath script_root: $script_root user_home: $user_home"
-
-
+#echo " folder: $folder  folderpath: $folderpath script_root: $script_root user_home: $user_home"
 #echo "folderpath: $folderpath"
 
 . $script_root/_inc.sh

@@ -464,8 +464,10 @@ else
   echo "/var/wwww/oc already exists"
 fi
 
-no_config_update="false"
-update_all_configs
+# @remove
+#These lines are not needed since this is the setup up and update configs will be run after a site is installed.
+#no_config_update="false"
+#update_all_configs
 fi
 
 # Step 14
