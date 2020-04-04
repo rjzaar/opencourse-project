@@ -38,7 +38,7 @@ scriptname='pl-install'
 ################################################################################
 print_help() {
 cat << HEREDOC
-Usage: pl install [OPTION]
+Usage: pl install [OPTION] site
 This script is used to install a variety of drupal flavours particularly
 opencourse This will use opencourse-project as a wrapper. It is presumed you
 have already cloned opencourse-project.  You just need to specify the site name
@@ -47,13 +47,12 @@ name is given then the default site is created.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
-  -d --default	          Use default Drupal flavour
-  -f --from=[Flavour]     Choose drupal flavour
   -y --yes                Auto Yes to all options
-  -s --step=[INT]         <FILL THIS>
-  -b --build-step=[INT]   <FILL THIS>
+  -s --step=[INT]         Restart at the step specified.
+  -b --build-step=[INT]   Restart the build at step specified (step=6)
 
 Examples:
+pl install d8
 END HELP
 HEREDOC
 exit 0
@@ -70,13 +69,13 @@ SECONDS=0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o hf:ydb:s: -l help,from:,yes,default,build-step:,step: --name "$scriptname" -- "$@")
+args=$(getopt -o hydb:s: -l help,yes,debug,build-step:,step: --name "$scriptname" -- "$@")
 
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
 ################################################################################
 [ $? -eq 0 ] || {
-    echo "please do 'pl backup --help' for more options"
+    echo "please do 'pl install --help' for more options"
     exit 1
 }
 
@@ -98,17 +97,11 @@ while true; do
   case "$1" in
   -h | --help)
     print_help; exit 0; ;;
-  -d | --default)
-    flag_default=1
-    drupal_flavour="default"
-    shift; ;;
-  -f | --from)
-    flag_from=1
-    shift
-    drupal_flavour="$1"
-    shift; ;;
   -y | --yes)
     flag_yes=1
+    shift; ;;
+  -d | --debug)
+    verbose="debug"
     shift; ;;
   -s | --step)
     flag_step=1
@@ -129,11 +122,18 @@ while true; do
   esac
 done
 
-if [[ -z $flag_default && -z $flag_from ]]; then
-  echo "ERROR: Must choose Drupal Flavour!"
-  echo "--default or --from=[Flavour]"
-  exit 1
+ocmsg "12: $1 $2" debug
+
+if [[ "$1" == "install" ]] && [[ -z "$2" ]]; then
+ echo "No site specified."
+elif [[ "$1" == "install" ]] ; then
+   sitename_var=$2
+elif [[ -z "$1" ]]; then
+ echo "No site specified."
+else
+  sitename_var=$1
 fi
+ocmsg "sitename _var: $sitename_var" debug
 
 #auto="y"
 #folder=$(basename $(dirname $script_root))
@@ -152,7 +152,6 @@ parse_pl_yml
 for f in $recipes_; do recipes="$recipes,${f#*_}"; done
 recipes=${recipes#","}
 
-sitename_var="$drupal_flavour"
 # Check to see if recipe is present
 echo "Looking for recipe $sitename_var"
 
@@ -176,7 +175,7 @@ if [ $step -lt 2 ]; then
   echo -e "$Cyan step 1: checking if folder $sitename_var exists $Color_Off"
 
   if [ -d "$site_path/$sitename_var" ]; then
-    if [ "$flag_yes" != "y" ] ; then
+    if [ "$flag_yes" != "1" ] ; then
       read -p "$sitename_var exists. If you proceed, $sitename_var will first be deleted. Do you want to proceed?(Y/n)" question
       case $question in
       n | c | no | cancel)

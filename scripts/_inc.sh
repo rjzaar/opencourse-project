@@ -299,7 +299,7 @@ import_site_config () {
     private="/home/$user/$folder/$sitename_var/private"
     site_path="/home/$user/$folder"
   else
-    folder=$(basename $(dirname $script_root)) #Should this be it?
+    folder=$(basename $(dirname $script_root)) # should be correct ?? @rjzaar
     private="$www_path/$sitename_var/private"
     site_path="$www_path"
   fi
@@ -613,6 +613,7 @@ set_site_permissions () {
   if [ $dev = "y" ]; then
     devp="--dev"
   fi
+  ocmsg="Fixing permissions: --drupal_path="$site_path/$sitename_var/$webroot" --drupal_user=$user --httpd_group=www-data $devp" debug
   sudo d8fp.sh --drupal_path="$site_path/$sitename_var/$webroot" --drupal_user=$user --httpd_group=www-data $devp
 }
 
@@ -657,30 +658,44 @@ rebuild_site () {
     #don''t need --db-url=mysql://$dir:$dir@localhost:3306/$dir in drush because the settings.local.php has it.
   fi
 
-  if [ $bstep -lt 4 ]; then
+  if [ $bstep -lt 4 ] ; then
     echo -e "$Purple build step 3: set site permissions $Color_Off"
     #sudo bash ./d8fp.sh --drupal_path=$folder/$webroot --drupal_user=$user #shouldn't need this, since files don't need to be changed.
     #chmod g+w -R $folder/$webroot/modules/custom
     set_site_permissions
   fi
 
-  if [ $bstep -lt 5 ]; then
-    echo -e "$Purple build step 4: install composer console $Color_Off"
-    # Install any themes
-    cd $site_path/$sitename_var/
-    composer require drupal/console:~1.0 --prefer-dist --optimize-autoloader
+  if [ $bstep -lt 5 ] ; then
+    echo -e "$Purple build step 4: install drupal console $Color_Off"
+
+    cd $site_path/$sitename_var/$webroot
+    result=$(composer require drupal/console --prefer-dist --optimize-autoloader 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+
+   if [ "$result" = ": 0" ]; then
+    echo "Drupal Console installed"
+  else
+    # Make sure it installs
+    ocmsg "There was a problem with the normal installation of Drupal Console, so trying another way."
+    rm composer.lock
+    rm vendor -rf
+    composer require drupal/console --prefer-dist --optimize-autoloader
   fi
 
-  if [ $bstep -lt 6 ]; then
+
+
+  fi
+
+  if [ $bstep -lt 6 ] ; then
     echo -e "$Purple build step 5: install themes if required $Color_Off"
-      if [ $theme != "" ]; then
+        # Install any themes
+      if [[ "$theme" != "" ]] ; then
         echo "Install theme for $sitename_var using uri $uri and theme $theme"
         cd $site_path/$sitename_var/$webroot
         drupal --target=$uri theme:install  $theme
         drush @$sitename_var config-set system.theme default $theme -y
       fi
 
-      if [ $theme_admin != "" ]; then
+      if [[ "$theme_admin" != "" ]] ; then
         echo "Install theme for $sitename_var"
         cd $site_path/$sitename_var/$webroot
         drupal --target=$uri theme:install  $theme_admin
@@ -712,12 +727,14 @@ rebuild_site () {
   #drush pm-uninstall -y oc_prod
   if [ $bstep -lt 8 ]; then
     echo -e "$Purple build step 7: set to dev or production mode $Color_Off"
+     cd $site_path/$sitename_var/$webroot
     if [ "$dev" == "y" ]; then
       echo "Setting to dev mode"
-      drupal --target=$uri site:mode dev
+      drupal site:mode dev
       drush @$sitename_var php-eval 'node_access_rebuild();'
       drush @$sitename_var en -y $dev_modules
     else
+
       drupal --target=$uri site:mode prod
     fi
   fi
