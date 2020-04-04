@@ -668,8 +668,14 @@ rebuild_site () {
   if [ $bstep -lt 5 ] ; then
     echo -e "$Purple build step 4: install drupal console $Color_Off"
 
+    # work out where composer.json is
     cd $site_path/$sitename_var
-    ocmsg "path where composer is run: $site_path/$sitename_var" debug
+
+    if [[ ! -f composer.json ]] ; then
+    cd $webroot
+    fi
+
+    ocmsg "path where composer is run: $(pwd)" debug
 
     # This makes sure it will run. It would be better to test that there is a problem with the normal way, but this will
     # make sure it will work.
@@ -1101,7 +1107,7 @@ fi
 
   # todo: If locations have been changed, then old paths need to be removed
   # todo: sudoeuri.sh will need to be moved again to its proper location
-  EXPORT_PATH="export PATH=\"$PATH:$bin_home\""
+  EXPORT_PATH="export PATH=\"\$PATH:$bin_home\""
   SOURCE_PATH=". $bin_home/plextras.sh"
   ocmsg "export_path: $EXPORT_PATH SOURCE_PATH: $SOURCE_PATH" debug
   cd
