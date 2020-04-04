@@ -496,7 +496,14 @@ echo "https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extension
 # I don't think this step is needed since theming tools are added to each instance via pl install
 ################################################################################
 # jump this step
-exit 0
+if [[ -f ~/.bashrc ]] ; then
+ocmsg "source ~/.bashrc" debug
+source ~/.bashrc
+fi
+if [[ -f ~/.zshrc ]] ; then
+ocmsg "source ~/.zshrc" debug
+source ~/.zshrc
+fi
 
 if [ $step -lt 16 ]; then
   echo -e "$Cyan step 15: Now add theming tools $Color_Off"
@@ -517,5 +524,5 @@ echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo s
 
 fi
 
-
+exit 0
 
