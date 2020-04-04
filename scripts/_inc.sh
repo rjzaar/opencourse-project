@@ -668,8 +668,8 @@ rebuild_site () {
   if [ $bstep -lt 5 ] ; then
     echo -e "$Purple build step 4: install drupal console $Color_Off"
 
-    cd $site_path/$sitename_var/$webroot
-    ocmsg "path where composer is run: $site_path/$sitename_var/$webroot" debug
+    cd $site_path/$sitename_var
+    ocmsg "path where composer is run: $site_path/$sitename_var" debug
 
     # This makes sure it will run. It would be better to test that there is a problem with the normal way, but this will
     # make sure it will work.
@@ -1108,10 +1108,12 @@ fi
   if [[ -f .bashrc ]]; then
   ocmsg "exporting path to bashrc" debug
     echo "$EXPORT_PATH" >> .bashrc
+    source ~/.bashrc
   fi
   if [[ -f .bashrc ]]; then
   ocmsg "exporting plextras to bashrc" debug
     echo "$SOURCE_PATH" >> .bashrc
+    source ~/.bashrc
   fi
 
   # ZSH Support
@@ -1131,6 +1133,7 @@ if [[ "$verbose" == "debug" ]] ; then
 cd
 cat .bashrc
 fi
+
 }
 
 #
