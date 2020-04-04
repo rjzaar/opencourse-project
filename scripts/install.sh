@@ -298,7 +298,12 @@ fi
 
 if [ $step -lt 6 ]; then
   echo -e "$Cyan step 5: setting up drush aliases and site permissions $Color_Off"
+  cd
+  ocmsg "drush" debug
+  drush
   cd "$site_path/$sitename_var/$webroot"
+  ocmsg "Moved to $site_path/$sitename_var/$webroot"
+  ocmsg "drush" debug
   drush core:init
   set_site_permissions
 fi

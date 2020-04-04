@@ -517,7 +517,7 @@ ocmsg "install nodejs build-essential" debug
 sudo apt install nodejs build-essential
 
 ocmsg "getting npmjs install." debug
-sudo curl -L https://npmjs.com/install.sh | sh
+sudo curl -L https://npmjs.com/install.sh | sudo sh
 ocmsg "sudo apt install npm" debug
 sudo apt install npm
 ocmsg "sudo npm install gulp-cli -g" debug
