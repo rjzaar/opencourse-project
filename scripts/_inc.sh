@@ -670,18 +670,24 @@ rebuild_site () {
 
     cd $site_path/$sitename_var/$webroot
     ocmsg "path where composer is run: $site_path/$sitename_var/$webroot" debug
-    composer require drupal/console --prefer-dist --optimize-autoloader
-    result=$(composer require drupal/console --prefer-dist --optimize-autoloader 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 
-   if [ "$result" = ": 0" ]; then
-    echo "Drupal Console installed"
-  else
-    # Make sure it installs
-    ocmsg "There was a problem with the normal installation of Drupal Console, so trying another way."
+    # This makes sure it will run. It would be better to test that there is a problem with the normal way, but this will
+    # make sure it will work.
     rm composer.lock
     rm vendor -rf
     composer require drupal/console --prefer-dist --optimize-autoloader
-  fi
+
+#    result=$(composer require drupal/console --prefer-dist --optimize-autoloader 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+#
+#   if [ "$result" = ": 0" ]; then
+#    echo "Drupal Console installed"
+#  else
+#    # Make sure it installs
+#    ocmsg "There was a problem with the normal installation of Drupal Console, so trying another way."
+#    rm composer.lock
+#    rm vendor -rf
+#    composer require drupal/console --prefer-dist --optimize-autoloader
+#  fi
 
 
 
@@ -1095,7 +1101,7 @@ fi
 
   # todo: If locations have been changed, then old paths need to be removed
   # todo: sudoeuri.sh will need to be moved again to its proper location
-  EXPORT_PATH="export PATH=\"\$PATH:$bin_home\""
+  EXPORT_PATH="export PATH=\"$PATH:$bin_home\""
   SOURCE_PATH=". $bin_home/plextras.sh"
   ocmsg "export_path: $EXPORT_PATH SOURCE_PATH: $SOURCE_PATH" debug
   cd
