@@ -1108,12 +1108,12 @@ fi
   if [[ -f .bashrc ]]; then
   ocmsg "exporting path to bashrc" debug
     echo "$EXPORT_PATH" >> .bashrc
-    source ~/.bashrc
+    source .bashrc
   fi
   if [[ -f .bashrc ]]; then
   ocmsg "exporting plextras to bashrc" debug
     echo "$SOURCE_PATH" >> .bashrc
-    source ~/.bashrc
+    source .bashrc
   fi
 
   # ZSH Support
@@ -1121,10 +1121,12 @@ fi
     if [[ $(grep "$EXPORT_PATH" ~/.zshrc) ]]; then
       ocmsg "exporting path to zshrc" debug
       echo "$EXPORT_PATH" >> ~/.zshrc
+      source .zshrc
     fi
     if [[ $(grep "$SOURCE_PATH" ~/.zshrc) ]]; then
       ocmsg "exporting plextras to zshrc" debug
       echo "$SOURCE_PATH" >> ~/.zshrc
+      source .zshrc
     fi
   fi
 

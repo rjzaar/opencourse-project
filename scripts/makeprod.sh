@@ -39,6 +39,7 @@ need to state the sitename, eg stg.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
+  -d --debug              Provide debug information when running this script.
 
 Examples:
 END HELP
@@ -57,7 +58,7 @@ SECONDS=0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o h -l help --name "$scriptname" -- "$@")
+args=$(getopt -o hd -l help,debug --name "$scriptname" -- "$@")
 
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
@@ -80,6 +81,9 @@ while true; do
   case "$1" in
   -h | --help)
     print_help; exit 0; ;;
+  -d | --debug)
+    verbose="debug"
+    shift; ;;
   --)
     shift
     break; ;;

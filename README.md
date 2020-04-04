@@ -214,4 +214,8 @@ drush core:init
 
 Need sendmail installed
 
+#Functions checked and working
+init
+
+
 
