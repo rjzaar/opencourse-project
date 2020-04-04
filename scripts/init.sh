@@ -225,7 +225,7 @@ sed -i "4s|.*|phpapache=\"$phpapache\"|" "$ocbin/debug"
 #set up d8fp, debug and sudoeuri to run without password
 echo -e "$Cyan \n Make fixing folder permissions and debug run without sudo $Color_Off"
 sudo $folderpath/scripts/lib/installsudoers.sh "$folderpath/bin" $user
-echo "export PATH=\"$PATH:/usr/local/bin/\"" >> ~/.bashrc
+echo "export PATH=\"\$PATH:/usr/local/bin/\"" >> ~/.bashrc
 echo ". /usr/local/bin/debug" >> ~/.bashrc
 
 cd
