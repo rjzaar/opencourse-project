@@ -171,7 +171,11 @@ if [ $step -lt 2 ]; then
 
 if [[ "$nopassword" == "y" ]] ; then
 # set up user with sudo
-echo "$USER ALL=(ALL:ALL) ALL" | sudo EDITOR="tee -a" visudo
+echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | sudo EDITOR="tee -a" visudo
+
+# This could be improved with creating specific scripts that would complete any sudo tasks and each of these be given
+# nopasswd permission. This would reduce the security risk of the above command.
+
 fi
 
 sudo apt-get install gawk
