@@ -38,6 +38,7 @@
 
 # Set script name for general file use
 scriptname='pleasy-site-copy'
+verbose="none"
 
 # Help menu
 ################################################################################
@@ -54,6 +55,7 @@ copy the first to the second.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
+  -d --debug              Provide debug information when running this script.
 
 Examples:"
 exit 0
@@ -64,7 +66,7 @@ exit 0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o h -l help --name "$scriptname" -- "$@")
+args=$(getopt -o hd -l help,debug --name "$scriptname" -- "$@")
 # echo "$args"
 
 ################################################################################
@@ -90,6 +92,9 @@ while true; do
     print_help
     exit 0
     ;;
+   -d | --debug)
+    verbose="debug"
+    shift; ;;
   --)
     shift
     break

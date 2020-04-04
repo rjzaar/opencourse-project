@@ -31,6 +31,7 @@
 
 # Set script name for general file use
 scriptname='pl-install'
+verbose="none"
 
 # Help menu
 ################################################################################
@@ -50,6 +51,7 @@ Mandatory arguments to long options are mandatory for short options too.
   -y --yes                Auto Yes to all options
   -s --step=[INT]         Restart at the step specified.
   -b --build-step=[INT]   Restart the build at step specified (step=6)
+  -d --debug              Provide debug information when running this script.
 
 Examples:
 pl install d8

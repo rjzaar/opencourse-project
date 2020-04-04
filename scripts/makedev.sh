@@ -26,6 +26,7 @@
 
 # Set script name for general file use
 scriptname='pleasy-makedev'
+verbose="none"
 
 # Help menu
 ################################################################################
@@ -39,6 +40,7 @@ You just need to state the sitename, eg stg.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
+  -d --debug              Provide debug information when running this script.
 
 Examples:
 END HELP
@@ -80,6 +82,9 @@ while true; do
   case "$1" in
   -h | --help)
     print_help; exit 0; ;;
+  -d | --debug)
+    verbose="debug"
+    shift; ;;
   --)
   shift
   break; ;;
@@ -115,7 +120,11 @@ import_site_config $sitename_var
 
 cd $site_path/$sitename_var
 echo "Composer install."
+if [[ "$verbose" == "y" ]] ; then
+composer install
+else
 composer install --quiet
+fi
 
 # rebuild permissions
 echo "Rebuild permissions, might require sudo."
