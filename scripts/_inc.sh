@@ -1075,6 +1075,9 @@ echo "www_path: $www_path"
 plhome="/home/$user/$project"
 bin_home="/home/$user/$project/bin"
 echo "bin_home: $bin_home plhome: $plhome"
+echo ".bashrc: before exports::"
+cd
+cat .bashrc
   sed -i "3s#.*#ocroot=\"/home/$user/$project\"#" "$plhome/pl_var.sh"
   sed -i "2s#.*#ocroot=\"/home/$user/$project\"#" "$bin_home/sudoeuri.sh"
   # Add escape backslashes to www_path and store it.
@@ -1106,6 +1109,10 @@ echo "bin_home: $bin_home plhome: $plhome"
       echo "$SOURCE_PATH" >> ~/.zshrc
     fi
   fi
+
+  echo ".bashrc: after exports::"
+cd
+cat .bashrc
 }
 
 #

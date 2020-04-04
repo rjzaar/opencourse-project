@@ -8,7 +8,7 @@
 #  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
 #                                   prelim commenting
 #  15/02/2020 James Lim  Getopt parsing implementation, script documentation
-#  [Insert New]
+#  04/04/2020 Rob Zaar    Simplified and updated to new system.
 #
 ################################################################################
 ################################################################################
