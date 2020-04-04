@@ -59,7 +59,7 @@ SECONDS=0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o h -l help --name "$scriptname" -- "$@")
+args=$(getopt -o hd -l help,debug --name "$scriptname" -- "$@")
 
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
@@ -118,9 +118,9 @@ import_site_config $sitename_var
 
 # turn on dev modules (composer)
 
-cd $site_path/$sitename_var
+cd $site_path/$sitename_var/$webroot
 echo "Composer install."
-if [[ "$verbose" == "y" ]] ; then
+if [[ "$verbose" == "debug" ]] ; then
 composer install
 else
 composer install --quiet

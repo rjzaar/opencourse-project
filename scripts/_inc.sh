@@ -1074,10 +1074,12 @@ echo "Project: $project"
 echo "www_path: $www_path"
 plhome="/home/$user/$project"
 bin_home="/home/$user/$project/bin"
-echo "bin_home: $bin_home plhome: $plhome"
-echo ".bashrc: before exports::"
+ocmsg "bin_home: $bin_home plhome: $plhome" debug
+ocmsg ".bashrc: before exports::" debug
+if [[ "$verbose" == "debug" ]] ; then
 cd
 cat .bashrc
+fi
   sed -i "3s#.*#ocroot=\"/home/$user/$project\"#" "$plhome/pl_var.sh"
   sed -i "2s#.*#ocroot=\"/home/$user/$project\"#" "$bin_home/sudoeuri.sh"
   # Add escape backslashes to www_path and store it.
@@ -1094,25 +1096,31 @@ cat .bashrc
   EXPORT_PATH="export PATH=\"\$PATH:$bin_home\""
   SOURCE_PATH=". $bin_home/plextras.sh"
   if [[ $(grep "$EXPORT_PATH" ~/.bashrc) ]]; then
+  ocmsg "exporting path to bashrc" debug
     echo "$EXPORT_PATH" >> ~/.bashrc
   fi
   if [[ $(grep "$SOURCE_PATH" ~/.bashrc) ]]; then
+  ocmsg "exporting plextras to bashrc" debug
     echo "$SOURCE_PATH" >> ~/.bashrc
   fi
 
   # ZSH Support
   if [[ -f ~/.zshrc ]]; then
     if [[ $(grep "$EXPORT_PATH" ~/.zshrc) ]]; then
+      ocmsg "exporting path to zshrc" debug
       echo "$EXPORT_PATH" >> ~/.zshrc
     fi
     if [[ $(grep "$SOURCE_PATH" ~/.zshrc) ]]; then
+      ocmsg "exporting plextras to zshrc" debug
       echo "$SOURCE_PATH" >> ~/.zshrc
     fi
   fi
 
-  echo ".bashrc: after exports::"
+ocmsg ".bashrc: after exports::" debug
+if [[ "$verbose" == "debug" ]] ; then
 cd
 cat .bashrc
+fi
 }
 
 #
