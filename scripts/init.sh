@@ -436,6 +436,7 @@ echo "drupal init finished"
 echo "put into bashrc"
  echo "source \"$HOME/.console/console.rc\" 2>/dev/null" >> ~/.bashrc
 echo "reset source"
+ cd
  source ~/.bashrc
 
 #Fish: Create a symbolic link

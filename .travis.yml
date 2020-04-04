@@ -4,4 +4,5 @@ dist: bionic
 
 script:
   - bash ./bin/pl init -d
+  - source ~/.bashrc
   - pl install -yd d8
