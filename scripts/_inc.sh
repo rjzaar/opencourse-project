@@ -669,6 +669,7 @@ rebuild_site () {
     echo -e "$Purple build step 4: install drupal console $Color_Off"
 
     cd $site_path/$sitename_var/$webroot
+    ocmsg "path where composer is run: $site_path/$sitename_var/$webroot" debug
     composer require drupal/console --prefer-dist --optimize-autoloader
     result=$(composer require drupal/console --prefer-dist --optimize-autoloader 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 
@@ -1097,13 +1098,14 @@ fi
   EXPORT_PATH="export PATH=\"\$PATH:$bin_home\""
   SOURCE_PATH=". $bin_home/plextras.sh"
   ocmsg "export_path: $EXPORT_PATH SOURCE_PATH: $SOURCE_PATH" debug
-  if [[ $(grep "$EXPORT_PATH" ~/.bashrc) ]]; then
+  cd
+  if [[ -f .bashrc ]]; then
   ocmsg "exporting path to bashrc" debug
-    echo "$EXPORT_PATH" >> ~/.bashrc
+    echo "$EXPORT_PATH" >> .bashrc
   fi
-  if [[ $(grep "$SOURCE_PATH" ~/.bashrc) ]]; then
+  if [[ -f .bashrc ]]; then
   ocmsg "exporting plextras to bashrc" debug
-    echo "$SOURCE_PATH" >> ~/.bashrc
+    echo "$SOURCE_PATH" >> .bashrc
   fi
 
   # ZSH Support
