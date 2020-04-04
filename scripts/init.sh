@@ -512,7 +512,7 @@ if [ $step -lt 16 ]; then
 # see https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
 # use recommended version of Node.js
 ocmsg "getting setup from nodesource." debug
-curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
+sudo curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
 ocmsg "install nodejs build-essential" debug
 sudo apt install nodejs build-essential
 
