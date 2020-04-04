@@ -9,7 +9,7 @@
 #  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
 #                                   prelim commenting
 #  08/02/2020 James Lim  Getopt parsing implementation, script documentation
-#  [Insert New]
+#  04//04/2020 Rob Zaar  init is now working with new implementation.
 #
 ################################################################################
 ################################################################################
@@ -216,14 +216,11 @@ if [ $step -lt 4 ] ; then
 
 update_locations
 
-
 #prep up the debug command with cli and apached locations
 echo "adding debug command"
 ocbin="/home/$user/$project/bin"
 sed -i "3s|.*|phpcli=\"$phpcli\"|" "$ocbin/debug"
 sed -i "4s|.*|phpapache=\"$phpapache\"|" "$ocbin/debug"
-
-
 
 #set up d8fp, debug and sudoeuri to run without password
 echo -e "$Cyan \n Make fixing folder permissions and debug run without sudo $Color_Off"

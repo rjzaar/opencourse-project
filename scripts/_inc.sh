@@ -1074,13 +1074,14 @@ echo "Project: $project"
 echo "www_path: $www_path"
 plhome="/home/$user/$project"
 bin_home="/home/$user/$project/bin"
+echo "bin_home: $bin_home plhome: $plhome"
   sed -i "3s#.*#ocroot=\"/home/$user/$project\"#" "$plhome/pl_var.sh"
   sed -i "2s#.*#ocroot=\"/home/$user/$project\"#" "$bin_home/sudoeuri.sh"
-  # Hi @Rob, what does this do?
+  # Add escape backslashes to www_path and store it.
   wwwp="${www_path////\\/}"
   sed -i  "4s#.*#ocwroot=\"$wwwp\"#" "$plhome/pl_var.sh"
   sed -i  "3s#.*#ocwroot=\"$wwwp\"#" "$bin_home/sudoeuri.sh"
-  # Hi @Rob, what does this do?
+  # Add escape backslashes to script_root and store it.
   sr="${script_root////\\/}"
   sed -i "5s#.*#script_root="$sr"#" "$plhome/pl_var.sh"
   sed -i "4s#.*#script_root="$sr"#" "$bin_home/sudoeuri.sh"
