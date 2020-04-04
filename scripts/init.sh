@@ -510,18 +510,24 @@ if [ $step -lt 16 ]; then
 #Now add theming tools
 # see https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
 # use recommended version of Node.js
+ocmsg "getting setup from nodesource." debug
 curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
+ocmsg "install nodejs build-essential" debug
 sudo apt install nodejs build-essential
 
-
+ocmsg "getting npmjs install." debug
 curl -L https://npmjs.com/install.sh | sh
+ocmsg "sudo apt install npm" debug
 sudo apt install npm
+ocmsg "sudo npm install gulp-cli -g" debug
 sudo npm install gulp-cli -g
+ocmsg "sudo npm install gulp -D" debug
 sudo npm install gulp -D
 
-echo "Increase watch speed for gulp: requires sudo."
+ocmsg "Increase watch speed for gulp: requires sudo." debug
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
+echo "All done!"
 fi
 
 exit 0
