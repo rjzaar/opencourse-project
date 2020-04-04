@@ -334,6 +334,7 @@ if [ $step -lt 11 ]; then
   echo -e "$Cyan step 10: Install Composer  $Color_Off"
 #Check if composer is installed otherwise install it
 # From https://www.digitalocean.com/community/tutorials/how-to-install-and-use-composer-on-ubuntu-16-04?comment=67716
+
 cd
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 HASH="$(wget -q -O - https://composer.github.io/installer.sig)"
@@ -516,7 +517,7 @@ ocmsg "install nodejs build-essential" debug
 sudo apt install nodejs build-essential
 
 ocmsg "getting npmjs install." debug
-curl -L https://npmjs.com/install.sh | sh
+sudo curl -L https://npmjs.com/install.sh | sh
 ocmsg "sudo apt install npm" debug
 sudo apt install npm
 ocmsg "sudo npm install gulp-cli -g" debug
