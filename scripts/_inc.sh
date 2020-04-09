@@ -1166,6 +1166,7 @@ fi
 plcomposer () {
 cd $site_path/$sitename_var
   # Need to check if composer is installed.
+  echo "Trying composer $*"
   if [ -f composer.json ] ; then composer $*
   else
   cd $webroot

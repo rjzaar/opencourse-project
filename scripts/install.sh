@@ -288,6 +288,7 @@ fi
 
 if [ $step -lt 6 ]; then
   echo -e "$Cyan step 5: setting up drush aliases and site permissions $Color_Off"
+  plcomposer require drush/drush
   cd "$site_path/$sitename_var/
   ocmsg "drush" debug
   drush
