@@ -264,17 +264,7 @@ fi
 
 if [ $step -lt 4 ]; then
   echo -e "step 3: composer install"
-  cd $site_path/$sitename_var
-  # Need to check if composer is installed.
-  if [ -f composer.json ] ; then composer install
-  else
-  cd $webroot
-  if [ -f composer.json ] ; then composer install
-  else
-  echo "Can't find composer.json in $site_path/$sitename_var or $webroot. Exiting. "
-  exit 1
-  fi
-  fi
+  plcomposer install
 fi
 
 if [ $step -lt 5 ]; then
@@ -298,7 +288,7 @@ fi
 
 if [ $step -lt 6 ]; then
   echo -e "$Cyan step 5: setting up drush aliases and site permissions $Color_Off"
-  cd
+  cd "$site_path/$sitename_var/
   ocmsg "drush" debug
   drush
   cd "$site_path/$sitename_var/$webroot"

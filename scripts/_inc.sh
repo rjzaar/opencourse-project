@@ -1158,3 +1158,22 @@ fi
 # Could remove all messages including error, but it is important for that kind of error to turn up in normal operation.
 # so don't do: ssh-add ~/.ssh/$github_key > /dev/null 2>&1
 }
+
+#
+################################################################################
+# Run composer command for particular site. Since composer.json could be in different locations, this command is needed.
+################################################################################
+plcomposer () {
+cd $site_path/$sitename_var
+  # Need to check if composer is installed.
+  if [ -f composer.json ] ; then composer $*
+  else
+  cd $webroot
+  if [ -f composer.json ] ; then composer $*
+  else
+  echo "Can't find composer.json in $site_path/$sitename_var or $webroot. Exiting. "
+  exit 1
+  fi
+  fi
+
+}
