@@ -6,3 +6,4 @@ script:
   - bash ./bin/pl init -d
   - source ~/.bashrc
   - pl install -yd d8
+  - pl install -yd d8c

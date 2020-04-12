@@ -31,7 +31,7 @@ prod:
   alias: cathnet
   uri: "opencat.org"
   user: puregift
-  docroot: "/home/puregift/opencat.org/opencourse/docroot"
+  docroot: "/var/www/opencat.org/docroot"
   method: tar  # Method could be git or tar.
 #
 # Since you can create many different sites, each in its own folder. There are certain commands that work with dev, stg and localprod
@@ -101,14 +101,20 @@ recipes:
     source: https://www.drupal.org/download-latest/tar.gz
     install_method: file
     profile: standard
+    webroot: docroot
     default: n
-    install_modules:
-    dev_modules: syslog views_ui block_place devel features_ui dblog
+    auto: y
+    apache: y
   d8c:
-    source: drupal-composer/drupal-project:8.x-dev
+    source: drupal/recommended-project
     install_method: composer
     profile: standard
-  var:
+    webroot: docroot
+    default: n
+    auto: y
+    apache: y
+  tes:
+  vard:
     source: git@github.com:Vardot/varbase-project.git
     theme: vartheme_bs4
     theme_admin: vartheme_admin
@@ -116,5 +122,13 @@ recipes:
     dev_modules: syslog views_ui block_place devel features_ui dblog
     # This is a special directive that will not load any defaults from the default recipe.
     # This is so in this case install_modules will remain blank
+    default: n
+  var:
+    source: vardot/varbase-project
+    install_method: composer
+    theme: vartheme_bs4
+    theme_admin: vartheme_admin
+    install_modules:
+    dev_modules: syslog views_ui block_place devel features_ui dblog
     default: n
 

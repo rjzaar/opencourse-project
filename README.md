@@ -47,7 +47,11 @@ no problem, it will prompt you as you go.
 
 #List of Commands
 
+[//]: # (Start of Commands)
 
+
+
+[//]: # (End of Commands)
 
 # Developing pleasy
 
