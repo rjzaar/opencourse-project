@@ -5,8 +5,17 @@ language: php
 php:
   - 7.3
 
-script:
+env:
+  - SITE=d8
+  - SITE=d8c
+  - SITE=var
+
+before_install:
   - bash ./bin/pl init -d
   - source ~/.bashrc
-  - pl install -yd d8
-  - pl install -yd d8c
+
+script:
+  - pl install -yd $SITE
+
+matrix:
+  fast_finish: true
