@@ -247,7 +247,7 @@ echo "Creating mysql.cnf"
 cat > $(dirname $script_root)/mysql.cnf <<EOL
 [client]
 user = root
-password = root
+password = 
 host = localhost
 EOL
 else
