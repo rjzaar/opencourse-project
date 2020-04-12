@@ -23,11 +23,13 @@ before_install:
   - echo 'sendmail_path = /bin/true' >> pl.php.ini;
   - phpenv config-add pl.php.ini
   - phpenv rehash
+  - echo "memory_limit=2G" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
-
+before_script:
+  - echo "USE mysql;\nUPDATE user SET password=PASSWORD('root') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
 
 script:
-  - - bash ./bin/pl init -d
+  - bash ./bin/pl init -d
   - source ~/.bashrc
   - pl install -yd $SITE
 
