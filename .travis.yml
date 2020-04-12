@@ -11,10 +11,24 @@ env:
   - SITE=var
 
 before_install:
-  - bash ./bin/pl init -d
-  - source ~/.bashrc
+  # PHP Configurations.
+  - echo 'max_execution_time = 1200' >> pl.php.ini;
+  - echo 'max_input_time = 180' >> pl.php.ini;
+  - echo 'max_input_vars = 10000' >> pl.php.ini;
+  - echo 'memory_limit = 3000M' >> pl.php.ini;
+  - echo 'error_reporting = E_ALL' >> pl.php.ini;
+  - echo 'post_max_size = 64M' >> pl.php.ini;
+  - echo 'upload_max_filesize = 32M' >> pl.php.ini;
+  - echo 'max_file_uploads = 40' >> pl.php.ini;
+  - echo 'sendmail_path = /bin/true' >> pl.php.ini;
+  - phpenv config-add pl.php.ini
+  - phpenv rehash
+
+
 
 script:
+  - - bash ./bin/pl init -d
+  - source ~/.bashrc
   - pl install -yd $SITE
 
 matrix:
