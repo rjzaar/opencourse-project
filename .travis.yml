@@ -1,6 +1,9 @@
-language: bash
-
 dist: bionic
+
+language: php
+
+php:
+  - 7.3
 
 script:
   - bash ./bin/pl init -d
