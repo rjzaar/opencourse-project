@@ -433,10 +433,9 @@ fi
 fi
 
 cd
-cgr drush/drush
 echo "export DRUSH_LAUNCHER_FALLBACK=~/.composer/vendor/bin/drush" >> ~/.bashrc
 source ~/.bashrc
-
+cgr drush/drush
 fi
 
 # Step 12
