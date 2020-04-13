@@ -254,7 +254,7 @@ echo "Testing: mysql root setup at  $(dirname $script_root)/mysql.cnf"
 cat > $(dirname $script_root)/mysql.cnf <<EOL
 [client]
 user="root"
-password=""
+password="root"
 host=localhost
 EOL
 else
