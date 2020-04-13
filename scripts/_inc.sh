@@ -883,7 +883,9 @@ make_db () {
     if ! mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; then
       # This script actually just tries to create the user since the database will be created later anyway.
       echo "Unable to create the database $db. Check the mysql root credentials in mysql.cnf"
-mysql --user='root' --password='' -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+mysql --user="root" --password="" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+mysql --user="root" --password="root" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+
       echo "created?"
       exit 1
     else
