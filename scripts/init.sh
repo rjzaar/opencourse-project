@@ -254,7 +254,7 @@ echo "Testing: mysql root setup at  $(dirname $script_root)/mysql.cnf"
 cat > $(dirname $script_root)/mysql.cnf <<EOL
 [client]
 user = root
-password =
+password = root
 host = localhost
 EOL
 else
@@ -311,15 +311,15 @@ fi
 if [ $step -lt 8 ]; then
   echo -e "$Cyan step 7: Installing MySQL $Color_Off"
 #Check if mysql is installed
-if type mysql >/dev/null 2>&1; then
-echo "mysql already installed."
-else
+#if type mysql >/dev/null 2>&1; then
+#echo "mysql already installed."
+#else
 # Not installed
 # From: https://stackoverflow.com/questions/7739645/install-mysql-on-ubuntu-without-a-password-prompt
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
 sudo apt-get -y install mysql-server
-fi
+#fi
 
 fi
 
