@@ -884,7 +884,7 @@ make_db () {
       # This script actually just tries to create the user since the database will be created later anyway.
       echo "Unable to create the database $db. Check the mysql root credentials in mysql.cnf"
       echo "trying no password"
-result=$(mysql -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;")
+result=$(mysql --password="root" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;")
 echo "trying with pasword"
 result=$(mysql --user="root" --password="root" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;")
 
