@@ -29,7 +29,7 @@ script:
   - sudo apt-get remove --purge mysql*
   - bash ./bin/pl init -dt
   - source ~/.bashrc
-  - pl install -yd $SITE
+  - pl install -ydt $SITE
 
 matrix:
   fast_finish: true
