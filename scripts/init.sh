@@ -247,14 +247,14 @@ if [ $step -lt 5 ]; then
 # Check if one exists
 if [ ! -f $(dirname $script_root)/mysql.cnf ]
 then
-echo "Creating mysql.cnf"
+echo "Creating $(dirname $script_root)/mysql.cnf"
 
 if [[ "$pltest" = "y" ]] ; then
 echo "Testing: mysql root setup at  $(dirname $script_root)/mysql.cnf"
 cat > $(dirname $script_root)/mysql.cnf <<EOL
 [client]
-user="root"
-password="root"
+user=root
+password=root
 host=localhost
 EOL
 else
@@ -273,6 +273,7 @@ fi
 else
 echo "mysql.cnf already exists"
 fi
+sudo chmod 0600 $(dirname $script_root)/mysql.cnf
 fi
 #Could check install of drush, drupal console, etc.
 

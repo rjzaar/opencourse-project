@@ -872,38 +872,41 @@ backup_db () {
 
 #
 ################################################################################
-#
+# Make the database for the site
+# pltest is set by the -t option in install to indicate a testing environment such as travis which requires
+# unique mysql permissions for some reason.
 ################################################################################
 make_db () {
   echo "Create database $db and user $dbuser if needed. Using $folderpath/mysql.cnf"
   cat "$folderpath/mysql.cnf"
   ls -la "$folderpath/mysql.cnf"
-  result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "use $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+
+  if [[ "$pltest" = "y" ]] ; then
+  plcred="--password=\"root\""
+  else
+  plcred="--defaults-extra-file=\"$folderpath/mysql.cnf\""
+  fi
+
+  result=$(mysql $plcred -e "use $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 
   if [ "$result" != ": 0" ]; then
     echo "The database $db does not exist. I will try to create it."
-    if ! mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; then
+    if ! mysql $plcred -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; then
       # This script actually just tries to create the user since the database will be created later anyway.
       echo "Unable to create the database $db. Check the mysql root credentials in mysql.cnf"
-      echo "trying no password"
-result=$(mysql --password="root" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;")
-echo "trying with pasword"
-result=$(mysql --user="root" --password="root" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;")
-
-      echo "created?"
       exit 1
     else
       echo "Database $db created."
     fi
   else
     echo "Database $db exists so I will drop it."
-    result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "DROP DATABASE $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+    result=$(mysql $plcred -e "DROP DATABASE $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
     if [ "$result" = ": 0" ]; then
       echo "Database $db dropped"
     else
       echo "Could not drop database $db: exiting"; exit 1
     fi
-    result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+    result=$(mysql $plcred -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
     if [ "$result" = ": 0" ]; then
       echo "Created database $db using user root"
     else
@@ -912,14 +915,14 @@ result=$(mysql --user="root" --password="root" -e "CREATE DATABASE $db CHARACTER
     fi
   fi
 
-  result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "CREATE USER $dbuser@localhost IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+  result=$(mysql $plcred -e "CREATE USER $dbuser@localhost IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
   if [ "$result" = ": 0" ]; then
     echo "Created user $dbuser"
   else
     echo "User $dbuser already exists"
   fi
 
-  result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES ON $db.* TO '"$dbuser"'@'localhost' IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+  result=$(mysql $plcred -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES ON $db.* TO '"$dbuser"'@'localhost' IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
   if [ "$result" = ": 0" ]; then
     echo "Granted user $dbuser permissions on $db"
   else
