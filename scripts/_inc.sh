@@ -876,6 +876,8 @@ backup_db () {
 ################################################################################
 make_db () {
   echo "Create database $db and user $dbuser if needed. Using $folderpath/mysql.cnf"
+  cat "$folderpath/mysql.cnf"
+  ls -la "$folderpath/mysql.cnf"
   result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" -e "use $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 
   if [ "$result" != ": 0" ]; then
