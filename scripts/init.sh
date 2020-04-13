@@ -284,11 +284,11 @@ if [ $step -lt 6 ]; then
   echo -e "$Cyan step 5: Updating System..  $Color_Off"
 # see: https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/installing-php-mysql-and-apache-under
 # Update packages and Upgrade system
-sudo apt-get update -y && sudo apt-get upgrade -y
+sudo apt-get -qq update -y && sudo apt-get -qq upgrade -y
 
 ## Install AMP
 echo -e "$Cyan \n Installing Apache2 etc $Color_Off"
-sudo apt-get install apache2 php libapache2-mod-php php-mysql curl php-cli php-gd php-mbstring php-gettext php-xml php-curl php-bz2 php-zip git unzip php-xdebug -y
+sudo apt-get -qq install apache2 php libapache2-mod-php php-mysql curl php-cli php-gd php-mbstring php-gettext php-xml php-curl php-bz2 php-zip git unzip php-xdebug -y
 fi
 
 # Step 6
