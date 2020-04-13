@@ -26,7 +26,7 @@ before_install:
   - echo "memory_limit=2G" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 script:
-  - bash ./bin/pl init -d
+  - bash ./bin/pl init -dt
   - source ~/.bashrc
   - pl install -yd $SITE
 
