@@ -886,7 +886,7 @@ make_db () {
   else
   plcred="--defaults-extra-file=\"$folderpath/mysql.cnf\""
   fi
-
+echo "plcred: $plcred"
   result=$(mysql $plcred -e "use $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 
   if [ "$result" != ": 0" ]; then

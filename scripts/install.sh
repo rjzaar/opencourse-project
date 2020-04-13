@@ -52,6 +52,7 @@ Mandatory arguments to long options are mandatory for short options too.
   -s --step=[INT]         Restart at the step specified.
   -b --build-step=[INT]   Restart the build at step specified (step=6)
   -d --debug              Provide debug information when running this script.
+  -t --test            This option is only for test environments like Travis, eg there is no mysql root password.
 
 Examples:
 pl install d8
@@ -71,7 +72,7 @@ SECONDS=0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o hydb:s: -l help,yes,debug,build-step:,step: --name "$scriptname" -- "$@")
+args=$(getopt -o hydb:s:t -l help,yes,debug,build-step:,step:,test --name "$scriptname" -- "$@")
 
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
@@ -115,6 +116,9 @@ while true; do
     shift
     build_step=$1
     shift; ;;
+   -t | --test)
+    pltest="y"
+    ;;
   --)
   shift
   break; ;;
