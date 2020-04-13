@@ -253,16 +253,16 @@ if [[ "$pltest" = "y" ]] ; then
 echo "Testing: mysql root setup at  $(dirname $script_root)/mysql.cnf"
 cat > $(dirname $script_root)/mysql.cnf <<EOL
 [client]
-user = root
-password = root
-host = localhost
+user="root"
+password=""
+host=localhost
 EOL
 else
 cat > $(dirname $script_root)/mysql.cnf <<EOL
 [client]
-user = root
-password = root
-host = localhost
+user=root
+password=root
+host=localhost
 EOL
 #Check if mysql is installed
 if type mysql >/dev/null 2>&1; then
