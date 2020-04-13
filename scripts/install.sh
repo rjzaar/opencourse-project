@@ -118,7 +118,7 @@ while true; do
     shift; ;;
    -t | --test)
     pltest="y"
-    ;;
+    shift; ;;
   --)
   shift
   break; ;;
@@ -313,7 +313,7 @@ fi
 if [ $step -lt 9 ]; then
   echo -e "$Cyan Step 8: setup npm for gulp support $uri $Color_Off"
   echo "theme path: $site_path/$sitename_var/$webroot/themes/contrib/$theme"
-
+  source ~/.bashrc # make sure npm will work.
   if [ -d "$site_path/$sitename_var/$webroot/themes/custom/$theme" ]; then
     cd "$site_path/$sitename_var/$webroot/themes/custom/$theme"
     npm install
