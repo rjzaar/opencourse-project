@@ -882,7 +882,7 @@ make_db () {
   ls -la "$folderpath/mysql.cnf"
 
   if [[ "$pltest" = "y" ]] ; then
-  plcred="--password=\"root\""
+  plcred="--password=\"\""
   else
   plcred="--defaults-extra-file=\"$folderpath/mysql.cnf\""
   fi
