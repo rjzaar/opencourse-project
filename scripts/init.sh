@@ -49,6 +49,7 @@ Mandatory arguments to long options are mandatory for short options too.
     -s --step={1,15}        FOR DEBUG USE, start at step number as seen in code
     -n --nopassword         Nopassword. This will give the user full sudo access without requireing a password!
                             This could be a security issue for some setups. Use with caution!
+    -t --test            This option is only for test environments like Travis, eg there is no mysql root password.
 
 Examples:
 git clone git@github.com:rjzaar/pleasy.git [sitename]  #eg git clone git@github.com:rjzaar/pleasy.git mysite.org
@@ -91,7 +92,7 @@ step=${step:-1}
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are --yes --help --step
 ################################################################################
-args=$(getopt -o yhs:nd -l yes,help,step:,nopassword,debug --name "$scriptname" -- "$@")
+args=$(getopt -o yhs:ndt -l yes,help,step:,nopassword,debug,test --name "$scriptname" -- "$@")
 # echo "$args"
 
 ################################################################################
@@ -133,6 +134,9 @@ while true; do
     ;;
   -n | --nopassword)
     nopassword="y"
+    ;;
+  -t | --test)
+    pltest="y"
     ;;
   -h | --help)
     print_help
@@ -244,12 +248,28 @@ if [ $step -lt 5 ]; then
 if [ ! -f $(dirname $script_root)/mysql.cnf ]
 then
 echo "Creating mysql.cnf"
+
+if [[ "$pltest" = "y" ]] ; then
+echo "Testing: mysql root setup at  $(dirname $script_root)/mysql.cnf"
 cat > $(dirname $script_root)/mysql.cnf <<EOL
 [client]
 user = root
-password = 
+password =
 host = localhost
 EOL
+else
+cat > $(dirname $script_root)/mysql.cnf <<EOL
+[client]
+user = root
+password = root
+host = localhost
+EOL
+#Check if mysql is installed
+if type mysql >/dev/null 2>&1; then
+# User needs to add mysql root credentials.
+echo "mysql already installed. Please edit $(dirname $script_root)/mysql.cnf with your mysql root credentials."
+fi
+fi
 else
 echo "mysql.cnf already exists"
 fi
@@ -290,10 +310,17 @@ fi
 ################################################################################
 if [ $step -lt 8 ]; then
   echo -e "$Cyan step 7: Installing MySQL $Color_Off"
+#Check if mysql is installed
+if type mysql >/dev/null 2>&1; then
+echo "mysql already installed."
+else
+# Not installed
 # From: https://stackoverflow.com/questions/7739645/install-mysql-on-ubuntu-without-a-password-prompt
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
 sudo apt-get -y install mysql-server
+fi
+
 fi
 
 # Step 8
