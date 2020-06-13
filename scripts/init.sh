@@ -289,7 +289,8 @@ sudo apt-get -qq update -y && sudo apt-get -qq upgrade -y
 
 ## Install AMP
 echo -e "$Cyan \n Installing Apache2 etc $Color_Off"
-sudo apt-get -qq install apache2 php libapache2-mod-php php-mysql curl php-cli php-gd php-mbstring php-gettext php-xml php-curl php-bz2 php-zip git unzip php-xdebug -y
+# php-gettext not installing
+sudo apt-get -qq install apache2 php libapache2-mod-php php-mysql curl php-cli php-gd php-mbstring php-xml php-curl php-bz2 php-zip git unzip php-xdebug -y
 fi
 
 # Step 6
@@ -403,10 +404,12 @@ cd
 #composer global require drush/drush
 echo "composer install consoildation/cgr"
 # sudo ls -la .config
-if [[ "$USER" == "travis" ]] ; then
+if [[ -d "/home/$USER/.config" ]] ; then
 sudo chown -R $USER "/home/$USER/.config"
-else
+elif [[ -d "/home/$USER/.composer" ]] ; then
 sudo chown -R $USER "/home/$USER/.composer"
+else
+  echo "Don't know where composer is. I thought I installed it.1"
 fi
 # sudo chown -R $USER /home/travis/.composer/
 composer global require consolidation/cgr
@@ -423,18 +426,28 @@ source ~/.bashrc
 
 # https://github.com/consolidation/cgr/issues/29#issuecomment-422852318
 cd /usr/local/bin
-if [[ "$USER" == "travis" ]] ; then
 
+if [[ -d "/home/$USER/.config" ]] ; then
+  if [[ ! -L './cgr' ]] ; then
+    echo "Creating symlink"
 sudo ln -s ~/.config/composer/vendor/bin/cgr .
+fi
 #sudo ln -s ~/.config/composer/vendor/bin/drush .
-else
+cd
+echo "export DRUSH_LAUNCHER_FALLBACK=~/.config/composer/vendor/bin/drush" >> ~/.bashrc
+elif [[ -d "/home/$USER/.composer" ]] ; then
 if [[ ! -h ~/.composer/vendor/bin/cgr ]] ; then
+    if [[ ! -L './cgr' ]] ; then
+          echo "Creating symlink2"
 sudo ln -s ~/.composer/vendor/bin/cgr .
 fi
-fi
-
 cd
 echo "export DRUSH_LAUNCHER_FALLBACK=~/.composer/vendor/bin/drush" >> ~/.bashrc
+fi
+else
+  echo "Don't know where composer is. I thought I installed it.2"
+fi
+cd
 source ~/.bashrc
 cgr drush/drush
 fi
