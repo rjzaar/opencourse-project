@@ -891,7 +891,8 @@ echo "plcred: $plcred"
 
   if [ "$result" != ": 0" ]; then
     echo "The database $db does not exist. I will try to create it."
-    if ! mysql $plcred -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"; then
+    result=$(mysql $plcred -e "CREATE DATABASE $db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+    if [[ "$result" != ": 0" ]] ; then
       # This script actually just tries to create the user since the database will be created later anyway.
       echo "Unable to create the database $db. Check the mysql root credentials in mysql.cnf"
       exit 1
