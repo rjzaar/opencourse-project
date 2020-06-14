@@ -33,9 +33,14 @@
 #
 #matrix:
 #  fast_finish: true
-language: bash
+
 
 dist: bionic
+
+language: bash
+
+php:
+  - 7.3
 
 script:
   - bash ./bin/pl init -d
