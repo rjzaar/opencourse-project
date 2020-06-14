@@ -301,7 +301,9 @@ sudo apt-get -qq update -y && sudo apt-get -qq upgrade -y
 # Setup php 7.3
 sudo apt install software-properties-common
 sudo add-apt-repository ppa:ondrej/php
-sudo apt update
+sudo add-apt-repository ppa:ondrej/apache2
+
+sudo apt update -y
 
 ## Install AMP
 echo -e "$Cyan \n Installing Apache2 etc $Color_Off"
