@@ -273,7 +273,7 @@ fi
 else
 echo "mysql.cnf already exists"
 fi
-sudo chmod 0600 $(dirname $script_root)/mysql.cnf
+#sudo chmod 0600 $(dirname $script_root)/mysql.cnf
 fi
 
 # Step 5
