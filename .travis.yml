@@ -44,8 +44,8 @@ php:
 
 env:
   - SITE=d8
-  - SITE=d8c
-  - SITE=var
+#  - SITE=d8c
+#  - SITE=var
 
 #before_install:
 #  # PHP Configurations.

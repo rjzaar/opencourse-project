@@ -299,16 +299,18 @@ sudo apt-get -qq update -y && sudo apt-get -qq upgrade -y
 
 
 # Setup php 7.3
-sudo apt install software-properties-common -y
-sudo add-apt-repository ppa:ondrej/php -y
-sudo add-apt-repository ppa:ondrej/apache2 -y
-
-sudo apt-get -qq update -y
+#sudo apt install software-properties-common -y
+#sudo add-apt-repository ppa:ondrej/php -y
+#sudo add-apt-repository ppa:ondrej/apache2 -y
+#
+#sudo apt-get -qq update -y
 
 ## Install AMP
 echo -e "$Cyan \n Installing Apache2 etc $Color_Off"
 # php-gettext not installing on ubuntu 20
-sudo apt-get -qq install apache2 php7.3 libapache2-mod-php php7.3-mysql php7.3-gettext curl php7.3-cli php7.3-gd php7.3-mbstring php7.3-xml php7.3-curl php7.3-bz2 php7.3-zip git unzip php7.3-xdebug -y
+sudo apt-get -qq install apache2 php libapache2-mod-php php-mysql php-gettext curl php-cli php-gd php-mbstring php-xml php-curl php-bz2 php-zip git unzip php-xdebug -y
+#sudo apt-get -qq install apache2 php7.3 libapache2-mod-php php7.3-mysql php7.3-gettext curl php7.3-cli php7.3-gd php7.3-mbstring php7.3-xml php7.3-curl php7.3-bz2 php7.3-zip git unzip php7.3-xdebug -y
+
 fi
 
 # Step 6
