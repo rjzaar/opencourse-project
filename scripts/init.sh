@@ -299,9 +299,9 @@ sudo apt-get -qq update -y && sudo apt-get -qq upgrade -y
 
 
 # Setup php 7.3
-sudo apt install software-properties-common
-sudo add-apt-repository ppa:ondrej/php
-sudo add-apt-repository ppa:ondrej/apache2
+sudo apt install software-properties-common -y
+sudo add-apt-repository ppa:ondrej/php -y
+sudo add-apt-repository ppa:ondrej/apache2 -y
 
 sudo apt-get -qq update -y
 
