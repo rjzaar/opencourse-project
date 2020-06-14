@@ -173,6 +173,10 @@ if [ $step -lt 2 ]; then
 # need to install gawk - sudo required asorti never
 # defined error
 
+echo "test mysql"
+mysql -e 'CREATE DATABASE test;'
+echo "did it work?"
+
 if [[ "$nopassword" == "y" ]] ; then
 # set up user with sudo
 echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | sudo EDITOR="tee -a" visudo
