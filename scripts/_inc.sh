@@ -884,7 +884,7 @@ make_db () {
 #  if [[ "$pltest" = "y" ]] ; then
 #  plcred="--password=\"\""
 #  else
-  plcred="--defaults-extra-file=\"$folderpath/mysql.cnf\""
+  plcred="--defaults-extra-file=$folderpath/mysql.cnf"
 #  fi
 echo "plcred: $plcred"
 mysql "$plcred" -e "use $db;"
