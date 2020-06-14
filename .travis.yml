@@ -60,7 +60,7 @@ before_install:
   - echo 'sendmail_path = /bin/true' >> pl.php.ini;
   - phpenv config-add pl.php.ini
   - phpenv rehash
-  - echo "memory_limit=2G" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+#  - echo "memory_limit=2G" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 script:
   - bash ./bin/pl init -d
