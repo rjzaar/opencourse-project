@@ -883,10 +883,10 @@ make_db () {
 
 #check which password works.
 plcred="--defaults-extra-file=$folderpath/mysql.cnf"
-result=$(mysql $plcred -e "SHOW DATABASES;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+result=$(mysql $plcred -e "use mysql;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 if [[ "$result" != ": 0" ]]; then
 plcred="--password=\"\""
-result=$(mysql $plcred -e "SHOW DATABASES;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+result=$(mysql $plcred -e "use mysql;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 if [[ "$result" != ": 0" ]]; then
   echo "mysql password is not blank nor is it correct in mysql.cnf"
   fi
