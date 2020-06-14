@@ -305,7 +305,7 @@ git config --global user.name $github_user
 git config --global credential.helper store
 fi
 
-
+echo "github credentials added"
 # Step 7
 ################################################################################
 # Installing MySQL
