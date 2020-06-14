@@ -313,9 +313,9 @@ fi
 if [ $step -lt 8 ]; then
   echo -e "$Cyan step 7: Installing MySQL $Color_Off"
 #Check if mysql is installed
-#if type mysql >/dev/null 2>&1; then
-#echo "mysql already installed."
-#else
+if type mysql >/dev/null 2>&1; then
+echo "mysql already installed."
+else
 # Not installed
 # From: https://stackoverflow.com/questions/7739645/install-mysql-on-ubuntu-without-a-password-prompt
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
