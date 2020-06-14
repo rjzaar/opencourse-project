@@ -289,8 +289,8 @@ sudo apt-get -qq update -y && sudo apt-get -qq upgrade -y
 
 ## Install AMP
 echo -e "$Cyan \n Installing Apache2 etc $Color_Off"
-# php-gettext not installing
-sudo apt-get -qq install apache2 php libapache2-mod-php php-mysql curl php-cli php-gd php-mbstring php-xml php-curl php-bz2 php-zip git unzip php-xdebug -y
+# php-gettext not installing on ubuntu 20
+sudo apt-get -qq install apache2 php libapache2-mod-php php-mysql php-gettext curl php-cli php-gd php-mbstring php-xml php-curl php-bz2 php-zip git unzip php-xdebug -y
 fi
 
 # Step 6
@@ -313,15 +313,15 @@ echo "github credentials added"
 if [ $step -lt 8 ]; then
   echo -e "$Cyan step 7: Installing MySQL $Color_Off"
 #Check if mysql is installed
-if type mysql >/dev/null 2>&1; then
-echo "mysql already installed."
-else
+#if type mysql >/dev/null 2>&1; then
+#echo "mysql already installed."
+#else
 # Not installed
 # From: https://stackoverflow.com/questions/7739645/install-mysql-on-ubuntu-without-a-password-prompt
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
 sudo apt-get -y install mysql-server
-fi
+#fi
 
 fi
 
