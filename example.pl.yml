@@ -106,7 +106,7 @@ recipes:
     auto: y
     apache: y
   d8:
-    source: https://www.drupal.org/download-latest/tar.gz
+    source: https://ftp.drupal.org/files/projects/drupal-8.9.0.tar.gz
     install_method: file
     profile: standard
     webroot: docroot
