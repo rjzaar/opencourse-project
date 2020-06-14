@@ -891,6 +891,11 @@ plcred=""
 result=$(mysql $plcred -e "use mysql;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 echo "result2: >$result<"
 if [[ "$result" != ": 0" ]]; then
+  plcred="--password=\"\""
+  result=$(mysql $plcred -e "use mysql;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+echo "result3: >$result<"
+if [[ "$result" != ": 0" ]]; then
+
   echo "mysql password is not blank nor is it correct in mysql.cnf"
   fi
   fi

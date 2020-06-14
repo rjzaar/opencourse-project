@@ -173,15 +173,15 @@ if [ $step -lt 2 ]; then
 # need to install gawk - sudo required asorti never
 # defined error
 
-echo "test mysql"
-result=$(mysql -e 'CREATE DATABASE test;' 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
-echo "result2: >$result<"
-
-if [[ "$result" != ": 0" ]]; then
-  echo "mysql did not work"
-  mysql -e 'CREATE DATABASE test;'
-  fi
-echo "did it work?"
+#echo "test mysql"
+#result=$(mysql -e 'CREATE DATABASE test;' 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+#echo "result2: >$result<"
+#
+#if [[ "$result" != ": 0" ]]; then
+#  echo "mysql did not work"
+#  mysql -e 'CREATE DATABASE test;'
+#  fi
+#echo "did it work?"
 
 if [[ "$nopassword" == "y" ]] ; then
 # set up user with sudo
