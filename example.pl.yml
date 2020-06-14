@@ -97,6 +97,14 @@ recipes:
   ins:
     install_modules: oc_prod oc_content
   bak:
+  d9:
+    source: https://www.drupal.org/download-latest/tar.gz
+    install_method: file
+    profile: standard
+    webroot: docroot
+    default: n
+    auto: y
+    apache: y
   d8:
     source: https://www.drupal.org/download-latest/tar.gz
     install_method: file

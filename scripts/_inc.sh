@@ -881,13 +881,19 @@ make_db () {
   cat "$folderpath/mysql.cnf"
   ls -la "$folderpath/mysql.cnf"
 
-#  if [[ "$pltest" = "y" ]] ; then
-#  plcred="--password=\"\""
-#  else
-  plcred="--defaults-extra-file=$folderpath/mysql.cnf"
-#  fi
+#check which password works.
+plcred="--defaults-extra-file=$folderpath/mysql.cnf"
+result=$(mysql $plcred -e "SHOW DATABASES;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+if [[ "$result" != ": 0" ]]; then
+plcred="--password=\"\""
+result=$(mysql $plcred -e "SHOW DATABASES;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+if [[ "$result" != ": 0" ]]; then
+  echo "mysql password is not blank nor is it correct in mysql.cnf"
+  fi
+  fi
+
 echo "plcred: $plcred"
-mysql "$plcred" -e "use $db;"
+
   result=$(mysql $plcred -e "use $db;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 
   if [ "$result" != ": 0" ]; then
@@ -924,11 +930,17 @@ mysql "$plcred" -e "use $db;"
     echo "User $dbuser already exists"
   fi
 
-  result=$(mysql $plcred -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES ON $db.* TO '"$dbuser"'@'localhost' IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+  result=$(mysql $plcred -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES ON $db.* TO '$dbuser'@'localhost' IDENTIFIED BY '"$dbpass"';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
   if [ "$result" = ": 0" ]; then
     echo "Granted user $dbuser permissions on $db"
   else
+    result=$(mysql $plcred -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES ON $db.* TO '$dbuser'@'localhost';" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
+if [ "$result" = ": 0" ]; then
+    echo "Granted user $dbuser permissions on $db"
+  else
+
     echo "Could not grant user $dbuser permissions on $db"
+  fi
   fi
 }
 

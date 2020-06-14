@@ -109,7 +109,7 @@ while true; do
   -s | --step)
     flag_step=1
     shift
-    step=$1
+    step=${1:1}
     shift; ;;
   -b | --build-step)
     flag_buildstep=1
@@ -128,7 +128,7 @@ while true; do
   esac
 done
 
-ocmsg "12: $1 $2" debug
+ocmsg "12: >$1< >$2< step:$step<" debug
 
 if [[ "$1" == "install" ]] && [[ -z "$2" ]]; then
  echo "No site specified."
