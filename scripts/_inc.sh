@@ -886,7 +886,8 @@ plcred="--defaults-extra-file=$folderpath/mysql.cnf"
 result=$(mysql $plcred -e "use mysql;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 echo "result1: >$result<"
 if [[ "$result" != ": 0" ]]; then
-plcred="--password=\"\""
+#plcred="--password=\"\""
+plcred=""
 result=$(mysql $plcred -e "use mysql;" 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 echo "result2: >$result<"
 if [[ "$result" != ": 0" ]]; then
