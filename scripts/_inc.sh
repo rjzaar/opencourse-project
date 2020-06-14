@@ -899,6 +899,7 @@ if [[ "$result" != ": 0" ]]; then
   echo "mysql password is not blank nor is it correct in mysql.cnf"
   fi
   fi
+  fi
 
 echo "plcred: $plcred"
 
