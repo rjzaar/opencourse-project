@@ -309,7 +309,7 @@ sudo apt -qqy update
 echo -e "$Cyan \n Installing Apache2 etc $Color_Off"
 # php-gettext not installing on ubuntu 20
 #sudo apt-get -qq install apache2 php libapache2-mod-php php-mysql php-gettext curl php-cli php-gd php-mbstring php-xml php-curl php-bz2 php-zip git unzip php-xdebug -y
-sudo apt-get -y install apache2 php7.3 libapache2-mod-php php7.3-mysql php7.3-gettext curl php7.3-cli php7.3-gd php7.3-mbstring php7.3-xml php7.3-curl php7.3-bz2 php7.3-zip git unzip php7.3-xdebug -y
+sudo apt-get -y install apache2 php7.3 libapache2-mod-php7.3 php7.3-mysql php7.3-common curl php7.3-cli php7.3-gd php7.3-mbstring php7.3-xml php7.3-curl php7.3-bz2 php7.3-zip git unzip php-xdebug -y
 
 fi
 
