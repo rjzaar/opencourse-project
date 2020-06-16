@@ -39,13 +39,13 @@ dist: bionic
 
 language: bash
 
-php:
-  - 7.3
+#php:
+#  - 7.3
 
 env:
   - SITE=d8
-#  - SITE=d8c
-#  - SITE=var
+  - SITE=d8c
+  - SITE=var
 
 #before_install:
 #  # PHP Configurations.
