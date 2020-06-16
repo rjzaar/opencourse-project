@@ -46,6 +46,8 @@ env:
   - SITE=d8
   - SITE=d8c
   - SITE=var
+  - SITE=vard
+  - Site=varg
 
 #before_install:
 #  # PHP Configurations.

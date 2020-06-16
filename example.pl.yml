@@ -117,13 +117,14 @@ recipes:
     source: drupal/recommended-project
     install_method: composer
     profile: standard
-    webroot: docroot
+    webroot: web
     default: n
     auto: y
     apache: y
   tes:
-  vard:
+  varg:
     source: git@github.com:Vardot/varbase-project.git
+    install_method: git
     theme: vartheme_bs4
     theme_admin: vartheme_admin
     install_modules:
@@ -132,8 +133,17 @@ recipes:
     # This is so in this case install_modules will remain blank
     default: n
   var:
-    source: vardot/varbase-project
+    source: vardot/varbase-project:^8.8.5
     install_method: composer
+    theme: vartheme_bs4
+    theme_admin: vartheme_admin
+    install_modules:
+    dev_modules: syslog views_ui block_place devel features_ui dblog
+    default: n
+  vard:
+    source: vardot/varbase-project:8.8.x-dev
+    install_method: composer
+    dev: y
     theme: vartheme_bs4
     theme_admin: vartheme_admin
     install_modules:
