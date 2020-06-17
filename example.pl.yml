@@ -114,7 +114,7 @@ recipes:
     auto: y
     apache: y
   d8c:
-    source: drupal/recommended-project
+    source: drupal/recommended-project:8.9.x
     install_method: composer
     profile: standard
     webroot: web
