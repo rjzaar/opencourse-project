@@ -6,6 +6,7 @@
 #
 # There are some global variables set
 #  hosts_path: The hosts path
+#  server: apache or nginx. This will set up the webserver on the users computer. A lando setup can use an independent server.
 #  vhosts_path: The apache sites available
 #  user: The current user (carlos is in honour of venerable Carlos Acutis)
 #  project: The project name will be worked out from the parent folder.
@@ -20,9 +21,10 @@
 #    docroot: Full path on the production server to your drupal webroot
 #
 hosts_path: "/etc/hosts"
+server: nginx
 vhosts_path: "/etc/apache2/sites-available/"
 www_path: "/var/www/oc"
-user: stcarlos
+user: rob
 github:
   user: carlos
   key:  github
@@ -78,9 +80,9 @@ recipes:
     dev:  y
     profile: varbase
     webroot:  docroot
-#    sitename: default # leave blank it will be called the name of the site, eg loc
+    #    sitename: default # leave blank it will be called the name of the site, eg loc
     auto:  y
-    apache: y
+    server: nginx
     install_method: git
     git_upstream: git@github.com:Vardot/varbase-project.git
     theme: octheme_bs4
@@ -104,7 +106,7 @@ recipes:
     webroot: docroot
     default: n
     auto: y
-    apache: y
+    server: nginx
   d8:
     source: https://ftp.drupal.org/files/projects/drupal-8.9.0.tar.gz
     install_method: file
@@ -112,15 +114,15 @@ recipes:
     webroot: docroot
     default: n
     auto: y
-    apache: y
+    server: nginx
   d8c:
-    source: drupal/recommended-project:8.9.x
+    source: drupal/recommended-project
     install_method: composer
     profile: standard
     webroot: web
     default: n
     auto: y
-    apache: y
+    server: nginx
   tes:
   varg:
     source: git@github.com:Vardot/varbase-project.git
@@ -149,4 +151,3 @@ recipes:
     install_modules:
     dev_modules: syslog views_ui block_place devel features_ui dblog
     default: n
-
