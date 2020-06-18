@@ -68,6 +68,10 @@ script:
   - bash ./bin/pl init -d
   - source ~/.bashrc
   - pl install -yd $SITE
+  - pl copy $SITE loc
+  - pl makedev loc
+  - pl copy loc stg
+  - pl makeprod stg
 
 matrix:
   fast_finish: true
