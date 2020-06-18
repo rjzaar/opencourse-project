@@ -56,7 +56,7 @@ sites:
 # dbuser: will be db
 # dbpass: will be dbuser
 #
-# Just specifying a new site name is enough.
+# Just specifying a new site name is enough.ran
 #
 # The following settings are possible
 # source: is the root folder by default opencourse-project. It will be used as the right most part of the URL. I suggest you build into oc instead.
