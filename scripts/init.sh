@@ -193,6 +193,20 @@ echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | sudo EDITOR="tee -a" visudo
 fi
 
 sudo apt-get install gawk
+gout=$(gawk -Wv)
+gversion=${gout:8:1}
+echo "Gawk version: >$gversion<"
+
+if [[ "$gversion" == "5" ]] ; then
+  echo "Need to purge gawk and install version 4 of gawk"
+
+  sudo apt-get purge gawk -y
+
+  wget https://ftp.gnu.org/gnu/gawk/gawk-4.2.1.tar.gz
+tar -xvpzf gawk-4.2.1.tar.gz
+cd gawk-4.2.1
+./configure && make #&& make check
+fi
 fi
 
 # Step 2
