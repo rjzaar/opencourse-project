@@ -104,6 +104,9 @@ done
 
 parse_pl_yml
 
+# Make sure @prod is setup.
+update_all_configs
+
 sitename_var="$sites_localprod"
 echo "Importing production site into $sitename_var"
 
@@ -115,7 +118,7 @@ fi
 
 #First backup the current localprod site if it exists
 if [ $step -lt 2 ] ; then
-  echo "step 1: backup current sitename_var $sitename_var"
+  echo "step 1: backup current sitename_var: $sitename_var"
   pl backup $sitename_var "presync"
 fi
 #pull db and all files from prod
