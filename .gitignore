@@ -43,6 +43,7 @@ pl_var.sh
 
 # These are now ignored so opencourse-project can be public, ie these are for the development version.
 /*
+!/docs
 !/bin
 !/scripts
 !.gitignore

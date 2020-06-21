@@ -419,18 +419,24 @@ fi
 # see https://github.com/consolidation/cgr
 #
 # if there is an issue with swap use this to fix it: https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-16-04
-
+comppres="false"
 cd
 #composer global require drush/drush
 echo "composer install consoildation/cgr"
 # sudo ls -la .config
 if [[ -d "/home/$USER/.config" ]] ; then
 sudo chown -R $USER "/home/$USER/.config"
-elif [[ -d "/home/$USER/.composer" ]] ; then
+comppres="true"
+fi
+
+if [[ -d "/home/$USER/.composer" ]] ; then
 sudo chown -R $USER "/home/$USER/.composer"
-else
+comppres="true"
+fi
+if [[ "$comppres" == "false" ]] ; then
   echo "Don't know where composer is. I thought I installed it.1"
 fi
+
 # sudo chown -R $USER /home/travis/.composer/
 composer global require consolidation/cgr
 echo "echo path into bashrc"
