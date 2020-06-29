@@ -849,6 +849,11 @@ backup_prod () {
 backup_db () {
   echo -e "$Green backing up $sitename_var $Color_Off"
 
+  # Check if site backup folder exists
+  if [ ! -d "$folderpath/sitebackups" ]; then
+    mkdir "$folderpath/sitebackups"
+  fi
+
   #backup db.
   #use git: https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/set-up-a-local-development-drupal-0-7
   # Check if site backup folder exists
