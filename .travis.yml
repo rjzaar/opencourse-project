@@ -68,9 +68,9 @@ script:
   - bash ./bin/pl init -d
   - source ~/.bashrc
   - pl install -yd $SITE
-  - pl copy $SITE loc
+  - pl copy $SITE loc -d
   - pl makedev loc
-  - pl copy loc stg
+  - pl copy loc stg -d
   - pl makeprod stg
 
 matrix:
