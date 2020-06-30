@@ -462,7 +462,7 @@ cd
 echo "composer home: $(composer config -g home)"
 comphome=$(composer config -g home)
 
-echo "export PATH=\"\$PATH:$comphome/vendor/bin:\"" >> ~/.bashrc
+echo "export PATH=\"\$PATH:$comphome/vendor/bin\"" >> ~/.bashrc
 source ~/.bashrc
 # cat .bashrc
 
