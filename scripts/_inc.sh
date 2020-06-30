@@ -870,8 +870,8 @@ backup_db () {
   msg=${1// /_}
   Name=$(date +%Y%m%d\T%H%M%S-)`git branch | grep \* | cut -d ' ' -f2 | sed -e 's/[^A-Za-z0-9._-]/_/g'`-`git rev-parse HEAD | cut -c 1-8`$msg.sql
   echo -e "\e[34mbackup db $Name\e[39m"
-  echo "debug: >$debug<"
-  if [[ "$debug" == "debug" ]] ; then
+  echo "verbose: >$verbose<"
+  if [[ "$verbose" == "debug" ]] ; then
     echo "Listing all drush aliases"
     drush sa
     fi
