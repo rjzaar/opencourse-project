@@ -118,8 +118,8 @@ import_site_config $sitename_var
 
 # turn on dev modules (composer)
 
-cd $site_path/$sitename_var/$webroot
-echo "Composer install."
+cd $site_path/$sitename_var
+echo "Composer install at $site_path/$sitename_var"
 if [[ "$verbose" == "debug" ]] ; then
 composer install
 else

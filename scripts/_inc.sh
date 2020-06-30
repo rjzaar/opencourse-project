@@ -870,6 +870,12 @@ backup_db () {
   msg=${1// /_}
   Name=$(date +%Y%m%d\T%H%M%S-)`git branch | grep \* | cut -d ' ' -f2 | sed -e 's/[^A-Za-z0-9._-]/_/g'`-`git rev-parse HEAD | cut -c 1-8`$msg.sql
   echo -e "\e[34mbackup db $Name\e[39m"
+  echo "debug: >$debug<"
+  if [[ "$debug" == "debug" ]] ; then
+    echo "Listing all drush aliases"
+    drush sa
+    fi
+
   drush @$sitename_var sset system.maintenance_mode TRUE
   drush @$sitename_var sql-dump --result-file="$folderpath/sitebackups/$sitename_var/$Name"
   drush @$sitename_var sset system.maintenance_mode FALSE
