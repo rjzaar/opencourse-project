@@ -420,8 +420,8 @@ update_all_configs() {
 
   ocmsg "$folderpath/drush.tmp" debug
   drush status
-  if [[ $folderpath/drush.tmp =~ (@dev) ]]; then
-    drush @dev status >"$folderpath/drush.tmp"
+  if [[ $folderpath/drush.tmp =~ (@loc) ]]; thendrush
+    drush @loc status >"$folderpath/drush.tmp"
   else
     drush status >"$folderpath/drush.tmp"
   fi
