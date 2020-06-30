@@ -39,7 +39,7 @@ verbose="none"
 ################################################################################
 print_help() {
 cat << HEREDOC
-Usage: pl install [OPTION] site
+Usage: pl install site [OPTION]
 This script is used to install a variety of drupal flavours particularly
 opencourse This will use opencourse-project as a wrapper. It is presumed you
 have already cloned opencourse-project.  You just need to specify the site name

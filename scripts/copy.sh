@@ -159,15 +159,15 @@ cp -rf "$from_sp/$from" "$to_sp/$to"
 #Name=${options[0]:2}
 #-------------------------------------------------------------------------------
 
-
-# NOT NICE ROB :(
 ################################################################################
 # Global variables are very hard to keep track of for newcomers!!!
 # Yes - sorry - will need to come up with a naming convention and list of these particular variables.
 ################################################################################
 #Note $Name was set in backup_db and will now be used in the restore_db. Nice hey.
-set_site_permissions
+
+sitename_var=$to
 fix_site_settings
+set_site_permissions
 
 bk=$from
 restore_db
