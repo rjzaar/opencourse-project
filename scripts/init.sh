@@ -192,7 +192,7 @@ echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | sudo EDITOR="tee -a" visudo
 
 fi
 
-sudo apt-get install gawk
+sudo apt-get install gawk -y
 gout=$(gawk -Wv)
 gversion=${gout:8:1}
 echo "Gawk version: >$gversion<"
@@ -629,12 +629,10 @@ fi
 if [ $step -lt 17 ]; then
   echo -e "$Cyan step 16: Setup drush aliases etc. $Color_Off"
 source ~/.bashrc
-echo "drush core"
-drush core:init -y
 echo "update configs"
 verbose="debug"
 update_all_configs
-echo "drush core2"
+echo "drush core"
 drush core:init -y
 echo "update configs2"
 update_all_configs
