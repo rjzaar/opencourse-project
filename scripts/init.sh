@@ -472,11 +472,11 @@ cd /usr/local/bin
 if [[ -d "/home/$USER/.config" ]] ; then
   if [[ ! -L './cgr' ]] ; then
     echo "Creating symlink"
-sudo ln -s ~/.config/composer/vendor/bin/cgr .
+sudo ln -s $comphome/vendor/bin/cgr .
 fi
 #sudo ln -s ~/.config/composer/vendor/bin/drush .
 cd
-echo "export DRUSH_LAUNCHER_FALLBACK=~/.config/composer/vendor/bin/drush" >> ~/.bashrc
+echo "export DRUSH_LAUNCHER_FALLBACK=$comphome/vendor/bin/drush" >> ~/.bashrc
 elif [[ -d "/home/$USER/.composer" ]] ; then
 if [[ ! -h ~/.composer/vendor/bin/cgr ]] ; then
     if [[ ! -L './cgr' ]] ; then
