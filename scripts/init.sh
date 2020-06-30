@@ -629,7 +629,9 @@ fi
 if [ $step -lt 17 ]; then
   echo -e "$Cyan step 16: Setup drush aliases etc. $Color_Off"
 source ~/.bashrc
+drush core:init -y
 update_all_configs
+
 fi
 echo "All done!"
 
