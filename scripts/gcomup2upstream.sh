@@ -156,7 +156,7 @@ echo "Fetch upstream"
 git fetch upstream
 
 echo "Now try merge."
-git merge upstream/8.7.x
+git merge upstream/8.8.x
 
 #Now overide the upstream readme.
 echo "Now move readme back"

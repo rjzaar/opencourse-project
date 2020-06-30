@@ -419,6 +419,9 @@ update_all_configs() {
   # This command might list some warnings. It is a bug with drush: https://github.com/drush-ops/drush/issues/3226
 
   ocmsg "$folderpath/drush.tmp" debug
+  source ~/.bashrc
+  drush core:init -y
+  source ~/.bashrc
   drush status
   if [[ $folderpath/drush.tmp =~ (@loc) ]] ; then
     drush @loc status >"$folderpath/drush.tmp"
