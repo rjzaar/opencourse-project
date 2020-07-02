@@ -420,16 +420,18 @@ update_all_configs() {
 
   ocmsg "$folderpath/drush.tmp" debug
   source ~/.bashrc
+  ocmsg "drush core:init" debug
   drush core:init -y
   source ~/.bashrc
+  ocmsg "drush status" debug
   drush status
-  if [[ $folderpath/drush.tmp =~ (@loc) ]] ; then
+#  if [[ $folderpath/drush.tmp =~ (@loc) ]] ; then
     drush @loc status >"$folderpath/drush.tmp"
-  else
+#  else
     drush status >"$folderpath/drush.tmp"
-  fi
+#  fi
 
-  ocmsg "Add correct drush path"
+  ocmsg "Add correct drush path" debug
   dline=$(awk 'match($0,v){print NR; exit}' v="Drush script" "$folderpath/drush.tmp")
   dlinec=$(sed "${dline}q;d" "$folderpath/drush.tmp")
   dlined="/$(echo "${dlinec#*/}")"
