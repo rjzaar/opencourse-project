@@ -627,25 +627,26 @@ ocmsg "Increase watch speed for gulp: requires sudo." debug
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 fi
 
-if [ $step -lt 17 ]; then
-  echo -e "$Cyan step 16: Setup drush aliases etc. $Color_Off"
-
-echo "source bashrc"
-cd
-source .bashrc
-echo "drush core1"
-drush status
-drush core:init -y
+# I don't know why I can't run source in this script. But I'll leave it out for now.
+#if [ $step -lt 17 ]; then
+#  echo -e "$Cyan step 16: Setup drush aliases etc. $Color_Off"
 #
-#echo "update configs"
-#verbose="debug"
-#update_all_configs
-#echo "drush core2"
+#echo "source bashrc"
+#cd
+#source .bashrc
+#echo "drush core1"
+#drush status
 #drush core:init -y
-#echo "update configs2"
-#update_all_configs
-
-fi
+##
+##echo "update configs"
+##verbose="debug"
+##update_all_configs
+##echo "drush core2"
+##drush core:init -y
+##echo "update configs2"
+##update_all_configs
+#
+#fi
 echo "All done!"
 
 exit 0
