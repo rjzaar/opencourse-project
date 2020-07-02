@@ -295,8 +295,9 @@ if [ $step -lt 6 ]; then
   plcomposer require drush/drush
   cd "$site_path/$sitename_var/$webroot"
   ocmsg "Moved to $site_path/$sitename_var/$webroot"
-  ocmsg "drush" debug
+  ocmsg "drush core init" debug
   drush core:init -y
+  ocmsg "set site permissions" debug
   set_site_permissions
 fi
 
