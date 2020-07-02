@@ -11,6 +11,7 @@ You set it up with the following commands
 ```
 git clone git@github.com:rjzaar/pleasy.git 
 bash ./pleasy/bin/pl  init
+source ~/.bashrc
 ```
 Now edit pl.yml with your settings or just use the defaults
 
