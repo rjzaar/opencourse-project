@@ -120,9 +120,16 @@ import_site_config $sitename_var
 
 cd $site_path/$sitename_var
 echo "Composer install at $site_path/$sitename_var"
+#Make sure all dev modules are installed
+# create a list of modules to install for dev
+echo "Dev modules to install: $dev_composer"
+compmod="drupal/${dev_composer// / drupal\/}"
+
 if [[ "$verbose" == "debug" ]] ; then
+plcomposer require $compmod --dev
 plcomposer install
 else
+plcomposer require $compmod --dev --quiet
 plcomposer install --quiet
 fi
 
@@ -137,7 +144,8 @@ drush @$sitename_var en -y $dev_modules
 
 #turn on dev settings
 echo "Turn on dev mode: drupal --target=$uri site:mode dev"
-drupal --target=$uri site:mode dev
+cd $site_path/$sitename_var/$webroot
+drupal site:mode dev
 
 #clear cache
 echo "Clear cache"

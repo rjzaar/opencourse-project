@@ -311,6 +311,13 @@ import_site_config() {
   elif [ "${!rb}" == "n" ]; then
     dev_modules=""
   fi
+    rp="recipes_${sitename_var}_dev_composer"
+  rpv=${!rp}
+  if [ "$rpv" != "" ]; then
+    dev_composer=${!rp}
+  elif [ "${!rb}" == "n" ]; then
+    dev_composer=""
+  fi
   rp="recipes_${sitename_var}_lando"
   rpv=${!rp}
   if [ "$rpv" != "" ]; then

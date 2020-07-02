@@ -120,7 +120,6 @@ echo "Turn on prod mode on --target=$uri"
 cd $site_path/$sitename_var/$webroot
 drupal  site:mode prod
 
-
 #uninstall dev modules
 echo "uninstall dev modules"
 drush @$sitename_var pm-uninstall -y $dev_modules
@@ -129,7 +128,12 @@ drush @$sitename_var pm-uninstall -y $dev_modules
 
 cd $site_path/$sitename_var
 echo "Composer install with no dev modules."
+
+if [[ "$verbose" == "debug" ]] ; then
+plcomposer install --no-dev
+else
 plcomposer install --no-dev --quiet
+fi
 
 # rebuild permissions
 echo "Rebuild permissions, might require sudo."
