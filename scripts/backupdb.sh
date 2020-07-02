@@ -41,19 +41,22 @@ scriptname='pleasy-backupdb'
 # Prints user guide
 ################################################################################
 print_help() {
-echo \
-"Usage: pl backupdb [OPTION] ... [SOURCE]
-  This script is used to backup a particular site's files and database.
-  You just need to state the sitename, eg dev. (ROB What is the
-  difference between this and backup.sh?)
+  echo \
+    "Usage: pl backupdb [OPTION] ... [SOURCE]
+  This script is used to backup a particular site's database.
+  You just need to state the sitename, eg dev.
 
   Mandatory arguments to long options are mandatory for short options too.
     -h --help               Display help (Currently displayed)
+    -m --message='msg'      Enter an optional message to accompany the backup
 
   Examples:
   pl backupdb -h
-  pl backupdb ./dev (relative dev folder)"
-exit 0
+  pl backupdb dev
+  pl backupdb tim -m 'First tim backup'
+  pl backupdb --message='Love' love
+  END HELP"
+  exit 0
 }
 
 # start timer
@@ -62,14 +65,14 @@ exit 0
 ################################################################################
 SECONDS=0
 echo -e "\e[34mbackup $1 \e[39m"
-. $script_root/_inc.sh;
+. $script_root/_inc.sh
 
 # Use of Getopt
 ################################################################################
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o h -l help --name "$scriptname" -- "$@")
+args=$(getopt -o hm: -l help,message: --name "$scriptname" -- "$@")
 #echo "$args"
 
 ##########################   BUG ALERT  ########################################
@@ -80,8 +83,8 @@ args=$(getopt -o h -l help --name "$scriptname" -- "$@")
 # If getopt outputs error to error variable, quit program displaying error
 ################################################################################
 [ $? -eq 0 ] || {
-    echo "please do 'pl backup --help' for more options"
-    exit 1
+  echo "please do 'pl backup --help' for more options"
+  exit 1
 }
 
 ################################################################################
@@ -99,14 +102,20 @@ while true; do
     print_help
     exit 0
     ;;
-  -- )
-  shift
-  break
-  ;;
+  -m | --message)
+    shift
+    msg="$(echo "$1" | sed 's/^=//g')"
+    echo "Msg = $msg"
+    shift
+    ;;
+  --)
+    shift
+    break
+    ;;
   *)
-  "Programming error, this should not show up!"
-  exit 1
-  ;;
+    "Programming error, this should not show up!"
+    exit 1
+    ;;
   esac
 done
 
@@ -117,22 +126,27 @@ done
 # if no argument found exit and display error. User must input directory for
 # backup else this script will fail.
 ################################################################################
-if [ "$#" = 0 ]; then
-  echo "ERROR: No directory name found for backup"
-  print_help
-  exit 1
-elif [[ ! -d "$1" ]]; then
-  echo "Cannot find directory "$1", please try again or use --help for more options"
+if [[ "$1" == "backupdb" ]] && [[ -z "$2" ]]; then
+  echo "No site specified."
+elif [[ "$1" == "backupdb" ]]; then
+  sitename_var=$2
+elif [[ -z "$1" ]]; then
+  echo "No site specified."
+else
+  sitename_var=$1
 fi
 
 parse_pl_yml
-sitename_var=$1
 import_site_config $sitename_var
+if [[ ! -d "$site_path/$sitename_var" ]]; then
+  echo "Cannot find directory for >$sitename_var<, please try again or use --help for more options"
+  exit 1
+fi
 
-backup_db
+backup_db $msg
 
 # End timer
 ################################################################################
 # Finish script, display time taken
 ################################################################################
-echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
+echo 'Finished in H:'$(($SECONDS / 3600))' M:'$(($SECONDS % 3600 / 60))' S:'$(($SECONDS % 60))

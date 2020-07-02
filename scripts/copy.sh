@@ -45,8 +45,8 @@ verbose="none"
 # Prints user guide
 ################################################################################
 print_help() {
-echo \
-"Usage: pl copy [OPTION] ... [SOURCE] [DESTINATION]
+  echo \
+    "Usage: pl copy [OPTION] ... [SOURCE] [DESTINATION]
 This script will copy one site to another site. It will copy all
 files, set up the site settings and import the database. If no
 argument is given, it will copy dev to stg. If one argument is given it
@@ -58,7 +58,7 @@ Mandatory arguments to long options are mandatory for short options too.
   -d --debug              Provide debug information when running this script.
 
 Examples:"
-exit 0
+  exit 0
 }
 
 # Use of Getopt
@@ -73,8 +73,8 @@ args=$(getopt -o hd -l help,debug --name "$scriptname" -- "$@")
 # If getopt outputs error to error variable, quit program displaying error
 ################################################################################
 [ $? -eq 0 ] || {
-    echo "please do 'pl copy --help' for more options"
-    exit 1
+  echo "please do 'pl copy --help' for more options"
+  exit 1
 }
 
 ################################################################################
@@ -92,9 +92,10 @@ while true; do
     print_help
     exit 0
     ;;
-   -d | --debug)
+  -d | --debug)
     verbose="debug"
-    shift; ;;
+    shift
+    ;;
   --)
     shift
     break
@@ -121,11 +122,11 @@ if [ $1 == "copy" ] && [ -z "$2" ]; then
   sitename_var="$sites_stg"
   from="$sites_dev"
 elif [ -z "$2" ]; then
-    sitename_var=$1
-    from="$sites_dev"
+  sitename_var=$1
+  from="$sites_dev"
 else
-    from=$1
-    sitename_var=$2
+  from=$1
+  sitename_var=$2
 fi
 
 echo "This will copy the site from $from to $sitename_var and then try to import the database"
@@ -142,11 +143,10 @@ sitename_var=$to
 import_site_config $to
 to_sp=$site_path
 
-if [ -d $to_sp/$to ]
-then
-sudo chown $user:www-data $to_sp/$to -R
-chmod +w $to_sp/$to -R
-rm -rf $to_sp/$to
+if [ -d $to_sp/$to ]; then
+  sudo chown $user:www-data $to_sp/$to -R
+  chmod +w $to_sp/$to -R
+  rm -rf $to_sp/$to
 fi
 echo "Move all files from $from to $to"
 cp -rf "$from_sp/$from" "$to_sp/$to"
@@ -167,6 +167,15 @@ cp -rf "$from_sp/$from" "$to_sp/$to"
 
 sitename_var=$to
 fix_site_settings
+
+echo -e "$Cyan setting up drush aliases and site permissions $Color_Off"
+plcomposer require drush/drush
+cd "$site_path/$sitename_var/$webroot"
+ocmsg "Moved to $site_path/$sitename_var/$webroot"
+ocmsg "drush core init" debug
+drush core:init -y
+ocmsg "set site permissions" debug
+
 set_site_permissions
 
 bk=$from
@@ -176,4 +185,4 @@ restore_db
 ################################################################################
 # Finish script, display time taken
 ################################################################################
-echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
+echo 'Finished in H:'$(($SECONDS / 3600))' M:'$(($SECONDS % 3600 / 60))' S:'$(($SECONDS % 60))

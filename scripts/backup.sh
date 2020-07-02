@@ -45,7 +45,7 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 pl backup -h
-pl backup dev (relative dev folder)
+pl backup dev
 pl backup tim -m 'First tim backup'
 pl backup --message='Love' love
 END HELP"
@@ -101,41 +101,43 @@ while true; do
   esac
 done
 
+
 # No arguments
 ################################################################################
 # if no argument found exit and display error. User must input directory for
 # backup else this script will fail.
 ################################################################################
-if [ "$#" = 0 ]; then
-  echo "ERROR: No directory name found for backup"
-  print_help
-  exit 1
-elif [[ ! -d "$1" ]]; then
-  echo "Cannot find directory "$1", please try again or use --help for more options"
+if [[ "$1" == "backup" ]] && [[ -z "$2" ]]; then
+ echo "No site specified."
+elif [[ "$1" == "backup" ]] ; then
+   sitename_var=$2
+elif [[ -z "$1" ]]; then
+ echo "No site specified."
+else
+  sitename_var=$1
 fi
+
 
 # (what do these do?)
 echo -e "\e[34mbackup $1 \e[39m"
 . $script_root/_inc.sh;
 
-
-sitename_var=$1
-
-#----------------------- Extra code, unsure of its use -------------------------
-# folder=$(basename $(dirname $script_root))
-# webroot="docroot"
-#-------------------------------------------------------------------------------
-
-# It it interesting to note that parse_pl_yml is run in many scripts. What does
-# it do?
+################################################################################
+# Read variables from pl.yml
+################################################################################
 parse_pl_yml
 
-# What do these do?
 ################################################################################
-#
+# Import the site config for chosen site
 ################################################################################
 import_site_config $sitename_var
-backup_site $sitename_var $msg
+if [[ ! -d "$site_path/$sitename_var" ]]; then
+  echo "Cannot find directory for "$sitename_var", please try again or use --help for more options"
+fi
+################################################################################
+# Now backup the site
+################################################################################
+backup_site $msg
 
 # End timer
 ################################################################################
