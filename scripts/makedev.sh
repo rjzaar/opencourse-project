@@ -136,7 +136,7 @@ echo "install dev modules"
 drush @$sitename_var en -y $dev_modules
 
 #turn on dev settings
-echo "Turn on dev mode"
+echo "Turn on dev mode: drupal --target=$uri site:mode dev"
 drupal --target=$uri site:mode dev
 
 #clear cache

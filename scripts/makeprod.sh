@@ -113,8 +113,13 @@ parse_pl_yml
 import_site_config $sitename_var
 
 #turn on prod settings
+#this should work, but it doesn't.....
+#drupal --target=$uri site:mode prod
+
 echo "Turn on prod mode on --target=$uri"
-drupal --target=$uri site:mode prod
+cd $site_path/$sitename_var/$webroot
+drupal  site:mode prod
+
 
 #uninstall dev modules
 echo "uninstall dev modules"
