@@ -272,10 +272,14 @@ if [ $step -lt 4 ]; then
   echo "Dev modules to install: $dev_composer"
 compmod="drupal/${dev_composer// / drupal\/}"
   if [[ "$verbose" == "debug" ]] ; then
+    if [[ ! "$dev_composer" == "" ]] ; then
 plcomposer require $compmod --dev
+fi
 plcomposer install
 else
+  if [[ ! "$dev_composer" == "" ]] ; then
 plcomposer require $compmod --dev --quiet
+fi
 plcomposer install --quiet
 fi
 
