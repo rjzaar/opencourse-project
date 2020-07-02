@@ -581,7 +581,8 @@ echo "https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extension
 # jump this step
 if [[ -f ~/.bashrc ]] ; then
 ocmsg "source ~/.bashrc" debug
-source ~/.bashrc
+cd
+source .bashrc
 fi
 if [[ -f ~/.zshrc ]] ; then
 ocmsg "source ~/.zshrc" debug
@@ -629,18 +630,19 @@ fi
 if [ $step -lt 17 ]; then
   echo -e "$Cyan step 16: Setup drush aliases etc. $Color_Off"
 
-echo "source bashrc"
-source ~/.bashrc
-echo "drush core1"
-drush core:init -y
-
-echo "update configs"
-verbose="debug"
-update_all_configs
-echo "drush core2"
-drush core:init -y
-echo "update configs2"
-update_all_configs
+#echo "source bashrc"
+#cd
+#source .bashrc
+#echo "drush core1"
+#drush core:init -y
+#
+#echo "update configs"
+#verbose="debug"
+#update_all_configs
+#echo "drush core2"
+#drush core:init -y
+#echo "update configs2"
+#update_all_configs
 
 fi
 echo "All done!"
