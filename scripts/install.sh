@@ -293,12 +293,14 @@ fi
 if [ $step -lt 6 ]; then
   echo -e "$Cyan step 5: setting up drush aliases and site permissions $Color_Off"
   plcomposer require drush/drush
+  ocmsg "set site permissions" debug
+  set_site_permissions
+
   cd "$site_path/$sitename_var/$webroot"
   ocmsg "Moved to $site_path/$sitename_var/$webroot"
   ocmsg "drush core init" debug
   drush core:init -y
-  ocmsg "set site permissions" debug
-  set_site_permissions
+
 fi
 
 if [ $step -lt 7 ]; then

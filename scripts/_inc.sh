@@ -657,6 +657,7 @@ set_site_permissions() {
   if [ $dev = "y" ]; then
     devp="--dev"
   fi
+
   ocmsg="Fixing permissions: --drupal_path="$site_path/$sitename_var/$webroot" --drupal_user=$user --httpd_group=www-data $devp" debug
   sudo d8fp.sh --drupal_path="$site_path/$sitename_var/$webroot" --drupal_user=$user --httpd_group=www-data $devp
 }

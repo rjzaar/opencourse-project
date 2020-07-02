@@ -70,9 +70,9 @@ script:
   - pl update -d
   - pl install -yd $SITE
   - pl copy $SITE loc -d
-  - pl makedev loc
+  - pl makedev loc -d
   - pl copy loc stg -d
-  - pl makeprod stg
+  - pl makeprod stg -d
 
 matrix:
   fast_finish: true

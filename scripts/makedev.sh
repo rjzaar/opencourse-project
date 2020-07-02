@@ -121,10 +121,13 @@ import_site_config $sitename_var
 cd $site_path/$sitename_var
 echo "Composer install at $site_path/$sitename_var"
 if [[ "$verbose" == "debug" ]] ; then
-composer install
+plcomposer install
 else
-composer install --quiet
+plcomposer install --quiet
 fi
+
+
+
 
 # rebuild permissions
 echo "Rebuild permissions, might require sudo."

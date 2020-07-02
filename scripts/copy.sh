@@ -170,6 +170,8 @@ fix_site_settings
 
 echo -e "$Cyan setting up drush aliases and site permissions $Color_Off"
 plcomposer require drush/drush
+chmod a+rx $site_path/$sitename_var/$webroot/vendor/drush/drush/drush
+chmod a+rx $site_path/$sitename_var/$webroot/vendor/drush/drush/drush.php
 cd "$site_path/$sitename_var/$webroot"
 ocmsg "Moved to $site_path/$sitename_var/$webroot"
 ocmsg "drush core init" debug

@@ -124,7 +124,7 @@ drush @$sitename_var pm-uninstall -y $dev_modules
 
 cd $site_path/$sitename_var
 echo "Composer install with no dev modules."
-composer install --no-dev --quiet
+plcomposer install --no-dev --quiet
 
 # rebuild permissions
 echo "Rebuild permissions, might require sudo."
