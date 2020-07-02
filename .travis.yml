@@ -66,7 +66,7 @@ env:
 
 script:
   - bash ./bin/pl init -d
-#  - source ~/.bashrc
+  - source ~/.bashrc
 #  - pl update -d
   - pl install -yd $SITE
   - pl copy $SITE loc -d
