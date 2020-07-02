@@ -268,7 +268,17 @@ fi
 
 if [ $step -lt 4 ]; then
   echo -e "step 3: composer install"
-  plcomposer install
+
+  echo "Dev modules to install: $dev_composer"
+compmod="drupal/${dev_composer// / drupal\/}"
+  if [[ "$verbose" == "debug" ]] ; then
+plcomposer require $compmod --dev
+plcomposer install
+else
+plcomposer require $compmod --dev --quiet
+plcomposer install --quiet
+fi
+
 fi
 
 if [ $step -lt 5 ]; then
