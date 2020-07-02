@@ -113,7 +113,7 @@ parse_pl_yml
 import_site_config $sitename_var
 
 #turn on prod settings
-echo "Turn on prod mode"
+echo "Turn on prod mode on --target=$uri"
 drupal --target=$uri site:mode prod
 
 #uninstall dev modules

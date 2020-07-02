@@ -74,19 +74,21 @@ sites:
 #
 recipes:
   default:
-    source:  git@github.com:rjzaar/opencourse.git
+    source: git@github.com:Vardot/varbase-project.git
+    install_method: git
+    theme: vartheme_bs4
+    theme_admin: vartheme_admin
+    install_modules:
+    dev_modules: syslog views_ui block_place devel features_ui dblog
+    # This is a special directive that will not load any defaults from the default recipe.
+    # This is so in this case install_modules will remain blank
+    default: n
     dev:  y
     profile: varbase
     webroot:  docroot
-#    sitename: default # leave blank it will be called the name of the site, eg loc
+    #    sitename: default # leave blank it will be called the name of the site, eg loc
     auto:  y
     apache: y
-    install_method: git
-    git_upstream: git@github.com:Vardot/varbase-project.git
-    theme: octheme_bs4
-    theme_admin: octheme_admin
-    install_modules: oc_prod
-    dev_modules: oc_dev syslog views_ui block_place devel features_ui dblog search_kint twig_xdebug
     lando: n
   loc:
   stg:
@@ -105,6 +107,7 @@ recipes:
     default: n
     auto: y
     apache: y
+    dev_modules: syslog views_ui block_place devel features_ui dblog
   d8:
     source: https://ftp.drupal.org/files/projects/drupal-8.9.0.tar.gz
     install_method: file
@@ -113,6 +116,7 @@ recipes:
     default: n
     auto: y
     apache: y
+    dev_modules: syslog views_ui block_place devel features_ui dblog
   d8c:
     source: drupal/recommended-project:8.9.x
     install_method: composer
@@ -121,6 +125,7 @@ recipes:
     default: n
     auto: y
     apache: y
+    dev_modules: syslog views_ui block_place devel features_ui dblog
   tes:
   varg:
     source: git@github.com:Vardot/varbase-project.git
@@ -149,4 +154,19 @@ recipes:
     install_modules:
     dev_modules: syslog views_ui block_place devel features_ui dblog
     default: n
+  oc:
+    source:  git@github.com:rjzaar/opencourse.git
+    dev:  y
+    profile: varbase
+    webroot:  docroot
+    #    sitename: default # leave blank it will be called the name of the site, eg loc
+    auto:  y
+    apache: y
+    install_method: git
+    git_upstream: git@github.com:Vardot/varbase-project.git
+    theme: octheme_bs4
+    theme_admin: octheme_admin
+    install_modules: oc_prod
+    dev_modules: oc_dev syslog views_ui block_place devel features_ui dblog search_kint twig_xdebug
+    lando: n
 

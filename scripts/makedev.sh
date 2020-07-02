@@ -126,9 +126,6 @@ else
 plcomposer install --quiet
 fi
 
-
-
-
 # rebuild permissions
 echo "Rebuild permissions, might require sudo."
 #( speaker-test -t sine -f 1000 )& pid=$! ; sleep 0.1s ; kill -9 $pid
