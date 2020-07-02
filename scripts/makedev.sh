@@ -122,6 +122,7 @@ cd $site_path/$sitename_var
 echo "Composer install at $site_path/$sitename_var"
 #Make sure all dev modules are installed
 # create a list of modules to install for dev
+# They should already have been set up during install as dev modules...
 echo "Dev modules to install: $dev_composer"
 compmod="drupal/${dev_composer// / drupal\/}"
 
