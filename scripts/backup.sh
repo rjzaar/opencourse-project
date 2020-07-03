@@ -28,7 +28,8 @@
 
 # Set script name for general file use
 scriptname='pleasy-backup'
-
+plcstatus="works"
+scriptdesc="Backup site and database"
 # Help menu
 ################################################################################
 # Prints user guide

@@ -26,7 +26,7 @@
 
 # Set script name for general file use
 scriptname='pleasy-makeprod'
-
+plcstatus="pass"
 # Help menu
 ################################################################################
 # Prints user guide

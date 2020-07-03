@@ -35,7 +35,7 @@
 
 # Set script name for general file use
 scriptname='pleasy-fixss'
-
+plcstatus="works"
 # Help menu
 ################################################################################
 # Prints user guide

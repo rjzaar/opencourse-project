@@ -30,7 +30,7 @@
 
 # Set script name for general file use
 scriptname='pleasy-makepwp'
-
+plcstatus="works"
 # Help menu
 ################################################################################
 # Prints user guide

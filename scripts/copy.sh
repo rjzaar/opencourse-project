@@ -39,7 +39,7 @@
 # Set script name for general file use
 scriptname='pleasy-site-copy'
 verbose="none"
-
+plcstatus="pass"
 # Help menu
 ################################################################################
 # Prints user guide

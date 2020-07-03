@@ -27,7 +27,7 @@
 # Set script name for general file use
 scriptname='pleasy-makedev'
 verbose="none"
-
+plcstatus="pass"
 # Help menu
 ################################################################################
 # Prints user guide

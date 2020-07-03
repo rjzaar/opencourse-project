@@ -26,13 +26,13 @@
 #
 ################################################################################
 
-# Get the helper functions etc.
-. $script_root/_inc.sh;
-
 # Set script name for general file use
 scriptname='pl-install'
 verbose="none"
+plcstatus="pass"
 
+# Get the helper functions etc.
+. $script_root/_inc.sh;
 # Help menu
 ################################################################################
 # Prints user guide

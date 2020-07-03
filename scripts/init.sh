@@ -31,6 +31,7 @@
 scriptname='pleasy-init'
 # Change this to debug to debug this script
 verbose="none"
+plcstatus="pass"
 # User help
 ################################################################################
 # Prints user guide
