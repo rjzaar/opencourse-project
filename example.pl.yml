@@ -142,7 +142,7 @@ recipes:
     # This is a special directive that will not load any defaults from the default recipe.
     # This is so in this case install_modules will remain blank
     default: n
-  var:
+  varc:
     source: vardot/varbase-project:^8.8.5
     install_method: composer
     theme: vartheme_bs4
