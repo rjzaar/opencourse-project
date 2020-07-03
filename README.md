@@ -12,6 +12,7 @@ You set it up with the following commands
 git clone git@github.com:rjzaar/pleasy.git 
 bash ./pleasy/bin/pl  init
 source ~/.bashrc
+pl update
 ```
 Now edit pl.yml with your settings or just use the defaults
 
@@ -36,10 +37,21 @@ It provides an intelligent separation.
 Since a particular site based project needs to include site specific files which should be stored on a private repository for backup, there is one more layer needed.
 The only difference with this layer is the .gitignore file which includes folders needed on production. Welcome to Drupal 8 development.
 
-Status codes:
+Status codes
 
 pass: Working and passing Travis CI :heavy_check_mark:
 
 works: Working but not yet integrated to Travis CI :white_check_mark:
 
 todo: Has not been looked at yet :question:
+
+
+# FUNCTION LIST
+
+<details>
+
+**<summary> Name of function: short description from scriptdesc variable        status code eg :question: </summary>**
+
+help printout from the function
+
+</details>
