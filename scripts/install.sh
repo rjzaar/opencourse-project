@@ -268,7 +268,21 @@ fi
 
 if [ $step -lt 4 ]; then
   echo -e "step 3: composer install"
-  plcomposer install
+
+  echo "Dev modules to install: $dev_composer"
+compmod="drupal/${dev_composer// / drupal\/}"
+  if [[ "$verbose" == "debug" ]] ; then
+    if [[ ! "$dev_composer" == "" ]] ; then
+plcomposer require $compmod --dev
+fi
+plcomposer install
+else
+  if [[ ! "$dev_composer" == "" ]] ; then
+plcomposer require $compmod --dev --quiet
+fi
+plcomposer install --quiet
+fi
+
 fi
 
 if [ $step -lt 5 ]; then
@@ -293,11 +307,14 @@ fi
 if [ $step -lt 6 ]; then
   echo -e "$Cyan step 5: setting up drush aliases and site permissions $Color_Off"
   plcomposer require drush/drush
+  ocmsg "set site permissions" debug
+  set_site_permissions
+
   cd "$site_path/$sitename_var/$webroot"
   ocmsg "Moved to $site_path/$sitename_var/$webroot"
-  ocmsg "drush" debug
+  ocmsg "drush core init" debug
   drush core:init -y
-  set_site_permissions
+
 fi
 
 if [ $step -lt 7 ]; then

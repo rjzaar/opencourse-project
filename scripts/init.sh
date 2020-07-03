@@ -192,7 +192,7 @@ echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | sudo EDITOR="tee -a" visudo
 
 fi
 
-sudo apt-get install gawk
+sudo apt-get install gawk -y
 gout=$(gawk -Wv)
 gversion=${gout:8:1}
 echo "Gawk version: >$gversion<"
@@ -462,7 +462,7 @@ cd
 echo "composer home: $(composer config -g home)"
 comphome=$(composer config -g home)
 
-echo "export PATH=\"\$PATH:$comphome/vendor/bin:\"" >> ~/.bashrc
+echo "export PATH=\"\$PATH:$comphome/vendor/bin\"" >> ~/.bashrc
 source ~/.bashrc
 # cat .bashrc
 
@@ -472,11 +472,11 @@ cd /usr/local/bin
 if [[ -d "/home/$USER/.config" ]] ; then
   if [[ ! -L './cgr' ]] ; then
     echo "Creating symlink"
-sudo ln -s ~/.config/composer/vendor/bin/cgr .
+sudo ln -s $comphome/vendor/bin/cgr .
 fi
 #sudo ln -s ~/.config/composer/vendor/bin/drush .
 cd
-echo "export DRUSH_LAUNCHER_FALLBACK=~/.config/composer/vendor/bin/drush" >> ~/.bashrc
+echo "export DRUSH_LAUNCHER_FALLBACK=$comphome/vendor/bin/drush" >> ~/.bashrc
 elif [[ -d "/home/$USER/.composer" ]] ; then
 if [[ ! -h ~/.composer/vendor/bin/cgr ]] ; then
     if [[ ! -L './cgr' ]] ; then
@@ -581,7 +581,8 @@ echo "https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extension
 # jump this step
 if [[ -f ~/.bashrc ]] ; then
 ocmsg "source ~/.bashrc" debug
-source ~/.bashrc
+cd
+source .bashrc
 fi
 if [[ -f ~/.zshrc ]] ; then
 ocmsg "source ~/.zshrc" debug
@@ -624,9 +625,31 @@ npm install gulp -D
 
 ocmsg "Increase watch speed for gulp: requires sudo." debug
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-
-echo "All done!"
 fi
+
+# I don't know why I can't run source in this script. But I'll leave it out for now.
+#if [ $step -lt 17 ]; then
+#  echo -e "$Cyan step 16: Setup drush aliases etc. $Color_Off"
+#
+echo "source bashrc"
+cd
+source .bashrc
+echo "source bashrc2"
+source ~/.bashrc
+#echo "drush core1"
+#drush status
+#drush core:init -y
+##
+##echo "update configs"
+##verbose="debug"
+##update_all_configs
+##echo "drush core2"
+##drush core:init -y
+##echo "update configs2"
+##update_all_configs
+#
+#fi
+echo "All done!"
 
 exit 0
 
