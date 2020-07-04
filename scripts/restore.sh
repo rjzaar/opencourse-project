@@ -140,8 +140,7 @@ import_site_config $sitename_var
 
 # Prompt to choose which database to backup, 1 will be the latest.
 # Could be a better way to go: https://stackoverflow.com/questions/42789273/bash-choose-default-from-case-when-enter-is-pressed-in-a-select-prompt
-cd
-cd "$folder/sitebackups/$bk"
+cd "$folderpath/sitebackups/$bk"
 ocmsg "flag_first is $flag_first" debug
 options=( $(find -maxdepth 1 -name "*.sql" -print0 | xargs -0 ls -1 -t ) )
 if [ $flag_first ]
