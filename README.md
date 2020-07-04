@@ -49,6 +49,7 @@ todo: Has not been looked at yet :question:
 # FUNCTION LIST
 
 <details>
+
 **<summary> pl addc :white_check_mark: </summary>**
 Usage: pl addc [OPTION]
   This script is used to add github credentials
@@ -58,8 +59,11 @@ Usage: pl addc [OPTION]
 
   Examples:
   pl addc -h
+
 <\details>
+
 <details>
+
 **<summary> pl backupdb :white_check_mark: </summary>**
 --**BROKEN DOCUMENTATION**--
 [34mbackup --help [39m
@@ -78,8 +82,11 @@ Usage: pl backupdb [OPTION] ... [SOURCE]
   pl backupdb --message='Love' love
   END HELP
 --**BROKEN DOCUMENTATION**--
+
 <\details>
+
 <details>
+
 **<summary> pl backupprod :white_check_mark: </summary>**
 Usage: pl backup [OPTION] ... [SOURCE]
   This script is used to backup prod site's files and database. You can
@@ -93,8 +100,11 @@ Usage: pl backup [OPTION] ... [SOURCE]
   Examples:
   pl backupprod -h
   pl backupprod ./tim -m 'First tim backup'
+
 <\details>
+
 <details>
+
 **<summary> pl backup :white_check_mark: </summary>**
 Usage: pl backup [OPTION] ... [SOURCE]
 This script is used to backup a particular site's files and database.
@@ -110,8 +120,11 @@ pl backup dev
 pl backup tim -m 'First tim backup'
 pl backup --message='Love' love
 END HELP
+
 <\details>
+
 <details>
+
 **<summary> pl copy :white_check_mark: </summary>**
 Usage: pl copy [OPTION] ... [SOURCE] [DESTINATION]
 This script will copy one site to another site. It will copy all
@@ -125,8 +138,11 @@ Mandatory arguments to long options are mandatory for short options too.
   -d --debug              Provide debug information when running this script.
 
 Examples:
+
 <\details>
+
 <details>
+
 **<summary> pl devpush :white_check_mark: </summary>**
 Usage: pl devpush [OPTION]
 Include help Rob!
@@ -135,8 +151,11 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
+
 <\details>
+
 <details>
+
 **<summary> pl enmod :white_check_mark: </summary>**
 Usage: pl enmod [OPTION] ... [SITE] [MODULE]
 This script will install a module first using composer, then fix the file/dir
@@ -146,8 +165,11 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
+
 <\details>
+
 <details>
+
 **<summary> pl fixp :white_check_mark: </summary>**
 Usage: pl fixp [OPTION] ... [SOURCE]
 This script is used to fix permissions of a Drupal site You just need to
@@ -157,8 +179,11 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
+
 <\details>
+
 <details>
+
 **<summary> pl fixss :white_check_mark: </summary>**
 Usage: pl fixss [OPTION] ... [SOURCE]
 This will fix (or set) the site settings in local.settings.php You just need
@@ -168,8 +193,11 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
+
 <\details>
+
 <details>
+
 **<summary> pl gcompushmaster :white_check_mark: </summary>**
 Usage: pl gcompushmaster [OPTION] ... [SITE] [MESSAGE]
 This will merge branch with master You just need to state the sitename, eg
@@ -179,14 +207,20 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
+
 <\details>
+
 <details>
+
 **<summary> pl gcom :white_check_mark: </summary>**
 --**BROKEN DOCUMENTATION**--
 please type 'pl gcom --help' for more options
 --**BROKEN DOCUMENTATION**--
+
 <\details>
+
 <details>
+
 **<summary> pl gcomsh :white_check_mark: </summary>**
 Usage: pl gcomsh [OPTION] ... [SITE] [MESSAGE]
 This will git commit changes with msg after merging with master. You just
@@ -199,8 +233,11 @@ Examples:
 pl gcomsh -h
 pl gcomsh dev (relative dev folder)
 pl gcomsh tim 'First tim backup'
+
 <\details>
+
 <details>
+
 **<summary> pl gcomup2upstream :white_check_mark: </summary>**
 Usage: pl gcomup2upstream [OPTION] ... [SITE] [MESSAGE]
 This will merge branch with master, and update to the upstream git. It
@@ -215,8 +252,11 @@ pl gcomup2upstream -h
 pl gcomup2upstream dev (relative dev folder)
 pl gcomup2upstream tim 'First tim backup'
 END HELP
+
 <\details>
+
 <details>
+
 **<summary> pl gcomup :white_check_mark: </summary>**
 Usage: pl gcomup [OPTION] ... [SITE] [MESSAGE]
 Composer update, git commit changes and backup. This script follows the
@@ -231,8 +271,11 @@ pl gcomup -h
 pl gcomup dev (relative dev folder)
 pl gcomup tim 'First tim backup'
 END HELP
+
 <\details>
+
 <details>
+
 **<summary> pl gulp :white_check_mark: </summary>**
 Usage: pl gulp [OPTION] ... [SITE]
 This script is used to set upl gulp browser sync for a particular page. You
@@ -244,8 +287,11 @@ Mandatory arguments to long options are mandatory for short options too.
 Examples:
 pl gulp 
 END HELP
+
 <\details>
+
 <details>
+
 **<summary> pl importdev :white_check_mark: </summary>**
 Usage: pl gulp [OPTION] ... [SOURCE-SITE] [DEST-SITE]
 @ROB add description please
@@ -256,8 +302,11 @@ Mandatory arguments to long options are mandatory for short options too.
 Examples:
 pl gulp 
 END HELP
+
 <\details>
+
 <details>
+
 **<summary> pl init :white_check_mark: </summary>**
 Usage: pl init [OPTION]
 This will set up pleasy and initialise the sites as per
@@ -300,8 +349,11 @@ INSTALL LIST:
     sudo npm install gulp-cli -g
     sudo npm install gulp -D
 END OF HELP
+
 <\details>
+
 <details>
+
 **<summary> pl installf :white_check_mark: </summary>**
 Usage: pl installf [OPTION]
 This script is used to install a variety of drupal flavours particularly
@@ -319,8 +371,11 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 END HELP
+
 <\details>
+
 <details>
+
 **<summary> pl install :white_check_mark: </summary>**
 Usage: pl install site [OPTION]
 This script is used to install a variety of drupal flavours particularly
@@ -340,8 +395,11 @@ Mandatory arguments to long options are mandatory for short options too.
 Examples:
 pl install d8
 END HELP
+
 <\details>
+
 <details>
+
 **<summary> pl main :white_check_mark: </summary>**
 Usage: pl main [OPTION] ... [SITE] [MODULES]
 This script will turn maintenance mode on or off. You will need to specify the
@@ -352,8 +410,11 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 END HELP
+
 <\details>
+
 <details>
+
 **<summary> pl makedb :white_check_mark: </summary>**
 Usage: pl makedb [OPTION] ... [SITE]
 <ADD DESC HERE>
@@ -363,8 +424,11 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 END HELP
+
 <\details>
+
 <details>
+
 **<summary> pl makedev :white_check_mark: </summary>**
 Usage: pl makedev [OPTION] ... [SITE]
 This script is used to turn on dev mode and enable dev modules.
@@ -376,8 +440,11 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 END HELP
+
 <\details>
+
 <details>
+
 **<summary> pl makelpwp :white_check_mark: </summary>**
 Usage: pl makepwp [OPTION] ... [SITE]
 This script is used to overwrite localprod with the actual external production
@@ -391,8 +458,11 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 END HELP
+
 <\details>
+
 <details>
+
 **<summary> pl makeprod :white_check_mark: </summary>**
 Usage: pl makeprod [OPTION] ... [SITE]
 This script is used to turn off dev mode and uninstall dev modules.  You just
@@ -404,8 +474,11 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 END HELP
+
 <\details>
+
 <details>
+
 **<summary> pl olwprod :white_check_mark: </summary>**
 Usage: pl olwprod [OPTION] ... [SITE]
 This script is used to overwrite localprod with the actual external production
@@ -418,8 +491,11 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 END HELP
+
 <\details>
+
 <details>
+
 **<summary> pl prodow :white_check_mark: </summary>**
 Usage: pl prodow [OPTION] ... [SITE]
 This script will overwrite production with the site chosen It will first backup
@@ -430,8 +506,11 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 END HELP
+
 <\details>
+
 <details>
+
 **<summary> pl rebuild :white_check_mark: </summary>**
 Usage: pl rebuild [OPTION] ... [SITE]
 This script is used to rebuild a particular site's database. You just need to
@@ -442,8 +521,11 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 END HELP
+
 <\details>
+
 <details>
+
 **<summary> pl update :white_check_mark: </summary>**
 Usage: pl update [OPTION]
 This script will update the configs for all sites
@@ -453,68 +535,118 @@ Mandatory arguments to long options are mandatory for short options too.
   -d --debug              Provide debug information when running this script.
 
 Examples:
+
 <\details>
+
 <details>
+
 **<summary> pl copyf :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 <details>
+
 **<summary> pl _inc :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 <details>
+
 **<summary> pl open :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 <details>
+
 **<summary> pl reset :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 <details>
+
 **<summary> pl restoredb :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 <details>
+
 **<summary> pl restore :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 <details>
+
 **<summary> pl stg2prodoverwrite2 :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 <details>
+
 **<summary> pl stg2prodoverwrite :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 <details>
+
 **<summary> pl stg2prod :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 <details>
+
 **<summary> pl stopgulp :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 <details>
+
 **<summary> pl testim :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 <details>
+
 **<summary> pl testi :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 <details>
+
 **<summary> pl test :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 <details>
+
 **<summary> pl teststg :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 <details>
+
 **<summary> pl teststgupdb :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 <details>
+
 **<summary> pl varup :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
