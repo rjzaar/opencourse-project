@@ -1274,7 +1274,7 @@ EOL
 # Add git credentials
 ################################################################################
 add_git_credentials() {
-  ocmsg "Add git credentials."
+  ocmsg "Add git credentials $user_home/.ssh/$github_key"
   if [[ "$verbose" == "debug" ]]; then
     ssh-add $user_home/.ssh/$github_key
   else

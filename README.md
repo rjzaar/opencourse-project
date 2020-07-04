@@ -48,10 +48,11 @@ todo: Has not been looked at yet :question:
 
 # FUNCTION LIST
 
+command: addc.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl addc :white_check_mark: </summary>**
-Usage: pl addc [OPTION]
+**<summary> pl addc Usage: pl addc [OPTION] :question: </summary>**
+--**BROKEN DOCUMENTATION**--
   This script is used to add github credentials
 
   Mandatory arguments to long options are mandatory for short options too.
@@ -59,15 +60,17 @@ Usage: pl addc [OPTION]
 
   Examples:
   pl addc -h
+--**BROKEN DOCUMENTATION**--
 
 </details>
 
+command: backupdb.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl backupdb :white_check_mark: </summary>**
+**<summary> pl backupdb [34mbackup --help [39m :question: </summary>**
 --**BROKEN DOCUMENTATION**--
-[34mbackup --help [39m
-Usage: pl backupdb [OPTION] ... [SOURCE]
+Backs up the database only
+    Usage: pl backupdb [OPTION] ... [SOURCE]
   This script is used to backup a particular site's database.
   You just need to state the sitename, eg dev.
 
@@ -85,9 +88,10 @@ Usage: pl backupdb [OPTION] ... [SOURCE]
 
 </details>
 
+command: backupprod.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl backupprod :white_check_mark: </summary>**
+**<summary> pl backupprod Backs up the production site :question: </summary>**
 Usage: pl backup [OPTION] ... [SOURCE]
   This script is used to backup prod site's files and database. You can
   add an optional message.
@@ -103,9 +107,10 @@ Usage: pl backup [OPTION] ... [SOURCE]
 
 </details>
 
+command: backup.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl backup :white_check_mark: </summary>**
+**<summary> pl backup Backup site and database :white_check_mark: </summary>**
 Usage: pl backup [OPTION] ... [SOURCE]
 This script is used to backup a particular site's files and database.
 You just need to state the sitename, eg dev.
@@ -123,10 +128,11 @@ END HELP
 
 </details>
 
+command: copy.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl copy :white_check_mark: </summary>**
-Usage: pl copy [OPTION] ... [SOURCE] [DESTINATION]
+**<summary> pl copy Copies one site to another site. :heavy_check_mark: </summary>**
+    Usage: pl copy [OPTION] ... [SOURCE] [DESTINATION]
 This script will copy one site to another site. It will copy all
 files, set up the site settings and import the database. If no
 argument is given, it will copy dev to stg. If one argument is given it
@@ -141,23 +147,26 @@ Examples:
 
 </details>
 
+command: devpush.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl devpush :white_check_mark: </summary>**
-Usage: pl devpush [OPTION]
+**<summary> pl devpush Usage: pl devpush [OPTION] :question: </summary>**
+--**BROKEN DOCUMENTATION**--
 Include help Rob!
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
+--**BROKEN DOCUMENTATION**--
 
 </details>
 
+command: enmod.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl enmod :white_check_mark: </summary>**
-Usage: pl enmod [OPTION] ... [SITE] [MODULE]
+**<summary> pl enmod Usage: pl enmod [OPTION] ... [SITE] [MODULE] :question: </summary>**
+--**BROKEN DOCUMENTATION**--
 This script will install a module first using composer, then fix the file/dir
 ownership and then enable the module using drush automatically.
 
@@ -165,13 +174,15 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
+--**BROKEN DOCUMENTATION**--
 
 </details>
 
+command: fixp.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl fixp :white_check_mark: </summary>**
-Usage: pl fixp [OPTION] ... [SOURCE]
+**<summary> pl fixp Usage: pl fixp [OPTION] ... [SOURCE] :white_check_mark: </summary>**
+--**BROKEN DOCUMENTATION**--
 This script is used to fix permissions of a Drupal site You just need to
 state the sitename, eg dev.
 
@@ -179,13 +190,15 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
+--**BROKEN DOCUMENTATION**--
 
 </details>
 
+command: fixss.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl fixss :white_check_mark: </summary>**
-Usage: pl fixss [OPTION] ... [SOURCE]
+**<summary> pl fixss Usage: pl fixss [OPTION] ... [SOURCE] :white_check_mark: </summary>**
+--**BROKEN DOCUMENTATION**--
 This will fix (or set) the site settings in local.settings.php You just need
 to state the sitename, eg dev.
 
@@ -193,12 +206,14 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
+--**BROKEN DOCUMENTATION**--
 
 </details>
 
+command: gcompushmaster.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl gcompushmaster :white_check_mark: </summary>**
+**<summary> pl gcompushmaster Git merge branch with master and push :question: </summary>**
 Usage: pl gcompushmaster [OPTION] ... [SITE] [MESSAGE]
 This will merge branch with master You just need to state the sitename, eg
 dev.
@@ -210,18 +225,20 @@ Examples:
 
 </details>
 
+command: gcom.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl gcom :white_check_mark: </summary>**
+**<summary> pl gcom please type 'pl gcom --help' for more options :question: </summary>**
 --**BROKEN DOCUMENTATION**--
-please type 'pl gcom --help' for more options
+
 --**BROKEN DOCUMENTATION**--
 
 </details>
 
+command: gcomsh.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl gcomsh :white_check_mark: </summary>**
+**<summary> pl gcomsh Git push after master merge :question: </summary>**
 Usage: pl gcomsh [OPTION] ... [SITE] [MESSAGE]
 This will git commit changes with msg after merging with master. You just
 need to state the sitename, eg dev.
@@ -236,9 +253,10 @@ pl gcomsh tim 'First tim backup'
 
 </details>
 
+command: gcomup2upstream.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl gcomup2upstream :white_check_mark: </summary>**
+**<summary> pl gcomup2upstream Git commit with upstream merge :question: </summary>**
 Usage: pl gcomup2upstream [OPTION] ... [SITE] [MESSAGE]
 This will merge branch with master, and update to the upstream git. It
 presupposes you have already merged. You just need to state the sitename, eg
@@ -255,9 +273,10 @@ END HELP
 
 </details>
 
+command: gcomup.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl gcomup :white_check_mark: </summary>**
+**<summary> pl gcomup Git commit and backup :question: </summary>**
 Usage: pl gcomup [OPTION] ... [SITE] [MESSAGE]
 Composer update, git commit changes and backup. This script follows the
 correct path to git commit changes You just need to state the
@@ -274,9 +293,10 @@ END HELP
 
 </details>
 
+command: gulp.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl gulp :white_check_mark: </summary>**
+**<summary> pl gulp Turn on gulp :question: </summary>**
 Usage: pl gulp [OPTION] ... [SITE]
 This script is used to set upl gulp browser sync for a particular page. You
 just need to state the sitename, eg loc and the page, eg opencat.loc
@@ -285,30 +305,32 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
-pl gulp 
+pl gulp
 END HELP
 
 </details>
 
+command: importdev.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl importdev :white_check_mark: </summary>**
-Usage: pl gulp [OPTION] ... [SOURCE-SITE] [DEST-SITE]
+**<summary> pl importdev Copy localprod to stg, then import dev to stg :question: </summary>**
+Usage: pl importdev [OPTION] ... [SOURCE-SITE] [DEST-SITE]
 @ROB add description please
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
-pl gulp 
+pl importdev 
 END HELP
 
 </details>
 
+command: init.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl init :white_check_mark: </summary>**
-Usage: pl init [OPTION]
+**<summary> pl init Initialises pleasy :heavy_check_mark: </summary>**
+  Usage: pl init [OPTION]
 This will set up pleasy and initialise the sites as per
 pl.yml, including the current production shared database.
 This will install many programs, which will be listed at
@@ -333,13 +355,13 @@ bash ./[sitename]/bin/pl init -s=6  # to start at step 6.
 
 INSTALL LIST:
     sudo apt-get install gawk
-    sudo $folderpath/scripts/lib/installsudoers.sh "$folderpath/bin" $user
+    sudo $folderpath/scripts/lib/installsudoers.sh "$folderpath\/bin" $user
     sudo apt-get install apache2 php libapache2-mod-php php-mysql curl php-cli \
     php-gd php-mbstring php-gettext php-xml php-curl php-bz2 php-zip git unzip
     php-xdebug -y
     sudo apt-get -y install mysql-server
     sudo apt-get install phpmyadmin -y
-    php -r "copy(https://getcomposer.org/installer, composer-setup.php);"
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     HASH="$(wget -q -O - https://composer.github.io/installer.sig)"
     sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
     curl https://drupalconsole.com/installer -L -o drupal.phar
@@ -352,31 +374,10 @@ END OF HELP
 
 </details>
 
+command: install.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl installf :white_check_mark: </summary>**
-Usage: pl installf [OPTION]
-This script is used to install a variety of drupal flavours particularly
-opencourse, but just the file system. No database.  This will use
-opencourse-project as a wrapper. It is presumed you have already cloned
-opencourse-project.  You just need to specify the site name as a single
-argument.  All the settings for that site are in pl.yml If no site name is
-given then the default site is created.
-
-Mandatory arguments to long options are mandatory for short options too.
-  -h --help               Display help (Currently displayed)
-  -d --default	          Use default Drupal flavour
-  -f --from=[flavour]     Choose drupal flavour
-  -y --yes                Auto Yes to all options
-
-Examples:
-END HELP
-
-</details>
-
-<details>
-
-**<summary> pl install :white_check_mark: </summary>**
+**<summary> pl install Installs a drupal site :heavy_check_mark: </summary>**
 Usage: pl install site [OPTION]
 This script is used to install a variety of drupal flavours particularly
 opencourse This will use opencourse-project as a wrapper. It is presumed you
@@ -387,6 +388,7 @@ name is given then the default site is created.
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
   -y --yes                Auto Yes to all options
+  -f --files              Only install site files. No database
   -s --step=[INT]         Restart at the step specified.
   -b --build-step=[INT]   Restart the build at step specified (step=6)
   -d --debug              Provide debug information when running this script.
@@ -398,9 +400,10 @@ END HELP
 
 </details>
 
+command: main.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl main :white_check_mark: </summary>**
+**<summary> pl main Turn maintenance mode on or off :question: </summary>**
 Usage: pl main [OPTION] ... [SITE] [MODULES]
 This script will turn maintenance mode on or off. You will need to specify the
 site first than on or off, eg pl main loc on
@@ -409,13 +412,16 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
+pl main loc on
+pl main dev off
 END HELP
 
 </details>
 
+command: makedb.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl makedb :white_check_mark: </summary>**
+**<summary> pl makedb Create the database for a site :question: </summary>**
 Usage: pl makedb [OPTION] ... [SITE]
 <ADD DESC HERE>
 
@@ -427,9 +433,10 @@ END HELP
 
 </details>
 
+command: makedev.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl makedev :white_check_mark: </summary>**
+**<summary> pl makedev Turn dev mode on for a site :heavy_check_mark: </summary>**
 Usage: pl makedev [OPTION] ... [SITE]
 This script is used to turn on dev mode and enable dev modules.
 You just need to state the sitename, eg stg.
@@ -439,14 +446,16 @@ Mandatory arguments to long options are mandatory for short options too.
   -d --debug              Provide debug information when running this script.
 
 Examples:
+pl makedev loc
 END HELP
 
 </details>
 
+command: makelpwp.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl makelpwp :white_check_mark: </summary>**
-Usage: pl makepwp [OPTION] ... [SITE]
+**<summary> pl makelpwp Overwrite localprod with production :white_check_mark: </summary>**
+Usage: pl makelpwp [OPTION] ... [SITE]
 This script is used to overwrite localprod with the actual external production
 site.  The choice of localprod is set in pl.yml under sites: localprod: The
 external site details are also set in pl.yml under prod: Note: once localprod
@@ -457,13 +466,15 @@ Mandatory arguments to long options are mandatory for short options too.
   -s --step=[1-6]         Select step to proceed (For DEBUG purposes?)
 
 Examples:
+pl makelpwp
 END HELP
 
 </details>
 
+command: makeprod.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl makeprod :white_check_mark: </summary>**
+**<summary> pl makeprod Turn production mode on and remove dev modules :heavy_check_mark: </summary>**
 Usage: pl makeprod [OPTION] ... [SITE]
 This script is used to turn off dev mode and uninstall dev modules.  You just
 need to state the sitename, eg stg.
@@ -477,26 +488,10 @@ END HELP
 
 </details>
 
+command: prodow.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl olwprod :white_check_mark: </summary>**
-Usage: pl olwprod [OPTION] ... [SITE]
-This script is used to overwrite localprod with the actual external production
-site.  The choice of localprod is set in pl.yml under sites: localprod: The
-external site details are also set in pl.yml under prod: Note: once localprod
-has been locally backedup, then it can just be restored from there if need be.
-
-Mandatory arguments to long options are mandatory for short options too.
-  -h --help               Display help (Currently displayed)
-
-Examples:
-END HELP
-
-</details>
-
-<details>
-
-**<summary> pl prodow :white_check_mark: </summary>**
+**<summary> pl prodow Overwrite production with site specified :question: </summary>**
 Usage: pl prodow [OPTION] ... [SITE]
 This script will overwrite production with the site chosen It will first backup
 prod The external site details are also set in pl.yml under prod:
@@ -509,9 +504,10 @@ END HELP
 
 </details>
 
+command: rebuild.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl rebuild :white_check_mark: </summary>**
+**<summary> pl rebuild Rebuild a site's database :question: </summary>**
 Usage: pl rebuild [OPTION] ... [SITE]
 This script is used to rebuild a particular site's database. You just need to
 state the sitename, eg loc.
@@ -524,9 +520,10 @@ END HELP
 
 </details>
 
+command: update.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl update :white_check_mark: </summary>**
+**<summary> pl update Update all site configs :heavy_check_mark: </summary>**
 Usage: pl update [OPTION]
 This script will update the configs for all sites
 

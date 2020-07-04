@@ -45,7 +45,8 @@ scriptname='pleasy-site-file-copy'
 ################################################################################
 print_help() {
 echo \
-"Usage: pl copyf [OPTION] ... [SOURCE]
+"Copies only the files from one site to another
+Usage: pl copyf [OPTION] ... [SOURCE]
 This script will copy one site to another site. It will copy only the files
 but will set up the site settings. If no argument is given, it will copy dev
 to stg If one argument is given it will copy dev to the site specified If two

@@ -37,6 +37,7 @@ scriptname='pleasy-prodow'
 ################################################################################
 print_help() {
 cat << HEREDOC
+Overwrite production with site specified
 Usage: pl prodow [OPTION] ... [SITE]
 This script will overwrite production with the site chosen It will first backup
 prod The external site details are also set in pl.yml under prod:

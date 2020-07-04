@@ -42,16 +42,14 @@ scriptname='pleasy-backupprod'
 ################################################################################
 SECONDS=0
 
-# what does this do?
-. $script_root/_inc.sh;
-
 # Help menu
 ################################################################################
 # Prints user guide
 ################################################################################
 print_help() {
 echo \
-"Usage: pl backup [OPTION] ... [SOURCE]
+"Backs up the production site
+Usage: pl backup [OPTION] ... [SOURCE]
   This script is used to backup prod site's files and database. You can
   add an optional message.
 

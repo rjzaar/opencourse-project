@@ -21,22 +21,22 @@
 ################################################################################
 ################################################################################
 #                                TODO LIST
-# Implement message function
+# Implement message function - DONE
 #
 ################################################################################
 ################################################################################
 
 # Set script name for general file use
 scriptname='pleasy-backup'
-plcstatus="works"
-scriptdesc="Backup site and database"
+
 # Help menu
 ################################################################################
 # Prints user guide
 ################################################################################
 print_help() {
 echo \
-"Usage: pl backup [OPTION] ... [SOURCE]
+"Backup site and database
+Usage: pl backup [OPTION] ... [SOURCE]
 This script is used to backup a particular site's files and database.
 You just need to state the sitename, eg dev.
 
@@ -50,7 +50,6 @@ pl backup dev
 pl backup tim -m 'First tim backup'
 pl backup --message='Love' love
 END HELP"
-exit 0
 }
 
 # start timer
@@ -87,7 +86,9 @@ eval set -- "$args"
 while true; do
   case "$1" in
   -h | --help)
-    print_help; exit 0; ;;
+    print_help;
+    exit 2 # works
+    ;;
   -m | --message)
     shift
     msg="$(echo "$1" | sed 's/^=//g')"
@@ -121,7 +122,6 @@ fi
 
 # (what do these do?)
 echo -e "\e[34mbackup $1 \e[39m"
-. $script_root/_inc.sh;
 
 ################################################################################
 # Read variables from pl.yml

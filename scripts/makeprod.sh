@@ -26,13 +26,14 @@
 
 # Set script name for general file use
 scriptname='pleasy-makeprod'
-plcstatus="pass"
+
 # Help menu
 ################################################################################
 # Prints user guide
 ################################################################################
 print_help() {
 cat << HEREDOC
+Turn production mode on and remove dev modules
 Usage: pl makeprod [OPTION] ... [SITE]
 This script is used to turn off dev mode and uninstall dev modules.  You just
 need to state the sitename, eg stg.
@@ -44,7 +45,7 @@ Mandatory arguments to long options are mandatory for short options too.
 Examples:
 END HELP
 HEREDOC
-exit 0
+
 }
 
 # start timer
@@ -80,7 +81,9 @@ eval set -- "$args"
 while true; do
   case "$1" in
   -h | --help)
-    print_help; exit 0; ;;
+    print_help;
+    exit 3 # pass
+    ;;
   -d | --debug)
     verbose="debug"
     shift; ;;

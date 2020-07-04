@@ -40,7 +40,8 @@ verbose="none"
 ################################################################################
 print_help() {
 echo \
-"Usage: pl update [OPTION]
+"Update all site configs
+Usage: pl update [OPTION]
 This script will update the configs for all sites
 
 Mandatory arguments to long options are mandatory for short options too.
@@ -48,7 +49,7 @@ Mandatory arguments to long options are mandatory for short options too.
   -d --debug              Provide debug information when running this script.
 
 Examples:"
-exit 0
+
 }
 
 # Use of Getopt
@@ -80,7 +81,7 @@ while true; do
   case "$1" in
   -h | --help)
     print_help
-    exit 0
+    exit 3 # pass
     ;;
    -d | --debug)
     verbose="debug"

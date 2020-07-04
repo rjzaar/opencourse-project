@@ -38,7 +38,8 @@ plcstatus="pass"
 ################################################################################
 print_help() {
   echo \
-  'Usage: pl init [OPTION]
+  "Initialises pleasy
+  Usage: pl init [OPTION]
 This will set up pleasy and initialise the sites as per
 pl.yml, including the current production shared database.
 This will install many programs, which will be listed at
@@ -63,14 +64,14 @@ bash ./[sitename]/bin/pl init -s=6  # to start at step 6.
 
 INSTALL LIST:
     sudo apt-get install gawk
-    sudo $folderpath/scripts/lib/installsudoers.sh "$folderpath/bin" $user
-    sudo apt-get install apache2 php libapache2-mod-php php-mysql curl php-cli \
+    sudo \$folderpath/scripts/lib/installsudoers.sh \"\$folderpath\/bin\" \$user
+    sudo apt-get install apache2 php libapache2-mod-php php-mysql curl php-cli \\
     php-gd php-mbstring php-gettext php-xml php-curl php-bz2 php-zip git unzip
     php-xdebug -y
     sudo apt-get -y install mysql-server
     sudo apt-get install phpmyadmin -y
-    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-    HASH="$(wget -q -O - https://composer.github.io/installer.sig)"
+    php -r \"copy('https://getcomposer.org/installer', 'composer-setup.php');\"
+    HASH=\"\$(wget -q -O - https://composer.github.io/installer.sig)\"
     sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
     curl https://drupalconsole.com/installer -L -o drupal.phar
     sudo apt install nodejs build-essential
@@ -78,7 +79,7 @@ INSTALL LIST:
     sudo apt install npm
     sudo npm install gulp-cli -g
     sudo npm install gulp -D
-END OF HELP'
+END OF HELP"
 }
 
 # Step Variable
@@ -141,7 +142,7 @@ while true; do
     ;;
   -h | --help)
     print_help
-    exit 0
+    exit 3 # pass
     ;;
   --)
     shift

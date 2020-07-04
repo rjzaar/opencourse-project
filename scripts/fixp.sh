@@ -34,7 +34,7 @@
 
 # Set script name for general file use
 scriptname='pleasy-fixp'
-plcstatus="works"
+
 # Help menu
 ################################################################################
 # Prints user guide
@@ -49,7 +49,7 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:"
-exit 0
+
 }
 
 # Use of Getopt
@@ -81,7 +81,7 @@ while true; do
   case "$1" in
   -h | --help)
     print_help
-    exit 0
+    exit 2 # works
     ;;
   --)
     shift
@@ -107,7 +107,7 @@ SECONDS=0
 if [ "$#" = 0 ]; then
   echo 'Please give a site source'
   print_help
-  exit 2
+  exit 0
 fi
 
 sitename_var=$1

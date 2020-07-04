@@ -31,7 +31,8 @@ scriptname='pleasy-main'
 # Prints user guide
 ################################################################################
 print_help() {
-cat << HEREDOC
+echo \
+"Turn maintenance mode on or off
 Usage: pl main [OPTION] ... [SITE] [MODULES]
 This script will turn maintenance mode on or off. You will need to specify the
 site first than on or off, eg pl main loc on
@@ -40,9 +41,10 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
-END HELP
-HEREDOC
-exit 0
+pl main loc on
+pl main dev off
+END HELP"
+
 }
 
 # start timer

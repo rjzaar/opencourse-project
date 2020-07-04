@@ -33,7 +33,8 @@ scriptname='gulp'
 # Prints user guide
 ################################################################################
 print_help() {
-    cat << HEREDOC
+echo \
+"Turn on gulp
 Usage: pl $scriptname [OPTION] ... [SITE]
 This script is used to set upl gulp browser sync for a particular page. You
 just need to state the sitename, eg loc and the page, eg opencat.loc
@@ -42,10 +43,9 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
-pl $scriptname 
-END HELP
-HEREDOC
-    exit 0
+pl $scriptname
+END HELP"
+
 }
 
 # start timer

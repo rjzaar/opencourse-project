@@ -34,6 +34,7 @@ scriptname='pleasy-rebuild'
 ################################################################################
 print_help() {
 cat << HEREDOC
+Rebuild a site's database
 Usage: pl rebuild [OPTION] ... [SITE]
 This script is used to rebuild a particular site's database. You just need to
 state the sitename, eg loc.

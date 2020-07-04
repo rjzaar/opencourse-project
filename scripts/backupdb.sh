@@ -42,7 +42,8 @@ plcstatus="works"
 ################################################################################
 print_help() {
   echo \
-    "Usage: pl backupdb [OPTION] ... [SOURCE]
+    "Backs up the database only
+    Usage: pl backupdb [OPTION] ... [SOURCE]
   This script is used to backup a particular site's database.
   You just need to state the sitename, eg dev.
 
@@ -65,7 +66,6 @@ print_help() {
 ################################################################################
 SECONDS=0
 echo -e "\e[34mbackup $1 \e[39m"
-. $script_root/_inc.sh
 
 # Use of Getopt
 ################################################################################

@@ -36,8 +36,9 @@ plcstatus="works"
 # Prints user guide
 ################################################################################
 print_help() {
-cat << HEREDOC
-Usage: pl makepwp [OPTION] ... [SITE]
+echo \
+"Overwrite localprod with production
+Usage: pl makelpwp [OPTION] ... [SITE]
 This script is used to overwrite localprod with the actual external production
 site.  The choice of localprod is set in pl.yml under sites: localprod: The
 external site details are also set in pl.yml under prod: Note: once localprod
@@ -48,9 +49,9 @@ Mandatory arguments to long options are mandatory for short options too.
   -s --step=[1-6]         Select step to proceed (For DEBUG purposes?)
 
 Examples:
-END HELP
-HEREDOC
-exit 0
+pl makelpwp
+END HELP"
+
 }
 
 # start timer
@@ -87,7 +88,9 @@ step=1
 while true; do
   case "$1" in
   -h | --help)
-    print_help; exit 0; ;;
+    print_help;
+    exit 2 # works
+    ;;
   -s | --step)
     flag_step=1
     shift

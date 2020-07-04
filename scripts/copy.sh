@@ -39,14 +39,14 @@
 # Set script name for general file use
 scriptname='pleasy-site-copy'
 verbose="none"
-plcstatus="pass"
 # Help menu
 ################################################################################
 # Prints user guide
 ################################################################################
 print_help() {
   echo \
-    "Usage: pl copy [OPTION] ... [SOURCE] [DESTINATION]
+    "Copies one site to another site.
+    Usage: pl copy [OPTION] ... [SOURCE] [DESTINATION]
 This script will copy one site to another site. It will copy all
 files, set up the site settings and import the database. If no
 argument is given, it will copy dev to stg. If one argument is given it
@@ -58,7 +58,7 @@ Mandatory arguments to long options are mandatory for short options too.
   -d --debug              Provide debug information when running this script.
 
 Examples:"
-  exit 0
+
 }
 
 # Use of Getopt
@@ -90,7 +90,7 @@ while true; do
   case "$1" in
   -h | --help)
     print_help
-    exit 0
+    exit 3 # pass
     ;;
   -d | --debug)
     verbose="debug"

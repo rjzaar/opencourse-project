@@ -48,8 +48,9 @@ scriptname='pleasy-gcom'
 ################################################################################
 print_help() {
 echo \
-"Usage: pl gcom [SITE] [MESSAGE] [OPTION]
-This script will git commit changes to [SITE] with [MESSAGE].\
+"Git commit code with optional backup
+Usage: pl gcom [SITE] [MESSAGE] [OPTION]
+This script will git commit changes to [SITE] with [MESSAGE].\\
 If you have access rights, you can commit changes to pleasy itself by using "pl" for [SITE].
 
 OPTIONS
@@ -59,9 +60,9 @@ OPTIONS
   -d --debug              Provide messages to help with debugging this function
 
 Examples:
-pl gcom loc \"Fixed error on blah.\" -bv\
+pl gcom loc \"Fixed error on blah.\" -bv\\
 pl gcom pl \"Improved gcom.\""
-exit 0
+
 }
 
 # Use of Getopt
@@ -71,20 +72,22 @@ exit 0
 ################################################################################
 args=$(getopt -a -o hbvd -l help,backup,verbose,debug --name "$scriptname" -- "$@")
 # echo "$args"
-ocmsg "args: $args" debug
+
+echo "args: $args"
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
 ################################################################################
-[ $? -eq 0 ] || {
+if [ "$#" -eq 0 ] ; then
     echo "please type 'pl gcom --help' for more options"
     exit 1
-}
+fi
 
 ################################################################################
 # Arguments are parsed by getopt, are then set back into $@
 ################################################################################
 eval set -- "$args"
-ocmsg "\$1: $1" debug
+
+#ocmsg "\$1: $1" debug
 ################################################################################
 # Case through each argument passed into script
 # If no argument passed, default is -- and break loop
@@ -118,7 +121,7 @@ while true; do
     ;;
   esac
 done
-
+parse_pl_yml
 ocmsg "12: $1 $2" debug
 
 if [[ "$1" == "gcom" ]] && [[ -z "$2" ]]; then
@@ -161,7 +164,7 @@ fi
 ocmsg "folderpath: $folderpath" debug
 
 ocmsg " Now parse pl.yml " debug
-parse_pl_yml
+
 ocmsg "verbose: $verbose" debug
 
 if [[ "$sitename_var" == "pleasy" ]] ; then
@@ -176,19 +179,11 @@ fi
 add_git_credentials
 
 ocmsg "Commit git add && git commit with msg \"$msg\"" debug
-if [[ "$verbose" == "debug" ]] ; then
-"Not actually committing since we are in debug mode."
-else
 git add .
 git commit -m "\"$msg\""
 git push
-fi
 
 if [[ "$gcombackup" == "backup" ]] && [[ "$sitename_var" != "pleasy" ]] ; then
 ocmsg "Backup site $sitename_var with msg $msg"
-if [[ "$verbose" == "debug" ]] ; then
-"Not actually backing up since we are in debug mode."
-else
 backup_site $sitename_var $msg
-fi
 fi

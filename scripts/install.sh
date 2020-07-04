@@ -29,16 +29,14 @@
 # Set script name for general file use
 scriptname='pl-install'
 verbose="none"
-plcstatus="pass"
 
-# Get the helper functions etc.
-. $script_root/_inc.sh;
 # Help menu
 ################################################################################
 # Prints user guide
 ################################################################################
 print_help() {
-cat << HEREDOC
+echo \
+"Installs a drupal site
 Usage: pl install site [OPTION]
 This script is used to install a variety of drupal flavours particularly
 opencourse This will use opencourse-project as a wrapper. It is presumed you
@@ -49,6 +47,7 @@ name is given then the default site is created.
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
   -y --yes                Auto Yes to all options
+  -f --files              Only install site files. No database
   -s --step=[INT]         Restart at the step specified.
   -b --build-step=[INT]   Restart the build at step specified (step=6)
   -d --debug              Provide debug information when running this script.
@@ -56,9 +55,8 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 pl install d8
-END HELP
-HEREDOC
-exit 0
+END HELP"
+
 }
 
 # start timer
@@ -72,7 +70,7 @@ SECONDS=0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o hydb:s:t -l help,yes,debug,build-step:,step:,test --name "$scriptname" -- "$@")
+args=$(getopt -o hyfdb:s:t -l help,yes,files,debug,build-step:,step:,test --name "$scriptname" -- "$@")
 
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
@@ -99,9 +97,14 @@ step=1
 while true; do
   case "$1" in
   -h | --help)
-    print_help; exit 0; ;;
+    print_help;
+    exit 3 # pass
+    ;;
   -y | --yes)
     flag_yes=1
+    shift; ;;
+  -f | --files)
+    flag_files=1
     shift; ;;
   -d | --debug)
     verbose="debug"
@@ -319,7 +322,11 @@ fi
 
 if [ $step -lt 7 ]; then
   echo -e "$Cyan step 6: Now building site. $sitename_var $Color_Off"
+  if [ $flag_files ]; then
+    echo "Not installing site since only files required"
+    else
   rebuild_site $sitename_var
+  fi
 fi
 
 if [ $step -lt 8 ]; then
@@ -344,6 +351,9 @@ fi
 
 if [ $step -lt 10 ]; then
   echo -e "$Cyan Step 9: Trying to go to URL $uri $Color_Off"
+  if [ $flag_files ]; then
+    echo "Note: No database, so you will need to set that up."
+  fi
   drush uli --uri=$uri
 fi
 

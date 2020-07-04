@@ -42,7 +42,10 @@ undocumented_scripts=$(grep -L --directories=skip --exclude=makereadme*.sh '^arg
 working_dir=$(pwd)
 
 for command in $documented_scripts; do
-    help_documentation=$("$working_dir/$command" --help)
+
+    help_documentation=$("$working_dir/$command" --help | tail -n +2)
+
+    echo "command: $command plcstatus $plcstatus scriptdesc $scriptdesc"
     echo $help_documentation | grep -q '^Usage:' && \
         sanitised_documentation=$help_documentation || \
         sanitised_documentation=$(cat <<HEREDOC
@@ -52,10 +55,27 @@ $help_documentation
 HEREDOC
 )
 
+getstatus=$("$working_dir/$command" --help)
+case "$?" in
+  0 | 1)
+    status=":question:"
+    ;;
+  2)
+    status=":white_check_mark:"
+    ;;
+  3)
+    status=":heavy_check_mark:"
+    ;;
+  *)
+    status=":question:"
+    ;;
+  esac
+
+
     cat <<HEREDOC
 <details>
 
-**<summary> pl ${command%%.sh} :white_check_mark: </summary>**
+**<summary> pl ${command%%.sh} $("$working_dir/$command" --help | head -n 1) $status </summary>**
 $sanitised_documentation
 
 </details>

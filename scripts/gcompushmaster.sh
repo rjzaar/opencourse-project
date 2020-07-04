@@ -47,7 +47,8 @@ scriptname='pleasy-gcompushmaster'
 ################################################################################
 print_help() {
 echo \
-"Usage: pl gcompushmaster [OPTION] ... [SITE] [MESSAGE]
+"Git merge branch with master and push
+Usage: pl gcompushmaster [OPTION] ... [SITE] [MESSAGE]
 This will merge branch with master You just need to state the sitename, eg
 dev.
 

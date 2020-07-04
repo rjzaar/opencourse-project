@@ -53,7 +53,8 @@ scriptname='gcomsh'
 # Prints user guide
 ################################################################################
 print_help() {
-    cat << HEREDOC
+echo \
+"Git push after master merge
 Usage: pl $scriptname [OPTION] ... [SITE] [MESSAGE]
 This will git commit changes with msg after merging with master. You just
 need to state the sitename, eg dev.
@@ -64,9 +65,8 @@ Mandatory arguments to long options are mandatory for short options too.
 Examples:
 pl $scriptname -h
 pl $scriptname dev (relative dev folder)
-pl $scriptname tim 'First tim backup'
-HEREDOC
-    exit 0
+pl $scriptname tim 'First tim backup'"
+
 }
 
 # start timer

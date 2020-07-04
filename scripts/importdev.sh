@@ -25,14 +25,15 @@
 ################################################################################
 
 # Set script name for general file use
-scriptname='gulp'
+scriptname='importdev'
 
 # Help menu
 ################################################################################
 # Prints user guide
 ################################################################################
 print_help() {
-    cat << HEREDOC
+echo \
+"Copy localprod to stg, then import dev to stg
 Usage: pl $scriptname [OPTION] ... [SOURCE-SITE] [DEST-SITE]
 @ROB add description please
 
@@ -41,9 +42,8 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 pl $scriptname 
-END HELP
-HEREDOC
-    exit 0
+END HELP"
+
 }
 
 # start timer

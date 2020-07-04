@@ -31,7 +31,8 @@ scriptname='pleasy-makedb'
 # Prints user guide
 ################################################################################
 print_help() {
-cat << HEREDOC
+echo \
+"Create the database for a site
 Usage: pl makedb [OPTION] ... [SITE]
 <ADD DESC HERE>
 
@@ -39,9 +40,8 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
-END HELP
-HEREDOC
-exit 0
+END HELP"
+
 }
 
 # start timer
@@ -100,3 +100,9 @@ sitename_var=$1
 echo "create db for $sitename_var"
 import_site_config $sitename_var
 make_db
+
+# End timer
+################################################################################
+# Finish script, display time taken
+################################################################################
+echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))

@@ -27,13 +27,13 @@
 # Set script name for general file use
 scriptname='pleasy-makedev'
 verbose="none"
-plcstatus="pass"
 # Help menu
 ################################################################################
 # Prints user guide
 ################################################################################
 print_help() {
-cat << HEREDOC
+echo \
+"Turn dev mode on for a site
 Usage: pl makedev [OPTION] ... [SITE]
 This script is used to turn on dev mode and enable dev modules.
 You just need to state the sitename, eg stg.
@@ -43,9 +43,9 @@ Mandatory arguments to long options are mandatory for short options too.
   -d --debug              Provide debug information when running this script.
 
 Examples:
-END HELP
-HEREDOC
-exit 0
+pl makedev loc
+END HELP"
+
 }
 
 # start timer
@@ -81,7 +81,9 @@ eval set -- "$args"
 while true; do
   case "$1" in
   -h | --help)
-    print_help; exit 0; ;;
+    print_help;
+    exit 3 # pass
+    ;;
   -d | --debug)
     verbose="debug"
     shift; ;;

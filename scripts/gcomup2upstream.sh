@@ -38,7 +38,8 @@ scriptname='gcomup2upstream'
 # Prints user guide
 ################################################################################
 print_help() {
-    cat << HEREDOC
+echo \
+"Git commit with upstream merge
 Usage: pl $scriptname [OPTION] ... [SITE] [MESSAGE]
 This will merge branch with master, and update to the upstream git. It
 presupposes you have already merged. You just need to state the sitename, eg
@@ -51,9 +52,8 @@ Examples:
 pl $scriptname -h
 pl $scriptname dev (relative dev folder)
 pl $scriptname tim 'First tim backup'
-END HELP
-HEREDOC
-    exit 0
+END HELP"
+
 }
 
 # start timer
