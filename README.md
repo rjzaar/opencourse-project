@@ -106,20 +106,18 @@ Usage: pl backup [OPTION] ... [SOURCE]
 
 <details>
 
-**<summary>backup: Backup site and database :white_check_mark: </summary>**
-Usage: pl backup [OPTION] ... [SOURCE]
+**<summary>backup: Backup site and database :heavy_check_mark: </summary>**
+Usage: pl backup [OPTION] ... [SOURCE] [MESSAGE]
 This script is used to backup a particular site's files and database.
-You just need to state the sitename, eg dev.
+You just need to state the sitename, eg dev and an optional message.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
-  -m --message='msg'      Enter an optional message to accompany the backup
 
 Examples:
 pl backup -h
 pl backup dev
-pl backup tim -m 'First tim backup'
-pl backup --message='Love' love
+pl backup tim 'First tim backup'
 END HELP
 
 </details>
@@ -510,6 +508,30 @@ END HELP
 
 <details>
 
+**<summary>restore: args:  --help -- :heavy_check_mark: </summary>**
+--**BROKEN DOCUMENTATION**--
+Restore a particular site's files and database from backup
+Usage: pl restore [FROM] [TO] [OPTION]
+You just need to state the sitename, eg dev.
+You can alternatively restore the site into a different site which is the second argument.
+
+OPTIONS
+  -h --help               Display help (Currently displayed)
+  -d --debug              Provide debug information when running this script.
+  -f --first              Usse the latest backup
+  -y --yes                Auto delete current content
+
+Examples:
+pl restore loc
+pl restore loc stg -fy
+pl restore -h
+pl restore loc -d
+--**BROKEN DOCUMENTATION**--
+
+</details>
+
+<details>
+
 **<summary>update: Update all site configs :heavy_check_mark: </summary>**
 Usage: pl update [OPTION]
 This script will update the configs for all sites
@@ -553,13 +575,6 @@ Examples:
 <details>
 
 **<summary>restoredb:  :question: </summary>**
-**DOCUMENTATION NOT IMPLEMENTED**
-
-</details>
-
-<details>
-
-**<summary>restore:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
