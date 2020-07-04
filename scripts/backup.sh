@@ -61,7 +61,7 @@ SECONDS=0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o hm: -l help,message: --name "$scriptname" -- "$@")
+args=$(getopt -o hd -l help,debug: --name "$scriptname" -- "$@")
 # echo "$args"
 
 ################################################################################
@@ -87,6 +87,10 @@ while true; do
     print_help;
     exit 2 # works
     ;;
+  -d | --debug)
+  verbose="debug"
+  shift
+  ;;
   --)
   shift
   break; ;;
