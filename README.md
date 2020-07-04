@@ -524,112 +524,112 @@ Examples:
 
 <details>
 
-**<summary>copyf: :question: </summary>**
+**<summary>copyf:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary>_inc: :question: </summary>**
+**<summary>_inc:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary>open: :question: </summary>**
+**<summary>open:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary>reset: :question: </summary>**
+**<summary>reset:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary>restoredb: :question: </summary>**
+**<summary>restoredb:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary>restore: :question: </summary>**
+**<summary>restore:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary>stg2prodoverwrite2: :question: </summary>**
+**<summary>stg2prodoverwrite2:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary>stg2prodoverwrite: :question: </summary>**
+**<summary>stg2prodoverwrite:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary>stg2prod: :question: </summary>**
+**<summary>stg2prod:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary>stopgulp: :question: </summary>**
+**<summary>stopgulp:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary>testim: :question: </summary>**
+**<summary>testim:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary>testi: :question: </summary>**
+**<summary>testi:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary>test: :question: </summary>**
+**<summary>test:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary>teststg: :question: </summary>**
+**<summary>teststg:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary>teststgupdb: :question: </summary>**
+**<summary>teststgupdb:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary>varup: :question: </summary>**
+**<summary>varup:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>

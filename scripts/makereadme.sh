@@ -18,8 +18,6 @@ case $1 in
         exit 0
         ;;
     ?*)
-        echo "View help with --help";
-
         ;;
 esac
 
@@ -86,7 +84,7 @@ for command in $undocumented_scripts; do
     cat <<HEREDOC
 <details>
 
-**<summary>${command%%.sh}: :question: </summary>**
+**<summary>${command%%.sh}:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
