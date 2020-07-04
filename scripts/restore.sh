@@ -108,7 +108,7 @@ while true; do
   shift
   ;;
   -y | --yes)
-  flag_auto=1
+  flag_yes=1
   shift
   ;;
   --)
