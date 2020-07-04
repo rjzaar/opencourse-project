@@ -58,7 +58,7 @@ HEREDOC
 **<summary> pl ${command%%.sh} :white_check_mark: </summary>**
 $sanitised_documentation
 
-<\details>
+</details>
 
 HEREDOC
 done

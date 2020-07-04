@@ -60,7 +60,7 @@ Usage: pl addc [OPTION]
   Examples:
   pl addc -h
 
-<\details>
+</details>
 
 <details>
 
@@ -83,7 +83,7 @@ Usage: pl backupdb [OPTION] ... [SOURCE]
   END HELP
 --**BROKEN DOCUMENTATION**--
 
-<\details>
+</details>
 
 <details>
 
@@ -101,7 +101,7 @@ Usage: pl backup [OPTION] ... [SOURCE]
   pl backupprod -h
   pl backupprod ./tim -m 'First tim backup'
 
-<\details>
+</details>
 
 <details>
 
@@ -121,7 +121,7 @@ pl backup tim -m 'First tim backup'
 pl backup --message='Love' love
 END HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -139,7 +139,7 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 
-<\details>
+</details>
 
 <details>
 
@@ -152,7 +152,7 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 
-<\details>
+</details>
 
 <details>
 
@@ -166,7 +166,7 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 
-<\details>
+</details>
 
 <details>
 
@@ -180,7 +180,7 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 
-<\details>
+</details>
 
 <details>
 
@@ -194,7 +194,7 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 
-<\details>
+</details>
 
 <details>
 
@@ -208,7 +208,7 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 
-<\details>
+</details>
 
 <details>
 
@@ -217,7 +217,7 @@ Examples:
 please type 'pl gcom --help' for more options
 --**BROKEN DOCUMENTATION**--
 
-<\details>
+</details>
 
 <details>
 
@@ -234,7 +234,7 @@ pl gcomsh -h
 pl gcomsh dev (relative dev folder)
 pl gcomsh tim 'First tim backup'
 
-<\details>
+</details>
 
 <details>
 
@@ -253,7 +253,7 @@ pl gcomup2upstream dev (relative dev folder)
 pl gcomup2upstream tim 'First tim backup'
 END HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -272,7 +272,7 @@ pl gcomup dev (relative dev folder)
 pl gcomup tim 'First tim backup'
 END HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -288,7 +288,7 @@ Examples:
 pl gulp 
 END HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -303,7 +303,7 @@ Examples:
 pl gulp 
 END HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -350,7 +350,7 @@ INSTALL LIST:
     sudo npm install gulp -D
 END OF HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -372,7 +372,7 @@ Mandatory arguments to long options are mandatory for short options too.
 Examples:
 END HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -396,7 +396,7 @@ Examples:
 pl install d8
 END HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -411,7 +411,7 @@ Mandatory arguments to long options are mandatory for short options too.
 Examples:
 END HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -425,7 +425,7 @@ Mandatory arguments to long options are mandatory for short options too.
 Examples:
 END HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -441,7 +441,7 @@ Mandatory arguments to long options are mandatory for short options too.
 Examples:
 END HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -459,7 +459,7 @@ Mandatory arguments to long options are mandatory for short options too.
 Examples:
 END HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -475,7 +475,7 @@ Mandatory arguments to long options are mandatory for short options too.
 Examples:
 END HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -492,7 +492,7 @@ Mandatory arguments to long options are mandatory for short options too.
 Examples:
 END HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -507,7 +507,7 @@ Mandatory arguments to long options are mandatory for short options too.
 Examples:
 END HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -522,7 +522,7 @@ Mandatory arguments to long options are mandatory for short options too.
 Examples:
 END HELP
 
-<\details>
+</details>
 
 <details>
 
@@ -536,7 +536,7 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 
-<\details>
+</details>
 
 <details>
 
