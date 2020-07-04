@@ -74,7 +74,7 @@ case "$?" in
     cat <<HEREDOC
 <details>
 
-**<summary> pl ${command%%.sh} $("$working_dir/$command" --help | head -n 1) $status </summary>**
+**<summary>${command%%.sh}: $("$working_dir/$command" --help | head -n 1) $status </summary>**
 $sanitised_documentation
 
 </details>
@@ -86,7 +86,7 @@ for command in $undocumented_scripts; do
     cat <<HEREDOC
 <details>
 
-**<summary> pl ${command%%.sh} :question: </summary>**
+**<summary>${command%%.sh}: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>

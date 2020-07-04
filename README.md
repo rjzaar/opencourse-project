@@ -50,7 +50,7 @@ todo: Has not been looked at yet :question:
 
 <details>
 
-**<summary> pl addc Usage: pl addc [OPTION] :question: </summary>**
+**<summary>addc: Usage: pl addc [OPTION] :question: </summary>**
 --**BROKEN DOCUMENTATION**--
   This script is used to add github credentials
 
@@ -65,7 +65,7 @@ todo: Has not been looked at yet :question:
 
 <details>
 
-**<summary> pl backupdb [34mbackup --help [39m :question: </summary>**
+**<summary>backupdb: [34mbackup --help [39m :question: </summary>**
 --**BROKEN DOCUMENTATION**--
 Backs up the database only
     Usage: pl backupdb [OPTION] ... [SOURCE]
@@ -88,7 +88,7 @@ Backs up the database only
 
 <details>
 
-**<summary> pl backupprod Backs up the production site :question: </summary>**
+**<summary>backupprod: Backs up the production site :question: </summary>**
 Usage: pl backup [OPTION] ... [SOURCE]
   This script is used to backup prod site's files and database. You can
   add an optional message.
@@ -106,7 +106,7 @@ Usage: pl backup [OPTION] ... [SOURCE]
 
 <details>
 
-**<summary> pl backup Backup site and database :white_check_mark: </summary>**
+**<summary>backup: Backup site and database :white_check_mark: </summary>**
 Usage: pl backup [OPTION] ... [SOURCE]
 This script is used to backup a particular site's files and database.
 You just need to state the sitename, eg dev.
@@ -126,7 +126,7 @@ END HELP
 
 <details>
 
-**<summary> pl copy Copies one site to another site. :heavy_check_mark: </summary>**
+**<summary>copy: Copies one site to another site. :heavy_check_mark: </summary>**
     Usage: pl copy [OPTION] ... [SOURCE] [DESTINATION]
 This script will copy one site to another site. It will copy all
 files, set up the site settings and import the database. If no
@@ -144,7 +144,7 @@ Examples:
 
 <details>
 
-**<summary> pl devpush Usage: pl devpush [OPTION] :question: </summary>**
+**<summary>devpush: Usage: pl devpush [OPTION] :question: </summary>**
 --**BROKEN DOCUMENTATION**--
 Include help Rob!
 
@@ -158,7 +158,7 @@ Examples:
 
 <details>
 
-**<summary> pl enmod Usage: pl enmod [OPTION] ... [SITE] [MODULE] :question: </summary>**
+**<summary>enmod: Usage: pl enmod [OPTION] ... [SITE] [MODULE] :question: </summary>**
 --**BROKEN DOCUMENTATION**--
 This script will install a module first using composer, then fix the file/dir
 ownership and then enable the module using drush automatically.
@@ -173,7 +173,7 @@ Examples:
 
 <details>
 
-**<summary> pl fixp Usage: pl fixp [OPTION] ... [SOURCE] :white_check_mark: </summary>**
+**<summary>fixp: Usage: pl fixp [OPTION] ... [SOURCE] :white_check_mark: </summary>**
 --**BROKEN DOCUMENTATION**--
 This script is used to fix permissions of a Drupal site You just need to
 state the sitename, eg dev.
@@ -188,7 +188,7 @@ Examples:
 
 <details>
 
-**<summary> pl fixss Usage: pl fixss [OPTION] ... [SOURCE] :white_check_mark: </summary>**
+**<summary>fixss: Usage: pl fixss [OPTION] ... [SOURCE] :white_check_mark: </summary>**
 --**BROKEN DOCUMENTATION**--
 This will fix (or set) the site settings in local.settings.php You just need
 to state the sitename, eg dev.
@@ -203,7 +203,7 @@ Examples:
 
 <details>
 
-**<summary> pl gcompushmaster Git merge branch with master and push :question: </summary>**
+**<summary>gcompushmaster: Git merge branch with master and push :question: </summary>**
 Usage: pl gcompushmaster [OPTION] ... [SITE] [MESSAGE]
 This will merge branch with master You just need to state the sitename, eg
 dev.
@@ -217,7 +217,7 @@ Examples:
 
 <details>
 
-**<summary> pl gcom args:  --help -- :question: </summary>**
+**<summary>gcom: args:  --help -- :question: </summary>**
 --**BROKEN DOCUMENTATION**--
 Git commit code with optional backup
 Usage: pl gcom [SITE] [MESSAGE] [OPTION]
@@ -239,7 +239,7 @@ pl gcom pl "Improved gcom."
 
 <details>
 
-**<summary> pl gcomsh Git push after master merge :question: </summary>**
+**<summary>gcomsh: Git push after master merge :question: </summary>**
 Usage: pl gcomsh [OPTION] ... [SITE] [MESSAGE]
 This will git commit changes with msg after merging with master. You just
 need to state the sitename, eg dev.
@@ -256,7 +256,7 @@ pl gcomsh tim 'First tim backup'
 
 <details>
 
-**<summary> pl gcomup2upstream Git commit with upstream merge :question: </summary>**
+**<summary>gcomup2upstream: Git commit with upstream merge :question: </summary>**
 Usage: pl gcomup2upstream [OPTION] ... [SITE] [MESSAGE]
 This will merge branch with master, and update to the upstream git. It
 presupposes you have already merged. You just need to state the sitename, eg
@@ -275,7 +275,7 @@ END HELP
 
 <details>
 
-**<summary> pl gcomup Git commit and backup :question: </summary>**
+**<summary>gcomup: Git commit and backup :question: </summary>**
 Usage: pl gcomup [OPTION] ... [SITE] [MESSAGE]
 Composer update, git commit changes and backup. This script follows the
 correct path to git commit changes You just need to state the
@@ -294,7 +294,7 @@ END HELP
 
 <details>
 
-**<summary> pl gulp Turn on gulp :question: </summary>**
+**<summary>gulp: Turn on gulp :question: </summary>**
 Usage: pl gulp [OPTION] ... [SITE]
 This script is used to set upl gulp browser sync for a particular page. You
 just need to state the sitename, eg loc and the page, eg opencat.loc
@@ -310,7 +310,7 @@ END HELP
 
 <details>
 
-**<summary> pl importdev Copy localprod to stg, then import dev to stg :question: </summary>**
+**<summary>importdev: Copy localprod to stg, then import dev to stg :question: </summary>**
 Usage: pl importdev [OPTION] ... [SOURCE-SITE] [DEST-SITE]
 @ROB add description please
 
@@ -325,7 +325,7 @@ END HELP
 
 <details>
 
-**<summary> pl init Initialises pleasy :heavy_check_mark: </summary>**
+**<summary>init: Initialises pleasy :heavy_check_mark: </summary>**
   Usage: pl init [OPTION]
 This will set up pleasy and initialise the sites as per
 pl.yml, including the current production shared database.
@@ -372,7 +372,7 @@ END OF HELP
 
 <details>
 
-**<summary> pl install Installs a drupal site :heavy_check_mark: </summary>**
+**<summary>install: Installs a drupal site :heavy_check_mark: </summary>**
 Usage: pl install site [OPTION]
 This script is used to install a variety of drupal flavours particularly
 opencourse This will use opencourse-project as a wrapper. It is presumed you
@@ -397,7 +397,7 @@ END HELP
 
 <details>
 
-**<summary> pl main Turn maintenance mode on or off :question: </summary>**
+**<summary>main: Turn maintenance mode on or off :question: </summary>**
 Usage: pl main [OPTION] ... [SITE] [MODULES]
 This script will turn maintenance mode on or off. You will need to specify the
 site first than on or off, eg pl main loc on
@@ -414,7 +414,7 @@ END HELP
 
 <details>
 
-**<summary> pl makedb Create the database for a site :question: </summary>**
+**<summary>makedb: Create the database for a site :question: </summary>**
 Usage: pl makedb [OPTION] ... [SITE]
 <ADD DESC HERE>
 
@@ -428,7 +428,7 @@ END HELP
 
 <details>
 
-**<summary> pl makedev Turn dev mode on for a site :heavy_check_mark: </summary>**
+**<summary>makedev: Turn dev mode on for a site :heavy_check_mark: </summary>**
 Usage: pl makedev [OPTION] ... [SITE]
 This script is used to turn on dev mode and enable dev modules.
 You just need to state the sitename, eg stg.
@@ -445,7 +445,7 @@ END HELP
 
 <details>
 
-**<summary> pl makelpwp Overwrite localprod with production :white_check_mark: </summary>**
+**<summary>makelpwp: Overwrite localprod with production :white_check_mark: </summary>**
 Usage: pl makelpwp [OPTION] ... [SITE]
 This script is used to overwrite localprod with the actual external production
 site.  The choice of localprod is set in pl.yml under sites: localprod: The
@@ -464,7 +464,7 @@ END HELP
 
 <details>
 
-**<summary> pl makeprod Turn production mode on and remove dev modules :heavy_check_mark: </summary>**
+**<summary>makeprod: Turn production mode on and remove dev modules :heavy_check_mark: </summary>**
 Usage: pl makeprod [OPTION] ... [SITE]
 This script is used to turn off dev mode and uninstall dev modules.  You just
 need to state the sitename, eg stg.
@@ -480,7 +480,7 @@ END HELP
 
 <details>
 
-**<summary> pl prodow Overwrite production with site specified :question: </summary>**
+**<summary>prodow: Overwrite production with site specified :question: </summary>**
 Usage: pl prodow [OPTION] ... [SITE]
 This script will overwrite production with the site chosen It will first backup
 prod The external site details are also set in pl.yml under prod:
@@ -495,7 +495,7 @@ END HELP
 
 <details>
 
-**<summary> pl rebuild Rebuild a site's database :question: </summary>**
+**<summary>rebuild: Rebuild a site's database :question: </summary>**
 Usage: pl rebuild [OPTION] ... [SITE]
 This script is used to rebuild a particular site's database. You just need to
 state the sitename, eg loc.
@@ -510,7 +510,7 @@ END HELP
 
 <details>
 
-**<summary> pl update Update all site configs :heavy_check_mark: </summary>**
+**<summary>update: Update all site configs :heavy_check_mark: </summary>**
 Usage: pl update [OPTION]
 This script will update the configs for all sites
 
@@ -524,112 +524,112 @@ Examples:
 
 <details>
 
-**<summary> pl copyf :question: </summary>**
+**<summary>copyf: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary> pl _inc :question: </summary>**
+**<summary>_inc: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary> pl open :question: </summary>**
+**<summary>open: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary> pl reset :question: </summary>**
+**<summary>reset: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary> pl restoredb :question: </summary>**
+**<summary>restoredb: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary> pl restore :question: </summary>**
+**<summary>restore: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary> pl stg2prodoverwrite2 :question: </summary>**
+**<summary>stg2prodoverwrite2: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary> pl stg2prodoverwrite :question: </summary>**
+**<summary>stg2prodoverwrite: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary> pl stg2prod :question: </summary>**
+**<summary>stg2prod: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary> pl stopgulp :question: </summary>**
+**<summary>stopgulp: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary> pl testim :question: </summary>**
+**<summary>testim: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary> pl testi :question: </summary>**
+**<summary>testi: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary> pl test :question: </summary>**
+**<summary>test: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary> pl teststg :question: </summary>**
+**<summary>teststg: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary> pl teststgupdb :question: </summary>**
+**<summary>teststgupdb: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
 <details>
 
-**<summary> pl varup :question: </summary>**
+**<summary>varup: :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
