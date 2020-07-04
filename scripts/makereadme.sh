@@ -54,18 +54,24 @@ HEREDOC
 
     cat <<HEREDOC
 <details>
+
 **<summary> pl ${command%%.sh} :white_check_mark: </summary>**
 $sanitised_documentation
+
 <\details>
+
 HEREDOC
 done
 
 for command in $undocumented_scripts; do
     cat <<HEREDOC
 <details>
+
 **<summary> pl ${command%%.sh} :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
+
 </details>
+
 HEREDOC
 done
 ) >> ../README_TEMPLATE.md || \
