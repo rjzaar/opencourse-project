@@ -73,6 +73,8 @@ script:
   - pl makedev loc -d
   - pl copy loc stg -d
   - pl makeprod stg -d
+  - pl backup loc -d
+  - pl restore loc localprod -dfy
 
 matrix:
   fast_finish: true

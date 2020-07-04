@@ -36,19 +36,17 @@ scriptname='pleasy-backup'
 print_help() {
 echo \
 "Backup site and database
-Usage: pl backup [OPTION] ... [SOURCE]
+Usage: pl backup [OPTION] ... [SOURCE] [MESSAGE]
 This script is used to backup a particular site's files and database.
-You just need to state the sitename, eg dev.
+You just need to state the sitename, eg dev and an optional message.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
-  -m --message='msg'      Enter an optional message to accompany the backup
 
 Examples:
 pl backup -h
 pl backup dev
-pl backup tim -m 'First tim backup'
-pl backup --message='Love' love
+pl backup tim 'First tim backup'
 END HELP"
 }
 
@@ -89,11 +87,6 @@ while true; do
     print_help;
     exit 2 # works
     ;;
-  -m | --message)
-    shift
-    msg="$(echo "$1" | sed 's/^=//g')"
-    echo "Msg = $msg"
-    shift; ;;
   --)
   shift
   break; ;;
@@ -111,14 +104,14 @@ done
 ################################################################################
 if [[ "$1" == "backup" ]] && [[ -z "$2" ]]; then
  echo "No site specified."
-elif [[ "$1" == "backup" ]] ; then
+ elif [[ "$1" == "backup" ]] ; then
    sitename_var=$2
-elif [[ -z "$1" ]]; then
- echo "No site specified."
+elif [[ -z "$2" ]]; then
+ echo "No message specified."
 else
   sitename_var=$1
+  msg="$*"
 fi
-
 
 # (what do these do?)
 echo -e "\e[34mbackup $1 \e[39m"

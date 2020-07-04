@@ -1,10 +1,41 @@
 #!/bin/bash
-# This task must be run by pl "task name" arguments
-if [ -z $folder ]
-then
-echo "This task must be run by putting pl before it and no .sh, eg pl restore dev"
-exit 1
-fi
+################################################################################
+#                       Restore site For Pleasy Library
+#
+#  This will restore files and database from a backup
+#
+#  Change History
+#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
+#                                   prelim commenting
+#  04/07/2020 Rob Zaar    Simplified and updated to new system.
+#
+################################################################################
+################################################################################
+#
+#  Core Maintainer:  Rob Zaar
+#  Email:            rjzaar@gmail.com
+#
+################################################################################
+################################################################################
+#                                TODO LIST
+#
+################################################################################
+################################################################################
+#                             Commenting with model
+#
+# NAME OF COMMENT (USE FOR RATHER SIGNIFICANT COMMENTS)
+################################################################################
+# Description - Each bar is 80 #, in vim do 80i#esc
+################################################################################
+#
+################################################################################
+################################################################################
+
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
+SECONDS=0
 
 #restore site and database
 # $1 is the backup
@@ -12,77 +43,114 @@ fi
 # $sitename_var is the site to import into
 # $bk is the backed up site.
 
-# start timer
-################################################################################
-# Timer to show how long it took to run the script
-################################################################################
-SECONDS=0
-if [ $1 = "restore" ] && [ -z "$2" ]
-  then
-    echo "No site specified"
-    print_help
-    exit 1
-fi
-bauto="no"
-if [ -z "$2" ]
-  then
-    sitename_var=$1
-    bk=$1
-    echo -e "\e[34mrestore $1 \e[39m"
-   elif [ "$2" = "-y" ]
-     then
-        bauto="yes"
-        sitename_var=$1
-        bk=$1
-        echo -e "\e[34mrestore $1 with latest backup\e[39m"
-      else
-        if [ "$3" = "-y" ]
-        then
-          bk=$1
-          sitename_var=$2
-          echo -e "\e[34mrestoring $1 to $2 with latest backup\e[39m"
-          bauto="yes"
-        else
-          bk=$1
-          sitename_var=$2
-          echo -e "\e[34mrestoring $1 to $2 \e[39m"
-        fi
-    fi
-
+# Set script name for general file use
+scriptname='pleasy-restore'
+verbose="none"
 
 # Help menu
 print_help() {
 cat <<-HELP
-This script is used to restore a particular site's files and database.
+Restore a particular site's files and database from backup
+Usage: pl restore [FROM] [TO] [OPTION]
 You just need to state the sitename, eg dev.
 You can alternatively restore the site into a different site which is the second argument.
+
+OPTIONS
+  -h --help               Display help (Currently displayed)
+  -d --debug              Provide debug information when running this script.
+  -f --first              Usse the latest backup
+  -y --yes                Auto delete current content
+
+Examples:
+pl restore loc
+pl restore loc stg -fy
+pl restore -h
+pl restore loc -d
 HELP
-exit 0
 }
+
+# Use of Getopt
+################################################################################
+# Getopt to parse script and allow arg combinations ie. -yh instead of -h
+# -y. Current accepted args are -h and --help
+################################################################################
+args=$(getopt -a -o hdfy -l help,debug,first,yes --name "$scriptname" -- "$@")
+# echo "$args"
+
+echo "args: $args"
+
 # Check number of arguments
 ################################################################################
 # If no arguments given, prompt user for arguments
 ################################################################################
 if [ "$#" = 0 ]; then
   print_help
-  exit 2
+  exit 0
 fi
 
+################################################################################
+# Arguments are parsed by getopt, are then set back into $@
+################################################################################
+eval set -- "$args"
+
+while true; do
+  case "$1" in
+  -h | --help)
+    print_help
+    exit 2 # works
+    ;;
+   -d | --debug)
+  verbose="debug"
+  shift
+  ;;
+  -f | --first)
+  flag_first=1
+  shift
+  ;;
+  -y | --yes)
+  flag_auto=1
+  shift
+  ;;
+  --)
+    shift
+    break
+    ;;
+  *)
+    "Programming error, this should not show up!"
+    exit 1
+    ;;
+  esac
+done
+
 parse_pl_yml
+
+if [ $1 == "restore" ] && [ -z "$2" ]; then
+    echo "No site specified"
+    print_help
+    exit 1
+elif [ -z "$2" ]; then
+  sitename_var=$1
+  bk=$1
+else
+  sitename_var=$2
+  bk=$1
+fi
+
 import_site_config $sitename_var
 
 # Prompt to choose which database to backup, 1 will be the latest.
 # Could be a better way to go: https://stackoverflow.com/questions/42789273/bash-choose-default-from-case-when-enter-is-pressed-in-a-select-prompt
-prompt="Please select a backup:"
 cd
 cd "$folder/sitebackups/$bk"
-echo "auto is $bauto"
+ocmsg "flag_first is $flag_first" debug
 options=( $(find -maxdepth 1 -name "*.sql" -print0 | xargs -0 ls -1 -t ) )
-if [ $bauto = "yes" ]
+if [ $flag_first ]
 then
+  echo -e "\e[34mrestoring $1 to $2 with latest backup\e[39m"
   Name=${options[0]:2}
   echo "Restoring with $Name"
 else
+prompt="Please select a backup:"
 PS3="$prompt "
 select opt in "${options[@]}" "Quit" ; do
     if (( REPLY == 1 + ${#options[@]} )) ; then
@@ -100,7 +168,7 @@ fi
 echo " site_path: $site_path/$sitename_var"
 # Check to see if folder already exits.
 if [ -d "$site_path/$sitename_var" ]; then
-    if [ $auto = "no" ]
+    if [ ! "$flag_yes" == "1" ]
     then
     read -p "$sitename_var exists. If you proceed, $sitename_var will first be deleted. Do you want to proceed?(Y/n)" question
         case $question in
@@ -128,16 +196,15 @@ else
 tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C "$site_path/$sitename_var" --strip-components=1
 fi
 # Move settings.php and settings.local.php out the way before they are overwritten just in case you might need them.
-echo "Moving settings.php and settings.local.php"
-setpath="$site_path/$sitename_var/$webroot/sites/default"
-if [ -f "$setpath/settings.php" ] ; then mv "$setpath/settings.php" "$setpath/settings.php.old" ; fi
-if [ -f "$setpath//settings.local.php" ] ; then mv "$setpath//settings.local.php" "$setpath/settings.local.php.old" ; fi
-if [ -f "$setpath//default.settings.php" ] ; then mv "$setpath//default.settings.php" "$setpath//settings.php" ; fi
+#echo "Moving settings.php and settings.local.php"
+#setpath="$site_path/$sitename_var/$webroot/sites/default"
+#if [ -f "$setpath/settings.php" ] ; then mv "$setpath/settings.php" "$setpath/settings.php.old" ; fi
+#if [ -f "$setpath//settings.local.php" ] ; then mv "$setpath//settings.local.php" "$setpath/settings.local.php.old" ; fi
+#if [ -f "$setpath//default.settings.php" ] ; then mv "$setpath//default.settings.php" "$setpath//settings.php" ; fi
 
 ### do I need to deal with services.yml?
 
 pl fixss $sitename_var
-
 
 echo "Set site permissions"
 set_site_permissions $sitename_var
