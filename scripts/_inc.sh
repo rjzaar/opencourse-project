@@ -825,6 +825,7 @@ backup_site() {
   if [ ! -d "$site_path/$sitename_var" ]; then
     echo "No site folder $sitename_var so no need to backup"
   else
+    ocmsg "cd $site_path/$sitename_var" debug
     cd "$site_path/$sitename_var"
     #this will not affect a current git present
     git init

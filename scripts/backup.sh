@@ -15,7 +15,7 @@
 ################################################################################
 ################################################################################
 #
-#  Core Maintainer:  Rob Zar
+#  Core Maintainer:  Rob Zaar
 #  Email:            rjzaar@gmail.com
 #
 ################################################################################
@@ -111,6 +111,7 @@ if [[ "$1" == "backup" ]] && [[ -z "$2" ]]; then
  elif [[ "$1" == "backup" ]] ; then
    sitename_var=$2
 elif [[ -z "$2" ]]; then
+  sitename_var=$1
  echo "No message specified."
 else
   sitename_var=$1
