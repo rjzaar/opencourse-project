@@ -45,7 +45,6 @@ for command in $documented_scripts; do
 
     help_documentation=$("$working_dir/$command" --help | tail -n +2)
 
-    echo "command: $command plcstatus $plcstatus scriptdesc $scriptdesc"
     echo $help_documentation | grep -q '^Usage:' && \
         sanitised_documentation=$help_documentation || \
         sanitised_documentation=$(cat <<HEREDOC

@@ -48,7 +48,6 @@ todo: Has not been looked at yet :question:
 
 # FUNCTION LIST
 
-command: addc.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl addc Usage: pl addc [OPTION] :question: </summary>**
@@ -64,7 +63,6 @@ command: addc.sh plcstatus  scriptdesc
 
 </details>
 
-command: backupdb.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl backupdb [34mbackup --help [39m :question: </summary>**
@@ -88,7 +86,6 @@ Backs up the database only
 
 </details>
 
-command: backupprod.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl backupprod Backs up the production site :question: </summary>**
@@ -107,7 +104,6 @@ Usage: pl backup [OPTION] ... [SOURCE]
 
 </details>
 
-command: backup.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl backup Backup site and database :white_check_mark: </summary>**
@@ -128,7 +124,6 @@ END HELP
 
 </details>
 
-command: copy.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl copy Copies one site to another site. :heavy_check_mark: </summary>**
@@ -147,7 +142,6 @@ Examples:
 
 </details>
 
-command: devpush.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl devpush Usage: pl devpush [OPTION] :question: </summary>**
@@ -162,7 +156,6 @@ Examples:
 
 </details>
 
-command: enmod.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl enmod Usage: pl enmod [OPTION] ... [SITE] [MODULE] :question: </summary>**
@@ -178,7 +171,6 @@ Examples:
 
 </details>
 
-command: fixp.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl fixp Usage: pl fixp [OPTION] ... [SOURCE] :white_check_mark: </summary>**
@@ -194,7 +186,6 @@ Examples:
 
 </details>
 
-command: fixss.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl fixss Usage: pl fixss [OPTION] ... [SOURCE] :white_check_mark: </summary>**
@@ -210,7 +201,6 @@ Examples:
 
 </details>
 
-command: gcompushmaster.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl gcompushmaster Git merge branch with master and push :question: </summary>**
@@ -225,17 +215,28 @@ Examples:
 
 </details>
 
-command: gcom.sh plcstatus  scriptdesc 
 <details>
 
-**<summary> pl gcom please type 'pl gcom --help' for more options :question: </summary>**
+**<summary> pl gcom args:  --help -- :question: </summary>**
 --**BROKEN DOCUMENTATION**--
+Git commit code with optional backup
+Usage: pl gcom [SITE] [MESSAGE] [OPTION]
+This script will git commit changes to [SITE] with [MESSAGE].\
+If you have access rights, you can commit changes to pleasy itself by using pl for [SITE].
 
+OPTIONS
+  -h --help               Display help (Currently displayed)
+  -b --backup             Backup site after commit
+  -v --verbose            Provide messages of what is happening
+  -d --debug              Provide messages to help with debugging this function
+
+Examples:
+pl gcom loc "Fixed error on blah." -bv\
+pl gcom pl "Improved gcom."
 --**BROKEN DOCUMENTATION**--
 
 </details>
 
-command: gcomsh.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl gcomsh Git push after master merge :question: </summary>**
@@ -253,7 +254,6 @@ pl gcomsh tim 'First tim backup'
 
 </details>
 
-command: gcomup2upstream.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl gcomup2upstream Git commit with upstream merge :question: </summary>**
@@ -273,7 +273,6 @@ END HELP
 
 </details>
 
-command: gcomup.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl gcomup Git commit and backup :question: </summary>**
@@ -293,7 +292,6 @@ END HELP
 
 </details>
 
-command: gulp.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl gulp Turn on gulp :question: </summary>**
@@ -310,7 +308,6 @@ END HELP
 
 </details>
 
-command: importdev.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl importdev Copy localprod to stg, then import dev to stg :question: </summary>**
@@ -326,7 +323,6 @@ END HELP
 
 </details>
 
-command: init.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl init Initialises pleasy :heavy_check_mark: </summary>**
@@ -374,7 +370,6 @@ END OF HELP
 
 </details>
 
-command: install.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl install Installs a drupal site :heavy_check_mark: </summary>**
@@ -400,7 +395,6 @@ END HELP
 
 </details>
 
-command: main.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl main Turn maintenance mode on or off :question: </summary>**
@@ -418,7 +412,6 @@ END HELP
 
 </details>
 
-command: makedb.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl makedb Create the database for a site :question: </summary>**
@@ -433,7 +426,6 @@ END HELP
 
 </details>
 
-command: makedev.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl makedev Turn dev mode on for a site :heavy_check_mark: </summary>**
@@ -451,7 +443,6 @@ END HELP
 
 </details>
 
-command: makelpwp.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl makelpwp Overwrite localprod with production :white_check_mark: </summary>**
@@ -471,7 +462,6 @@ END HELP
 
 </details>
 
-command: makeprod.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl makeprod Turn production mode on and remove dev modules :heavy_check_mark: </summary>**
@@ -488,7 +478,6 @@ END HELP
 
 </details>
 
-command: prodow.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl prodow Overwrite production with site specified :question: </summary>**
@@ -504,7 +493,6 @@ END HELP
 
 </details>
 
-command: rebuild.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl rebuild Rebuild a site's database :question: </summary>**
@@ -520,7 +508,6 @@ END HELP
 
 </details>
 
-command: update.sh plcstatus  scriptdesc 
 <details>
 
 **<summary> pl update Update all site configs :heavy_check_mark: </summary>**
