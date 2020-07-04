@@ -169,6 +169,7 @@ ocmsg "verbose: $verbose" debug
 
 if [[ "$sitename_var" == "pleasy" ]] ; then
 ocmsg "commiting to pleasy"
+makereadme
 cd $folderpath
 else
 import_site_config $sitename_var

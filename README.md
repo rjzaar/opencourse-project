@@ -27,15 +27,35 @@ OR if you want to install the varbase distribution
 pl install var
 ```
 
-It provides various scripts for development processes which incorporate composer, cmi and backup. It includes three stages, dev (called loc for local), stg and prod. Communication with the production server is via drush and scp.
+# Config: pl.yml
+
+The main configuration is in a single file called pl.yml. This is created from the example.pl.yml file. pl.yml needs
+to be edited to suit the current user, eg setting github credentials. But it has enough information to be useable 
+out of the box. The following site information is ready to go
+
+d8: Drupal 8 install
+
+d8c: Drupal 8 composer install
+
+varg: varbase-project install using git
+
+vard: dev varbase-project install using composer
+
+varc: varbase-project install using composer 
+
+# VARBASE
+
+It provides various scripts for development processes which incorporate composer, cmi and backup. It includes three 
+stages, dev (called loc for local), stg and prod. Communication with the production server is via drush and scp.
 This project is also based on the varbase two repository structure, varbase and varbase-project.
 This is a good way to go since most updates to varbase don't need to be updated on a varbase based project.
 Those that do are included in varbase-project.
 There are also a lot less files to track in varbase-project than varbase itself.
 It provides an intelligent separation.
 
-Since a particular site based project needs to include site specific files which should be stored on a private repository for backup, there is one more layer needed.
-The only difference with this layer is the .gitignore file which includes folders needed on production. Welcome to Drupal 8 development.
+Since a particular site based project needs to include site specific files which should be stored on a private 
+repository for backup, there is one more layer needed. The only difference with this layer is the .gitignore file 
+which includes folders needed on production. Welcome to Drupal 8 development.
 
 Status codes
 
