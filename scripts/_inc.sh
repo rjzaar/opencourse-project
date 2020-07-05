@@ -1306,3 +1306,89 @@ plcomposer() {
   fi
 
 }
+
+################################################################################
+# Update pleasy readme with the latest function explanations.
+################################################################################
+makereadme() {
+
+cd
+cd pleasy
+
+if [ -d $script_root ]; then
+    cd "$script_root"
+else
+    echo 'ERROR: Either pleasy $script_root variable does not exist, or the value is set incorrectly.'
+    exit 1
+fi
+if [ ! -f ../docs/README_TEMPLATE.md ]; then
+    echo "Need a template file README_TEMPLATE.md in pleasy docs folder!"; exit 1
+fi
+
+cp ../docs/README_TEMPLATE.md ../README_TEMPLATE.md
+
+(
+documented_scripts=$(grep -l --directories=skip --exclude=makereadme*.sh '^args=$(getopt' *.sh)
+undocumented_scripts=$(grep -L --directories=skip --exclude=makereadme*.sh '^args=$(getopt' *.sh)
+working_dir=$(pwd)
+
+for command in $documented_scripts; do
+
+    help_documentation=$("$working_dir/$command" --help | tail -n +2)
+
+    echo $help_documentation | grep -q '^Usage:' && \
+        sanitised_documentation=$help_documentation || \
+        sanitised_documentation=$(cat <<HEREDOC
+--**BROKEN DOCUMENTATION**--
+$help_documentation
+--**BROKEN DOCUMENTATION**--
+HEREDOC
+)
+
+getstatus=$("$working_dir/$command" --help)
+case "$?" in
+  0 | 1)
+    status=":question:"
+    ;;
+  2)
+    status=":white_check_mark:"
+    ;;
+  3)
+    status=":heavy_check_mark:"
+    ;;
+  *)
+    status=":question:"
+    ;;
+  esac
+
+
+    cat <<HEREDOC
+<details>
+
+**<summary>${command%%.sh}: $("$working_dir/$command" --help | head -n 1) $status </summary>**
+$sanitised_documentation
+
+</details>
+
+HEREDOC
+done
+
+for command in $undocumented_scripts; do
+    cat <<HEREDOC
+<details>
+
+**<summary>${command%%.sh}:  :question: </summary>**
+**DOCUMENTATION NOT IMPLEMENTED**
+
+</details>
+
+HEREDOC
+done
+) >> ../README_TEMPLATE.md || \
+    { echo "Failed to write to copied template file! aborting";
+    rm ../README_TEMPLATE.md;
+    exit 1; }
+
+mv ../README_TEMPLATE.md ../README.md
+echo "Functions and definitions have been generated"
+}

@@ -27,15 +27,35 @@ OR if you want to install the varbase distribution
 pl install var
 ```
 
-It provides various scripts for development processes which incorporate composer, cmi and backup. It includes three stages, dev (called loc for local), stg and prod. Communication with the production server is via drush and scp.
+# Config: pl.yml
+
+The main configuration is in a single file called pl.yml. This is created from the example.pl.yml file. pl.yml needs
+to be edited to suit the current user, eg setting github credentials. But it has enough information to be useable 
+out of the box. The following site information is ready to go
+
+d8: Drupal 8 install
+
+d8c: Drupal 8 composer install
+
+varg: varbase-project install using git
+
+vard: dev varbase-project install using composer
+
+varc: varbase-project install using composer 
+
+# VARBASE
+
+It provides various scripts for development processes which incorporate composer, cmi and backup. It includes three 
+stages, dev (called loc for local), stg and prod. Communication with the production server is via drush and scp.
 This project is also based on the varbase two repository structure, varbase and varbase-project.
 This is a good way to go since most updates to varbase don't need to be updated on a varbase based project.
 Those that do are included in varbase-project.
 There are also a lot less files to track in varbase-project than varbase itself.
 It provides an intelligent separation.
 
-Since a particular site based project needs to include site specific files which should be stored on a private repository for backup, there is one more layer needed.
-The only difference with this layer is the .gitignore file which includes folders needed on production. Welcome to Drupal 8 development.
+Since a particular site based project needs to include site specific files which should be stored on a private 
+repository for backup, there is one more layer needed. The only difference with this layer is the .gitignore file 
+which includes folders needed on production. Welcome to Drupal 8 development.
 
 Status codes
 
@@ -106,20 +126,18 @@ Usage: pl backup [OPTION] ... [SOURCE]
 
 <details>
 
-**<summary>backup: Backup site and database :white_check_mark: </summary>**
-Usage: pl backup [OPTION] ... [SOURCE]
+**<summary>backup: Backup site and database :heavy_check_mark: </summary>**
+Usage: pl backup [OPTION] ... [SOURCE] [MESSAGE]
 This script is used to backup a particular site's files and database.
-You just need to state the sitename, eg dev.
+You just need to state the sitename, eg dev and an optional message.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
-  -m --message='msg'      Enter an optional message to accompany the backup
 
 Examples:
 pl backup -h
 pl backup dev
-pl backup tim -m 'First tim backup'
-pl backup --message='Love' love
+pl backup tim 'First tim backup'
 END HELP
 
 </details>
@@ -222,7 +240,7 @@ Examples:
 Git commit code with optional backup
 Usage: pl gcom [SITE] [MESSAGE] [OPTION]
 This script will git commit changes to [SITE] with [MESSAGE].\
-If you have access rights, you can commit changes to pleasy itself by using pl for [SITE].
+If you have access rights, you can commit changes to pleasy itself by using pl for [SITE] or pleasy.
 
 OPTIONS
   -h --help               Display help (Currently displayed)
@@ -510,6 +528,30 @@ END HELP
 
 <details>
 
+**<summary>restore: args:  --help -- :heavy_check_mark: </summary>**
+--**BROKEN DOCUMENTATION**--
+Restore a particular site's files and database from backup
+Usage: pl restore [FROM] [TO] [OPTION]
+You just need to state the sitename, eg dev.
+You can alternatively restore the site into a different site which is the second argument.
+
+OPTIONS
+  -h --help               Display help (Currently displayed)
+  -d --debug              Provide debug information when running this script.
+  -f --first              Usse the latest backup
+  -y --yes                Auto delete current content
+
+Examples:
+pl restore loc
+pl restore loc stg -fy
+pl restore -h
+pl restore loc -d
+--**BROKEN DOCUMENTATION**--
+
+</details>
+
+<details>
+
 **<summary>update: Update all site configs :heavy_check_mark: </summary>**
 Usage: pl update [OPTION]
 This script will update the configs for all sites
@@ -553,13 +595,6 @@ Examples:
 <details>
 
 **<summary>restoredb:  :question: </summary>**
-**DOCUMENTATION NOT IMPLEMENTED**
-
-</details>
-
-<details>
-
-**<summary>restore:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>

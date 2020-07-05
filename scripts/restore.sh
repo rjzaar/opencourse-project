@@ -97,7 +97,7 @@ while true; do
   case "$1" in
   -h | --help)
     print_help
-    exit 2 # works
+    exit 3 # pass
     ;;
    -d | --debug)
   verbose="debug"
