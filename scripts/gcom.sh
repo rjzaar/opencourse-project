@@ -51,7 +51,7 @@ echo \
 "Git commit code with optional backup
 Usage: pl gcom [SITE] [MESSAGE] [OPTION]
 This script will git commit changes to [SITE] with [MESSAGE].\\
-If you have access rights, you can commit changes to pleasy itself by using "pl" for [SITE].
+If you have access rights, you can commit changes to pleasy itself by using "pl" for [SITE] or pleasy.
 
 OPTIONS
   -h --help               Display help (Currently displayed)
