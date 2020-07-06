@@ -1130,20 +1130,20 @@ copy_site_files() {
   from=$1
   sitename_var=$2
   echo "From $from to $sitename_var"
-
+  tosite=$sitename_var
   #We need to work out where each site is.
   import_site_config $from
   from_sp=$site_path
-  import_site_config $sitename_var
+  import_site_config $tosite
   to_sp=$site_path
 
   if [ -d $to_sp/$sitename_var ]; then
-    sudo chown $user:www-data $to_sp/$sitename_var -R
-    chmod +w $to_sp/$sitename_var -R
-    rm -rf $to_sp/$sitename_var
+    sudo chown $user:www-data $to_sp/$tosite -R
+    chmod +w $to_sp/$tosite -R
+    rm -rf $to_sp/$tosite
   fi
-  echo "Move all files from $from to $sitename_var"
-  cp -rf "$from_sp/$1" "$to_sp/$2"
+  echo "Move all files from $from to $tosite"
+  cp -rf "$from_sp/$from" "$to_sp/$tosite"
 }
 
 #

@@ -80,8 +80,7 @@ if [ $1 == "copy" ] && [ -z "$2" ]
   then
   sitename_var="$sites_stg"
   from="$sites_dev"
-fi
-if [ -z "$2" ]
+elif [ -z "$2" ]
   then
     sitename_var=$1
     from="$sites_dev"
