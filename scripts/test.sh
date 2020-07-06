@@ -13,26 +13,21 @@ Cyan='\033[0;36m'         # Cyan
 echo -e "$Red hello red $Color_Off"
 echo -e "hi again."
 echo -e "$Green green $Color_Off"
-sitename_var=loc
-install_locmodules=""
-rp="install_${sitename_var}modules"
-rpv=${!rp}
-if [ "$rpv" != "" ]
-then
-echo " $rp has value"
-fi
+
+git clone git://github.com/phpenv/phpenv.git ~/.phpenv
+echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.bash_profile
+echo 'eval "$(phpenv init -)"' >> ~/.bash_profile
+exec $SHELL -l
 
 
-
-
-rp="install"
-rpv=${!rp}
-if [ "$rpv" != "" ]
-then
-echo "$rp has value"
-fi
-
-if [[ ! -z "${install+x}" ]]
-then
-echo " install exits"
-fi
+echo 'max_execution_time = 1200' >> varbase.php.ini;
+echo 'max_input_time = 180' >> varbase.php.ini;
+echo 'max_input_vars = 10000' >> varbase.php.ini;
+echo 'memory_limit = 4000M' >> varbase.php.ini;
+echo 'error_reporting = E_ALL' >> varbase.php.ini;
+echo 'post_max_size = 64M' >> varbase.php.ini;
+echo 'upload_max_filesize = 32M' >> varbase.php.ini;
+echo 'max_file_uploads = 40' >> varbase.php.ini;
+echo 'sendmail_path = /bin/true' >> varbase.php.ini;
+phpenv config-add varbase.php.ini
+phpenv rehash
