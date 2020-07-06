@@ -332,6 +332,7 @@ if [ $step -lt 6 ]; then
   echo "pwd: $(pwd)"
   if [[ "$(pwd)" == "/home/travis" ]]; then
     cd build/rjzaar
+    phpenv version
     echo 'max_execution_time = 1200' >>varbase.php.ini
     echo 'max_input_time = 180' >>varbase.php.ini
     echo 'max_input_vars = 10000' >>varbase.php.ini
@@ -341,7 +342,9 @@ if [ $step -lt 6 ]; then
     echo 'upload_max_filesize = 32M' >>varbase.php.ini
     echo 'max_file_uploads = 40' >>varbase.php.ini
     echo 'sendmail_path = /bin/true' >>varbase.php.ini
+    echo "phpenv config-add"
     phpenv config-add varbase.php.ini
+    echo "phpenv rehash"
     phpenv rehash
     cd
   fi
