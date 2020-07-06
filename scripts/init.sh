@@ -329,8 +329,8 @@ if [ $step -lt 6 ]; then
   sudo apt-get -y install apache2 php7.3 libapache2-mod-php7.3 php7.3-mysql php7.3-common curl php7.3-cli php7.3-gd php7.3-mbstring php7.3-xml php7.3-curl php7.3-bz2 php7.3-zip git unzip php-xdebug -y
 
   # If Travis, then add some environment variables, particularly to add more memory to php.
-  echo "pwd: $pwd"
-  if [[ "$pwd" == "/home/travis" ]]; then
+  echo "pwd: $(pwd)"
+  if [[ "$(pwd)" == "/home/travis" ]]; then
     echo 'max_execution_time = 1200' >>varbase.php.ini
     echo 'max_input_time = 180' >>varbase.php.ini
     echo 'max_input_vars = 10000' >>varbase.php.ini
