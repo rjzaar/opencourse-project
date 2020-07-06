@@ -331,6 +331,7 @@ if [ $step -lt 6 ]; then
   # If Travis, then add some environment variables, particularly to add more memory to php.
   echo "pwd: $(pwd)"
   if [[ "$(pwd)" == "/home/travis" ]]; then
+    cd build/rjzaar
     echo 'max_execution_time = 1200' >>varbase.php.ini
     echo 'max_input_time = 180' >>varbase.php.ini
     echo 'max_input_vars = 10000' >>varbase.php.ini
@@ -342,6 +343,7 @@ if [ $step -lt 6 ]; then
     echo 'sendmail_path = /bin/true' >>varbase.php.ini
     phpenv config-add varbase.php.ini
     phpenv rehash
+    cd
   fi
 
 fi
