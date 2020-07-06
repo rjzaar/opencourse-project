@@ -350,9 +350,10 @@ if [ $step -lt 6 ]; then
 #  fi
 
 # Actually just set the memory limit regardless
-php -i
-phploc=( $(php -i | grep "Loaded Configuration File") )
-echo "phploc $phploc"
+phpline=$(php -i | grep "Loaded Configuration File")
+echo "phpline: $phpline"
+phploc=( $phpline )
+echo "phploc $phploc[4]"
 phpmem=$(grep '^memory_limit ' $phploc[4] )
 echo "phpmem $phpmem"
 sudo sed -i 's,^memory_limit =.*$,memory_limit = -1,' ${phploc[4]}
