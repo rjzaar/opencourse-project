@@ -45,7 +45,7 @@ language: bash
 env:
   - SITE=d8
   - SITE=d8c
-# Getting segmentation fault with all varbase installs. 
+# Getting segmentation fault with all varbase installs.
 #  - SITE=varc
 #  - SITE=vard
 #  - SITE=varg

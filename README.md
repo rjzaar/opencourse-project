@@ -144,6 +144,22 @@ END HELP
 
 <details>
 
+**<summary>copyf: Copies only the files from one site to another :white_check_mark: </summary>**
+Usage: pl copyf [OPTION] ... [SOURCE]
+This script will copy one site to another site. It will copy only the files
+but will set up the site settings. If no argument is given, it will copy dev
+to stg If one argument is given it will copy dev to the site specified If two
+arguments are give it will copy the first to the second.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+
+Examples:
+
+</details>
+
+<details>
+
 **<summary>copy: Copies one site to another site. :heavy_check_mark: </summary>**
     Usage: pl copy [OPTION] ... [SOURCE] [DESTINATION]
 This script will copy one site to another site. It will copy all
@@ -561,13 +577,6 @@ Mandatory arguments to long options are mandatory for short options too.
   -d --debug              Provide debug information when running this script.
 
 Examples:
-
-</details>
-
-<details>
-
-**<summary>copyf:  :question: </summary>**
-**DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 
