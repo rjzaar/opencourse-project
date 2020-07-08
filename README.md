@@ -428,6 +428,8 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 pl install d8
+pl install ins -b=6 #To start from installing the modules.
+pl install loc -s=3 #start from composer install
 END HELP
 
 </details>

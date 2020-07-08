@@ -55,6 +55,8 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 pl install d8
+pl install ins -b=6 #To start from installing the modules.
+pl install loc -s=3 #start from composer install
 END HELP"
 
 }
@@ -117,7 +119,7 @@ while true; do
   -b | --build-step)
     flag_buildstep=1
     shift
-    build_step=$1
+    build_step=${1:1}
     shift; ;;
    -t | --test)
     pltest="y"
@@ -131,7 +133,7 @@ while true; do
   esac
 done
 
-ocmsg "12: >$1< >$2< step:$step<" debug
+ocmsg "12: >$1< >$2< step:$step< buildstep:$bstep<" debug
 
 if [[ "$1" == "install" ]] && [[ -z "$2" ]]; then
  echo "No site specified."
@@ -143,6 +145,13 @@ else
   sitename_var=$1
 fi
 ocmsg "sitename _var: $sitename_var" debug
+
+if [[ flag_buildstep ]] ; then
+  step=6
+  bstep=$build_step # rebuild requires bstep so make it equal to build_step.
+  echo "Buildstep $bstep requires step set to 6"
+  fi
+
 
 #auto="y"
 #folder=$(basename $(dirname $script_root))
