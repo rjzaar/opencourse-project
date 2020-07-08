@@ -39,9 +39,9 @@ The only difference with this layer is the .gitignore file which includes folder
 
 Status codes
 
-pass: Working and passing Travis CI :heavy_check_mark:
+pass: Working and passing Travis CI :white_check_mark:
 
-works: Working but not yet integrated to Travis CI :white_check_mark:
+works: Working but not yet integrated to Travis CI :heavy_check_mark:
 
 todo: Has not been looked at yet :question:
 

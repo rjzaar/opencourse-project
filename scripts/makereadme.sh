@@ -58,10 +58,10 @@ case "$?" in
     status=":question:"
     ;;
   2)
-    status=":white_check_mark:"
+    status=":heavy_check_mark:"
     ;;
   3)
-    status=":heavy_check_mark:"
+    status=":white_check_mark:"
     ;;
   *)
     status=":question:"

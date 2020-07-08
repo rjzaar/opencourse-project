@@ -624,6 +624,8 @@ ocmsg "sudo npm install gulp-cli -g" debug
 npm install gulp-cli -g
 ocmsg "sudo npm install gulp -D" debug
 npm install gulp -D
+ocmsg "npm install browser-sync" debug
+npm install -g browser-sync
 
 ocmsg "Increase watch speed for gulp: requires sudo." debug
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p

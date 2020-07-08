@@ -35,15 +35,18 @@ scriptname='gulp'
 print_help() {
 echo \
 "Turn on gulp
-Usage: pl $scriptname [OPTION] ... [SITE]
-This script is used to set upl gulp browser sync for a particular page. You
-just need to state the sitename, eg loc and the page, eg opencat.loc
+Usage: pl $scriptname [OPTION] ... [SITE] [URL]
+This script is used to set up gulp browser sync for a particular page. You
+just need to state the sitename and optionally a particular page
+, eg loc and http://pleasy.loc/sar
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
-pl $scriptname
+pl $scriptname loc
+pl $scriptname loc http://pleasy.loc/sar
+
 END HELP"
 
 }
@@ -82,7 +85,9 @@ eval set -- "$args"
 while true; do
   case "$1" in
   -h | --help)
-    print_help; exit 0; ;;
+    print_help;
+    exit 2 # works
+    ;;
   --)
   shift; break; ;;
   *)
@@ -93,7 +98,7 @@ done
 
 ################################################################################
 
-}
+
 # Check number of arguments
 ################################################################################
 # If no arguments given, prompt user for arguments
@@ -107,12 +112,24 @@ sitename_var=$1
 parse_pl_yml
 import_site_config $sitename_var
 
+if [ $1 == "gulp" ] && [ -z "$2" ]; then
+  uri=$folder.$sitename_var
+elif [ -z "$2" ]; then
+  sitename_var=$1
+  uri=$folder.$sitename_var
+else
+  sitename_var=$1
+  uri=$2
+fi
 
+echo "uri: $uri"
 # This code could be better integrated.
-sed -i "1s|.*|var page = \"$2\";|" "$site_path/$sitename_var/$webroot/themes/custom/$theme/gulpfile.js"
+# The first line of gulpfile.js should be "var page = "http://pleasy.loc"" or something like it.
+sed -i "1s|.*|var page = \"$uri\";|" "$site_path/$sitename_var/$webroot/themes/custom/$theme/gulpfile.js"
 cd "$site_path/$sitename_var/$webroot/themes/custom/$theme/"
 gulp & #This will start the scss syncing.
-browser-sync start --proxy "$2" --files "**/*.twig, **/*.css, **/*.js" --reload-delay 1000 & # This will start browser sync.
+# Browser-sync needs to be installed: npm install -g browser-sync. This should have been done in pl init.
+browser-sync start --proxy "$uri" --files "**/*.twig, **/*.css, **/*.js" --reload-delay 1000 & # This will start browser sync.
 echo "gulp and browser-sync started."
 
 # to check for processes so background ones can be killed:
