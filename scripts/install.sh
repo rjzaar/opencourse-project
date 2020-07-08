@@ -147,7 +147,7 @@ else
 fi
 ocmsg "sitename _var: $sitename_var" debug
 
-if [[ flag_buildstep ]] ; then
+if [[ flag_buildstep == 1 ]] ; then
   step=6
   bstep=$build_step # rebuild requires bstep so make it equal to build_step.
   echo "Buildstep $bstep requires step set to 6"
