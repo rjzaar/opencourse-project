@@ -93,6 +93,7 @@ eval set -- "$args"
 ################################################################################
 # build_step is for the rebuild steps
 build_step=1
+flag_buildstep=0
 # step is for the install steps
 step=1
 # Check for options
