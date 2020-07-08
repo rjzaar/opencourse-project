@@ -619,39 +619,44 @@ fi
 
 if [ $step -lt 16 ]; then
   echo -e "$Cyan step 15: Now add theming tools $Color_Off"
-  #Now add theming tools
 
-  # This is the latest way to load it: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm#using-a-node-version-manager-to-install-node-js-and-npm
-  # and: https://github.com/nvm-sh/nvm
-  ocmsg "Using nvm to install nodejs and npm" debug
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-  # source ~/.bashrc
-  nvm install node
-  sudo apt install build-essential
+#Now add theming tools
 
-  # see https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
-  # use recommended version of Node.js
-  #ocmsg "getting setup from nodesource." debug
-  #curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-  #ocmsg "install nodejs build-essential" debug
-  #sudo apt-get install -y nodejs build-essential
-  #
-  #
-  #ocmsg "getting npmjs install." debug
-  #sudo curl -L https://npmjs.com/install.sh | sudo sh
-  #ocmsg "sudo apt install npm" debug
-  #sudo apt install npm
 
-  ocmsg "sudo npm install gulp-cli -g" debug
-  npm install gulp-cli -g
-  ocmsg "sudo npm install gulp -D" debug
-  npm install gulp -D
+# This is the latest way to load it: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm#using-a-node-version-manager-to-install-node-js-and-npm
+# and: https://github.com/nvm-sh/nvm
+ocmsg "Using nvm to install nodejs and npm" debug
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# source ~/.bashrc
+nvm install node
+sudo apt install build-essential
 
-  ocmsg "Increase watch speed for gulp: requires sudo." debug
-  echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+# see https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
+# use recommended version of Node.js
+#ocmsg "getting setup from nodesource." debug
+#curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+#ocmsg "install nodejs build-essential" debug
+#sudo apt-get install -y nodejs build-essential
+#
+#
+#ocmsg "getting npmjs install." debug
+#sudo curl -L https://npmjs.com/install.sh | sudo sh
+#ocmsg "sudo apt install npm" debug
+#sudo apt install npm
+
+ocmsg "sudo npm install gulp-cli -g" debug
+npm install gulp-cli -g
+ocmsg "sudo npm install gulp -D" debug
+npm install gulp -D
+ocmsg "npm install browser-sync" debug
+npm install -g browser-sync
+
+ocmsg "Increase watch speed for gulp: requires sudo." debug
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
 fi
 
 # I don't know why I can't run source in this script. But I'll leave it out for now.
