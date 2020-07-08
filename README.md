@@ -59,9 +59,9 @@ which includes folders needed on production. Welcome to Drupal 8 development.
 
 Status codes
 
-pass: Working and passing Travis CI :heavy_check_mark:
+pass: Working and passing Travis CI :white_check_mark:
 
-works: Working but not yet integrated to Travis CI :white_check_mark:
+works: Working but not yet integrated to Travis CI :heavy_check_mark:
 
 todo: Has not been looked at yet :question:
 
@@ -328,16 +328,19 @@ END HELP
 
 <details>
 
-**<summary>gulp: Turn on gulp :question: </summary>**
-Usage: pl gulp [OPTION] ... [SITE]
-This script is used to set upl gulp browser sync for a particular page. You
-just need to state the sitename, eg loc and the page, eg opencat.loc
+**<summary>gulp: Turn on gulp :white_check_mark: </summary>**
+Usage: pl gulp [OPTION] ... [SITE] [URL]
+This script is used to set up gulp browser sync for a particular page. You
+just need to state the sitename and optionally a particular page
+, eg loc and http://pleasy.loc/sar
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
-pl gulp
+pl gulp loc
+pl gulp loc http://pleasy.loc/sar
+
 END HELP
 
 </details>
@@ -568,6 +571,15 @@ pl restore loc -d
 
 <details>
 
+**<summary>stopgulp: This script is used to kill any processes started by gulp. There are no arguments required. :white_check_mark: </summary>**
+--**BROKEN DOCUMENTATION**--
+
+--**BROKEN DOCUMENTATION**--
+
+</details>
+
+<details>
+
 **<summary>update: Update all site configs :heavy_check_mark: </summary>**
 Usage: pl update [OPTION]
 This script will update the configs for all sites
@@ -625,13 +637,6 @@ Examples:
 <details>
 
 **<summary>stg2prod:  :question: </summary>**
-**DOCUMENTATION NOT IMPLEMENTED**
-
-</details>
-
-<details>
-
-**<summary>stopgulp:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
