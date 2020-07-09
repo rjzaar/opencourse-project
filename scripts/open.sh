@@ -11,6 +11,6 @@ fi
 
 sitename_var=$1
 echo "about to open $sitename_var"
-drush @$sitename_var uli
+drush @$sitename_var uli &
 
 

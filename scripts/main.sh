@@ -31,8 +31,8 @@ scriptname='pleasy-main'
 # Prints user guide
 ################################################################################
 print_help() {
-echo \
-"Turn maintenance mode on or off
+  echo \
+    "Turn maintenance mode on or off
 Usage: pl main [OPTION] ... [SITE] [MODULES]
 This script will turn maintenance mode on or off. You will need to specify the
 site first than on or off, eg pl main loc on
@@ -65,8 +65,8 @@ args=$(getopt -o h -l help --name "$scriptname" -- "$@")
 # If getopt outputs error to error variable, quit program displaying error
 ################################################################################
 [ $? -eq 0 ] || {
-    echo "please do 'pl main --help' for more options"
-    exit 1
+  echo "please do 'pl main --help' for more options"
+  exit 1
 }
 
 ################################################################################
@@ -81,13 +81,17 @@ eval set -- "$args"
 while true; do
   case "$1" in
   -h | --help)
-    print_help; exit 0; ;;
+    print_help
+    exit 0
+    ;;
   --)
-  shift
-  break; ;;
+    shift
+    break
+    ;;
   *)
-  "Programming error, this should not show up!"
-  exit 1; ;;
+    "Programming error, this should not show up!"
+    exit 1
+    ;;
   esac
 done
 
@@ -108,14 +112,16 @@ echo "This will turn $main maintenance mode on the $sitename_var site."
 #parse_pl_yml
 #import_site_config $sitename_var
 
-for i in "$2"; do
+for i in "$main"; do
   case $i in
   on)
+    echo "Turning maintenance mode on"
     drush @$1 state:set system.maintenance_mode 1 --input-format=integer
     drush @$1 cache:rebuild
     shift # past argument=value
     ;;
   off)
+    echo "Turning maintenance mode off"
     drush @$1 state:set system.maintenance_mode 0 --input-format=integer
     drush @$1 cache:rebuild
     shift # past argument=value
@@ -131,5 +137,4 @@ done
 ################################################################################
 # Finish script, display time taken
 ################################################################################
-echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
-
+echo 'Finished in H:'$(($SECONDS / 3600))' M:'$(($SECONDS % 3600 / 60))' S:'$(($SECONDS % 60))
