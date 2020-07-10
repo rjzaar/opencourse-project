@@ -885,10 +885,11 @@ backup_prod() {
     scp "$prod_alias:$Namef" "$folderpath/sitebackups/prod/$Namef"
     #tar -czf  $folderpath/sitebackups/prod/$Name.tar.gz $folderpath/sitebackups/prod/$Name.tar
     #rm $folderpath/sitebackups/prod/$Name.tar
-  else
-    # presume git
+  elif [ $prod_method == "git" ]; then
     # This needs work. It's not tested!
     ssh $prod_alias "cd $prod_docroot/.. & addc & git add . & git commit -m \"preupdate\" & git push"
+  else
+    echo "No file backup method specified."
   fi
 }
 

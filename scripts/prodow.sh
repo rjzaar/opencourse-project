@@ -18,7 +18,7 @@
 ################################################################################
 ################################################################################
 #
-#  Core Maintainer:  Rob Zar
+#  Core Maintainer:  Rob Zaar
 #  Email:            rjzaar@gmail.com
 #
 ################################################################################
@@ -44,11 +44,14 @@ prod The external site details are also set in pl.yml under prod:
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
+  -y --yes                Auto Yes to all options
+  -s --step=[INT]         Restart at the step specified.
 
 Examples:
+pl prodow stg
 END HELP
 HEREDOC
-exit 0
+
 }
 
 # start timer
@@ -84,7 +87,8 @@ eval set -- "$args"
 while true; do
   case "$1" in
   -h | --help)
-    print_help; exit 0; ;;
+    print_help
+    exit 2; ;;
   -s | --step)
     flag_step=1
     shift
@@ -108,13 +112,13 @@ step=1
 if [ $1 = "prodow" ] && [ -z "$2" ]; then
   echo "No site specified"
   print_help
-  exit 1
+  exit 0
 fi
 
 sitename_var=$1
 
 echo "overwriting production server with $sitename_var site"
-. $script_root/_inc.sh;
+
 parse_pl_yml
 
 import_site_config $sitename_var
@@ -182,7 +186,7 @@ fi
 
 echo "fix file permissions, requires sudo on external server and Restoring correct settings.php"
 ssh $prod_alias -t "sudo chown $prod_user:www-data $prod_root.new -R"
-ssh $prod_alias "cp ocbackup/settings.php $prod_root.new/$(basename $prod_docroot)/sites/default/settings.php -rf"
+ssh $prod_alias "cp $prod_root/$(basename $prod_docroot)/sites/default/settings.php $prod_root.new/$(basename $prod_docroot)/sites/default/settings.php -rf"
 ssh $prod_alias -t "sudo bash ./fix-p.sh --drupal_user=puregift --drupal_path=$prod_docroot.new/docroot"
 fi
 

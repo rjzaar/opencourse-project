@@ -3,7 +3,7 @@
 #                      Backup prod For Pleasy Library
 #
 #  This script is used to backup prod site's files and database. You can
-#  add an optional message.(More detail pls rob)
+#  add an optional message. The production site details are in pl.yml.
 #
 #  Change History
 #  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
@@ -49,19 +49,17 @@ SECONDS=0
 print_help() {
 echo \
 "Backs up the production site
-Usage: pl backup [OPTION] ... [SOURCE]
+Usage: pl backup [OPTION] ... [MESSAGE]
   This script is used to backup prod site's files and database. You can
-  add an optional message.
+  add an optional message. The production site details are in pl.yml.
 
   Mandatory arguments to long options are mandatory for short options too.
     -h --help               Display help (Currently displayed)
-    -m --message='msg'      Enter a message to accompany the backup (IS THIS
-                            OPTIONAL ROB?)
 
   Examples:
   pl backupprod -h
-  pl backupprod ./tim -m 'First tim backup'"
-exit 0
+  pl backupprod 'First tim backup'"
+
 }
 
 # Use of Getopt
@@ -69,7 +67,7 @@ exit 0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o hm: -l help,message: --name "$scriptname" -- "$@")
+args=$(getopt -o h -l help --name "$scriptname" -- "$@")
 #echo "$args"
 
 ################################################################################
@@ -93,14 +91,7 @@ while true; do
   case "$1" in
   -h | --help)
     print_help
-    exit 0
-    ;;
-  -m | --message)
-    shift
-    msg="$(echo "$1" | sed 's/^=//g')"
-    echo "Msg = $msg"
-    echo "#MESSAGE FUNCTION NOT IMPLEMENTED"
-    shift
+    exit 2 # works
     ;;
   -- )
   shift
@@ -112,7 +103,7 @@ while true; do
   ;;
   esac
 done
-echo $#; echo $1; echo "DEBUG EXIT"; exit 0
+
 ################################   FIX THIS   ##################################
 # THIS SCRIPT WILL NOT WORK, I'm not sure what it is trying to do
 ################################################################################
@@ -120,6 +111,7 @@ if [ $1 == "backupprod" ] && [ -z "$2" ]; then
   echo -e "\e[34mbackup prod \e[39m"
 elif [ -z "$2" ]; then
   echo -e "\e[34mbackup prod with message $1\e[39m"
+  msg=$1
 else
   print_help
 fi

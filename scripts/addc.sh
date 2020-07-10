@@ -42,15 +42,16 @@ scriptname='pleasy-addc'
 ################################################################################
 print_help() {
 echo \
-"Usage: pl addc [OPTION]
+"Add github credentials
+Usage: pl addc [OPTION]
   This script is used to add github credentials
 
   Mandatory arguments to long options are mandatory for short options too.
     -h --help               Display help (Currently displayed)
 
   Examples:
-  pl addc -h"
-exit 0
+  pl addc "
+
 }
 
 
@@ -82,7 +83,7 @@ while true; do
   case "$1" in
   -h | --help)
     print_help
-    exit 0
+    exit 2 # works
     ;;
   -- )
   shift

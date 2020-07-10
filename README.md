@@ -70,16 +70,15 @@ todo: Has not been looked at yet :question:
 
 <details>
 
-**<summary>addc: Usage: pl addc [OPTION] :question: </summary>**
---**BROKEN DOCUMENTATION**--
+**<summary>addc: Add github credentials :white_check_mark: </summary>**
+Usage: pl addc [OPTION]
   This script is used to add github credentials
 
   Mandatory arguments to long options are mandatory for short options too.
     -h --help               Display help (Currently displayed)
 
   Examples:
-  pl addc -h
---**BROKEN DOCUMENTATION**--
+  pl addc 
 
 </details>
 
@@ -108,19 +107,17 @@ Backs up the database only
 
 <details>
 
-**<summary>backupprod: Backs up the production site :question: </summary>**
-Usage: pl backup [OPTION] ... [SOURCE]
+**<summary>backupprod: Backs up the production site :white_check_mark: </summary>**
+Usage: pl backup [OPTION] ... [MESSAGE]
   This script is used to backup prod site's files and database. You can
-  add an optional message.
+  add an optional message. The production site details are in pl.yml.
 
   Mandatory arguments to long options are mandatory for short options too.
     -h --help               Display help (Currently displayed)
-    -m --message='msg'      Enter a message to accompany the backup (IS THIS
-                            OPTIONAL ROB?)
 
   Examples:
   pl backupprod -h
-  pl backupprod ./tim -m 'First tim backup'
+  pl backupprod 'First tim backup'
 
 </details>
 
@@ -519,15 +516,18 @@ END HELP
 
 <details>
 
-**<summary>prodow: Overwrite production with site specified :question: </summary>**
+**<summary>prodow: Overwrite production with site specified :white_check_mark: </summary>**
 Usage: pl prodow [OPTION] ... [SITE]
 This script will overwrite production with the site chosen It will first backup
 prod The external site details are also set in pl.yml under prod:
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
+  -y --yes                Auto Yes to all options
+  -s --step=[INT]         Restart at the step specified.
 
 Examples:
+pl prodow stg
 END HELP
 
 </details>
