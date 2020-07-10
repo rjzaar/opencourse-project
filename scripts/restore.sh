@@ -49,7 +49,7 @@ verbose="none"
 
 # Help menu
 print_help() {
-cat <<-HELP
+  cat <<-HELP
 Restore a particular site's files and database from backup
 Usage: pl restore [FROM] [TO] [OPTION]
 You just need to state the sitename, eg dev.
@@ -58,7 +58,7 @@ You can alternatively restore the site into a different site which is the second
 OPTIONS
   -h --help               Display help (Currently displayed)
   -d --debug              Provide debug information when running this script.
-  -f --first              Usse the latest backup
+  -f --first              Use the latest backup
   -y --yes                Auto delete current content
 
 Examples:
@@ -99,18 +99,18 @@ while true; do
     print_help
     exit 3 # pass
     ;;
-   -d | --debug)
-  verbose="debug"
-  shift
-  ;;
+  -d | --debug)
+    verbose="debug"
+    shift
+    ;;
   -f | --first)
-  flag_first=1
-  shift
-  ;;
+    flag_first=1
+    shift
+    ;;
   -y | --yes)
-  flag_yes=1
-  shift
-  ;;
+    flag_yes=1
+    shift
+    ;;
   --)
     shift
     break
@@ -125,9 +125,9 @@ done
 parse_pl_yml
 
 if [ $1 == "restore" ] && [ -z "$2" ]; then
-    echo "No site specified"
-    print_help
-    exit 1
+  echo "No site specified"
+  print_help
+  exit 1
 elif [ -z "$2" ]; then
   sitename_var=$1
   bk=$1
@@ -142,57 +142,62 @@ import_site_config $sitename_var
 # Could be a better way to go: https://stackoverflow.com/questions/42789273/bash-choose-default-from-case-when-enter-is-pressed-in-a-select-prompt
 cd "$folderpath/sitebackups/$bk"
 ocmsg "flag_first is $flag_first" debug
-options=( $(find -maxdepth 1 -name "*.sql" -print0 | xargs -0 ls -1 -t ) )
-if [ $flag_first ]
-then
+options=($(find -maxdepth 1 -name "*.sql" -print0 | xargs -0 ls -1 -t))
+if [ $flag_first ]; then
   echo -e "\e[34mrestoring $1 to $2 with latest backup\e[39m"
   Name=${options[0]:2}
   echo "Restoring with $Name"
 else
-prompt="Please select a backup:"
-PS3="$prompt "
-select opt in "${options[@]}" "Quit" ; do
-    if (( REPLY == 1 + ${#options[@]} )) ; then
-        exit
-    elif (( REPLY > 0 && REPLY <= ${#options[@]} )) ; then
-        echo  "You picked $REPLY which is file ${opt:2}"
-        Name=${opt:2}
-        break
+  prompt="Please select a backup:"
+  PS3="$prompt "
+  select opt in "${options[@]}" "Quit"; do
+    if ((REPLY == 1 + ${#options[@]})); then
+      exit
+    elif ((REPLY > 0 && REPLY <= ${#options[@]})); then
+      echo "You picked $REPLY which is file ${opt:2}"
+      Name=${opt:2}
+      break
     else
-        echo "Invalid option. Try another one."
+      echo "Invalid option. Try another one."
     fi
-done
+  done
 fi
 
 echo " site_path: $site_path/$sitename_var"
 # Check to see if folder already exits.
 if [ -d "$site_path/$sitename_var" ]; then
-    if [ ! "$flag_yes" == "1" ]
-    then
+  if [ ! "$flag_yes" == "1" ]; then
     read -p "$sitename_var exists. If you proceed, $sitename_var will first be deleted. Do you want to proceed?(Y/n)" question
-        case $question in
-            n|c|no|cancel)
-            echo exiting immediately, no changes made
-            exit 1
-            ;;
-        esac
-    fi
-    rm -rf "$site_path/$sitename_var"
+    case $question in
+    n | c | no | cancel)
+      echo exiting immediately, no changes made
+      exit 1
+      ;;
+    esac
+  fi
+  rm -rf "$site_path/$sitename_var"
 
 fi
-mkdir "$site_path/$sitename_var"
+
 echo -e "\e[34mrestoring files\e[39m"
 # Will need to first move the source folder ($bk) if it exists, so we can create the new folder $sitename_var
 echo "path $site_path/$sitename_var folderpath $folderpath"
-echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz into $site_path/$sitename_var"
-# Check to see if the backup includes the root folder or not.
-Dir_name=`tar -tzf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" | head -1 | cut -f1 -d"/"`
-#echo "Dir_name = >$Dir_name<"
-if [ $Dir_name == "." ]
-then
-tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C "$site_path/$sitename_var"
+
+if [[ "$bk" == prod ]] && [[ "$prod_method" == "git" ]]; then
+  # easier and faster
+  cd $site_path
+  git clone $prod_gitrepo $sitename_var
 else
-tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C "$site_path/$sitename_var" --strip-components=1
+  mkdir "$site_path/$sitename_var"
+  echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz into $site_path/$sitename_var"
+  # Check to see if the backup includes the root folder or not.
+  Dir_name=$(tar -tzf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" | head -1 | cut -f1 -d"/")
+  #echo "Dir_name = >$Dir_name<"
+  if [ $Dir_name == "." ]; then
+    tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C "$site_path/$sitename_var"
+  else
+    tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C "$site_path/$sitename_var" --strip-components=1
+  fi
 fi
 # Move settings.php and settings.local.php out the way before they are overwritten just in case you might need them.
 #echo "Moving settings.php and settings.local.php"
@@ -213,6 +218,8 @@ db_defaults
 
 restore_db
 
+#drush @sitename_var cr
+
 exit 0
 
 # Old way
@@ -220,21 +227,16 @@ echo -e "\e[34mrestoring files\e[39m"
 # Will need to first move the source folder ($bk) if it exists, so we can create the new folder $sitename_var
 echo "path $site_path/$bk folderpath $folderpath"
 if [ -d "$site_path/$bk" ]; then
-    if [ -d "$site_path/$bk.tmp" ]; then
-      echo "$site_path/$bk.tmp exits. There might have been a problem previously. I suggest you move $site_path/$bk.tmp to $site_path/$bk and try again."
-      exit 1
-    fi
-    mv "$site_path/$bk" "$site_path/$bk.tmp"
-    echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz"
-    tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C $folderpath
-    mv "$site_path/$bk" "$site_path/$sitename_var"
-    mv "$site_path/$bk.tmp" "$site_path/$bk"
-    else
-    echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz  fp  $folderpath"
-    tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C $folderpath
+  if [ -d "$site_path/$bk.tmp" ]; then
+    echo "$site_path/$bk.tmp exits. There might have been a problem previously. I suggest you move $site_path/$bk.tmp to $site_path/$bk and try again."
+    exit 1
+  fi
+  mv "$site_path/$bk" "$site_path/$bk.tmp"
+  echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz"
+  tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C $folderpath
+  mv "$site_path/$bk" "$site_path/$sitename_var"
+  mv "$site_path/$bk.tmp" "$site_path/$bk"
+else
+  echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz  fp  $folderpath"
+  tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C $folderpath
 fi
-
-
-
-
-

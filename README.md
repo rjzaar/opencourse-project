@@ -481,8 +481,24 @@ END HELP
 
 <details>
 
-**<summary>makelpwp: Overwrite localprod with production :white_check_mark: </summary>**
-Usage: pl makelpwp [OPTION] ... [SITE]
+**<summary>makeprod: Turn production mode on and remove dev modules :heavy_check_mark: </summary>**
+Usage: pl makeprod [OPTION] ... [SITE]
+This script is used to turn off dev mode and uninstall dev modules.  You just
+need to state the sitename, eg stg.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+  -d --debug              Provide debug information when running this script.
+
+Examples:
+END HELP
+
+</details>
+
+<details>
+
+**<summary>proddown: Overwrite localprod with production :white_check_mark: </summary>**
+Usage: pl proddown [OPTION] ... [SITE]
 This script is used to overwrite localprod with the actual external production
 site.  The choice of localprod is set in pl.yml under sites: localprod: The
 external site details are also set in pl.yml under prod: Note: once localprod
@@ -494,22 +510,6 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 pl makelpwp
-END HELP
-
-</details>
-
-<details>
-
-**<summary>makeprod: Turn production mode on and remove dev modules :heavy_check_mark: </summary>**
-Usage: pl makeprod [OPTION] ... [SITE]
-This script is used to turn off dev mode and uninstall dev modules.  You just
-need to state the sitename, eg stg.
-
-Mandatory arguments to long options are mandatory for short options too.
-  -h --help               Display help (Currently displayed)
-  -d --debug              Provide debug information when running this script.
-
-Examples:
 END HELP
 
 </details>
@@ -549,6 +549,24 @@ END HELP
 
 <details>
 
+**<summary>replace: Overwrite localprod with production :white_check_mark: </summary>**
+Usage: pl replace [OPTION] ... [FROM] [TO]
+This script will copy the .git and .gitignore from TO to .prodgit and .prodgitignore
+in FROM. It will delete TO. It will copy FROM to TO. It will then move the .git
+to .devgit and .gitignore to .devgitignore. It will move .prodgit to .git and
+.prodgitignore to .gitignore. Fix up the site settings and file permissions.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+
+Examples:
+pl replace loc stg
+END HELP
+
+</details>
+
+<details>
+
 **<summary>restore: args:  --help -- :heavy_check_mark: </summary>**
 --**BROKEN DOCUMENTATION**--
 Restore a particular site's files and database from backup
@@ -559,7 +577,7 @@ You can alternatively restore the site into a different site which is the second
 OPTIONS
   -h --help               Display help (Currently displayed)
   -d --debug              Provide debug information when running this script.
-  -f --first              Usse the latest backup
+  -f --first              Use the latest backup
   -y --yes                Auto delete current content
 
 Examples:

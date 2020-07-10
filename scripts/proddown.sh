@@ -1,6 +1,6 @@
 #!/bin/bash
 ################################################################################
-#                       make pwp For Pleasy Library
+#                       proddown For Pleasy Library
 #
 #  This script is used to overwrite localprod with the actual external
 #  production site.  The choice of localprod is set in pl.yml under sites:
@@ -18,7 +18,7 @@
 ################################################################################
 ################################################################################
 #
-#  Core Maintainer:  Rob Zar
+#  Core Maintainer:  Rob Zaar
 #  Email:            rjzaar@gmail.com
 #
 ################################################################################
@@ -29,8 +29,8 @@
 ################################################################################
 
 # Set script name for general file use
-scriptname='pleasy-makepwp'
-plcstatus="works"
+scriptname='pleasy-proddown'
+
 # Help menu
 ################################################################################
 # Prints user guide
@@ -38,7 +38,7 @@ plcstatus="works"
 print_help() {
 echo \
 "Overwrite localprod with production
-Usage: pl makelpwp [OPTION] ... [SITE]
+Usage: pl proddown [OPTION] ... [SITE]
 This script is used to overwrite localprod with the actual external production
 site.  The choice of localprod is set in pl.yml under sites: localprod: The
 external site details are also set in pl.yml under prod: Note: once localprod
@@ -71,7 +71,7 @@ args=$(getopt -o hs: -l help,step: --name "$scriptname" -- "$@")
 # If getopt outputs error to error variable, quit program displaying error
 ################################################################################
 [ $? -eq 0 ] || {
-    echo "please do 'pl makedb --help' for more options"
+    echo "please do 'pl proddown --help' for more options"
     exit 1
 }
 
@@ -110,7 +110,14 @@ parse_pl_yml
 # Make sure @prod is setup.
 update_all_configs
 
-sitename_var="$sites_localprod"
+if [ $1 = "proddown" ] && [ -z "$2" ]; then
+  echo "No site specified"
+  print_help
+  exit 0
+fi
+
+sitename_var=$1
+
 echo "Importing production site into $sitename_var"
 
 import_site_config $sitename_var
@@ -119,21 +126,20 @@ if [ $step -gt 1 ] ; then
   echo "Starting from step $step"
 fi
 
-#First backup the current localprod site if it exists
-if [ $step -lt 2 ] ; then
-  echo "step 1: backup current sitename_var: $sitename_var"
-  pl backup $sitename_var "presync"
-fi
+##First backup the current localprod site if it exists
+#if [ $step -lt 2 ] ; then
+#  echo "step 1: backup current sitename_var: $sitename_var"
+#  pl backup $sitename_var "presync"
+#fi
+
 #pull db and all files from prod
 ### going to need to fix security. settings.local.php only have hash. all other cred in settings so not shared.
 #echo "pre rsync"
 #drush -y rsync @prod @$sitename_var -- --omit-dir-times --delete
 
-if [ $step -lt 3 ] ; then
-  echo "step 2: backup production"
-  # Make sure ssh identity is added
-  eval `ssh-agent -s`
-  ssh-add ~/.ssh/$prod_alias
+if [ $step -lt 2 ] ; then
+  echo "step 1: backup production"
+
   to=$sitename_var
   backup_prod
   # sql file: $Namesql
@@ -141,15 +147,15 @@ if [ $step -lt 3 ] ; then
   sitename_var=$to
 fi
 
-if [ $step -lt 4 ] ; then
-  echo "step 3: restore production to $sitename_var"
-  pl restore prod $sitename_var -y
+if [ $step -lt 3 ] ; then
+  echo "step 2: restore production to $sitename_var"
+  pl restore prod $sitename_var -yf
 fi
-
-if [ $step -lt 5 ] ; then
-  echo -e "$Green step 4: Fix site settings $Color_off"
-  fix_site_settings
-fi
+#
+#if [ $step -lt 5 ] ; then
+#  echo -e "$Green step 4: Fix site settings $Color_off"
+#  fix_site_settings
+#fi
 
 #if [ $step -lt 6 ] ; then
 #echo "step 5: rsync private and cmi folders"
@@ -157,10 +163,10 @@ fi
 #drush -y rsync @prod:../cmi @$sitename_var:../ -- --omit-dir-times  --delete
 #fi
 
-if [ $step -lt 6 ] ; then
-echo "step 5: Fix site permissions"
-set_site_permissions
-fi
+#if [ $step -lt 6 ] ; then
+#echo "step 5: Fix site permissions"
+#set_site_permissions
+#fi
 
 # Now get the database
 #This command wasn't fully working.
@@ -183,13 +189,13 @@ fi
 #result=$(mysql --defaults-extra-file="$folderpath/mysql.cnf" localprodopencat < $SFile 2>/dev/null | grep -v '+' | cut -d' ' -f2; echo ": ${PIPESTATUS[0]}")
 #if [ "$result" = ": 0" ]; then echo "Production database imported into database $db using root"; else echo "Could not import production database into database $db using root, exiting"; exit 1; fi
 
-drush @localprod cr
+#drush @localprod cr
 
-pl backup $sitename_var "postsync"
+#pl backup $sitename_var "postsync"
 
 # Make sure url is setup and open it!
-pl sudoeuri localprod
-pl open localprod
+#pl sudoeuri localprod
+pl open $sitename_var
 # End timer
 ################################################################################
 # Finish script, display time taken

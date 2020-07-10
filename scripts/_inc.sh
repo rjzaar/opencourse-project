@@ -853,6 +853,10 @@ backup_site() {
 #
 ################################################################################
 backup_prod() {
+
+  # Make sure ssh identity is added
+  eval `ssh-agent -s`
+  ssh-add ~/.ssh/$prod_alias
   #backup db.
   #use git:
   #https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/set-up-a-local-development-drupal-0-7
@@ -887,7 +891,9 @@ backup_prod() {
     #rm $folderpath/sitebackups/prod/$Name.tar
   elif [ $prod_method == "git" ]; then
     # This needs work. It's not tested!
-    ssh $prod_alias "cd $prod_docroot/.. & addc & git add . & git commit -m \"preupdate\" & git push"
+    echo "prodkey: $prod_gitkey"
+    ssh $prod_alias "./gcom.sh $prod_docroot/.."
+#    ssh $prod_alias "eval \"$(ssh-agent)\" && ssh-add $prod_gitkey && cd $prod_docroot/.. && git add . && git commit -m \"preupdate\" && git push && echo \"done\""
   else
     echo "No file backup method specified."
   fi
@@ -1067,7 +1073,7 @@ restore_db() {
     exit 1
   fi
   drush @$sitename_var cr
-  drush @$sitename_var sset system.maintenance_mode TRUE
+  drush @$sitename_var sset system.maintenance_mode FALSE
 }
 
 #

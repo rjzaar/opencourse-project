@@ -71,6 +71,7 @@ args=$(getopt -o hs:y -l help,step:,yes --name "$scriptname" -- "$@")
 # If getopt outputs error to error variable, quit program displaying error
 ################################################################################
 [ $? -eq 0 ] || {
+  echo "No site specified."
     echo "please do 'pl prodow --help' for more options"
     exit 1
 }
@@ -84,6 +85,7 @@ eval set -- "$args"
 # Case through each argument passed into script
 # If no argument passed, default is -- and break loop
 ################################################################################
+step=1
 while true; do
   case "$1" in
   -h | --help)
@@ -92,7 +94,7 @@ while true; do
   -s | --step)
     flag_step=1
     shift
-    step="$1"
+    step=${1:1}
     shift; ;;
   -y | --yes)
     yes=1
@@ -107,7 +109,7 @@ while true; do
 done
 
 Pcolor=$Cyan
-step=1
+
 
 if [ $1 = "prodow" ] && [ -z "$2" ]; then
   echo "No site specified"
@@ -160,9 +162,15 @@ Name=${options[0]:2}
 echo "uploading $Name"
 scp $Name $prod_alias:$Name
 ssh $prod_alias "cp $Name latest.sql -rf"
+
+if [ $prod_method == "git" ]; then
+    echo "prodkey: $prod_gitkey"
+    ssh $prod_alias "./gpull.sh $prod_docroot/.."
+else
 echo "uploading ${Name::-4}.tar.gz"
 scp ${Name::-4}.tar.gz $prod_alias:${Name::-4}.tar.gz
 ssh $prod_alias "cp ${Name::-4}.tar.gz latest.tar.gz -rf"
+fi
 fi
 
 if [ $step -lt 5 ] ; then
@@ -174,6 +182,8 @@ prod_root=$(dirname $prod_docroot)
 #ssh $prod_alias "if [ -d $prod_root.new ]; then sudo rm -rf $prod_root.new ; fi"
 
 echo -e "\e[34mrestoring files\e[39m"
+
+if [ $prod_method == "tar" ]; then
 ssh $prod_alias -t "sudo rm -rf $prod_root.new && sudo mkdir $prod_root.new"
 if [ -z $Name ]
 then
@@ -183,12 +193,18 @@ else
 echo "Extracting ${Name::-4}.tar.gz into $prod_root.new"
 ssh $prod_alias -t "sudo tar -zxf ${Name::-4}.tar.gz --directory $prod_root.new --strip-components=1"
 fi
+fi
 
 echo "fix file permissions, requires sudo on external server and Restoring correct settings.php"
+if [ $prod_method == "tar" ]; then
 ssh $prod_alias -t "sudo chown $prod_user:www-data $prod_root.new -R"
 ssh $prod_alias "cp $prod_root/$(basename $prod_docroot)/sites/default/settings.php $prod_root.new/$(basename $prod_docroot)/sites/default/settings.php -rf"
-ssh $prod_alias -t "sudo bash ./fix-p.sh --drupal_user=puregift --drupal_path=$prod_docroot.new/docroot"
 fi
+ssh $prod_alias -t "sudo bash ./fix-p.sh --drupal_user=puregift --drupal_path=$prod_docroot.new/docroot"
+
+
+fi
+
 
 if [ $step -lt 6 ] ; then
 echo -e "$Pcolor step 5: move site folders $Color_off"
@@ -203,6 +219,7 @@ echo "Need to overwrite the database the hard way"
 
 echo "renaming folder to opencat.org to make it live"
 # Now swap them.
+if [ $prod_method == "tar" ]; then
 if [ -z $Name ]; then Name=$(date +%Y%m%d\T%H%M%S) ; fi
 echo "rm .old"
 ssh $prod_alias -t "if [ -d $prod_root.old ]; then sudo rm -rf $prod_root.old ; fi"
@@ -210,6 +227,7 @@ echo "mv $prod_root to $prod_root.old"
 ssh $prod_alias -t "if [ -d $prod_root ]; then sudo mv $prod_root $prod_root.old ; fi"
 echo "mv new to current"
 ssh $prod_alias -t "if [ -d $prod_root.new ]; then sudo mv $prod_root.new $prod_root ; fi"
+fi
 fi
 
 if [ $step -lt 7 ] ; then
