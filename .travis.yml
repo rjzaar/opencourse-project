@@ -46,9 +46,9 @@ env:
   - SITE=d8
   - SITE=d8c
 # Getting segmentation fault with all varbase installs.
-#  - SITE=varc
-#  - SITE=vard
-#  - SITE=varg
+  - SITE=varc
+  - SITE=vard
+  - SITE=varg
 
 #before_install:
 #  # PHP Configurations.
