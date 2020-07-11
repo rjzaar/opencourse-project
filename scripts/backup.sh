@@ -42,6 +42,8 @@ You just need to state the sitename, eg dev and an optional message.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
+  -d --debug              Provide debug information when running this script.
+  -g --git                Also create a git backup of site.
 
 Examples:
 pl backup -h
@@ -61,7 +63,7 @@ SECONDS=0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o hd -l help,debug: --name "$scriptname" -- "$@")
+args=$(getopt -o hdg -l help,debug,git: --name "$scriptname" -- "$@")
 # echo "$args"
 
 ################################################################################
@@ -89,6 +91,10 @@ while true; do
     ;;
   -d | --debug)
   verbose="debug"
+  shift
+  ;;
+  -g | --git)
+  flag_git=1
   shift
   ;;
   --)
@@ -137,6 +143,7 @@ fi
 # Now backup the site
 ################################################################################
 backup_site $msg
+backup_git $msg
 
 # End timer
 ################################################################################

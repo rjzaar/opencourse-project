@@ -57,6 +57,57 @@ Since a particular site based project needs to include site specific files which
 repository for backup, there is one more layer needed. The only difference with this layer is the .gitignore file 
 which includes folders needed on production. Welcome to Drupal 8 development.
 
+# WORKFLOW
+
+Git is the fastest and easiest way to move files. There are three repositories
+
+Opencourse (ocrepo): A repo for just the code for opencourse.
+
+Production site repo (prodrepo): A repo of all of the site files.
+
+Production database repo (prod.sql): A private secure repo for the live database.
+
+Prodrepo is needed as a complete site backup (except for settings.php and some other files). It has it's own 
+.prodgitignore. The two repos can be swapped in the same folder so only one is used at a time (the two ignore files are
+also swapped and also ignore the repos). 
+
+1) (Dev) Dev work is normally done on loc with ocrepo. The loc .git is pushed. 
+2) (Testing)
+ 
+    a) The prodrepo is cloned to stg and installed with proddb. There are two scripts on production gitbackupdb.sh and 
+    gitbackupfiles.sh which can be run in parallel to speed things up.
+    
+    b) The git is then swapped in stg (.git to .gitprod and .git from loc copied in, .gitignore to 
+.prodgitignore and .devgitignore copied in). 
+
+    c) On stg a git fetch origin and hard reset will modify all relevant files to the new ones. 
+    ```
+    git fetch origin
+    git reset --hard origin/master
+    ```
+    d) The .git is then moved to .devgit and .prodgit is moved to .git (as well as the relevant .gitignore files)
+3) The necessary updates are run to make sure everything updates correctly (composer install, drush updb, etc). 
+4) Once this process is complete and everything is working the changes are pushed to a new branch on prodgit. 
+
+If production is overwritten with stg, then the database is moved to prod and both files and db are installed. 
+
+Otherwise:
+1) The production site is backed up. An alternate site is created with no edits allowed. The url points to this site.
+2) The files are brought in via a branch checkout on production. 
+3) The database is updated.
+4) Check if the update has worked
+
+    a) If all is good, the site is made live, ie the url points to it.
+    
+    b) If there is a problem, git master is checked out and the backup database is restored. The url then points back
+    to the main production site.
+
+5) Once it is live and all is well a merge on production using the 'theirs' option brings the new files into the master of
+prodrepo.
+
+The advantage of this is there are two repos for their specific purposes. Having a master and dev branch on proddb allows
+for easy changing over of files for a restore.
+
 Status codes
 
 pass: Working and passing Travis CI :white_check_mark:

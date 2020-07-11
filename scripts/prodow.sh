@@ -133,6 +133,7 @@ prod_root=$(dirname $prod_docroot)
 if [ $step -lt 2 ] ; then
 echo -e "$Pcolor step 1: backup current sitename_var $sitename_var $Color_off"
 pl backup $sitename_var "presync"
+
 fi
 #pull db and all files from prod
 ### going to need to fix security. settings.local.php only have hash. all other cred in settings so not shared.
@@ -141,9 +142,9 @@ fi
 
 if [ $step -lt 3 ] ; then
 echo -e "$Pcolor step 2: backup production $Color_off"
-# Make sure ssh identity is added
-eval `ssh-agent -s`
-ssh-add ~/.ssh/$prod_alias
+## Make sure ssh identity is added
+#eval `ssh-agent -s`
+#ssh-add ~/.ssh/$prod_alias
 to=$sitename_var
 backup_prod
 # sql file: $Namesql

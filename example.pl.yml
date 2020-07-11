@@ -33,6 +33,11 @@ prod:
   user: puregift
   docroot: "/var/www/opencat.org/docroot"
   method: tar  # Method could be git or tar.
+  # If method git, you will need to provide a git repo to use. A sanitised database may be stored in the repo.
+  gitrepo: https://github.com/rjzaar/ocorg.git
+  gitkey: /home/puregift/.ssh/github
+  #This is for a separate gitstored db. Locally it will be stored at proddb in sitebackups
+  gitdb: ssh://ocback:/home/git/proddb.git
 #
 # Since you can create many different sites, each in its own folder. There are certain commands that work with dev, stg and localprod
 # So these need to be specified. Therefore you can change them as you like.
@@ -94,6 +99,7 @@ recipes:
     lando: n
   loc:
   stg:
+    dev_modules: oc_dev syslog views_ui block_place devel features_ui dblog
   locl:
     lando: y
   localprod:

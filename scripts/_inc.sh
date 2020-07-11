@@ -311,7 +311,7 @@ import_site_config() {
   elif [ "${!rb}" == "n" ]; then
     dev_modules=""
   fi
-    rp="recipes_${sitename_var}_dev_composer"
+  rp="recipes_${sitename_var}_dev_composer"
   rpv=${!rp}
   if [ "$rpv" != "" ]; then
     dev_composer=${!rp}
@@ -432,11 +432,11 @@ update_all_configs() {
   source ~/.bashrc
   ocmsg "drush status" debug
   drush status
-#  if [[ $folderpath/drush.tmp =~ (@loc) ]] ; then
-    drush @loc status >"$folderpath/drush.tmp"
-#  else
-    drush status >"$folderpath/drush.tmp"
-#  fi
+  #  if [[ $folderpath/drush.tmp =~ (@loc) ]] ; then
+  drush @loc status >"$folderpath/drush.tmp"
+  #  else
+  drush status >"$folderpath/drush.tmp"
+  #  fi
 
   ocmsg "Add correct drush path" debug
   dline=$(awk 'match($0,v){print NR; exit}' v="Drush script" "$folderpath/drush.tmp")
@@ -850,12 +850,45 @@ backup_site() {
 
 #
 ################################################################################
+# Create a git backup of the site
+################################################################################
+backup_git() {
+  #This will create a new branch for both the database and files
+  cp $folderpath/sitebackups/$sitename_var/$Name $
+}
+
+#
+################################################################################
+# User server script to backup production database so it can be run in parallel
+################################################################################
+gitbackupdb() {
+  #    drush @prod sql-dump --result-file="/home/$prod_user/proddb/prod.sql"
+  #    ssh $prod_alias "cd proddb && git add . && git commit -m \"$(date +%Y%m%d\T%H%M%S-)\" && git push"
+  exit 0
+  ssh $prod_alias "./gitbackupdb.sh $prod_docroot"
+  cd $folderpath/sitebackups/proddb
+  git pull
+}
+
+#
+################################################################################
+# User server script to backup production files so it can be run in parallel
+################################################################################
+gitbackupfiles() {
+  ssh $prod_alias "./gitbackupfiles.sh $prod_docroot"
+  #  cd $site_path/$sitename_var
+  #  git pull
+  #  ssh $prod_alias "./gcom.sh $prod_docroot/.." &
+}
+
+#
+################################################################################
 #
 ################################################################################
 backup_prod() {
 
   # Make sure ssh identity is added
-  eval `ssh-agent -s`
+  eval $(ssh-agent -s)
   ssh-add ~/.ssh/$prod_alias
   #backup db.
   #use git:
@@ -869,33 +902,36 @@ backup_prod() {
   fi
 
   #cd "$webroot"
+  echo "proddb $prod_gitdb"
 
-  #Name="$folderpath/sitebackups/prod/prod$(date +%Y%m%d\T%H%M%S-)$msg"
-  Name="prod$(date +%Y%m%d\T%H%M%S-)$msg"
-  Namesql="$folderpath/sitebackups/prod/$Name.sql"
-  echo -e "\e[34mbackup db $Name.sql\e[39m"
-  echo "Trying $Namesql "
-  #drush @prod sql-dump   > "$Namesql"
-  drush @prod sql-dump --result-file="/home/$prod_user/$Name.sql"
-  scp "$prod_alias:$Name.sql" "$folderpath/sitebackups/prod/$Name.sql"
-  #gzip -d "$Namesql.gz"
-
-  Namef=$Name.tar.gz
-  echo -e "\e[34mbackup files $Namef\e[39m"
-  if [ $prod_method == "tar" ]; then
+  if [[ ! "$prod_gitdb" == "" ]]; then
+    echo "Using git to get production site"
+    # Run commands in parallel
+    #     gitbackupdb
+    gitbackupfiles
+    #     wait
+    echo "Production site and files backuped"
+    exit 0
+  else
+    exit 0
+    #Name="$folderpath/sitebackups/prod/prod$(date +%Y%m%d\T%H%M%S-)$msg"
+    Name="prod$(date +%Y%m%d\T%H%M%S-)$msg"
+    Namesql="$folderpath/sitebackups/prod/$Name.sql"
+    echo -e "\e[34mbackup db $Name.sql\e[39m"
+    echo "Trying $Namesql "
+    #drush @prod sql-dump   > "$Namesql"
+    drush @prod sql-dump --result-file="/home/$prod_user/$Name.sql"
+    scp "$prod_alias:$Name.sql" "$folderpath/sitebackups/prod/$Name.sql"
+    Namef=$Name.tar.gz
+    echo -e "\e[34mbackup files $Namef\e[39m"
     # drush ard doesn't work in drush 9 onwards. so use tar instead
     #drush @prod ard --destination="$prod_docroot/../../../$Name"
     ssh $prod_alias "tar --exclude='$prod_docroot/sites/default/settings.local.php' --exclude='$prod_docroot/sites/default/settings.php' -zcf \"$Namef\" \"$prod_docroot/..\""
     scp "$prod_alias:$Namef" "$folderpath/sitebackups/prod/$Namef"
     #tar -czf  $folderpath/sitebackups/prod/$Name.tar.gz $folderpath/sitebackups/prod/$Name.tar
     #rm $folderpath/sitebackups/prod/$Name.tar
-  elif [ $prod_method == "git" ]; then
-    # This needs work. It's not tested!
-    echo "prodkey: $prod_gitkey"
-    ssh $prod_alias "./gcom.sh $prod_docroot/.."
-#    ssh $prod_alias "eval \"$(ssh-agent)\" && ssh-add $prod_gitkey && cd $prod_docroot/.. && git add . && git commit -m \"preupdate\" && git push && echo \"done\""
-  else
-    echo "No file backup method specified."
+
+  #gzip -d "$Namesql.gz"
   fi
 }
 
@@ -1061,11 +1097,20 @@ restore_db() {
 
   make_db
 
-  echo -e "\e[34mrestore $db database using $folderpath/sitebackups/$bk/$Name\e[39m"
-  result=$(
-    mysql --defaults-extra-file="$folderpath/mysql.cnf" $db <"$folderpath/sitebackups/$bk/$Name" 2>/dev/null | grep -v '+' | cut -d' ' -f2
-    echo ": ${PIPESTATUS[0]}"
-  )
+  if [[ "$bk" == prod ]] && [[ "$prod_method" == "git" ]]; then
+    echo -e "\e[34mrestore $db database using git production\e[39m"
+    result=$(
+      mysql --defaults-extra-file="$folderpath/mysql.cnf" $db <"$folderpath/sitebackups/proddb/prod.sql" 2>/dev/null | grep -v '+' | cut -d' ' -f2
+      echo ": ${PIPESTATUS[0]}"
+    )
+  else
+    echo -e "\e[34mrestore $db database using $folderpath/sitebackups/$bk/$Name\e[39m"
+    result=$(
+      mysql --defaults-extra-file="$folderpath/mysql.cnf" $db <"$folderpath/sitebackups/$bk/$Name" 2>/dev/null | grep -v '+' | cut -d' ' -f2
+      echo ": ${PIPESTATUS[0]}"
+    )
+  fi
+
   if [ "$result" = ": 0" ]; then
     echo "Backup database $Name imported into database $db using root"
   else
@@ -1319,57 +1364,58 @@ plcomposer() {
 ################################################################################
 makereadme() {
 
-cd
-cd pleasy
+  cd
+  cd pleasy
 
-if [ -d $script_root ]; then
+  if [ -d $script_root ]; then
     cd "$script_root"
-else
+  else
     echo 'ERROR: Either pleasy $script_root variable does not exist, or the value is set incorrectly.'
     exit 1
-fi
-if [ ! -f ../docs/README_TEMPLATE.md ]; then
-    echo "Need a template file README_TEMPLATE.md in pleasy docs folder!"; exit 1
-fi
+  fi
+  if [ ! -f ../docs/README_TEMPLATE.md ]; then
+    echo "Need a template file README_TEMPLATE.md in pleasy docs folder!"
+    exit 1
+  fi
 
-cp ../docs/README_TEMPLATE.md ../README_TEMPLATE.md
+  cp ../docs/README_TEMPLATE.md ../README_TEMPLATE.md
 
-(
-documented_scripts=$(grep -l --directories=skip --exclude=makereadme*.sh '^args=$(getopt' *.sh)
-undocumented_scripts=$(grep -L --directories=skip --exclude=makereadme*.sh '^args=$(getopt' *.sh)
-working_dir=$(pwd)
+  (
+    documented_scripts=$(grep -l --directories=skip --exclude=makereadme*.sh '^args=$(getopt' *.sh)
+    undocumented_scripts=$(grep -L --directories=skip --exclude=makereadme*.sh '^args=$(getopt' *.sh)
+    working_dir=$(pwd)
 
-for command in $documented_scripts; do
+    for command in $documented_scripts; do
 
-    help_documentation=$("$working_dir/$command" --help | tail -n +2)
+      help_documentation=$("$working_dir/$command" --help | tail -n +2)
 
-    echo $help_documentation | grep -q '^Usage:' && \
-        sanitised_documentation=$help_documentation || \
-        sanitised_documentation=$(cat <<HEREDOC
+      echo $help_documentation | grep -q '^Usage:' &&
+        sanitised_documentation=$help_documentation ||
+        sanitised_documentation=$(
+          cat <<HEREDOC
 --**BROKEN DOCUMENTATION**--
 $help_documentation
 --**BROKEN DOCUMENTATION**--
 HEREDOC
-)
+        )
 
-getstatus=$("$working_dir/$command" --help)
-case "$?" in
-  0 | 1)
-    status=":question:"
-    ;;
-  2)
-    status=":white_check_mark:"
-    ;;
-  3)
-    status=":heavy_check_mark:"
-    ;;
-  *)
-    status=":question:"
-    ;;
-  esac
+      getstatus=$("$working_dir/$command" --help)
+      case "$?" in
+      0 | 1)
+        status=":question:"
+        ;;
+      2)
+        status=":white_check_mark:"
+        ;;
+      3)
+        status=":heavy_check_mark:"
+        ;;
+      *)
+        status=":question:"
+        ;;
+      esac
 
-
-    cat <<HEREDOC
+      cat <<HEREDOC
 <details>
 
 **<summary>${command%%.sh}: $("$working_dir/$command" --help | head -n 1) $status </summary>**
@@ -1378,10 +1424,10 @@ $sanitised_documentation
 </details>
 
 HEREDOC
-done
+    done
 
-for command in $undocumented_scripts; do
-    cat <<HEREDOC
+    for command in $undocumented_scripts; do
+      cat <<HEREDOC
 <details>
 
 **<summary>${command%%.sh}:  :question: </summary>**
@@ -1390,12 +1436,14 @@ for command in $undocumented_scripts; do
 </details>
 
 HEREDOC
-done
-) >> ../README_TEMPLATE.md || \
-    { echo "Failed to write to copied template file! aborting";
-    rm ../README_TEMPLATE.md;
-    exit 1; }
+    done
+  ) >>../README_TEMPLATE.md ||
+    {
+      echo "Failed to write to copied template file! aborting"
+      rm ../README_TEMPLATE.md
+      exit 1
+    }
 
-mv ../README_TEMPLATE.md ../README.md
-echo "Functions and definitions have been generated"
+  mv ../README_TEMPLATE.md ../README.md
+  echo "Functions and definitions have been generated"
 }
