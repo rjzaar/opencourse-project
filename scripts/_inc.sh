@@ -897,8 +897,8 @@ backup_prod() {
   msg=${1// /_}
   cd
   # Check if site backup folder exists
-  if [ ! -d "$folder/sitebackups/$sitename_var" ]; then
-    mkdir "$folder/sitebackups/$sitename_var"
+  if [ ! -d "$folderpath/sitebackups/$sitename_var" ]; then
+    mkdir "$folderpath/sitebackups/$sitename_var"
   fi
 
   #cd "$webroot"

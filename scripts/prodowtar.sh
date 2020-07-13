@@ -1,9 +1,10 @@
 #!/bin/bash
 ################################################################################
-#                          prodow For Pleasy Library
+#                          prodowtar For Pleasy Library
 #
 #  This script will overwrite production with the site chosen It will first
 #  backup prod The external site details are also set in pl.yml under prod:
+#  Using tar method
 #
 #  This script is used to turn off dev mode and uninstall dev modules.  You
 #  just need to state the sitename, eg stg.
@@ -29,7 +30,7 @@
 ################################################################################
 
 # Set script name for general file use
-scriptname='pleasy-prodow'
+scriptname='pleasy-prodowtar'
 
 # Help menu
 ################################################################################
@@ -48,7 +49,7 @@ Mandatory arguments to long options are mandatory for short options too.
   -s --step=[INT]         Restart at the step specified.
 
 Examples:
-pl prodow stg
+pl prodowtar stg
 END HELP
 HEREDOC
 
@@ -72,7 +73,7 @@ args=$(getopt -o hs:y -l help,step:,yes --name "$scriptname" -- "$@")
 ################################################################################
 [ $? -eq 0 ] || {
   echo "No site specified."
-    echo "please do 'pl prodow --help' for more options"
+    echo "please do 'pl prodowtar --help' for more options"
     exit 1
 }
 
@@ -111,7 +112,7 @@ done
 Pcolor=$Cyan
 
 
-if [ $1 = "prodow" ] && [ -z "$2" ]; then
+if [ $1 = "prodowtar" ] && [ -z "$2" ]; then
   echo "No site specified"
   print_help
   exit 0
@@ -123,6 +124,10 @@ echo "overwriting production server with $sitename_var site"
 
 parse_pl_yml
 
+if [ "$prod_method" !== "tar" ]; then
+  echo "Production method tar is not set in pl.yml. Aborting"
+exit 1
+fi
 import_site_config $sitename_var
 
 if [ $step -gt 1 ] ; then
@@ -150,29 +155,28 @@ backup_prod
 # sql file: $Namesql
 # all files: $folderpath/sitebackups/prod/$Name.tar.gz
 sitename_var=$to
+import_site_config $sitename_var
 fi
 
 if [ $step -lt 4 ] ; then
 echo -e "$Pcolor step 3: replace production files with $sitename_var $Color_off"
 
-Name=$(date +%Y%m%d\T%H%M%S)
 cd
-cd "$folder/sitebackups/$sitename_var"
+cd "$folderpath/sitebackups/$sitename_var"
 options=( $(find -maxdepth 1 -name "*.sql" -print0 | xargs -0 ls -1 -t ) )
 Name=${options[0]:2}
+
+echo "Using tar method to push db and files to production"
+  Name=$(date +%Y%m%d\T%H%M%S)
 echo "uploading $Name"
 scp $Name $prod_alias:$Name
 ssh $prod_alias "cp $Name latest.sql -rf"
 
-if [ $prod_method == "git" ]; then
-    echo "prodkey: $prod_gitkey"
-    ssh $prod_alias "./gpull.sh $prod_docroot/.."
-else
 echo "uploading ${Name::-4}.tar.gz"
 scp ${Name::-4}.tar.gz $prod_alias:${Name::-4}.tar.gz
 ssh $prod_alias "cp ${Name::-4}.tar.gz latest.tar.gz -rf"
 fi
-fi
+
 
 if [ $step -lt 5 ] ; then
 echo -e "$Pcolor step 4: install production files $Color_off"
@@ -184,7 +188,6 @@ prod_root=$(dirname $prod_docroot)
 
 echo -e "\e[34mrestoring files\e[39m"
 
-if [ $prod_method == "tar" ]; then
 ssh $prod_alias -t "sudo rm -rf $prod_root.new && sudo mkdir $prod_root.new"
 if [ -z $Name ]
 then
@@ -194,13 +197,11 @@ else
 echo "Extracting ${Name::-4}.tar.gz into $prod_root.new"
 ssh $prod_alias -t "sudo tar -zxf ${Name::-4}.tar.gz --directory $prod_root.new --strip-components=1"
 fi
-fi
 
 echo "fix file permissions, requires sudo on external server and Restoring correct settings.php"
-if [ $prod_method == "tar" ]; then
+
 ssh $prod_alias -t "sudo chown $prod_user:www-data $prod_root.new -R"
 ssh $prod_alias "cp $prod_root/$(basename $prod_docroot)/sites/default/settings.php $prod_root.new/$(basename $prod_docroot)/sites/default/settings.php -rf"
-fi
 ssh $prod_alias -t "sudo bash ./fix-p.sh --drupal_user=puregift --drupal_path=$prod_docroot.new/docroot"
 
 
@@ -220,7 +221,6 @@ echo "Need to overwrite the database the hard way"
 
 echo "renaming folder to opencat.org to make it live"
 # Now swap them.
-if [ $prod_method == "tar" ]; then
 if [ -z $Name ]; then Name=$(date +%Y%m%d\T%H%M%S) ; fi
 echo "rm .old"
 ssh $prod_alias -t "if [ -d $prod_root.old ]; then sudo rm -rf $prod_root.old ; fi"
@@ -228,7 +228,6 @@ echo "mv $prod_root to $prod_root.old"
 ssh $prod_alias -t "if [ -d $prod_root ]; then sudo mv $prod_root $prod_root.old ; fi"
 echo "mv new to current"
 ssh $prod_alias -t "if [ -d $prod_root.new ]; then sudo mv $prod_root.new $prod_root ; fi"
-fi
 fi
 
 if [ $step -lt 7 ] ; then

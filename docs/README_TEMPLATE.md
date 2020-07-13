@@ -53,7 +53,9 @@ Those that do are included in varbase-project.
 There are also a lot less files to track in varbase-project than varbase itself.
 It provides an intelligent separation.
 
-Since a particular site based project needs to include site specific files which should be stored on a private 
+Since a particular site based project nee
+
+ds to include site specific files which should be stored on a private 
 repository for backup, there is one more layer needed. The only difference with this layer is the .gitignore file 
 which includes folders needed on production. Welcome to Drupal 8 development.
 
