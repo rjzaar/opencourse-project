@@ -99,7 +99,7 @@ recipes:
     lando: n
   loc:
   stg:
-    dev_modules: oc_dev syslog views_ui block_place devel features_ui dblog
+    dev_modules: syslog views_ui block_place devel features_ui dblog
   locl:
     lando: y
   localprod:
