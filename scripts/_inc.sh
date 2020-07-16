@@ -853,8 +853,11 @@ backup_site() {
 # Create a git backup of the site
 ################################################################################
 backup_git() {
-  #This will create a new branch for both the database and files
-  cp $folderpath/sitebackups/$sitename_var/$Name $
+  #This will create a new branch for both the database and files on the local server
+  echo "Funtion backup_git still might need to be coded."
+  #This function is actually in prodowgit currently....
+
+  #cp $folderpath/sitebackups/$sitename_var/$Name $
 }
 
 #
@@ -864,10 +867,12 @@ backup_git() {
 gitbackupdb() {
   #    drush @prod sql-dump --result-file="/home/$prod_user/proddb/prod.sql"
   #    ssh $prod_alias "cd proddb && git add . && git commit -m \"$(date +%Y%m%d\T%H%M%S-)\" && git push"
-  exit 0
-  ssh $prod_alias "./gitbackupdb.sh $prod_docroot"
+echo -e "$Purple gitbackupdb"
+  ssh $prod_alias "./gitbackupdb.sh $prod_docroot  $Bname"
+  echo -e "$Purple git pull"
   cd $folderpath/sitebackups/proddb
   git pull
+    echo -e "$Color_Off"
 }
 
 #
@@ -875,7 +880,9 @@ gitbackupdb() {
 # User server script to backup production files so it can be run in parallel
 ################################################################################
 gitbackupfiles() {
-  ssh $prod_alias "./gitbackupfiles.sh $prod_docroot"
+  echo -e "$Cyan gitbackupfiles "
+  ssh $prod_alias "./gitbackupfiles.sh $prod_docroot $Bname"
+  echo -e "$Color_Off"
   #  cd $site_path/$sitename_var
   #  git pull
   #  ssh $prod_alias "./gcom.sh $prod_docroot/.." &
@@ -907,11 +914,14 @@ backup_prod() {
   if [[ ! "$prod_gitdb" == "" ]]; then
     echo "Using git to get production site"
     # Run commands in parallel
-    #     gitbackupdb
-    gitbackupfiles
-    #     wait
+    echo -e "$Cyan gitbackupdb and gitbackupfiles $Color_Off"
+     Bname=$(date +%d%b%gT%l:%M:%S%p)
+     Bname=${Bname//[[:blank:]]/}
+     echo "Commit name >$Bname<"
+    gitbackupdb &
+    gitbackupfiles &
+    wait
     echo "Production site and files backuped"
-    exit 0
   else
     exit 0
     #Name="$folderpath/sitebackups/prod/prod$(date +%Y%m%d\T%H%M%S-)$msg"

@@ -169,18 +169,24 @@ Name=${options[0]:2}
  echo "Using git method to push db and files to production"
 # push database
  cd "$folderpath/sitebackups/proddb"
- git checkout -b dev
+ # Presume branch dev already created. otherwise run git checkout -b dev
+ git checkout dev
  cp ../$sitename_var/$Name proddb.sql
+ Bname=$(date +%d%b%g%l:%M:%S%p)
 git add .
-git commit -m "Latest dev database for production overwrite"
+git commit -m "pushup$Bname"
 git push origin dev
+#git push
 
 #push files
 cd "$site_path/$sitename_var"
-git checkout -b dev
+ # Presume branch dev already created. otherwise run git checkout -b dev
+git checkout dev
 git add .
-git commit -m "latest site code for production overwrite"
+git commit -m "pushup$Bname"
 git push origin dev
+git push --set-upstream origin dev
+git push
 
 fi
 
@@ -195,7 +201,7 @@ prod_root=$(dirname $prod_docroot)
 echo -e "\e[34mrestoring files\e[39m"
     echo "prodkey: $prod_gitkey"
     # For now the script should work, but needs various improvments such as, being able to restore on error.
-    ssh $prod_alias "./overwrite.sh $prod_docroot/.."
+    ssh $prod_alias "./overwrite.sh $prod_docroot"
 fi
 
 if [ $step -lt 6 ] ; then

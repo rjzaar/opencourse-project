@@ -1,9 +1,9 @@
 #!/bin/bash
 ################################################################################
-#                 Backup db and files For Pleasy Library
+#                          prodmaster For Pleasy Library
 #
-#  This script is used to backup a particular site's files and database.
-#  You just need to state the sitename, eg dev
+#  This script will make sure production site and db is on master branch and not dev
+#
 #
 #  Change History
 #  2019 - 2020  Robert Zaar   Original code creation and testing,
@@ -21,35 +21,31 @@
 ################################################################################
 ################################################################################
 #                                TODO LIST
-# Implement message function - DONE
 #
 ################################################################################
 ################################################################################
 
 # Set script name for general file use
-scriptname='pleasy-backup'
+scriptname='pleasy-prodmaster'
 
 # Help menu
 ################################################################################
 # Prints user guide
 ################################################################################
 print_help() {
-echo \
-"Backup site and database
-Usage: pl backup [OPTION] ... [SOURCE] [MESSAGE]
-This script is used to backup a particular site's files and database.
-You just need to state the sitename, eg dev and an optional message.
+cat << HEREDOC
+Make sure production site and db is on master branch
+Usage: pl prodmaster [OPTION] ...
+This script will make sure production site and db is on master branch and not dev
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
-  -d --debug              Provide debug information when running this script.
-  -g --git                Also create a git backup of site.
 
 Examples:
-pl backup -h
-pl backup dev
-pl backup tim 'First tim backup'
-END HELP"
+pl prodmaster
+END HELP
+HEREDOC
+
 }
 
 # start timer
@@ -63,16 +59,8 @@ SECONDS=0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o hdg -l help,debug,git: --name "$scriptname" -- "$@")
-# echo "$args"
+args=$(getopt -o h -l help --name "$scriptname" -- "$@")
 
-################################################################################
-# If getopt outputs error to error variable, quit program displaying error
-################################################################################
-[ $? -eq 0 ] || {
-    echo "please do 'pl backup --help' for more options"
-    exit 1
-}
 
 ################################################################################
 # Arguments are parsed by getopt, are then set back into $@
@@ -83,72 +71,33 @@ eval set -- "$args"
 # Case through each argument passed into script
 # If no argument passed, default is -- and break loop
 ################################################################################
+step=1
 while true; do
   case "$1" in
   -h | --help)
-    print_help;
-    exit 3 # pass
-    ;;
-  -d | --debug)
-  verbose="debug"
-  shift
-  ;;
-  -g | --git)
-  flag_git=1
-  shift
-  ;;
+    print_help
+    exit 2; ;;
   --)
-  shift
-  break; ;;
+    shift
+    break; ;;
   *)
-  "Programming error, this should not show up!"
-  exit 1; ;;
+    "Programming error, this should not show up!"
+    exit 1; ;;
   esac
 done
 
-
-# No arguments
-################################################################################
-# if no argument found exit and display error. User must input directory for
-# backup else this script will fail.
-################################################################################
-if [[ "$1" == "backup" ]] && [[ -z "$2" ]]; then
- echo "No site specified."
- elif [[ "$1" == "backup" ]] ; then
-   sitename_var=$2
-elif [[ -z "$2" ]]; then
-  sitename_var=$1
- echo "No message specified."
-else
-  sitename_var=$1
-  msg="$*"
-fi
-
-# (what do these do?)
-echo -e "\e[34mbackup $1 \e[39m"
-
-################################################################################
-# Read variables from pl.yml
-################################################################################
+Pcolor=$Cyan
 parse_pl_yml
+echo "Make sure production site $prod_uri has the site and db on master branch"
+ssh $prod_alias "./prodmaster.sh $prod_docroot"
 
-################################################################################
-# Import the site config for chosen site
-################################################################################
-import_site_config $sitename_var
-if [[ ! -d "$site_path/$sitename_var" ]]; then
-  echo "Cannot find directory for "$sitename_var", please try again or use --help for more options"
-fi
-################################################################################
-# Now backup the site
-################################################################################
-backup_site $msg
 
-#This isn't needed (yet?)
-# backup_git $msg
+# If it works, the production site needs to be swapped to prod branch from dev branch and hard rest to dev, is use 'ours'.
 
 # End timer
 ################################################################################
 # Finish script, display time taken
 ################################################################################
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
+exit 0
+

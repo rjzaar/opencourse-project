@@ -14,6 +14,9 @@ echo -e "$Red hello red $Color_Off"
 echo -e "hi again."
 echo -e "$Green green $Color_Off"
 
+Name=$(date +%d%b%g%l:%M:%S%p)
+echo $Name
+exit 0
 git clone git://github.com/phpenv/phpenv.git ~/.phpenv
 echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.bash_profile
 echo 'eval "$(phpenv init -)"' >> ~/.bash_profile

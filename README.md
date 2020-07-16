@@ -552,19 +552,35 @@ END HELP
 
 <details>
 
-**<summary>proddown: Overwrite localprod with production :white_check_mark: </summary>**
+**<summary>proddown: Overwrite a specified local site with production :white_check_mark: </summary>**
 Usage: pl proddown [OPTION] ... [SITE]
-This script is used to overwrite localprod with the actual external production
-site.  The choice of localprod is set in pl.yml under sites: localprod: The
-external site details are also set in pl.yml under prod: Note: once localprod
-has been locally backedup, then it can just be restored from there if need be.
+This script is used to overwrite a local site with the actual external production
+site.  The external site details are also set in pl.yml under prod: Note: once
+the local site has been locally backedup, then it can just be restored from there
+if need be.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
-  -s --step=[1-6]         Select step to proceed (For DEBUG purposes?)
+  -s --step=[1-2]         Select step to proceed (For DEBUG purposes?)
 
 Examples:
-pl makelpwp
+pl proddown stg
+pl proddown stg -s=2
+END HELP
+
+</details>
+
+<details>
+
+**<summary>prodmaster: Make sure production site and db is on master branch :white_check_mark: </summary>**
+Usage: pl prodmaster [OPTION] ...
+This script will make sure production site and db is on master branch and not dev
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+
+Examples:
+pl prodmaster
 END HELP
 
 </details>
@@ -601,6 +617,21 @@ Mandatory arguments to long options are mandatory for short options too.
 
 Examples:
 pl prodowtar stg
+END HELP
+
+</details>
+
+<details>
+
+**<summary>prodstat: Production status :white_check_mark: </summary>**
+Usage: pl prodow [OPTION] ... [SITE]
+This script will provide the status of the production site
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+
+Examples:
+pl prodstat
 END HELP
 
 </details>

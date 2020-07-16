@@ -37,19 +37,20 @@ scriptname='pleasy-proddown'
 ################################################################################
 print_help() {
 echo \
-"Overwrite localprod with production
+"Overwrite a specified local site with production
 Usage: pl proddown [OPTION] ... [SITE]
-This script is used to overwrite localprod with the actual external production
-site.  The choice of localprod is set in pl.yml under sites: localprod: The
-external site details are also set in pl.yml under prod: Note: once localprod
-has been locally backedup, then it can just be restored from there if need be.
+This script is used to overwrite a local site with the actual external production
+site.  The external site details are also set in pl.yml under prod: Note: once
+the local site has been locally backedup, then it can just be restored from there
+if need be.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
-  -s --step=[1-6]         Select step to proceed (For DEBUG purposes?)
+  -s --step=[1-2]         Select step to proceed (For DEBUG purposes?)
 
 Examples:
-pl makelpwp
+pl proddown stg
+pl proddown stg -s=2
 END HELP"
 
 }
@@ -138,7 +139,7 @@ fi
 #drush -y rsync @prod @$sitename_var -- --omit-dir-times --delete
 
 if [ $step -lt 2 ] ; then
-  echo "step 1: backup production"
+  echo -e "$Cyan step 1: backup production $Color_Off"
 
   to=$sitename_var
   backup_prod
@@ -148,7 +149,7 @@ if [ $step -lt 2 ] ; then
 fi
 
 if [ $step -lt 3 ] ; then
-  echo "step 2: restore production to $sitename_var"
+  echo -e "$Cyan step 2: restore production to $sitename_var $Color_Off"
   pl restore prod $sitename_var -yf
 fi
 #
@@ -195,6 +196,7 @@ fi
 
 # Make sure url is setup and open it!
 #pl sudoeuri localprod
+echo -e "$Cyan Opening $sitename_var $Color_Off"
 pl open $sitename_var
 # End timer
 ################################################################################
