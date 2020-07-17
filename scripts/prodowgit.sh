@@ -64,7 +64,7 @@ SECONDS=0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o hs:y -l help,step:,yes --name "$scriptname" -- "$@")
+args=$(getopt -o hs:dy -l help,step:,debug,yes --name "$scriptname" -- "$@")
 
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
@@ -95,6 +95,10 @@ while true; do
     shift
     step=${1:1}
     shift; ;;
+  -d | --debug)
+  verbose="debug"
+  shift
+  ;;
   -y | --yes)
     yes=1
     shift; ;;
@@ -124,7 +128,7 @@ parse_pl_yml
 
 import_site_config $sitename_var
 
-if [ "$prod_method" !== "git" ]; then
+if [[ ! "$prod_method"  == "git" ]] ; then
   echo "Production method git is not set in pl.yml. Aborting"
 exit 1
 fi
@@ -149,6 +153,9 @@ echo -e "$Pcolor step 2: backup production $Color_off"
 ## Make sure ssh identity is added
 #eval `ssh-agent -s`
 #ssh-add ~/.ssh/$prod_alias
+# Make sure production is on master for both site and db
+pl prodmaster
+
 to=$sitename_var
 backup_prod
 # sql file: $Namesql
@@ -164,29 +171,61 @@ cd
 cd "$folderpath/sitebackups/$sitename_var"
 options=( $(find -maxdepth 1 -name "*.sql" -print0 | xargs -0 ls -1 -t ) )
 Name=${options[0]:2}
-
+ocmsg "Name of sql backup: $Name "
  # Move sql backup to proddb and push
  echo "Using git method to push db and files to production"
 # push database
  cd "$folderpath/sitebackups/proddb"
  # Presume branch dev already created. otherwise run git checkout -b dev
- git checkout dev
- cp ../$sitename_var/$Name proddb.sql
+if [[ ! "$(git branch | sed -n 's/\*//p')" == " dev" ]] ; then
+  #checkout dev without worrying about changes
+  git fetch --all
+  git reset --hard origin/dev
+  git checkout dev
+fi
+ocmsg "Copying the databse from $sitename_var to git backup"
+ cp ../$sitename_var/$Name prod.sql
  Bname=$(date +%d%b%g%l:%M:%S%p)
+ocmsg "git add ."
+if [[ ! $(git diff --exit-code) == "" ]] ; then
 git add .
+ocmsg "git commit"
 git commit -m "pushup$Bname"
+fi
+ocmsg "fetch origin dev"
+git fetch origin dev
+ocmsg "merge"
+git merge -s ours origin/dev
+ocmsg "git push db to origin dev"
 git push origin dev
 #git push
-
+ocmsg "Now push the files"
 #push files
 cd "$site_path/$sitename_var"
  # Presume branch dev already created. otherwise run git checkout -b dev
-git checkout dev
+
+# Check if on branch dev
+if [[ ! "$(git branch | sed -n 's/\*//p')" == " dev" ]] ; then
+  #checkout dev without changing files!
+  git stash
+  git add .
+  git commit -m "Stash"
+  git push
+  git checkout dev
+  git stash apply
+fi
+
+# For some reason if there are no changes git commit will stop bash. I think it might be giving an error code?
+# So check first and if no changes, don't commit.
+if [[ ! $(git diff --exit-code) == "" ]] ; then
 git add .
+ocmsg "git commit"
 git commit -m "pushup$Bname"
+fi
+
 git push origin dev
-git push --set-upstream origin dev
-git push
+#git push --set-upstream origin dev
+#git push
 
 fi
 
@@ -206,7 +245,7 @@ fi
 
 if [ $step -lt 6 ] ; then
 echo -e "$Pcolor step 5: open production site $Color_off"
-drush @prod uli
+drush @prod uli &
 fi
 
 # If it works, the production site needs to be swapped to prod branch from dev branch and hard rest to dev, is use 'ours'.
