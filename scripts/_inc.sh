@@ -870,6 +870,10 @@ gitbackupdb() {
 echo -e "$Purple gitbackupdb"
   ssh $prod_alias "./gitbackupdb.sh $prod_docroot  $Bname"
   echo -e "$Purple git pull"
+  if [[ ! -d $folderpath/sitebackups/proddb ]] ; then
+    mkdir $folderpath/sitebackups/proddb
+  fi
+
   cd $folderpath/sitebackups/proddb
   git pull
     echo -e "$Color_Off"
