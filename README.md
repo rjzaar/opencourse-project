@@ -572,21 +572,6 @@ END HELP
 
 <details>
 
-**<summary>prodmaster: Make sure production site and db is on master branch :white_check_mark: </summary>**
-Usage: pl prodmaster [OPTION] ...
-This script will make sure production site and db is on master branch and not dev
-
-Mandatory arguments to long options are mandatory for short options too.
-  -h --help               Display help (Currently displayed)
-
-Examples:
-pl prodmaster
-END HELP
-
-</details>
-
-<details>
-
 **<summary>prodowgit: Overwrite production with site specified :white_check_mark: </summary>**
 Usage: pl prodow [OPTION] ... [SITE]
 This script will overwrite production with the site chosen It will first backup
@@ -677,6 +662,7 @@ Restore a particular site's files and database from backup
 Usage: pl restore [FROM] [TO] [OPTION]
 You just need to state the sitename, eg dev.
 You can alternatively restore the site into a different site which is the second argument.
+If the [FROM] site is prod, and the production method is git, git will be used to restore production
 
 OPTIONS
   -h --help               Display help (Currently displayed)
@@ -689,6 +675,7 @@ pl restore loc
 pl restore loc stg -fy
 pl restore -h
 pl restore loc -d
+pl restore prod stg
 --**BROKEN DOCUMENTATION**--
 
 </details>
