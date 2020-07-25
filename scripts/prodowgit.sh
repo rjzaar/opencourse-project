@@ -153,8 +153,6 @@ echo -e "$Pcolor step 2: backup production $Color_off"
 ## Make sure ssh identity is added
 #eval `ssh-agent -s`
 #ssh-add ~/.ssh/$prod_alias
-# Make sure production is on master for both site and db
-pl prodmaster
 
 to=$sitename_var
 backup_prod
@@ -165,7 +163,7 @@ import_site_config $sitename_var
 fi
 
 if [ $step -lt 4 ] ; then
-echo -e "$Pcolor step 3: replace production files with $sitename_var $Color_off"
+echo -e "$Pcolor step 3: replace production files with $sitename_var $Color_Off"
 
 cd
 cd "$folderpath/sitebackups/$sitename_var"
@@ -176,13 +174,9 @@ ocmsg "Name of sql backup: $Name "
  echo "Using git method to push db and files to production"
 # push database
  cd "$folderpath/sitebackups/proddb"
- # Presume branch dev already created. otherwise run git checkout -b dev
-if [[ ! "$(git branch | sed -n 's/\*//p')" == " dev" ]] ; then
-  #checkout dev without worrying about changes
-  git fetch --all
-  git reset --hard origin/dev
-  git checkout dev
-fi
+
+ocmsg "Making sure we have the latest git"
+
 ocmsg "Copying the databse from $sitename_var to git backup"
  cp ../$sitename_var/$Name prod.sql
  Bname=$(date +%d%b%g%l:%M:%S%p)
@@ -192,40 +186,27 @@ git add .
 ocmsg "git commit"
 git commit -m "pushup$Bname"
 fi
-ocmsg "fetch origin dev"
-git fetch origin dev
-ocmsg "merge"
-git merge -s ours origin/dev
-ocmsg "git push db to origin dev"
-git push origin dev
-#git push
+git fetch
+git merge -s ours master
+git push
+
 ocmsg "Now push the files"
-#push files
 cd "$site_path/$sitename_var"
  # Presume branch dev already created. otherwise run git checkout -b dev
 
-# Check if on branch dev
-if [[ ! "$(git branch | sed -n 's/\*//p')" == " dev" ]] ; then
-  #checkout dev without changing files!
-  git stash
-  git add .
-  git commit -m "Stash"
-  git push
-  git checkout dev
-  git stash apply
-fi
-
 # For some reason if there are no changes git commit will stop bash. I think it might be giving an error code?
 # So check first and if no changes, don't commit.
+
+
 if [[ ! $(git diff --exit-code) == "" ]] ; then
+ocmsg "Need to commit files"
 git add .
 ocmsg "git commit"
 git commit -m "pushup$Bname"
 fi
-
-git push origin dev
-#git push --set-upstream origin dev
-#git push
+git fetch
+git merge -s ours origin -m "Overwriting with local"
+git push origin
 
 fi
 

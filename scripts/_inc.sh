@@ -883,9 +883,6 @@ gitbackupfiles() {
   echo -e "$Cyan gitbackupfiles "
   ssh $prod_alias "./gitbackupfiles.sh $prod_docroot $Bname"
   echo -e "$Color_Off"
-  #  cd $site_path/$sitename_var
-  #  git pull
-  #  ssh $prod_alias "./gcom.sh $prod_docroot/.." &
 }
 
 #

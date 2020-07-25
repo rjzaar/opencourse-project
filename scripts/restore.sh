@@ -54,6 +54,7 @@ Restore a particular site's files and database from backup
 Usage: pl restore [FROM] [TO] [OPTION]
 You just need to state the sitename, eg dev.
 You can alternatively restore the site into a different site which is the second argument.
+If the [FROM] site is prod, and the production method is git, git will be used to restore production
 
 OPTIONS
   -h --help               Display help (Currently displayed)
@@ -66,6 +67,7 @@ pl restore loc
 pl restore loc stg -fy
 pl restore -h
 pl restore loc -d
+pl restore prod stg
 HELP
 }
 
@@ -141,6 +143,10 @@ import_site_config $sitename_var
 # Prompt to choose which database to backup, 1 will be the latest.
 # Could be a better way to go: https://stackoverflow.com/questions/42789273/bash-choose-default-from-case-when-enter-is-pressed-in-a-select-prompt
 cd "$folderpath/sitebackups/$bk"
+if [[ "$bk" == prod ]] && [[ "$prod_method" == "git" ]]; then
+  echo "Using production database and site from git"
+  else
+
 ocmsg "flag_first is $flag_first" debug
 options=($(find -maxdepth 1 -name "*.sql" -print0 | xargs -0 ls -1 -t))
 if [ $flag_first ]; then
@@ -162,7 +168,7 @@ else
     fi
   done
 fi
-
+fi
 echo " site_path: $site_path/$sitename_var"
 # Check to see if folder already exits.
 if [ -d "$site_path/$sitename_var" ]; then
