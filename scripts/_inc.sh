@@ -875,7 +875,9 @@ echo -e "$Purple gitbackupdb"
   fi
 
   cd $folderpath/sitebackups/proddb
-  git pull
+git fetch
+git merge -X theirs origin
+
     echo -e "$Color_Off"
 }
 
@@ -988,8 +990,6 @@ backup_db() {
 ################################################################################
 make_db() {
   echo "Create database $db and user $dbuser if needed. Using $folderpath/mysql.cnf"
-  cat "$folderpath/mysql.cnf"
-  ls -la "$folderpath/mysql.cnf"
 
   #check which password works.
   plcred="--defaults-extra-file=$folderpath/mysql.cnf"
