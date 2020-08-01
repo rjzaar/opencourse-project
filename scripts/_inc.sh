@@ -875,8 +875,9 @@ echo -e "$Purple gitbackupdb"
   fi
 
   cd $folderpath/sitebackups/proddb
-git fetch
-git merge -X theirs origin
+
+ocmsg "Git pull -X theirs"
+git pull -X theirs
 
     echo -e "$Color_Off"
 }

@@ -1,20 +1,14 @@
 #!/bin/bash
 ################################################################################
-#                 Git commit for updating For Pleasy Library
+#               Git commit backup to upstream For Pleasy Library
 #
-#  This is when you want to update. This will update composer.
+#  This will update to the upstream git, it presupposes you have already merged
+#  branch with master
 #
-#  https://events.drupal.org/vienna2017/sessions/
-#  advanced-configuration-management-config-split-et-al
-#  at 29:36
-#  That is a combination of (always presume sharing and do a backup first):
-#
-#  The safe sequence for updating
-#  Update code: composer update
-#  Run updates: drush updb
-#  Export updated config: drush cex
-#  Commit git add && git commit
-#  Push: git push
+#  git checkout master
+#  git pull origin master
+#  git merge feature/[my-existing-branch]
+#  git push origin master
 #
 #  Change History
 #  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
@@ -37,7 +31,7 @@
 ################################################################################
 
 # Set script name for general file use
-scriptname='gcomup'
+scriptname='gcomup2upstream'
 
 # Help menu
 ################################################################################
@@ -45,12 +39,12 @@ scriptname='gcomup'
 ################################################################################
 print_help() {
 echo \
-"Git commit and backup
+"Git commit with upstream merge
 Usage: pl $scriptname [OPTION] ... [SITE] [MESSAGE]
-Composer update, git commit changes and backup. This script follows the
-correct path to git commit changes You just need to state the
-sitename, eg dev.
-
+This will merge branch with master, and update to the upstream git. It
+presupposes you have already merged. You just need to state the sitename, eg
+dev.
+                                    branch with master
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
@@ -109,9 +103,11 @@ done
 
 parse_pl_yml
 
-if [ $1 == "gcomup" ] && [ -z "$2" ]; then
+if [ $1 == "gcomup2upstream" ] && [ -z "$2" ]
+  then
   sitename_var="$sites_dev"
-  elif [ -z "$2" ]; then
+  elif [ -z "$2" ]
+  then
     sitename_var=$1
     msg="Updating."
    else
@@ -119,7 +115,7 @@ if [ $1 == "gcomup" ] && [ -z "$2" ]; then
     msg=$2
 fi
 
-echo "This will update to the latest composer code, commit and backup"
+echo "This will merge branch with master"
 
 # Check number of arguments
 ################################################################################
@@ -132,32 +128,51 @@ fi
 
 parse_pl_yml
 import_site_config $sitename_var
-
-if [[ "$profile" == "varbase" ]] ; then
-  echo "You need to use gcomvup, not gcomup on a varbase site. Exiting"
-  exit 0
-fi
-
-ocmsg "Composer update"
+#This script will update opencourse to the varbase-project upstream
+cd
 cd $site_path/$sitename_var
-composer update
+
+
+#Do a commit first?
+ocmsg "Composer install"
+composer install
 
 ocmsg "Run db updates"
-drush @$sitename_var dbup
+drush @$sitename_var updb
 
 ocmsg "Export config: drush cex will need sudo"
 sudo chown $user:www-data $site_path/$sitename_var -R
 chmod g+w $site_path/$sitename_var/cmi -R
 drush @$sitename_var cex --destination=../cmi -y
+pl gcom $sitename_var "pre-up2upstream commit"
 
-# Check?
+# Move Readme out the way for now.
+echo "Move readme out the way"
+mv README.md README.md1
+echo "Add upstream."
+git remote add upstream git@github.com:Vardot/varbase-project.git
+echo "Fetch upstream"
+git fetch upstream
 
-echo "Add credentials."
-ssh-add ~/.ssh/$github_key
+echo "Now try merge."
+git merge upstream/8.8.x
 
-ocmsg "Commit git add && git commit with msg $msg"
-git add .
-git commit -m msg
+#Now overide the upstream readme.
+echo "Now move readme back"
+mv README.md1 README.md
 
-ocmsg "Backup site $sitename_var with msg $msg"
-backup_site $sitename_var $msg
+ocmsg "Update dependencies: composer install"
+# Should I remove the lock first?
+rm composer.lock
+composer install
+
+ocmsg "Run db updates"
+drush @$sitename_var updb
+
+ocmsg "Import configuration: drush cim"
+drush @$sitename_var cim
+
+pl gcom $sitename_var "Updated to lastest varbase"
+
+
+

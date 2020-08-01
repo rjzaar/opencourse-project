@@ -191,7 +191,7 @@ echo "path $site_path/$sitename_var folderpath $folderpath"
 
 if [[ "$bk" == prod ]] && [[ "$prod_method" == "git" ]]; then
   # easier and faster
-  echo -e "$Cyan Restoring prodution files to $sitename_var $Color_Off"
+  echo -e "$Cyan Restoring production files to $sitename_var $Color_Off"
   cd $site_path
   git clone $prod_gitrepo $sitename_var
 else

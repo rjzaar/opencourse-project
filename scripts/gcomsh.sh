@@ -1,8 +1,9 @@
 #!/bin/bash
 ################################################################################
-#                Git Push and merge Master For Pleasy Library
+#                Git Commit for Sharing For Pleasy Library
 #
-#  This will git share changes, ie merge with master
+#  This will git share changes, ie merge with master. Used for when improving the
+#  current code
 #  This follows the suggested sequence by bircher in
 #  https://events.drupal.org/vienna2017/sessions/advanced-configuration-management-config-split-et-al
 #  at 29:36

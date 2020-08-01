@@ -66,7 +66,7 @@ SECONDS=0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o hs: -l help,step: --name "$scriptname" -- "$@")
+args=$(getopt -o hs:d -l help,step:,debug --name "$scriptname" -- "$@")
 
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
@@ -96,6 +96,9 @@ while true; do
     flag_step=1
     shift
     step="$1"
+    shift; ;;
+     -d | --debug)
+    verbose="debug"
     shift; ;;
   --)
   shift

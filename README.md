@@ -289,20 +289,6 @@ Examples:
 
 <details>
 
-**<summary>gcompushmaster: Git merge branch with master and push :question: </summary>**
-Usage: pl gcompushmaster [OPTION] ... [SITE] [MESSAGE]
-This will merge branch with master You just need to state the sitename, eg
-dev.
-
-Mandatory arguments to long options are mandatory for short options too.
-  -h --help               Display help (Currently displayed)
-
-Examples:
-
-</details>
-
-<details>
-
 **<summary>gcom: args:  --help -- :question: </summary>**
 --**BROKEN DOCUMENTATION**--
 Git commit code with optional backup
@@ -342,25 +328,6 @@ pl gcomsh tim 'First tim backup'
 
 <details>
 
-**<summary>gcomup2upstream: Git commit with upstream merge :question: </summary>**
-Usage: pl gcomup2upstream [OPTION] ... [SITE] [MESSAGE]
-This will merge branch with master, and update to the upstream git. It
-presupposes you have already merged. You just need to state the sitename, eg
-dev.
-                                    branch with master
-Mandatory arguments to long options are mandatory for short options too.
-  -h --help               Display help (Currently displayed)
-
-Examples:
-pl gcomup2upstream -h
-pl gcomup2upstream dev (relative dev folder)
-pl gcomup2upstream tim 'First tim backup'
-END HELP
-
-</details>
-
-<details>
-
 **<summary>gcomup: Git commit and backup :question: </summary>**
 Usage: pl gcomup [OPTION] ... [SITE] [MESSAGE]
 Composer update, git commit changes and backup. This script follows the
@@ -374,6 +341,25 @@ Examples:
 pl gcomup -h
 pl gcomup dev (relative dev folder)
 pl gcomup tim 'First tim backup'
+END HELP
+
+</details>
+
+<details>
+
+**<summary>gcomvup: Git commit and update to latest varbase stable :question: </summary>**
+Usage: pl gcomvup [OPTION] ... [SITE] [MESSAGE]
+Varbase update, git commit changes and backup. This script follows the
+correct path to git commit changes You just need to state the
+sitename, eg dev.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+
+Examples:
+pl gcomvup -h
+pl gcomvup dev (relative dev folder)
+pl gcomvup tim 'First tim backup'
 END HELP
 
 </details>
@@ -572,21 +558,6 @@ END HELP
 
 <details>
 
-**<summary>prodmaster: Make sure production site and db is on master branch :white_check_mark: </summary>**
-Usage: pl prodmaster [OPTION] ...
-This script will make sure production site and db is on master branch and not dev
-
-Mandatory arguments to long options are mandatory for short options too.
-  -h --help               Display help (Currently displayed)
-
-Examples:
-pl prodmaster
-END HELP
-
-</details>
-
-<details>
-
 **<summary>prodowgit: Overwrite production with site specified :white_check_mark: </summary>**
 Usage: pl prodow [OPTION] ... [SITE]
 This script will overwrite production with the site chosen It will first backup
@@ -677,6 +648,7 @@ Restore a particular site's files and database from backup
 Usage: pl restore [FROM] [TO] [OPTION]
 You just need to state the sitename, eg dev.
 You can alternatively restore the site into a different site which is the second argument.
+If the [FROM] site is prod, and the production method is git, git will be used to restore production
 
 OPTIONS
   -h --help               Display help (Currently displayed)
@@ -689,6 +661,7 @@ pl restore loc
 pl restore loc stg -fy
 pl restore -h
 pl restore loc -d
+pl restore prod stg
 --**BROKEN DOCUMENTATION**--
 
 </details>
