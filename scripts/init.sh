@@ -610,11 +610,7 @@ echo "https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extension
 if [[ -f ~/.bashrc ]]; then
   ocmsg "source ~/.bashrc" debug
   cd
-  source .bashrc
-fi
-if [[ -f ~/.zshrc ]]; then
-  ocmsg "source ~/.zshrc" debug
-  source ~/.zshrc
+  source ~/.bashrc
 fi
 
 if [ $step -lt 16 ]; then
