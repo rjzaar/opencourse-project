@@ -46,69 +46,51 @@ varc: varbase-project install using composer
 # VARBASE
 
 It provides various scripts for development processes which incorporate composer, cmi and backup. It includes three 
-stages, dev (called loc for local), stg and prod. Communication with the production server is via drush and scp.
+stages, dev (called loc for local), stg and prod. Communication with the production server is via drush and git or scp.
 This project is also based on the varbase two repository structure, varbase and varbase-project.
 This is a good way to go since most updates to varbase don't need to be updated on a varbase based project.
 Those that do are included in varbase-project.
 There are also a lot less files to track in varbase-project than varbase itself.
 It provides an intelligent separation.
 
-Since a particular site based project nee
-
-ds to include site specific files which should be stored on a private 
-repository for backup, there is one more layer needed. The only difference with this layer is the .gitignore file 
-which includes folders needed on production. Welcome to Drupal 8 development.
+A particular site based project needs to include site specific files which should be stored on a private 
+repository for backup. When moving from dev to prod the git repositories will be swapped.
 
 # WORKFLOW
 
 Git is the fastest and easiest way to move files. There are three repositories
 
-Opencourse (ocrepo): A repo for just the code for opencourse.
+Opencourse (ocrepo): A repo for just the code for opencourse (dev environment)
 
-Production site repo (prodrepo): A repo of all of the site files.
+Production site repo (prodrepo): A repo of all of the site files (prod environment)
 
-Production database repo (prod.sql): A private secure repo for the live database.
+Production database repo (prod.sql): A private secure repo for the live database (ocback).
 
-Prodrepo is needed as a complete site backup (except for settings.php and some other files). It has it's own 
-.prodgitignore. The two repos can be swapped in the same folder so only one is used at a time (the two ignore files are
-also swapped and also ignore the repos). 
+# ROADMAP
 
-1) (Dev) Dev work is normally done on loc with ocrepo. The loc .git is pushed. 
-2) (Testing)
- 
-    a) The prodrepo is cloned to stg and installed with proddb. There are two scripts on production gitbackupdb.sh and 
-    gitbackupfiles.sh which can be run in parallel to speed things up.
-    
-    b) The git is then swapped in stg (.git to .gitprod and .git from loc copied in, .gitignore to 
-.prodgitignore and .devgitignore copied in). 
+1) The varbase use of Phing to install the site needs to be integrated into pleasy.
 
-    c) On stg a git fetch origin and hard reset will modify all relevant files to the new ones. 
-    ```
-    git fetch origin
-    git reset --hard origin/master
-    ```
-    d) The .git is then moved to .devgit and .prodgit is moved to .git (as well as the relevant .gitignore files)
-3) The necessary updates are run to make sure everything updates correctly (composer install, drush updb, etc). 
-4) Once this process is complete and everything is working the changes are pushed to a new branch on prodgit. 
+2) The varbase script varbase-update.sh needs to be integrated into pleasy.
 
-If production is overwritten with stg, then the database is moved to prod and both files and db are installed. 
+3) All the remaining scripts (ie with status todo) need to be updated and integrated.
 
-Otherwise:
-1) The production site is backed up. An alternate site is created with no edits allowed. The url points to this site.
-2) The files are brought in via a branch checkout on production. 
-3) The database is updated.
-4) Check if the update has worked
+4) All scripts tested with travis
 
-    a) If all is good, the site is made live, ie the url points to it.
-    
-    b) If there is a problem, git master is checked out and the backup database is restored. The url then points back
-    to the main production site.
+5) This will become a 1.0 release
 
-5) Once it is live and all is well a merge on production using the 'theirs' option brings the new files into the master of
-prodrepo.
+6) Lando integrated into pleasy using https://github.com/pendashteh/landrop. This will be a 2.0 release
 
-The advantage of this is there are two repos for their specific purposes. Having a master and dev branch on proddb allows
-for easy changing over of files for a restore.
+7) New functions to set up site testing using varbase behat code.
+
+8) Automatical travis testing of any commits.
+
+9) These new functions to set up travis tests that respond to drupal core security updates automatically and if passing auto push to production.
+
+10) New update functions to set up travis tests that respond to varbase project updates, test automatically and create stage site which is tested automatically. One line code push to production.
+
+Other improvements: nginx as an option. Varnish as an option.
+
+
 
 Status codes
 
