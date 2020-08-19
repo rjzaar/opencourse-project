@@ -409,6 +409,8 @@ update_all_configs() {
   # Create drupal console file
   if [ ! -d "$user_home/.console" ]; then
     ocmsg "Drupal console is not installed."
+    mkdir $user_home/.console
+    mkdir $user_home/.console/sites
     drupalconsole="n"
   elif [ ! -d $user_home/.console/sites ]; then
     ocmsg "make dir $user_home/.console/sites" debug

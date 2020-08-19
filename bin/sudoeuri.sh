@@ -1,7 +1,7 @@
 #!/bin/bash
-ocroot="/home/rob/pleasy"
+ocroot="/home/james/pleasy"
 ocwroot="/var/www/oc"
-script_root=/home/rob/pleasy/scripts
+script_root=/home/james/pleasy/scripts
 #Don't touch the above lines it will be modified by init.sh
 
 #This will set up a new uri
