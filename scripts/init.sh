@@ -536,7 +536,7 @@ if [ $step -lt 13 ]; then
   if [ ! -f /usr/local/bin/drupal ]; then
     echo "curl"
     curl https://drupalconsole.com/installer -L -o drupal.phar
-    dcon=S(sed '2q;d' drupal.phar)
+    dcon=$(sed '2q;d' drupal.phar)
 echo "dcon $dcon"
 if [[ "$dcon" == "<html><head>" || "$dcon" == "" ]] ; then
 
