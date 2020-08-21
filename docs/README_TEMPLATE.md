@@ -66,29 +66,38 @@ Production site repo (prodrepo): A repo of all of the site files (prod environme
 
 Production database repo (prod.sql): A private secure repo for the live database (ocback).
 
+# PLEASY RATIONALE
+
+What makes pleasy different? Pleasy is trying to use the simplest tools (bash scripting) to leverage drupal and varbase tools 
+to provide the simplest and yet powerful devops environment. This way it is easy for beginners to adopt and even improve, yet
+powerful enough to use for production. It tries to take the suggested best practice from Drupal documentation and turn it into
+scripts. It hopes to grow into a complete devops solution incorporating the best tools and practices available. 
+
 # ROADMAP
 
 1) The varbase use of Phing to install the site needs to be integrated into pleasy.
 
 2) The varbase script varbase-update.sh needs to be integrated into pleasy.
 
-3) All the remaining scripts (ie with status todo) need to be updated and integrated.
+3) A server version needs to be developed.
 
-4) All scripts tested with travis
+4) All the remaining scripts (ie with status todo) need to be updated and integrated.
 
-5) This will become a 1.0 release
+5) All scripts tested with travis
 
-6) Lando integrated into pleasy using https://github.com/pendashteh/landrop. This will be a 2.0 release
+6) This will become a 1.0 release
 
-7) New functions to set up site testing using varbase behat code.
+7) Lando integrated into pleasy using https://github.com/pendashteh/landrop. This will be a 2.0 release
 
-8) Automatical travis testing of any commits.
+8) New functions to set up site testing using varbase behat code.
 
-9) These new functions to set up travis tests that respond to drupal core security updates automatically and if passing auto push to production.
+9) Automatical travis testing of any commits.
 
-10) New update functions to set up travis tests that respond to varbase project updates, test automatically and create stage site which is tested automatically. One line code push to production.
+10) These new functions to set up travis tests that respond to drupal core security updates automatically and if passing auto push to production.
 
-Other improvements: nginx as an option. Varnish as an option.
+11) New update functions to set up travis tests that respond to varbase project updates, test automatically and create stage site which is tested automatically. One line code push to production.
+
+Other improvements: nginx as an option. Varnish as an option. Incorporate https://github.com/drevops/drevops
 
 
 
