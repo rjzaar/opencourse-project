@@ -536,6 +536,17 @@ if [ $step -lt 13 ]; then
   if [ ! -f /usr/local/bin/drupal ]; then
     echo "curl"
     curl https://drupalconsole.com/installer -L -o drupal.phar
+    dcon=S(sed '2q;d' drupal.phar)
+echo "dcon $dcon"
+if [[ "$dcon" == "<html><head>" || "$dcon" == "" ]] ; then
+
+# drupalconsole.com/installer is down. get it form git
+rm drupal.phar
+git clone https://github.com/rjzaar/drupal.phar.git
+mv drupal.phar drupal.pha
+mv drupal.pha/drupal.phar drupal.phar
+rm drupal.pha -rf
+fi
     #could test it
     # php drupal.phar
     sudo mv drupal.phar /usr/local/bin/drupal
