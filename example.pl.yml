@@ -86,6 +86,7 @@ recipes:
     theme: vartheme_bs4
     theme_admin: vartheme_admin
     install_modules:
+    dev_composer: devel:~3.0 features_ui
     dev_modules: syslog views_ui block_place devel features_ui dblog
     # This is a special directive that will not load any defaults from the default recipe.
     # This is so in this case install_modules will remain blank
