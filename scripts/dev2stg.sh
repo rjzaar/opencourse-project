@@ -1,12 +1,10 @@
 #!/bin/bash
 ################################################################################
-#                      Copy site files For Pleasy Library
+#                      Move dev to stage For Pleasy Library
 #
-#  This script will copy one site to another site. It will copy all
-#  files, set up the site settings and import the database. If no
-#  argument is given, it will copy dev to stg. If one argument is given it
-#  will copy dev to the site specified. If two arguments are give it will
-#  copy the first to the second.
+#  This script will use git to update the files from dev repo (ocdev) on the stage
+#  site dev to stg. If one argument is given it will copy dev to the site
+#  specified. If two arguments are give it will copy the first to the second.
 #
 #  Change History
 #  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
@@ -37,7 +35,7 @@
 ################################################################################
 
 # Set script name for general file use
-scriptname='pleasy-site-file-copy'
+scriptname='pleasy-dev-2-stage'
 
 # Help menu
 ################################################################################
@@ -45,12 +43,13 @@ scriptname='pleasy-site-file-copy'
 ################################################################################
 print_help() {
 echo \
-"Copies only the files from one site to another
-Usage: pl copyf [OPTION] ... [SOURCE]
-This script will copy one site to another site. It will copy only the files
-but will set up the site settings. If no argument is given, it will copy dev
-to stg If one argument is given it will copy dev to the site specified If two
-arguments are give it will copy the first to the second.
+"Uses git to update a stage site with the dev files.
+Usage: pl dev2stg [OPTION] ... [SOURCE]
+This script will use git to update the files from dev repo (ocdev) on the stage
+site dev to stg. If one argument is given it will copy dev to the site
+specified. If two arguments are give it will copy the first to the second.
+Presumes the dev git has already been pushed. Git is used for this rather than
+simple file transfer so it follows the requirements in .gitignore.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
@@ -109,11 +108,11 @@ done
 SECONDS=0
 parse_pl_yml
 
-# LOOKBACK and implement getopt!!!
+
 ################################################################################
 # Unsure what this is for, and how to parse this properly
 ################################################################################
-if [ $1 == "copy" ] && [ -z "$2" ]
+if [ $1 == "dev2stg" ] && [ -z "$2" ]
   then
   sitename_var="$sites_stg"
   from="$sites_dev"
@@ -126,13 +125,52 @@ elif [ -z "$2" ]
     sitename_var=$2
 fi
 
-echo "This will copy the site from $from to $sitename_var and set permissions and site settings"
-
-copy_site_files $from $sitename_var
-
+echo "This will update the stage site $sitename_var with the latest from $from"
+import_site_config $from
+from_site_path=$site_path
+    if [ ! -d "$from_site_path/$from/.git" ]; then
+      echo "There is no git in the dev site $from. Aborting."
+      exit 0
+    fi
+from_site_path=$site_path
 import_site_config $sitename_var
+
+
+
+#copy_site_files $from $sitename_var
+
+# move stg git out the way
+  if [ ! -d "$folderpath/sitebackups/stg" ]; then
+    mkdir "$folderpath/sitebackups/stg"
+  fi
+  #remove old git
+  rm -rf $folderpath/sitebackups/stg/.git
+  rm -rf $folderpath/sitebackups/stg/.gitignore
+  if [  -d "$site_path/$sitename_var/.git" ]; then
+    # store stg git.
+    mv $site_path/$sitename_var/.git $folderpath/sitebackups/stg/.git
+    mv $site_path/$sitename_var/.gitignore $folderpath/sitebackups/stg/.gitignore
+  fi
+
+# copy dev git to stg
+# Have already checked that dev git exists.
+    # store stg git.
+    mv $from_site_path/$from/.git $site_path/$sitename_var/.git
+    mv $from_site_path/$from/.gitignore $site_path/$sitename_var/.gitignore
+
+# pull in the git hard, ie no merge.
+cd $site_path/$sitename_var
+git fetch
+git reset --hard HEAD
+
+# Now move the stg git back
+rm $from_site_path/$from/.git
+rm $from_site_path/$from/.gitignore
+mv $folderpath/sitebackups/stg/.git $site_path/$sitename_var/.git
+mv $folderpath/sitebackups/stg/.gitignore $site_path/$sitename_var/.gitignore
+
 set_site_permissions
-fix_site_settings
+
 
 # End timer
 ################################################################################

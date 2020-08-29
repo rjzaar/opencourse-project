@@ -30,8 +30,10 @@ github:
 prod:
   alias: cathnet
   uri: "opencat.org"
-  user: puregift
   docroot: "/var/www/opencat.org/docroot"
+  test_uri: "test.opencat.org"
+  test_docroot: "/var/www/test.opencat.org/docroot"
+  user: puregift
   method: tar  # Method could be git or tar.
   # If method git, you will need to provide a git repo to use. A sanitised database may be stored in the repo.
   gitrepo: https://github.com/rjzaar/ocorg.git

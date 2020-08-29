@@ -62,10 +62,49 @@ Git is the fastest and easiest way to move files. There are three repositories
 
 Opencourse (ocrepo): A repo for just the code for opencourse (dev environment)
 
-Production site repo (prodrepo): A repo of all of the site files (prod environment)
+Production site repo (prodrepo): A repo of all of the site files (prod environment) Master branch stores prod. Dev
+branch stores the new prod to be pushed up.
 
 Production database repo (prod.sql): A private secure repo for the live database (ocback).
 
+The suggest best way to run workflow is explained in this presentation: 
+https://events.drupal.org/vienna2017/sessions/advanced-configuration-management-config-split-et-al
+  at 29:36
+  
+This has been implemented with the following commands
+Merge dev into master (or other branch)
+```
+pl gcom #will export config and commit to git
+git pull # Check the pull works.
+git merge master
+pl runup #will run any updates. Check all is good.
+git checkout master 
+git merge dev #check for errors.
+git push
+git checkout dev # back to work
+```
+Process to push to production
+```
+pl proddown stg #copy prod to stg
+pl gcom loc
+pl dev2stg loc #will use git to move dev files to stg. stg has prodrepo.
+pl runup stg #run updates on stage and check site.
+```
+You can repeat these steps to set up the live test site on the production server
+
+```
+pl updatetest
+```
+And/or you can run them on the live production server.
+```
+pl updateprod # This repeats the steps on Prod. Check all is well.
+```
+If there is a problem on production.
+
+```
+pl restoreprod  #This restores Prod to the old site. Only if needed.
+```
+ 
 # PLEASY RATIONALE
 
 What makes pleasy different? Pleasy is trying to use the simplest tools (bash scripting) to leverage drupal and varbase tools 
@@ -111,6 +150,9 @@ todo: Has not been looked at yet :question:
 
 
 # FUNCTION LIST
+
+(Click on the arrow to expand the function help.)
+
 
 <details>
 
@@ -221,15 +263,18 @@ Examples:
 
 <details>
 
-**<summary>devpush: Usage: pl devpush [OPTION] :question: </summary>**
---**BROKEN DOCUMENTATION**--
-Include help Rob!
+**<summary>dev2stg: Uses git to update a stage site with the dev files. :white_check_mark: </summary>**
+Usage: pl dev2stg [OPTION] ... [SOURCE]
+This script will use git to update the files from dev repo (ocdev) on the stage
+site dev to stg. If one argument is given it will copy dev to the site
+specified. If two arguments are give it will copy the first to the second.
+Presumes the dev git has already been pushed. Git is used for this rather than
+simple file transfer so it follows the requirements in .gitignore.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
---**BROKEN DOCUMENTATION**--
 
 </details>
 
@@ -284,8 +329,9 @@ Examples:
 --**BROKEN DOCUMENTATION**--
 Git commit code with optional backup
 Usage: pl gcom [SITE] [MESSAGE] [OPTION]
-This script will git commit changes to [SITE] with [MESSAGE].\
-If you have access rights, you can commit changes to pleasy itself by using pl for [SITE] or pleasy.
+This script will export config and git commit changes to [SITE] with [MESSAGE].\
+If you have access rights, you can commit changes to pleasy itself by using pl
+for [SITE] or pleasy.
 
 OPTIONS
   -h --help               Display help (Currently displayed)
@@ -297,42 +343,6 @@ Examples:
 pl gcom loc "Fixed error on blah." -bv\
 pl gcom pl "Improved gcom."
 --**BROKEN DOCUMENTATION**--
-
-</details>
-
-<details>
-
-**<summary>gcomsh: Git push after master merge :question: </summary>**
-Usage: pl gcomsh [OPTION] ... [SITE] [MESSAGE]
-This will git commit changes with msg after merging with master. You just
-need to state the sitename, eg dev.
-
-Mandatory arguments to long options are mandatory for short options too.
-  -h --help               Display help (Currently displayed)
-
-Examples:
-pl gcomsh -h
-pl gcomsh dev (relative dev folder)
-pl gcomsh tim 'First tim backup'
-
-</details>
-
-<details>
-
-**<summary>gcomup: Git commit and backup :question: </summary>**
-Usage: pl gcomup [OPTION] ... [SITE] [MESSAGE]
-Composer update, git commit changes and backup. This script follows the
-correct path to git commit changes You just need to state the
-sitename, eg dev.
-
-Mandatory arguments to long options are mandatory for short options too.
-  -h --help               Display help (Currently displayed)
-
-Examples:
-pl gcomup -h
-pl gcomup dev (relative dev folder)
-pl gcomup tim 'First tim backup'
-END HELP
 
 </details>
 
@@ -370,21 +380,6 @@ Examples:
 pl gulp loc
 pl gulp loc http://pleasy.loc/sar
 
-END HELP
-
-</details>
-
-<details>
-
-**<summary>importdev: Copy localprod to stg, then import dev to stg :question: </summary>**
-Usage: pl importdev [OPTION] ... [SOURCE-SITE] [DEST-SITE]
-@ROB add description please
-
-Mandatory arguments to long options are mandatory for short options too.
-  -h --help               Display help (Currently displayed)
-
-Examples:
-pl importdev 
 END HELP
 
 </details>
@@ -615,24 +610,6 @@ END HELP
 
 <details>
 
-**<summary>replace: Overwrite localprod with production :white_check_mark: </summary>**
-Usage: pl replace [OPTION] ... [FROM] [TO]
-This script will copy the .git and .gitignore from TO to .prodgit and .prodgitignore
-in FROM. It will delete TO. It will copy FROM to TO. It will then move the .git
-to .devgit and .gitignore to .devgitignore. It will move .prodgit to .git and
-.prodgitignore to .gitignore. Fix up the site settings and file permissions.
-
-Mandatory arguments to long options are mandatory for short options too.
-  -h --help               Display help (Currently displayed)
-
-Examples:
-pl replace loc stg
-END HELP
-
-</details>
-
-<details>
-
 **<summary>restore: args:  --help -- :heavy_check_mark: </summary>**
 --**BROKEN DOCUMENTATION**--
 Restore a particular site's files and database from backup
@@ -659,10 +636,41 @@ pl restore prod stg
 
 <details>
 
+**<summary>runup: This script will run any updates on the stg site or the site specified. :question: </summary>**
+Usage: pl runupdates [OPTION] ... [SOURCE]
+This script presumes the files including composer.json have been updated in some way and will now run those updates.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+
+Examples:
+pl runup loc
+
+</details>
+
+<details>
+
 **<summary>stopgulp: This script is used to kill any processes started by gulp. There are no arguments required. :white_check_mark: </summary>**
 --**BROKEN DOCUMENTATION**--
 
 --**BROKEN DOCUMENTATION**--
+
+</details>
+
+<details>
+
+**<summary>updateprod: Git push after master merge :question: </summary>**
+Usage: pl gpmprod [OPTION] ... [SITE] [MESSAGE]
+This will git commit changes with msg after merging with master. You just
+need to state the sitename, eg dev.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+
+Examples:
+pl gpmprod -h
+pl gpmprod dev (relative dev folder)
+pl gpmprod tim 'First tim backup'
 
 </details>
 
@@ -696,35 +704,7 @@ Examples:
 
 <details>
 
-**<summary>reset:  :question: </summary>**
-**DOCUMENTATION NOT IMPLEMENTED**
-
-</details>
-
-<details>
-
 **<summary>restoredb:  :question: </summary>**
-**DOCUMENTATION NOT IMPLEMENTED**
-
-</details>
-
-<details>
-
-**<summary>stg2prodoverwrite2:  :question: </summary>**
-**DOCUMENTATION NOT IMPLEMENTED**
-
-</details>
-
-<details>
-
-**<summary>stg2prodoverwrite:  :question: </summary>**
-**DOCUMENTATION NOT IMPLEMENTED**
-
-</details>
-
-<details>
-
-**<summary>stg2prod:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
@@ -738,28 +718,7 @@ Examples:
 
 <details>
 
-**<summary>testi:  :question: </summary>**
-**DOCUMENTATION NOT IMPLEMENTED**
-
-</details>
-
-<details>
-
 **<summary>test:  :question: </summary>**
-**DOCUMENTATION NOT IMPLEMENTED**
-
-</details>
-
-<details>
-
-**<summary>teststg:  :question: </summary>**
-**DOCUMENTATION NOT IMPLEMENTED**
-
-</details>
-
-<details>
-
-**<summary>teststgupdb:  :question: </summary>**
 **DOCUMENTATION NOT IMPLEMENTED**
 
 </details>

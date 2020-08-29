@@ -1,18 +1,27 @@
 #!/bin/bash
 ################################################################################
-#                      Copy site files For Pleasy Library
+#                 Run updates For Pleasy Library
 #
-#  This script will copy one site to another site. It will copy all
-#  files, set up the site settings and import the database. If no
-#  argument is given, it will copy dev to stg. If one argument is given it
-#  will copy dev to the site specified. If two arguments are give it will
-#  copy the first to the second.
+#  This is when you want to update. This will update composer, config and db.
+#
+#  https://events.drupal.org/vienna2017/sessions/
+#  advanced-configuration-management-config-split-et-al
+#  at 29:36
+#  That is a combination of (always presume sharing and do a backup first):
+#
+#  The safe sequence for updating
+#  Update code: composer update
+#  Run updates: drush updb
+#  Export updated config: drush cex
+#  Commit git add && git commit
+#  Push: git push
 #
 #  Change History
 #  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
 #                                   prelim commenting
-#  15/02/2020 James Lim  Getopt parsing implementation, script documentation
+#  29/02/2020 James Lim  Getopt parsing implementation, script documentation
 #  [Insert New]
+#
 #
 ################################################################################
 ################################################################################
@@ -26,52 +35,47 @@
 #
 ################################################################################
 ################################################################################
-#                             Commenting with model
-#
-# NAME OF COMMENT (USE FOR RATHER SIGNIFICANT COMMENTS)
-################################################################################
-# Description - Each bar is 80 #, in vim do 80i#esc
-################################################################################
-#
-################################################################################
-################################################################################
 
 # Set script name for general file use
-scriptname='pleasy-site-file-copy'
+scriptname='runup'
 
 # Help menu
 ################################################################################
 # Prints user guide
 ################################################################################
 print_help() {
-echo \
-"Copies only the files from one site to another
-Usage: pl copyf [OPTION] ... [SOURCE]
-This script will copy one site to another site. It will copy only the files
-but will set up the site settings. If no argument is given, it will copy dev
-to stg If one argument is given it will copy dev to the site specified If two
-arguments are give it will copy the first to the second.
+  echo \
+"This script will run any updates on the stg site or the site specified.
+Usage: pl runupdates [OPTION] ... [SOURCE]
+This script presumes the files including composer.json have been updated in some way and will now run those updates.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
-Examples:"
+Examples:
+pl runup loc"
 
 }
 
-# Use of Getopt
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
+SECONDS=0
+
+e of Getopt
 ################################################################################
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o h -l help --name "$scriptname" -- "$@")
+args=$(getopt -o h -l help, --name "$scriptname" -- "$@")
 # echo "$args"
 
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
 ################################################################################
 [ $? -eq 0 ] || {
-    echo "please do 'pl copyf --help' for more options"
+    echo "please do '$scriptname --help' for more options"
     exit 1
 }
 
@@ -87,52 +91,53 @@ eval set -- "$args"
 while true; do
   case "$1" in
   -h | --help)
-    print_help
-    exit 2 # works
-    ;;
+    print_help; exit 0; ;;
   --)
-    shift
-    break
-    ;;
+  shift; break; ;;
   *)
-    "Programming error, this should not show up!"
-    exit 1
-    ;;
+  "Programming error, this should not show up!"
+  exit 1; ;;
   esac
 done
 
+################################################################################
 
-# start timer
-################################################################################
-# Timer to show how long it took to run the script
-################################################################################
-SECONDS=0
 parse_pl_yml
 
-# LOOKBACK and implement getopt!!!
-################################################################################
-# Unsure what this is for, and how to parse this properly
-################################################################################
-if [ $1 == "copy" ] && [ -z "$2" ]
+if [ $1 == "runup" ] && [ -z "$2" ]
   then
-  sitename_var="$sites_stg"
-  from="$sites_dev"
+sitename_var="$sites_stg"
 elif [ -z "$2" ]
   then
-    sitename_var=$1
-    from="$sites_dev"
-   else
-    from=$1
-    sitename_var=$2
+    sitename_var="$1"
 fi
 
-echo "This will copy the site from $from to $sitename_var and set permissions and site settings"
-
-copy_site_files $from $sitename_var
-
 import_site_config $sitename_var
+echo "This will run any updates on the $sitename_var site."
+
+# composer install
+echo -e "\e[34mcomposer install\e[39m"
+cd $folderpath/$sitename_var
+composer install --no-dev
 set_site_permissions
 fix_site_settings
+
+echo -e "\e[34m update database\e[39m"
+drush @$sitename_var updb -y
+#echo -e "\e[34m fra\e[39m"
+#drush @$sitename_var fra -y
+echo -e "\e[34m import config\e[39m"
+drush @$sitename_var cim -y #--source=../cmi
+echo -e "\e[34m make sure out of maintenance mode\e[39m"
+drush @$sitename_var sset system.maintenance_mode FALSE
+drush cr
+
+# Not needed since patched.
+#remove any extra options. Since each reinstall may add an extra one.
+#cd
+#cd opencat/opencourse
+#echo -e "\e[34mpatch .htaccess\e[39m"
+#sed -i 's/Options +FollowSymLinks/Options +FollowSymLinks/g' .htaccess
 
 # End timer
 ################################################################################
@@ -140,3 +145,4 @@ fix_site_settings
 ################################################################################
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 
+}

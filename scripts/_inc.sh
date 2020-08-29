@@ -894,6 +894,31 @@ gitbackupfiles() {
   echo -e "$Color_Off"
 }
 
+
+#
+################################################################################
+# User server script to backup production files so it can be run in parallel
+################################################################################
+gitprodpush() {
+  # Make sure ssh identity is added
+  add_git_credentials
+  #backup db.
+  #use git:
+  #https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/set-up-a-local-development-drupal-0-7
+
+  msg=${1// /_}
+    # Run commands in parallel
+    echo -e "$Cyan Running git pull for site and db on production $Color_Off"
+     Bname=$(date +%d%b%gT%l:%M:%S%p)
+     Bname=${Bname//[[:blank:]]/}
+     echo "Commit name >$Bname<"
+    gitbackupdb &
+    gitbackupfiles &
+    wait
+    echo "Production site and files backuped"
+
+}
+
 #
 ################################################################################
 #
@@ -901,8 +926,7 @@ gitbackupfiles() {
 backup_prod() {
 
   # Make sure ssh identity is added
-  eval $(ssh-agent -s)
-  ssh-add ~/.ssh/$prod_alias
+  add_git_credentials
   #backup db.
   #use git:
   #https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/set-up-a-local-development-drupal-0-7
@@ -918,16 +942,7 @@ backup_prod() {
   echo "proddb $prod_gitdb"
 
   if [[ ! "$prod_gitdb" == "" ]]; then
-    echo "Using git to get production site"
-    # Run commands in parallel
-    echo -e "$Cyan gitbackupdb and gitbackupfiles $Color_Off"
-     Bname=$(date +%d%b%gT%l:%M:%S%p)
-     Bname=${Bname//[[:blank:]]/}
-     echo "Commit name >$Bname<"
-    gitbackupdb &
-    gitbackupfiles &
-    wait
-    echo "Production site and files backuped"
+    gitprodpush
   else
     exit 0
     #Name="$folderpath/sitebackups/prod/prod$(date +%Y%m%d\T%H%M%S-)$msg"
@@ -1342,6 +1357,7 @@ EOL
 ################################################################################
 add_git_credentials() {
   ocmsg "Add git credentials $user_home/.ssh/$github_key"
+  eval $(ssh-agent -s)
   if [[ "$verbose" == "debug" ]]; then
     ssh-add $user_home/.ssh/$github_key
   else

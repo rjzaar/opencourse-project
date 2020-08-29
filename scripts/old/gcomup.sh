@@ -130,7 +130,7 @@ if [ "$#" = 0 ]; then
   exit 2
 fi
 
-parse_pl_yml
+
 import_site_config $sitename_var
 
 if [[ "$profile" == "varbase" ]] ; then

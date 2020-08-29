@@ -62,10 +62,49 @@ Git is the fastest and easiest way to move files. There are three repositories
 
 Opencourse (ocrepo): A repo for just the code for opencourse (dev environment)
 
-Production site repo (prodrepo): A repo of all of the site files (prod environment)
+Production site repo (prodrepo): A repo of all of the site files (prod environment) Master branch stores prod. Dev
+branch stores the new prod to be pushed up.
 
 Production database repo (prod.sql): A private secure repo for the live database (ocback).
 
+The suggest best way to run workflow is explained in this presentation: 
+https://events.drupal.org/vienna2017/sessions/advanced-configuration-management-config-split-et-al
+  at 29:36
+  
+This has been implemented with the following commands
+Merge dev into master (or other branch)
+```
+pl gcom #will export config and commit to git
+git pull # Check the pull works.
+git merge master
+pl runup #will run any updates. Check all is good.
+git checkout master 
+git merge dev #check for errors.
+git push
+git checkout dev # back to work
+```
+Process to push to production
+```
+pl proddown stg #copy prod to stg
+pl gcom loc
+pl dev2stg loc #will use git to move dev files to stg. stg has prodrepo.
+pl runup stg #run updates on stage and check site.
+```
+You can repeat these steps to set up the live test site on the production server
+
+```
+pl updatetest
+```
+And/or you can run them on the live production server.
+```
+pl updateprod # This repeats the steps on Prod. Check all is well.
+```
+If there is a problem on production.
+
+```
+pl restoreprod  #This restores Prod to the old site. Only if needed.
+```
+ 
 # PLEASY RATIONALE
 
 What makes pleasy different? Pleasy is trying to use the simplest tools (bash scripting) to leverage drupal and varbase tools 

@@ -1,8 +1,8 @@
 #!/bin/bash
 ################################################################################
-#                Git Commit for Sharing For Pleasy Library
+#                Git Push and Merge Production For Pleasy Library
 #
-#  This will git share changes, ie merge with master. Used for when improving the
+#  This will pgit share changes, ie merge with master. Used for when improving the
 #  current code
 #  This follows the suggested sequence by bircher in
 #  https://events.drupal.org/vienna2017/sessions/advanced-configuration-management-config-split-et-al
@@ -47,7 +47,7 @@
 ################################################################################
 
 # Set script name for general file use
-scriptname='gcomsh'
+scriptname='gpmprod'
 
 # Help menu
 ################################################################################
@@ -136,38 +136,13 @@ if [ "$#" = 0 ]; then
 fi
 
 parse_pl_yml
-import_site_config $sitename_var
-
-ocmsg "Backup site $sitename_var with msg premerge"
-backup_site $sitename_var "premerge"
-
-ocmsg "Export config: drush cex will need sudo"
-sudo chown $user:www-data $site_path/$sitename_var -R
-chmod g+w $site_path/$sitename_var/cmi -R
-drush @$sitename_var cex --destination=../cmi -y
 
 echo "Add credentials."
-ssh-add ~/.ssh/$github_key
+add_git_credentials
 
-ocmsg "Commit git add && git commit with msg $msg"
-git add .
-git commit -m msg
-
-ocmsg "Git pull"
-git checkout master # Go to the master branch
-git pull # Get the latest code base
-git checkout feature/[my-existing-branch] # Go back to feature branch
-git merge master # If you get any merge conflicts, see next paragraph
+# backup latest on prod
+gitprodpush
 
 
-ocmsg "Update dependencies: composer install"
-composer install
+#Check changes
 
-ocmsg "Run db updates"
-drush @$sitename_var dbup
-
-ocmsg "Import configuration: drush cim"
-drush @$sitename_var cim
-
-ocmsg "Push: git push"
-git push # Include latest master commits in remote feature branch

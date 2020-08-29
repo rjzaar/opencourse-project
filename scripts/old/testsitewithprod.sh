@@ -8,7 +8,7 @@ SECONDS=0
 . $script_root/_inc.sh;
 parse_pl_yml
 
-if [ $1 == "teststg" ] && [ -z "$2" ]
+if [ $1 == "testsitewithprod" ] && [ -z "$2" ]
   then
 sitename_var="$sites_stg"
 devs="$sites_dev"
@@ -28,15 +28,18 @@ import_site_config $sitename_var
 
 echo "This will backup the current stg site: $sitename_var, then remove it. Copy the files from dev: $devs, import the prod database $prods and then update it."
 
+
 # Help menu
 print_help() {
-cat <<-HELP
-This script will test the current loc in the stg instance using either the production site (default) or the localprod.
-It will backup the current stg site: $sitename_var, then remove it. Copy the files from dev, copy the private folder from prod,
+    echo \
+"This script will test the current loc in the stg instance using either the production site (default) or the localprod.
+}
+It will backup the current stg site: \$sitename_var, then remove it. Copy the files from dev, copy the private folder from prod,
 import the prod database and then update it.
-If no arguments are given
-HELP
-exit 0
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+
+Examples:"
 }
 
 backup_site $sitename_var
