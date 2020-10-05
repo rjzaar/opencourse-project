@@ -609,7 +609,7 @@ if [ $step -lt 15 ]; then
   cat >$(dirname $script_root)/.vimrc <<EOL
 set nocompatible
 EOL
-fi
+fi 
 echo " open this link to add the xdebug extension for the browser you want to use"
 echo "https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extensions.html?utm_campaign=PS&utm_medium=link&utm_source=product&utm_content=2019.3 "
 
