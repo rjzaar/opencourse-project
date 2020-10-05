@@ -613,40 +613,8 @@ if [ $step -lt 15 ]; then
   cat >$(dirname $script_root)/.vimrc <<EOL
 set nocompatible
 EOL
-fi
 
-# Step 15
-################################################################################
-# Fix adding extra characters for vi
-################################################################################
-if [ $step -lt 16 ]; then
-  echo -e "$Cyan step 15: Install Lando if option chosen $Color_Off"
-if [[ "$installlando" == "Y" ]] ; then
-  # Install Lando
-
-#First install docker
-  # Following recipe from https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
-# Or could follow this recipe: https://get.docker.com/
-sudo apt install apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
-sudo apt update
-apt-cache policy docker-ce
-sudo apt install docker-ce
-sudo usermod -aG docker ${USER}
-username=${USER}
-su - ${USER}
-
-sudo usermod -aG docker $username
-
-# Now install lando
-wget https://files.devwithlando.io/lando-stable.deb
-sudo dpkg -i lando-stable.deb
-  fi
-
-
-
-fi
+fi 
 
 echo " open this link to add the xdebug extension for the browser you want to use"
 echo "https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extensions.html?utm_campaign=PS&utm_medium=link&utm_source=product&utm_content=2019.3 "
