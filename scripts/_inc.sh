@@ -1237,7 +1237,7 @@ copy_site_folder() {
 update_locations() {
   # This will update the key directory locations set by the environment and pl.yml
   # It presumes that _inc.sh has already been run and parse_pl_yml has been run.
-
+  echo "0: $0 pwd $(pwd)"
   DIRECTORY=$(cd $(dirname $0) && pwd)
   cd $(dirname $0)
   echo "Directory: $DIRECTORY pwd: $(pwd)"
