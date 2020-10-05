@@ -52,6 +52,7 @@ Mandatory arguments to long options are mandatory for short options too.
     -n --nopassword         Nopassword. This will give the user full sudo access without requireing a password!
                             This could be a security issue for some setups. Use with caution!
     -t --test            This option is only for test environments like Travis, eg there is no mysql root password.
+    -l --lando              This will install lando
 
 Examples:
 git clone git@github.com:rjzaar/pleasy.git [sitename]  #eg git clone git@github.com:rjzaar/pleasy.git mysite.org
@@ -94,7 +95,7 @@ step=${step:-1}
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are --yes --help --step
 ################################################################################
-args=$(getopt -o yhs:ndt -l yes,help,step:,nopassword,debug,test --name "$scriptname" -- "$@")
+args=$(getopt -o yhs:ndtl -l yes,help,step:,nopassword,debug,test,lando --name "$scriptname" -- "$@")
 # echo "$args"
 
 ################################################################################
@@ -140,6 +141,9 @@ while true; do
     ;;
   -t | --test)
     pltest="y"
+    ;;
+  -l | --lando)
+    installlando="y"
     ;;
   -h | --help)
     print_help
@@ -202,14 +206,14 @@ if [ $step -lt 2 ]; then
 
   if [[ "$gversion" == "5" ]]; then
     echo "Need to purge gawk and install version 4 of gawk"
-    1:4.1.4+dfsg-1build1
+#    1:4.1.4+dfsg-1build1
     sudo apt-get remove gawk -y
 
     wget https://ftp.gnu.org/gnu/gawk/gawk-4.2.1.tar.gz
     tar -xvpzf gawk-4.2.1.tar.gz
     cd gawk-4.2.1
     sudo ./configure && sudo make && sudo make install
-    sudo apt install gawk=1:5.0.1+dfsg-1
+#    sudo apt install gawk=1:5.0.1+dfsg-1
   # It installs 5.0.1, but when you run gawk -Wv it says it 4.2.1. Anyway it works. I don't know another way of doing it.
   fi
 fi
@@ -610,10 +614,44 @@ if [ $step -lt 15 ]; then
 set nocompatible
 EOL
 fi
+
+# Step 15
+################################################################################
+# Fix adding extra characters for vi
+################################################################################
+if [ $step -lt 16 ]; then
+  echo -e "$Cyan step 15: Install Lando if option chosen $Color_Off"
+if [[ "$installlando" == "Y" ]] ; then
+  # Install Lando
+
+#First install docker
+  # Following recipe from https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
+# Or could follow this recipe: https://get.docker.com/
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+sudo apt update
+apt-cache policy docker-ce
+sudo apt install docker-ce
+sudo usermod -aG docker ${USER}
+username=${USER}
+su - ${USER}
+
+sudo usermod -aG docker $username
+
+# Now install lando
+wget https://files.devwithlando.io/lando-stable.deb
+sudo dpkg -i lando-stable.deb
+  fi
+
+
+
+fi
+
 echo " open this link to add the xdebug extension for the browser you want to use"
 echo "https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extensions.html?utm_campaign=PS&utm_medium=link&utm_source=product&utm_content=2019.3 "
 
-# Step 15
+# Step 16
 ################################################################################
 # I don't think this step is needed since theming tools are added to each instance via pl install
 ################################################################################
@@ -624,8 +662,8 @@ if [[ -f ~/.bashrc ]]; then
   source ~/.bashrc
 fi
 
-if [ $step -lt 16 ]; then
-  echo -e "$Cyan step 15: Now add theming tools $Color_Off"
+if [ $step -lt 17 ]; then
+  echo -e "$Cyan step 16: Now add theming tools $Color_Off"
 
 #Now add theming tools
 
