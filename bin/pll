@@ -1,0 +1,92 @@
+#!/bin/bash
+# stolen from https://github.com/pendashteh/drop
+# stolen from https://github.com/pendashteh/landrop
+
+set -e
+verbose="none"
+# Usage:
+#	$ pll install dev
+#
+
+# Helper functions to get the abolute path for the command
+# Copyright http://stackoverflow.com/a/7400673/257479
+myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -ld -- "$1")" : '.*-> \(.*\)$')"; cd $(dirname $1); myreadlink "$link" | sed "s|^\([^/].*\)\$|$(dirname $1)/\1|"); }
+whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
+whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
+
+script_root=$(dirname $(whereis_realpath "$0"))
+
+# get rid of 'bin'
+if [ "${script_root: (-6)}" == "/bin/."  ]
+then
+script_root="${script_root:0:-6}"
+fi
+
+if [ "${script_root: (-4)}" == "/bin"  ]
+then
+script_root="${script_root:0:-4}"
+fi
+
+if [ "${script_root: (-2)}" == "/."  ]
+then
+script_root="${script_root:0:-2}"
+fi
+# script_root="/home/travis/build/rjzaar/pleasy"
+folder=$(basename $script_root)
+
+# Fix script_root on Travis
+#length of string: $(echo -n script_root | wc -m)
+#echo "script_root pre fix: $script_root"
+#folder_len=$(echo -n $folder | wc -m)
+#script_roottest=${script_root:0:$((-$folder_len-3))}
+#if [[ "${script_roottest: ($((-$folder_len)))}" == $folder ]] ; then
+## Probably on Travis so use script_roottest
+#script_root="$script_roottest/scripts"
+#else
+#script_root="$script_root/scripts"
+#fi
+#echo "folder_len: $folder_len script_roottest: $script_roottest script_root $script_root"
+script_root="$script_root/scripts"
+
+folderpath=$(dirname $script_root)
+
+user_home=$HOME
+
+#echo " folder: $folder  folderpath: $folderpath script_root: $script_root user_home: $user_home"
+#echo "folderpath: $folderpath"
+
+. $script_root/_inc.sh
+ocmsg "user_home: $user_home" debug
+
+ocmsg "Finished initalising the defaults for pl command. Found script_root is $script_root"
+pl_run_task() {
+	local task=$1
+	local task_args="${@:2}"
+	ocmsg "task: $task task_args: $task_args" debug
+	task_script_path=$script_root/$task.sh
+	if [[ $task == *"sudo"* ]]; then
+	task_script_path="/usr/local/bin/$task.sh" ; fi
+	if [ ! -e "$task_script_path" ]
+		then
+		echo "Pleasy task '$task' was not found. (Expected at $task_script_path)"
+		exit 1
+	fi
+
+
+if [[ $task_script_path == *"sudo"* ]]; then
+ 	sudo $task_script_path $task_args
+	else
+		. $task_script_path $task_args
+fi
+}
+
+task=$1
+[ ! "$task" ] && echo "No task provided." && exit 1
+
+#. $script_root/lib/common.inc.sh;
+#. $script_root/lib/db.inc.sh;
+#. $script_root/scripts/_inc.sh;
+
+#drop_config_init $config_path
+
+pl_run_task "$1" "${@:2}"
