@@ -48,7 +48,7 @@ env:
 # Getting segmentation fault with all varbase installs.
   - SITE=varc
   - SITE=vard
- # - SITE=varg
+  - SITE=varg
 
 #before_install:
 #  # PHP Configurations.
