@@ -87,7 +87,7 @@ scripts. It hopes to grow into a complete devops solution incorporating the best
 
 6) This will become a 1.0 release
 
-7) Lando integrated into pleasy using https://github.com/pendashteh/landrop. This will be a 2.0 release
+7) Lando or docker integrated into pleasy using https://github.com/pendashteh/landrop. This will be a 2.0 release
 
 8) New functions to set up site testing using varbase behat code.
 
