@@ -189,6 +189,13 @@ if [ $step -lt 2 ]; then
   #  mysql -e 'CREATE DATABASE test;'
   #  fi
   #echo "did it work?"
+  home="home/"
+if [[ "$USER" == "" ]] ; then
+	#This is for a docker container where the USER doesn't work and cd brings root to /root and not /$homeroot
+	USER="root"
+	home=""
+fi
+    echo "User: $USER"
 
   if [[ "$nopassword" == "y" ]]; then
     # set up user with sudo
@@ -255,7 +262,7 @@ if [ $step -lt 4 ]; then
 
   #prep up the debug command with cli and apached locations
   echo "adding debug command"
-  ocbin="/home/$user/$project/bin"
+  ocbin="/$home$user/$project/bin"
   sed -i "3s|.*|phpcli=\"$phpcli\"|" "$ocbin/debug"
   sed -i "4s|.*|phpapache=\"$phpapache\"|" "$ocbin/debug"
 
@@ -334,7 +341,7 @@ if [ $step -lt 6 ]; then
 
   # If Travis, then add some environment variables, particularly to add more memory to php.
 #  echo "pwd: $(pwd)"
-#  if [[ "$(pwd)" == "/home/travis" ]]; then
+#  if [[ "$(pwd)" == "/$hometravis" ]]; then
 #    cd build/rjzaar
 #    phpenv version
 #    echo 'max_execution_time = 1200' >>varbase.php.ini
@@ -475,20 +482,20 @@ if [ $step -lt 12 ]; then
   #composer global require drush/drush
   echo "composer install consoildation/cgr"
   # sudo ls -la .config
-  if [[ -d "/home/$USER/.config" ]]; then
-    sudo chown -R $USER "/home/$USER/.config"
+  if [[ -d "/$home$USER/.config" ]]; then
+    sudo chown -R $USER "/$home$USER/.config"
     comppres="true"
   fi
 
-  if [[ -d "/home/$USER/.composer" ]]; then
-    sudo chown -R $USER "/home/$USER/.composer"
+  if [[ -d "/$home$USER/.composer" ]]; then
+    sudo chown -R $USER "/$home$USER/.composer"
     comppres="true"
   fi
   if [[ "$comppres" == "false" ]]; then
     echo "Don't know where composer is. I thought I installed it.1"
   fi
 
-  # sudo chown -R $USER /home/travis/.composer/
+  # sudo chown -R $USER /$hometravis/.composer/
   composer global require consolidation/cgr
   echo "echo path into bashrc"
   cd
@@ -504,7 +511,7 @@ if [ $step -lt 12 ]; then
   # https://github.com/consolidation/cgr/issues/29#issuecomment-422852318
   cd /usr/local/bin
 
-  if [[ -d "/home/$USER/.config" ]]; then
+  if [[ -d "/$home$USER/.config" ]]; then
     if [[ ! -L './cgr' ]]; then
       echo "Creating symlink"
       sudo ln -s $comphome/vendor/bin/cgr .
@@ -512,7 +519,7 @@ if [ $step -lt 12 ]; then
     #sudo ln -s ~/.config/composer/vendor/bin/drush .
     cd
     echo "export DRUSH_LAUNCHER_FALLBACK=$comphome/vendor/bin/drush" >>~/.bashrc
-  elif [[ -d "/home/$USER/.composer" ]]; then
+  elif [[ -d "/$home$USER/.composer" ]]; then
     if [[ ! -L ~/.composer/vendor/bin/cgr ]]; then
       if [[ ! -L './cgr' ]]; then
         echo "Creating symlink2"
@@ -614,7 +621,7 @@ if [ $step -lt 15 ]; then
 set nocompatible
 EOL
 
-fi 
+fi
 
 
 echo " open this link to add the xdebug extension for the browser you want to use"

@@ -340,8 +340,8 @@ import_site_config() {
 
   if [ "$lando" = "y" ]; then
     folder=$(basename $(dirname $script_root))
-    private="/home/$user/$folder/$sitename_var/private"
-    site_path="/home/$user/$folder"
+    private="/$home$user/$folder/$sitename_var/private"
+    site_path="/$home$user/$folder"
   else
     folder=$(basename $(dirname $script_root)) # should be correct ?? @rjzaar
     private="$www_path/$sitename_var/private"
@@ -865,7 +865,7 @@ backup_git() {
 # User server script to backup production database so it can be run in parallel
 ################################################################################
 gitbackupdb() {
-  #    drush @prod sql-dump --result-file="/home/$prod_user/proddb/prod.sql"
+  #    drush @prod sql-dump --result-file="/$home$prod_user/proddb/prod.sql"
   #    ssh $prod_alias "cd proddb && git add . && git commit -m \"$(date +%Y%m%d\T%H%M%S-)\" && git push"
 echo -e "$Purple gitbackupdb"
   ssh $prod_alias "./gitbackupdb.sh $prod_docroot  $Bname"
@@ -933,7 +933,7 @@ backup_prod() {
     echo -e "\e[34mbackup db $Name.sql\e[39m"
     echo "Trying $Namesql "
     #drush @prod sql-dump   > "$Namesql"
-    drush @prod sql-dump --result-file="/home/$prod_user/$Name.sql"
+    drush @prod sql-dump --result-file="/$home$prod_user/$Name.sql"
     scp "$prod_alias:$Name.sql" "$folderpath/sitebackups/prod/$Name.sql"
     Namef=$Name.tar.gz
     echo -e "\e[34mbackup files $Namef\e[39m"
@@ -1248,17 +1248,22 @@ update_locations() {
     # Must be a travis build
     project="build/rjzaar/pleasy"
   fi
+  if [[ "${PARTS[1]}" != "home" ]] ; then
+	  user="root"
+	  project="pleasy"
+  fi
+
   ocmsg "user: $user  project: $project" debug
   store_project=$project
   # Check correct user name
-  if [ ! -d "/home/$user" ]; then
+  if [[ ! -d "/$home$user" ]] && [[ "$user" != "root" ]]; then
     echo "User name in pl.yml $user does not match the current user's home directory name. Please fix pl.yml."
     exit 1
   fi
 
   # Create the pl_var file if it doesn't exist yet.
-  if [ ! -f "/home/$user/$project/pl_var.sh" ]; then
-    cat >/home/$user/$project/pl_var.sh <<EOL
+  if [ ! -f "/$home$user/$project/pl_var.sh" ]; then
+    cat >/$home$user/$project/pl_var.sh <<EOL
 #!/bin/bash
 # Do not modify anything here. It is automatically created and updated as needed. Change settings in pl.yml or mysql.cnf
 
@@ -1267,7 +1272,7 @@ update_locations() {
 EOL
   fi
 
-  script_root="/home/$user/$project/scripts"
+  script_root="/$home$user/$project/scripts"
   echo "script_root: $script_root"
   # This will collect www_path
   parse_pl_yml
@@ -1275,16 +1280,16 @@ EOL
   project=$store_project
   echo "Project: $project"
   echo "www_path: $www_path"
-  plhome="/home/$user/$project"
-  bin_home="/home/$user/$project/bin"
+  plhome="/$home$user/$project"
+  bin_home="/$home$user/$project/bin"
   ocmsg "bin_home: $bin_home plhome: $plhome" debug
   ocmsg ".bashrc: before exports::" debug
   if [[ "$verbose" == "debug" ]]; then
     cd
     cat .bashrc
   fi
-  sed -i "3s#.*#ocroot=\"/home/$user/$project\"#" "$plhome/pl_var.sh"
-  sed -i "2s#.*#ocroot=\"/home/$user/$project\"#" "$bin_home/sudoeuri.sh"
+  sed -i "3s#.*#ocroot=\"/$home$user/$project\"#" "$plhome/pl_var.sh"
+  sed -i "3s#.*#ocroot=\"/$home$user/$project\"#" "$bin_home/sudoeuri.sh"
   # Add escape backslashes to www_path and store it.
   wwwp="${www_path////\\/}"
   sed -i "4s#.*#ocwroot=\"$wwwp\"#" "$plhome/pl_var.sh"
