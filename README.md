@@ -400,6 +400,7 @@ Mandatory arguments to long options are mandatory for short options too.
     -n --nopassword         Nopassword. This will give the user full sudo access without requireing a password!
                             This could be a security issue for some setups. Use with caution!
     -t --test            This option is only for test environments like Travis, eg there is no mysql root password.
+    -l --lando              This will install lando
 
 Examples:
 git clone git@github.com:rjzaar/pleasy.git [sitename]  #eg git clone git@github.com:rjzaar/pleasy.git mysite.org
