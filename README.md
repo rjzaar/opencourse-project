@@ -273,6 +273,7 @@ simple file transfer so it follows the requirements in .gitignore.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
+  -d --debug              Provide debug information when running this script.
 
 Examples:
 
@@ -661,7 +662,7 @@ pl runup loc
 <details>
 
 **<summary>updateprod: Git push after master merge :question: </summary>**
-Usage: pl gpmprod [OPTION] ... [SITE] [MESSAGE]
+Usage: pl updateprod [OPTION] ... [SITE] [MESSAGE]
 This will git commit changes with msg after merging with master. You just
 need to state the sitename, eg dev.
 
@@ -669,9 +670,9 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
-pl gpmprod -h
-pl gpmprod dev (relative dev folder)
-pl gpmprod tim 'First tim backup'
+pl updateprod -h
+pl updateprod dev (relative dev folder)
+pl updateprod tim 'First tim backup'
 
 </details>
 

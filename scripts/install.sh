@@ -351,9 +351,12 @@ if [ $step -lt 9 ]; then
   if [ -d "$site_path/$sitename_var/$webroot/themes/custom/$theme" ]; then
     cd "$site_path/$sitename_var/$webroot/themes/custom/$theme"
     npm install
+    # https://www.drupal.org/docs/contributed-themes/olivero/development-setup
+    yarn install
   elif [ -d "$site_path/$sitename_var/$webroot/themes/contrib/$theme" ]; then
     cd "$site_path/$sitename_var/$webroot/themes/contrib/$theme"
     npm install
+    yarn install
   else
     echo "There is a problem: The theme $theme has not been installed."
   fi

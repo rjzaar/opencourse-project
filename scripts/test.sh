@@ -1,5 +1,11 @@
 #!/bin/bash
 
+cd /var/www/oc/stg/docroot/
+echo "collected output"
+var=$(drush cim -y 2>&1)
+echo "collected output"
+#echo "$var"
+exit 0
 
 Color_Off='\033[0m'       # Text Reset
 

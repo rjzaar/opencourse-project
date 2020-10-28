@@ -1,22 +1,10 @@
 #!/bin/bash
 ################################################################################
-#                Git Push and Merge Production For Pleasy Library
+#                      Move dev to stage For Pleasy Library
 #
-#  This will pgit share changes, ie merge with master. Used for when improving the
-#  current code
-#  This follows the suggested sequence by bircher in
-#  https://events.drupal.org/vienna2017/sessions/advanced-configuration-management-config-split-et-al
-#  at 29:36
-#  That is a combination of (always presume sharing and do a backup first):
-#  PSEUDOCODE
-#  The safe sequence for sharing
-#  Export configuration: drush cex
-#  Commit: git add && git commit
-#  Merge: git pull
-#  Update dependencies: composer install
-#  Run updates: drush updb
-#  Import configuration: drush cim
-#  Push: git push
+#  This script will use git to update the files from dev repo (ocdev) on the stage
+#  site dev to stg. If one argument is given it will copy dev to the site
+#  specified. If two arguments are give it will copy the first to the second.
 #
 #  Change History
 #  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
@@ -47,7 +35,7 @@
 ################################################################################
 
 # Set script name for general file use
-scriptname='updateprod'
+scriptname='pleasy-dev-2-stage'
 
 # Help menu
 ################################################################################
@@ -55,26 +43,20 @@ scriptname='updateprod'
 ################################################################################
 print_help() {
 echo \
-"Git push after master merge
-Usage: pl $scriptname [OPTION] ... [SITE] [MESSAGE]
-This will git commit changes with msg after merging with master. You just
-need to state the sitename, eg dev.
+"Uses git to update a stage site with the dev files.
+Usage: pl dev2stg [OPTION] ... [SOURCE]
+This script will use git to update the files from dev repo (ocdev) on the stage
+site dev to stg. If one argument is given it will copy dev to the site
+specified. If two arguments are give it will copy the first to the second.
+Presumes the dev git has already been pushed. Git is used for this rather than
+simple file transfer so it follows the requirements in .gitignore.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
-Examples:
-pl $scriptname -h
-pl $scriptname dev (relative dev folder)
-pl $scriptname tim 'First tim backup'"
+Examples:"
 
 }
-
-# start timer
-################################################################################
-# Timer to show how long it took to run the script
-################################################################################
-SECONDS=0
 
 # Use of Getopt
 ################################################################################
@@ -88,7 +70,7 @@ args=$(getopt -o h -l help --name "$scriptname" -- "$@")
 # If getopt outputs error to error variable, quit program displaying error
 ################################################################################
 [ $? -eq 0 ] || {
-    echo "please do 'pl gcomsh --help' for more options"
+    echo "please do 'pl copyf --help' for more options"
     exit 1
 }
 
@@ -104,45 +86,96 @@ eval set -- "$args"
 while true; do
   case "$1" in
   -h | --help)
-    print_help; exit 0; ;;
+    print_help
+    exit 2 # works
+    ;;
   --)
-    shift; break; ;;
+    shift
+    break
+    ;;
   *)
-    "Programming error, this should not show up!"; ;;
+    "Programming error, this should not show up!"
+    exit 1
+    ;;
   esac
 done
 
+
+# start timer
+################################################################################
+# Timer to show how long it took to run the script
+################################################################################
+SECONDS=0
 parse_pl_yml
 
-if [ $1 == "updateprod" ] && [ -z "$2" ]; then
-  sitename_var="$sites_dev"
-elif [ -z "$2" ]; then
-  sitename_var=$1
-  msg="Sharing."
-else
-  sitename_var=$1
-  msg=$2
+
+################################################################################
+# Unsure what this is for, and how to parse this properly
+################################################################################
+if [ $1 == "dev2stg" ] && [ -z "$2" ]
+  then
+  sitename_var="$sites_stg"
+  from="$sites_dev"
+elif [ -z "$2" ]
+  then
+    sitename_var=$1
+    from="$sites_dev"
+   else
+    from=$1
+    sitename_var=$2
 fi
 
-echo "This will git commit changes on site $sitename_var with msg $msg after merging with master."
+echo "This will update the stage site $sitename_var with the latest from $from"
+import_site_config $from
+from_site_path=$site_path
+    if [ ! -d "$from_site_path/$from/.git" ]; then
+      echo "There is no git in the dev site $from. Aborting."
+      exit 0
+    fi
+from_site_path=$site_path
+import_site_config $sitename_var
 
-# Check number of arguments
+
+
+#copy_site_files $from $sitename_var
+
+
+# move stg git out the way
+  if [ ! -d "$folderpath/sitebackups/stg" ]; then
+    mkdir "$folderpath/sitebackups/stg"
+  fi
+  #remove old git
+  rm -rf $folderpath/sitebackups/stg/.git
+  rm -rf $folderpath/sitebackups/stg/.gitignore
+  if [  -d "$site_path/$sitename_var/.git" ]; then
+    # store stg git.
+    mv $site_path/$sitename_var/.git $folderpath/sitebackups/stg/.git
+    mv $site_path/$sitename_var/.gitignore $folderpath/sitebackups/stg/.gitignore
+  fi
+
+# copy dev git to stg
+# Have already checked that dev git exists.
+    # store stg git.
+    mv $from_site_path/$from/.git $site_path/$sitename_var/.git
+    mv $from_site_path/$from/.gitignore $site_path/$sitename_var/.gitignore
+
+# pull in the git hard, ie no merge.
+cd $site_path/$sitename_var
+git fetch
+git reset --hard HEAD
+
+# Now move the stg git back
+rm $from_site_path/$from/.git
+rm $from_site_path/$from/.gitignore
+mv $folderpath/sitebackups/stg/.git $site_path/$sitename_var/.git
+mv $folderpath/sitebackups/stg/.gitignore $site_path/$sitename_var/.gitignore
+
+set_site_permissions
+
+
+# End timer
 ################################################################################
-# If no arguments given, prompt user for arguments
+# Finish script, display time taken
 ################################################################################
-if [ "$#" = 0 ]; then
-  print_help
-  exit 2
-fi
-
-parse_pl_yml
-
-echo "Add credentials."
-add_git_credentials
-
-# backup latest on prod
-gitprodpush
-
-
-#Check changes
+echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
 

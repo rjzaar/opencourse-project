@@ -24,6 +24,7 @@
 # Add npm, nodejs: https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
 # Use node v12:
 # https://stackoverflow.com/questions/41195952/updating-nodejs-on-ubuntu-16-04
+# If phpadmin does not install properly you may need to follow: https://stackoverflow.com/a/49302706
 #
 ################################################################################
 
@@ -263,7 +264,7 @@ if [ $step -lt 4 ]; then
   echo -e "$Cyan \n Make fixing folder permissions and debug run without sudo $Color_Off"
   sudo $folderpath/scripts/lib/installsudoers.sh "$folderpath/bin" $user
   echo "export PATH=\"\$PATH:/usr/local/bin/\"" >>~/.bashrc
-  echo ". /usr/local/bin/debug" >>~/.bashrc
+
 
   cd
   source ~/.bashrc
@@ -330,7 +331,8 @@ if [ $step -lt 6 ]; then
   echo -e "$Cyan \n Installing Apache2 etc $Color_Off"
   # php-gettext not installing on ubuntu 20
   #sudo apt-get -qq install apache2 php libapache2-mod-php php-mysql php-gettext curl php-cli php-gd php-mbstring php-xml php-curl php-bz2 php-zip git unzip php-xdebug -y
-  sudo apt-get -y install apache2 php7.3 libapache2-mod-php7.3 php7.3-mysql php7.3-common curl php7.3-cli php7.3-gd php7.3-mbstring php7.3-xml php7.3-curl php7.3-bz2 php7.3-zip git unzip php-xdebug -y
+  # Install vim to make sure arrow keys work properly.
+  sudo apt-get -y install apache2 php7.3 libapache2-mod-php7.3 php7.3-mysql php7.3-common curl php7.3-cli php7.3-gd php7.3-mbstring php7.3-xml php7.3-curl php7.3-bz2 php7.3-zip git unzip php-xdebug vim -y
 
   # If Travis, then add some environment variables, particularly to add more memory to php.
 #  echo "pwd: $(pwd)"
@@ -394,6 +396,12 @@ if [ $step -lt 8 ]; then
   sudo debconf-set-selections <<<'mariadb-server mysql-server/root_password password root'
   sudo debconf-set-selections <<<'mariadb-server mysql-server/root_password_again password root'
   sudo apt-get -y install mariadb-server
+
+  # Add good defaults for mariadb from lando
+  # use mysqld --help --verbose to check variables
+  sudo wget https://github.com/lando/lando/blob/master/examples/mariadb/config/my.cnf /etc/mysql/mariadb.conf.d/my.cnf
+  sudo systemctl restart mariadb
+
 #fi
 
 fi
@@ -699,6 +707,10 @@ ocmsg "sudo npm install gulp -D" debug
 npm install gulp -D
 ocmsg "npm install browser-sync" debug
 npm install -g browser-sync
+ocmsg "npm install yarn" debug
+# https://www.drupal.org/docs/contributed-themes/olivero/development-setup
+npm install -g yarn
+
 
 ocmsg "Increase watch speed for gulp: requires sudo." debug
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p

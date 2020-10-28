@@ -189,6 +189,13 @@ import_site_config() {
   else
     install_modules=""
   fi
+  rp="recipes_default_reinstall_modules"
+  rpv=${!rp}
+  if [ "$rpv" != "" ]; then
+    reinstall_modules=${!rp}
+  else
+    reinstall_modules=""
+  fi
   rp="recipes_default_dev_modules"
   rpv=${!rp}
   if [ "$rpv" != "" ]; then
@@ -303,6 +310,13 @@ import_site_config() {
     install_modules=${!rp}
   elif [ "${!rb}" == "n" ]; then
     install_modules=""
+  fi
+  rp="recipes_${sitename_var}_reinstall_modules"
+  rpv=${!rp}
+  if [ "$rpv" != "" ]; then
+    reinstall_modules=${!rp}
+  elif [ "${!rb}" == "n" ]; then
+    reinstall_modules=""
   fi
   rp="recipes_${sitename_var}_dev_modules"
   rpv=${!rp}
@@ -663,11 +677,11 @@ ocmsg() {
 # $webroot
 ################################################################################
 set_site_permissions() {
-  if [ $dev = "y" ]; then
+  if [ $dev = "y" ] || [ $verbose = "debug" ]; then
     devp="--dev"
   fi
 
-  ocmsg="Fixing permissions: --drupal_path="$site_path/$sitename_var/$webroot" --drupal_user=$user --httpd_group=www-data $devp" debug
+  ocmsg "Fixing permissions: --drupal_path="$site_path/$sitename_var/$webroot" --drupal_user=$user --httpd_group=www-data $devp" debug
   sudo d8fp.sh --drupal_path="$site_path/$sitename_var/$webroot" --drupal_user=$user --httpd_group=www-data $devp
 }
 
@@ -873,13 +887,17 @@ echo -e "$Purple gitbackupdb"
   ssh $prod_alias "./gitbackupdb.sh $prod_docroot  $Bname"
   echo -e "$Purple git pull"
   if [[ ! -d $folderpath/sitebackups/proddb ]] ; then
-    mkdir $folderpath/sitebackups/proddb
+#    mkdir $folderpath/sitebackups/proddb
+    # need to clone the database
+#    cd $folderpath/sitebackups/proddb
+    git clone $prod_gitdb
+  else
+    cd $folderpath/sitebackups/proddb
+    ocmsg "Git pull -X theirs"
+    git pull -X theirs
   fi
 
-  cd $folderpath/sitebackups/proddb
 
-ocmsg "Git pull -X theirs"
-git pull -X theirs
 
     echo -e "$Color_Off"
 }
@@ -975,6 +993,7 @@ backup_db() {
 
   # Check if site backup folder exists
   if [ ! -d "$folderpath/sitebackups" ]; then
+    ocmsg "Creating sitebackups folder" debug
     mkdir "$folderpath/sitebackups"
   fi
 
@@ -982,6 +1001,7 @@ backup_db() {
   #use git: https://www.drupal.org/docs/develop/local-server-setup/linux-development-environments/set-up-a-local-development-drupal-0-7
   # Check if site backup folder exists
   if [ ! -d "$folderpath/sitebackups/$sitename_var" ]; then
+    ocmsg "Creating backup folder for $sitename_var" debug
     mkdir "$folderpath/sitebackups/$sitename_var"
   fi
 
@@ -989,15 +1009,19 @@ backup_db() {
   cd "$site_path/$sitename_var"
 
   #this will not affect a current git present
+  ocmsg "Initialising git repo in site $sitename_var"
   git init
   cd "$webroot"
   msg=${1// /_}
   Name=$(date +%Y%m%d\T%H%M%S-)$(git branch | grep \* | cut -d ' ' -f2 | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(git rev-parse HEAD | cut -c 1-8)$msg.sql
   echo -e "\e[34mbackup db $Name\e[39m"
-
+  ocmsg "Putting site $sitename_var into maintenance mode." debug
   drush @$sitename_var sset system.maintenance_mode TRUE
+  ocmsg "Dumping the database of $sitename_var" debug
   drush @$sitename_var sql-dump --result-file="$folderpath/sitebackups/$sitename_var/$Name"
+  ocmsg "Taking out site $sitename_var of maintenance mode." debug
   drush @$sitename_var sset system.maintenance_mode FALSE
+  ocmsg "Database $sitename_var has been backed up." debug
 }
 
 #

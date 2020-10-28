@@ -173,6 +173,7 @@ ocmsg "Name of sql backup: $Name "
  # Move sql backup to proddb and push
  echo "Using git method to push db and files to production"
 # push database
+if [[ ! -d "$folderpath/sitebackups/proddb" ]] ; then mkdir "$folderpath/sitebackups/proddb" ; fi
  cd "$folderpath/sitebackups/proddb"
 
 ocmsg "Making sure we have the latest git"

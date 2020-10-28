@@ -37,7 +37,7 @@
 ################################################################################
 
 # Set script name for general file use
-scriptname='pleasy-site-copy'
+scriptname='copy'
 verbose="none"
 # Help menu
 ################################################################################
@@ -112,8 +112,9 @@ done
 # Timer to show how long it took to run the script
 ################################################################################
 SECONDS=0
-
+ocmsg "Starting to parse pl.yml" debug
 parse_pl_yml
+ocmsg "Finish parsing pl.yml" debug
 # Check number of user arguments
 ################################################################################
 # Depending on number of user arguments, set copy condition
@@ -137,6 +138,7 @@ echo "This will copy the site from $from to $sitename_var and then try to import
 ################################################################################
 to=$sitename_var
 import_site_config $from
+ocmsg "Backing up from $from" debug
 backup_db
 from_sp=$site_path
 sitename_var=$to
@@ -144,6 +146,7 @@ import_site_config $to
 to_sp=$site_path
 
 if [ -d $to_sp/$to ]; then
+  ocmsg "Removing site $to"
   sudo chown $user:www-data $to_sp/$to -R
   chmod +w $to_sp/$to -R
   rm -rf $to_sp/$to
@@ -168,17 +171,18 @@ cp -rf "$from_sp/$from" "$to_sp/$to"
 sitename_var=$to
 fix_site_settings
 
-echo -e "$Cyan setting up drush aliases and site permissions $Color_Off"
-plcomposer require drush/drush
-if [[ -f $site_path/$sitename_var/$webroot/vendor/drush/drush/drush ]]; then
-chmod a+rx $site_path/$sitename_var/$webroot/vendor/drush/drush/drush
-chmod a+rx $site_path/$sitename_var/$webroot/vendor/drush/drush/drush.php
-fi
-cd "$site_path/$sitename_var/$webroot"
-ocmsg "Moved to $site_path/$sitename_var/$webroot"
-ocmsg "drush core init" debug
-drush core:init -y
-ocmsg "set site permissions" debug
+#
+#echo -e "$Cyan setting up drush aliases and site permissions $Color_Off"
+#plcomposer require drush/drush
+#if [[ -f $site_path/$sitename_var/$webroot/vendor/drush/drush/drush ]]; then
+#chmod a+rx $site_path/$sitename_var/$webroot/vendor/drush/drush/drush
+#chmod a+rx $site_path/$sitename_var/$webroot/vendor/drush/drush/drush.php
+#fi
+#cd "$site_path/$sitename_var/$webroot"
+#ocmsg "Moved to $site_path/$sitename_var/$webroot"
+#ocmsg "drush core init" debug
+#drush core:init -y
+#ocmsg "set site permissions" debug
 
 set_site_permissions
 

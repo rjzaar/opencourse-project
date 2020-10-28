@@ -2,6 +2,7 @@
 # stolen from https://github.com/pendashteh/drop
 
 set -e
+# verbose is either none or debug. Set to debug so you can debug this script.
 verbose="none"
 # Usage:
 #	$ pl install dev
@@ -10,12 +11,17 @@ verbose="none"
 # Helper functions to get the abolute path for the command
 # Copyright http://stackoverflow.com/a/7400673/257479
 myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -ld -- "$1")" : '.*-> \(.*\)$')"; cd $(dirname $1); myreadlink "$link" | sed "s|^\([^/].*\)\$|$(dirname $1)/\1|"); }
+[ "$verbose" == "debug" ] && echo "Completed myreadlink"
 whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
+[ "$verbose" == "debug" ] && echo "Completed whereis"
 whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
+
+[ "$verbose" == "debug" ] && echo "Completed whereis_realpath"
 
 script_root=$(dirname $(whereis_realpath "$0"))
 
 # get rid of 'bin'
+[ "$verbose" == "debug" ] && echo "Removing bin if present."
 if [ "${script_root: (-6)}" == "/bin/."  ]
 then
 script_root="${script_root:0:-6}"
@@ -32,7 +38,7 @@ script_root="${script_root:0:-2}"
 fi
 # script_root="/home/travis/build/rjzaar/pleasy"
 folder=$(basename $script_root)
-
+[ "$verbose" == "debug" ] && echo "folder = $folder"
 # Fix script_root on Travis
 #length of string: $(echo -n script_root | wc -m)
 #echo "script_root pre fix: $script_root"
@@ -46,18 +52,18 @@ folder=$(basename $script_root)
 #fi
 #echo "folder_len: $folder_len script_roottest: $script_roottest script_root $script_root"
 script_root="$script_root/scripts"
-
+[ "$verbose" == "debug" ] && echo "script_root = $script_root"
 folderpath=$(dirname $script_root)
-
+[ "$verbose" == "debug" ] && echo "folderpath = $folderpath"
 user_home=$HOME
-
+[ "$verbose" == "debug" ] && echo "user_home = $user_home"
 #echo " folder: $folder  folderpath: $folderpath script_root: $script_root user_home: $user_home"
 #echo "folderpath: $folderpath"
-
+[ "$verbose" == "debug" ] && echo "import all functions from _inc.sh"
 . $script_root/_inc.sh
 ocmsg "user_home: $user_home" debug
 
-ocmsg "Finished initalising the defaults for pl command. Found script_root is $script_root"
+ocmsg "Finished initalising the defaults for pl command. Found script_root is $script_root" debug
 pl_run_task() {
 	local task=$1
 	local task_args="${@:2}"

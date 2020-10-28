@@ -97,7 +97,7 @@ while true; do
     shift
     step="$1"
     shift; ;;
-     -d | --debug)
+  -d | --debug)
     verbose="debug"
     shift; ;;
   --)

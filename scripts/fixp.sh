@@ -57,7 +57,7 @@ Examples:"
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o h -l help --name "$scriptname" -- "$@")
+args=$(getopt -o hd -l help,debug --name "$scriptname" -- "$@")
 # echo "$args"
 
 ################################################################################
@@ -83,6 +83,9 @@ while true; do
     print_help
     exit 2 # works
     ;;
+  -d | --debug)
+    verbose="debug"
+    shift; ;;
   --)
     shift
     break
@@ -112,6 +115,7 @@ fi
 
 sitename_var=$1
 parse_pl_yml
+
 import_site_config $sitename_var
 
 # This will set the correct permissions
@@ -120,6 +124,7 @@ import_site_config $sitename_var
 # $folder
 # $sitename_var
 # $webroot
+
 set_site_permissions
 
 

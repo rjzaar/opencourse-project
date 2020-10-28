@@ -53,6 +53,7 @@ simple file transfer so it follows the requirements in .gitignore.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
+  -d --debug              Provide debug information when running this script.
 
 Examples:"
 
@@ -63,7 +64,7 @@ Examples:"
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o h -l help --name "$scriptname" -- "$@")
+args=$(getopt -o hd -l help,debug --name "$scriptname" -- "$@")
 # echo "$args"
 
 ################################################################################
@@ -89,6 +90,9 @@ while true; do
     print_help
     exit 2 # works
     ;;
+  -d | --debug)
+  verbose="debug"
+  shift; ;;
   --)
     shift
     break
@@ -126,49 +130,49 @@ elif [ -z "$2" ]
 fi
 
 echo "This will update the stage site $sitename_var with the latest from $from"
+to_site=$sitename_var
 import_site_config $from
 from_site_path=$site_path
-    if [ ! -d "$from_site_path/$from/.git" ]; then
-      echo "There is no git in the dev site $from. Aborting."
-      exit 0
-    fi
-from_site_path=$site_path
+
+# Make sure cmi is exported
+drush @"$from" cex
+
+#    if [ ! -d "$from_site_path/$from/.git" ]; then
+#      echo "There is no git in the dev site $from. Aborting."
+#      exit 0
+#    fi
+sitename_var=$to_site
 import_site_config $sitename_var
 
 
 
 #copy_site_files $from $sitename_var
+# use rsync.
+ocmsg "From $from_site_path/$from  To $site_path/$sitename_var" debug
+ocmsg $(pwd) debug
 
-# move stg git out the way
-  if [ ! -d "$folderpath/sitebackups/stg" ]; then
-    mkdir "$folderpath/sitebackups/stg"
+
+# -rlptgocEPuv
+rsync -rav --delete-during --exclude 'docroot/sites/default/settings.*' \
+            --exclude 'docroot/sites/default/services.yml' \
+            --exclude 'docroot/sites/default/files/' \
+            --exclude '.git/' \
+            --exclude '.gitignore' \
+            --exclude 'private/' \
+            "$from_site_path/$from/"  "$site_path/$sitename_var/" # > rsyncerrlog.txt
+# &> rsyncerrlog.txt
+if [ "$verbose" == "debug"  ] ; then
+  if grep -q 'rsync' rsyncerrlog.txt; then
+    echo "Error Message from rsync"
+cat rsyncerrlog.txt | grep "rsync"
+fi
   fi
-  #remove old git
-  rm -rf $folderpath/sitebackups/stg/.git
-  rm -rf $folderpath/sitebackups/stg/.gitignore
-  if [  -d "$site_path/$sitename_var/.git" ]; then
-    # store stg git.
-    mv $site_path/$sitename_var/.git $folderpath/sitebackups/stg/.git
-    mv $site_path/$sitename_var/.gitignore $folderpath/sitebackups/stg/.gitignore
-  fi
+#rm rsyncerrlog.txt
+ocmsg "Rsync Finished." debug
 
-# copy dev git to stg
-# Have already checked that dev git exists.
-    # store stg git.
-    mv $from_site_path/$from/.git $site_path/$sitename_var/.git
-    mv $from_site_path/$from/.gitignore $site_path/$sitename_var/.gitignore
+  # >&!
 
-# pull in the git hard, ie no merge.
-cd $site_path/$sitename_var
-git fetch
-git reset --hard HEAD
-
-# Now move the stg git back
-rm $from_site_path/$from/.git
-rm $from_site_path/$from/.gitignore
-mv $folderpath/sitebackups/stg/.git $site_path/$sitename_var/.git
-mv $folderpath/sitebackups/stg/.gitignore $site_path/$sitename_var/.gitignore
-
+# ,"$from_site_path/$from/docroot/sites/default/services.yml", "$from_site_path/$from/docroot/sites/default/files/","$from_site_path/$from/private/"
 set_site_permissions
 
 

@@ -63,12 +63,12 @@ pl runup loc"
 ################################################################################
 SECONDS=0
 
-e of Getopt
+# Use of Getopt
 ################################################################################
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o h -l help, --name "$scriptname" -- "$@")
+args=$(getopt -o hdf -l help,debug,force-config_import --name "$scriptname" -- "$@")
 # echo "$args"
 
 ################################################################################
@@ -92,6 +92,12 @@ while true; do
   case "$1" in
   -h | --help)
     print_help; exit 0; ;;
+  -d | --debug)
+  verbose="debug"
+  shift; ;;
+  -f | --force-config_import)
+  force_config_import="true"
+  shift; ;;
   --)
   shift; break; ;;
   *)
@@ -117,8 +123,8 @@ echo "This will run any updates on the $sitename_var site."
 
 # composer install
 echo -e "\e[34mcomposer install\e[39m"
-cd $folderpath/$sitename_var
-composer install --no-dev
+cd $site_path/$sitename_var
+composer install #--no-dev   composer install needs phing. so is it set to dev?
 set_site_permissions
 fix_site_settings
 
@@ -127,7 +133,20 @@ drush @$sitename_var updb -y
 #echo -e "\e[34m fra\e[39m"
 #drush @$sitename_var fra -y
 echo -e "\e[34m import config\e[39m"
-drush @$sitename_var cim -y #--source=../cmi
+if [[ "$reinstall_modules" != "" ]] ; then
+  drush @$sitename_var pm-uninstall $reinstall_reinstall_modules -y
+  drush @$sitename_var en $reinstall_reinstall_modules -y
+fi
+if [[ "$force" == "true" ]] ; then
+  drush @$sitename_var cim -y
+
+  else
+    drush @$sitename_var cim -y #--source=../cmi
+  fi
+
+
+# deal with bad config.
+
 echo -e "\e[34m make sure out of maintenance mode\e[39m"
 drush @$sitename_var sset system.maintenance_mode FALSE
 drush cr
