@@ -35,7 +35,7 @@
 ################################################################################
 
 # Set script name for general file use
-scriptname='pleasy-dev-2-stage'
+scriptname='dev2stg'
 
 # Help menu
 ################################################################################
@@ -152,13 +152,15 @@ ocmsg "From $from_site_path/$from  To $site_path/$sitename_var" debug
 ocmsg $(pwd) debug
 
 
-# -rlptgocEPuv
-rsync -rav --delete-during --exclude 'docroot/sites/default/settings.*' \
+# -rlptgocEPuv    -rzcEPu      -rultz
+rsync -rzcEPul --delete --exclude 'docroot/sites/default/settings.*' \
             --exclude 'docroot/sites/default/services.yml' \
             --exclude 'docroot/sites/default/files/' \
             --exclude '.git/' \
             --exclude '.gitignore' \
             --exclude 'private/' \
+            --exclude '*/node_modules/' \
+            --exclude 'node_modules/' \
             "$from_site_path/$from/"  "$site_path/$sitename_var/" # > rsyncerrlog.txt
 # &> rsyncerrlog.txt
 if [ "$verbose" == "debug"  ] ; then

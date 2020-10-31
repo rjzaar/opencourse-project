@@ -687,6 +687,9 @@ export NVM_DIR="$HOME/.nvm"
 # source ~/.bashrc
 nvm install node
 sudo apt install build-essential
+# varbase needs bower installed
+# Not sure if this needs sudo?
+npm install -g bower
 
 # see https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
 # use recommended version of Node.js

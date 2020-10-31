@@ -95,7 +95,7 @@ while true; do
   -d | --debug)
   verbose="debug"
   shift; ;;
-  -f | --force-config_import)
+  -f | --force-config-import)
   force_config_import="true"
   shift; ;;
   --)
@@ -117,39 +117,8 @@ elif [ -z "$2" ]
   then
     sitename_var="$1"
 fi
-
 import_site_config $sitename_var
-echo "This will run any updates on the $sitename_var site."
-
-# composer install
-echo -e "\e[34mcomposer install\e[39m"
-cd $site_path/$sitename_var
-composer install #--no-dev   composer install needs phing. so is it set to dev?
-set_site_permissions
-fix_site_settings
-
-echo -e "\e[34m update database\e[39m"
-drush @$sitename_var updb -y
-#echo -e "\e[34m fra\e[39m"
-#drush @$sitename_var fra -y
-echo -e "\e[34m import config\e[39m"
-if [[ "$reinstall_modules" != "" ]] ; then
-  drush @$sitename_var pm-uninstall $reinstall_reinstall_modules -y
-  drush @$sitename_var en $reinstall_reinstall_modules -y
-fi
-if [[ "$force" == "true" ]] ; then
-  drush @$sitename_var cim -y
-
-  else
-    drush @$sitename_var cim -y #--source=../cmi
-  fi
-
-
-# deal with bad config.
-
-echo -e "\e[34m make sure out of maintenance mode\e[39m"
-drush @$sitename_var sset system.maintenance_mode FALSE
-drush cr
+runupdates
 
 # Not needed since patched.
 #remove any extra options. Since each reinstall may add an extra one.

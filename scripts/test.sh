@@ -1,10 +1,28 @@
 #!/bin/bash
+sitename_var="test"
 
+
+  rsync -rav --delete-during --exclude 'docroot/sites/default/settings.*' \
+            --exclude 'docroot/sites/default/services.yml' \
+            --exclude 'docroot/sites/default/files/' \
+            --exclude '.git/' \
+            --exclude '.gitignore' \
+            --exclude 'private/' \
+            "$site_path/$sitename_var"  "$prod_site"
+
+#drush @test sset system.maintenance_mode TRUE
+echo "done"
+exit 0
 cd /var/www/oc/stg/docroot/
+echo "collected outputa"
+#drush cim -y || true
+hello="$(drush @stg cim -y --pipe 2>&1 >/dev/null || true)"
+#hello="$($(drush @stg cim -y --pipe 2>/dev/null))"
+
 echo "collected output"
-var=$(drush cim -y 2>&1)
-echo "collected output"
-#echo "$var"
+bconfig=`echo $hello | sed -r '(?<=Configuration <em class="placeholder">)(.*?)(?=<\/em>)'`
+#((?<=Configuration <em class="placeholder">)(.*?)(?=<\/em>))+
+echo $bconfig
 exit 0
 
 Color_Off='\033[0m'       # Text Reset

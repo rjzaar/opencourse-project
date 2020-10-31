@@ -55,19 +55,21 @@ scriptname='updateprod'
 ################################################################################
 print_help() {
 echo \
-"Git push after master merge
+"Update Production (or test) server with stg or specified site.
 Usage: pl $scriptname [OPTION] ... [SITE] [MESSAGE]
-This will git commit changes with msg after merging with master. You just
-need to state the sitename, eg dev.
+This will copy stg or site specified to the production (or test) server and run
+the updates on that server. It will also backup the server. It presumes the server
+has git which will be used to restore the server if there was a problem.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
+  -d --debug              Provide debug information when running this script.
+  -t --test               Update the test server not production.
 
 Examples:
-pl $scriptname -h
-pl $scriptname dev (relative dev folder)
-pl $scriptname tim 'First tim backup'"
-
+pl $scriptname # This will use the site specified in pl.yml by sites: stg:
+pl $scriptname d8 # This will update production with the d8 site.
+pl $scriptname d8 -t # This will update the test site specified in pl.yml with the d8 site."
 }
 
 # start timer
@@ -81,14 +83,14 @@ SECONDS=0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o h -l help --name "$scriptname" -- "$@")
+args=$(getopt -o hdt -l help,debug,test --name "$scriptname" -- "$@")
 # echo "$args"
 
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
 ################################################################################
 [ $? -eq 0 ] || {
-    echo "please do 'pl gcomsh --help' for more options"
+    echo "please do 'pl $scriptname --help' for more options"
     exit 1
 }
 
@@ -105,6 +107,12 @@ while true; do
   case "$1" in
   -h | --help)
     print_help; exit 0; ;;
+  -d | --debug)
+  verbose="debug"
+  shift; ;;
+  -t | --test)
+  test="yes"
+  shift; ;;
   --)
     shift; break; ;;
   *)
@@ -114,17 +122,17 @@ done
 
 parse_pl_yml
 
-if [ $1 == "updateprod" ] && [ -z "$2" ]; then
-  sitename_var="$sites_dev"
+if [ "$1" == "updateprod" ] && [ -z "$2" ]; then
+  sitename_var="$sites_stg"
 elif [ -z "$2" ]; then
   sitename_var=$1
-  msg="Sharing."
-else
-  sitename_var=$1
-  msg=$2
 fi
 
-echo "This will git commit changes on site $sitename_var with msg $msg after merging with master."
+if [[ "$test" ]]; then
+    echo "This will update production with site $sitename_var"
+  else
+    echo "This will update the test server with site $sitename_var"
+fi
 
 # Check number of arguments
 ################################################################################
@@ -135,13 +143,56 @@ if [ "$#" = 0 ]; then
   exit 2
 fi
 
+
 parse_pl_yml
 
-echo "Add credentials."
-add_git_credentials
+import_site_config $sitename_var
 
-# backup latest on prod
-gitprodpush
+
+#echo "Add credentials."
+#add_git_credentials
+## backup latest on prod
+#backup_prod "preupdatebackup"
+#
+#copy_prod_test
+
+#This presumes a dev2stg and runup has been run on the stage site.
+#The files in stage should be ready to move to production/test
+
+# rsync the files to the server
+if [[ "$test" ]] ; then
+#prod_site="$prod_user@$prod_test_uri:$prod_test_docroot" # > rsyncerrlog.txt
+prod_site="$prod_alias:$(dirname $prod_test_docroot)"
+else
+prod_site="$prod_alias:$(dirname $prod_docroot)" # > rsyncerrlog.txt
+fi
+
+
+ocmsg "Production site $prod_site localsite $site_path/$sitename_var" debug
+#drush rsync @$sitename_var @test --no-ansi  -y --exclude-paths=private:.git -- --exclude=.gitignore --delete
+
+  rsync -rav --delete-during --exclude 'docroot/sites/default/settings.*' \
+            --exclude 'docroot/sites/default/services.yml' \
+            --exclude 'docroot/sites/default/files/' \
+            --exclude '.git/' \
+            --exclude '.gitignore' \
+            --exclude 'private/' \
+            "$site_path/$sitename_var/"  "$prod_site" # > rsyncerrlog.txt
+
+# runup on the server
+if [[ "$test" ]] ; then
+sitename_var="test"
+else
+sitename_var="prod"
+fi
+
+#import_site_config $sitename_var
+echo "This will run any updates on the $sitename_var site."
+
+echo "Put site >$sitename_var< into maintenance mode"
+
+runupdates
+
 
 
 #Check changes

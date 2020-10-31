@@ -1,19 +1,20 @@
 #!/bin/bash
 ################################################################################
-#                           Main For Pleasy Library
+#                 copypt (Copy Production site to Test site) For Pleasy Library
 #
+#  This will copy the production site to the test site.
 #
 #  Change History
-#  2019 - 2020  Robert Zaar   Original code creation and testing,
+#  2019 ~ 08/02/2020  Robert Zaar   Original code creation and testing,
 #                                   prelim commenting
-#  2020 James Lim  Getopt parsing implementation, script documentation
+#  09/02/2020 James Lim  Getopt parsing implementation, script documentation
 #  [Insert New]
 #
 #
 ################################################################################
 ################################################################################
 #
-#  Core Maintainer:  Rob Zar
+#  Core Maintainer:  Rob Zaar
 #  Email:            rjzaar@gmail.com
 #
 ################################################################################
@@ -22,28 +23,33 @@
 #
 ################################################################################
 ################################################################################
-
+#                             Commenting with model
+# NAME OF COMMENT
+################################################################################
+# Description - Each bar is 80 #, in vim do 80i#esc
+################################################################################
+#
+################################################################################
+################################################################################
 # Set script name for general file use
-scriptname='pleasy-main'
+scriptname='copypt'
 
 # Help menu
 ################################################################################
 # Prints user guide
 ################################################################################
 print_help() {
-  echo \
-    "Turn maintenance mode on or off
-Usage: pl main [OPTION] ... [SITE] [MODULES]
-This script will turn maintenance mode on or off. You will need to specify the
-site first than on or off, eg pl main loc on
+echo \
+"Copy the production site to the test site.
+Usage: pl copypt [OPTION]
+  This script is used to copy the production site to the test site. The site
+  details are in pl.yml.
 
-Mandatory arguments to long options are mandatory for short options too.
-  -h --help               Display help (Currently displayed)
+  Mandatory arguments to long options are mandatory for short options too.
+    -h --help               Display help (Currently displayed)
 
-Examples:
-pl main loc on
-pl main dev off
-END HELP"
+  Examples:
+  pl copypt "
 
 }
 
@@ -59,14 +65,13 @@ SECONDS=0
 # -y. Current accepted args are -h and --help
 ################################################################################
 args=$(getopt -o h -l help --name "$scriptname" -- "$@")
-# echo "$args"
 
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
 ################################################################################
 [ $? -eq 0 ] || {
-  echo "please do 'pl main --help' for more options"
-  exit 1
+    echo "please do 'pl addc --help' for more options"
+    exit 1
 }
 
 ################################################################################
@@ -76,7 +81,7 @@ eval set -- "$args"
 
 ################################################################################
 # Case through each argument passed into script
-# If no argument passed, default is -- and break loop
+# if no argument passed, default is -- and break loop
 ################################################################################
 while true; do
   case "$1" in
@@ -84,57 +89,23 @@ while true; do
     print_help
     exit 2 # works
     ;;
-  --)
-    shift
-    break
-    ;;
+  -- )
+  shift
+  break
+  ;;
   *)
-    "Programming error, this should not show up!"
-    exit 1
-    ;;
+  "Programming error, this should not show up!"
+  exit 1
+  ;;
   esac
 done
 
-if [ $1 == "main" ] && [ -z "$2" ]; then
-  echo "You need to specify the site and on/off in that order"
-  print_help
-fi
-if [ -z "$2" ]; then
-  echo "You have only given one argument. You need to specify the site and the module in that order"
-  print_help
-else
-  sitename_var=$1
-  main=$2
-fi
+parse_pl_yml
 
-echo "This will turn $main maintenance mode on the $sitename_var site."
-# Don't need to parse site since all we need is in the command, though we presume site name is correct.
-#parse_pl_yml
-#import_site_config $sitename_var
-
-for i in "$main"; do
-  case $i in
-  on)
-    echo "Turning maintenance mode on"
-    drush @$1 state:set system.maintenance_mode 1 --input-format=integer
-    drush @$1 cache:rebuild
-    shift # past argument=value
-    ;;
-  off)
-    echo "Turning maintenance mode off"
-    drush @$1 state:set system.maintenance_mode 0 --input-format=integer
-    drush @$1 cache:rebuild
-    shift # past argument=value
-    ;;
-  *)
-    echo "You need to state on or off."
-    shift # past argument=value
-    ;;
-  esac
-done
+copy_prod_test
 
 # End timer
 ################################################################################
 # Finish script, display time taken
 ################################################################################
-echo 'Finished in H:'$(($SECONDS / 3600))' M:'$(($SECONDS % 3600 / 60))' S:'$(($SECONDS % 60))
+echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))

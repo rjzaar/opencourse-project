@@ -1,9 +1,7 @@
 #!/bin/bash
 ################################################################################
-#                 Addc(What does this mean) For Pleasy Library
+#                 Addc (Add ssh credentials) For Pleasy Library
 #
-#  This will set the correct folder and file permissions for a drupal site.
-#  (I found these two definitions in the script folder, which is the right one?
 #  This script is used to add github credentials
 #
 #  Change History
@@ -34,7 +32,7 @@
 ################################################################################
 ################################################################################
 # Set script name for general file use
-scriptname='pleasy-addc'
+scriptname='addc'
 
 # Help menu
 ################################################################################
@@ -51,7 +49,6 @@ Usage: pl addc [OPTION]
 
   Examples:
   pl addc "
-
 }
 
 
@@ -97,7 +94,5 @@ while true; do
 done
 
 parse_pl_yml
-# What is the below for? $github_key does not seem to be modified anywhere in
-# this script - JL
-echo "Adding key $github_key"
-ssh-add ~/.ssh/$github_key
+
+add_git_credentials

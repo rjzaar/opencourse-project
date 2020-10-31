@@ -181,6 +181,7 @@ fi
 
 import_site_config $sitename_var
 
+
 #db_defaults
 
 echo "Installing $sitename_var"
@@ -299,6 +300,29 @@ fi
 fi
 
 if [ $step -lt 5 ]; then
+  if [[ "$lando" == "y" ]] ; then
+    echo -e "$Cyan step 4: Lando install to $site_path/$sitename_var/ $Color_Off"
+    # Check there is a lando file
+    if [ -f "$site_path/$sitename_var/.lando.yml" ]; then
+     # proceed with install
+     # replace 'varbase' with site name in lando file
+     sed -i "s/varbase/$sitename_var/" "$site_path/$sitename_var/.lando.yml"
+     sed -i "s/mysite/$sitename_var/" "$site_path/$sitename_var/.lando.yml"
+     fix_site_settings
+     lando start
+
+#     drush uli --uri=$uri
+     exit 0
+
+    else
+      echo "Lando file not present so aborting intstall of $sitename_var."
+    fi
+
+  fi
+fi
+
+
+if [ $step -lt 5 ]; then
   echo -e "$Cyan step 4: Setting up folder/file permissions $Color_Off"
 
   fix_site_settings
@@ -353,10 +377,17 @@ if [ $step -lt 9 ]; then
     npm install
     # https://www.drupal.org/docs/contributed-themes/olivero/development-setup
     yarn install
+    #This might need more work.
+    # May help: https://github.com/bower/bower/issues/1849
+    bower init -y
+    bower install
   elif [ -d "$site_path/$sitename_var/$webroot/themes/contrib/$theme" ]; then
     cd "$site_path/$sitename_var/$webroot/themes/contrib/$theme"
     npm install
     yarn install
+        #This might need more work.
+    bower init -y
+    bower install
   else
     echo "There is a problem: The theme $theme has not been installed."
   fi

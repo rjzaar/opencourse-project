@@ -245,6 +245,21 @@ Examples:
 
 <details>
 
+**<summary>copypt: Copy the production site to the test site. :white_check_mark: </summary>**
+Usage: pl copypt [OPTION]
+  This script is used to copy the production site to the test site. The site
+  details are in pl.yml.
+
+  Mandatory arguments to long options are mandatory for short options too.
+    -h --help               Display help (Currently displayed)
+
+  Examples:
+  pl copypt 
+
+</details>
+
+<details>
+
 **<summary>copy: Copies one site to another site. :heavy_check_mark: </summary>**
     Usage: pl copy [OPTION] ... [SOURCE] [DESTINATION]
 This script will copy one site to another site. It will copy all
@@ -462,7 +477,7 @@ END HELP
 
 <details>
 
-**<summary>main: Turn maintenance mode on or off :question: </summary>**
+**<summary>main: Turn maintenance mode on or off :white_check_mark: </summary>**
 Usage: pl main [OPTION] ... [SITE] [MODULES]
 This script will turn maintenance mode on or off. You will need to specify the
 site first than on or off, eg pl main loc on
@@ -661,18 +676,21 @@ pl runup loc
 
 <details>
 
-**<summary>updateprod: Git push after master merge :question: </summary>**
+**<summary>updateprod: Update Production (or test) server with stg or specified site. :question: </summary>**
 Usage: pl updateprod [OPTION] ... [SITE] [MESSAGE]
-This will git commit changes with msg after merging with master. You just
-need to state the sitename, eg dev.
+This will copy stg or site specified to the production (or test) server and run
+the updates on that server. It will also backup the server. It presumes the server
+has git which will be used to restore the server if there was a problem.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
+  -d --debug              Provide debug information when running this script.
+  -t --test               Update the test server not production.
 
 Examples:
-pl updateprod -h
-pl updateprod dev (relative dev folder)
-pl updateprod tim 'First tim backup'
+pl updateprod # This will use the site specified in pl.yml by sites: stg:
+pl updateprod d8 # This will update production with the d8 site.
+pl updateprod d8 -t # This will update the test site specified in pl.yml with the d8 site.
 
 </details>
 

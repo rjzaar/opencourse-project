@@ -147,12 +147,27 @@ import_site_config() {
   else
     dbpass=""
   fi
+    rp="recipes_default_lando"
+  rpv=${!rp}
+  if [ "$rpv" != "" ]; then
+    lando=${!rp}
+  else
+    lando=""
+  fi
   rp="recipes_default_uri"
   rpv=${!rp}
   if [ "$rpv" != "" ]; then
-    uri=${!rp}
+    if [ "$lando" != "" ]; then
+      uri="${!rp}.lndo.site"
+    else
+      uri=${!rp}
+    fi
   else
-    uri="$folder.$sitename_var"
+    if [ "$lando" != "" ]; then
+      uri="$sitename_var.lndo.site"
+    else
+      uri="$folder.$sitename_var"
+    fi
   fi
   rp="recipes_default_install_method"
   rpv=${!rp}
@@ -203,13 +218,7 @@ import_site_config() {
   else
     dev_modules=""
   fi
-  rp="recipes_default_lando"
-  rpv=${!rp}
-  if [ "$rpv" != "" ]; then
-    lando=${!rp}
-  else
-    lando=""
-  fi
+
 
   # Collect the details from pl.yml if they exist otherwise make blank This
   # first one is to override the defaults, ie default= n so if a site wants to
@@ -478,6 +487,13 @@ update_all_configs() {
 'remote-user' => '$prod_user',
 'remote-host' => '$prod_uri',
 );
+\$aliases['test'] = array (
+'uri' => '$prod_test_uri',
+'root' => '$prod_test_docroot',
+'remote-user' => '$prod_user',
+'remote-host' => '$prod_uri',
+);
+
 EOL
 
   ocmsg "Delete old credentials folder if it exists" debug
@@ -586,7 +602,22 @@ fix_site_settings() {
 
 EOL
   fi
-
+if [[ "$lando" == "y" ]] ; then
+   cat >$site_path/$sitename_var/$webroot/sites/default/settings.local.php <<EOL
+  <?php
+  \$settings['install_profile'] = '$profile';
+  \$databases['default']['default'] = [
+  'database' => 'drupal8',
+  'username' => 'drupal8',
+  'password' => 'drupal8',
+  'prefix' => '',
+  'host' => 'database',
+  'port' => '3306',
+  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+  'driver' => 'mysql',
+];
+EOL
+else
   cat >$site_path/$sitename_var/$webroot/sites/default/settings.local.php <<EOL
 <?php
 
@@ -604,7 +635,7 @@ EOL
 );
 \$config_directories[CONFIG_SYNC_DIRECTORY] = '../cmi';
 EOL
-
+fi
   if [ "$dev" == "y" ]; then
     cat >>$site_path/$sitename_var/$webroot/sites/default/settings.local.php <<EOL
 \$settings['container_yamls'][] = DRUPAL_ROOT . '/sites/development.services.yml';
@@ -709,7 +740,11 @@ rebuild_site() {
 
   if [ $bstep -lt 2 ]; then
     echo -e "$Purple build step 1: create the database $Color_Off"
+    if [[ "$lando" == "y" ]]; then
+      echo "Skip make_db since Lando come with a databse."
+      else
     make_db
+    fi
   fi
 
   if [ $bstep -lt 3 ]; then
@@ -717,6 +752,12 @@ rebuild_site() {
 
     # drush status
     site_info
+
+    if [[ "$lando" == "y" ]]; then
+      cd $site_path/$sitename_var
+      lando drush -y site-install $profile --db-url=mysql://drupal8:drupal8@database/drupal8 --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sitename_var" --sites-subdir=default
+    exit 0
+    else
     # drupal site:install  varbase --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
     cd $site_path/$sitename_var/$webroot
 
@@ -724,6 +765,7 @@ rebuild_site() {
 
     drush -y site-install $profile --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="$sitename_var" --sites-subdir=default
     #don''t need --db-url=mysql://$dir:$dir@localhost:3306/$dir in drush because the settings.local.php has it.
+    fi
   fi
 
   if [ $bstep -lt 4 ]; then
@@ -984,6 +1026,14 @@ backup_prod() {
   fi
 }
 
+#
+################################################################################
+# This will copy the production site to the test site.
+################################################################################
+copy_prod_test() {
+echo "Copying the production site to the test site."
+ssh $prod_alias -t "./copy_prod_test.sh $prod_test_docroot $prod_docroot"
+}
 #
 ################################################################################
 #
@@ -1414,6 +1464,62 @@ plcomposer() {
 }
 
 ################################################################################
+# Run updates for a drupal site. Can be external.
+################################################################################
+runupdates() {
+
+drush @$sitename_var sset system.maintenance_mode TRUE
+# composer install
+echo -e "\e[34mcomposer install\e[39m"
+if [[ "$sitename_var" == "prod" || "$sitename_var" == "test" ]]; then
+  # presume you don't need to fix site settings for production sites.
+  if [[ "$sitename_var" == "test" ]]; then
+    ssh $prod_alias "cd $(dirname $prod_test_docroot) && composer install"
+    ssh -t $prod_alias "sudo ./fix-p.sh --drupal_user=$prod_user --drupal_path=$prod_test_docroot"
+  else
+    ssh $prod_alias "cd $(dirname $prod_docroot) && composer install"
+    ssh -t $prod_alias "sudo ./fix-p.sh --drupal_user=$prod_user --drupal_path=$prod_docroot"
+  fi
+else
+  ocmsg "Path: $site_path/$sitename_var" debug
+  cd $site_path/$sitename_var
+  composer install #--no-dev   composer install needs phing. so is it set to dev?
+  set_site_permissions
+  fix_site_settings
+fi
+
+echo -e "\e[34m update database\e[39m"
+drush @$sitename_var updb -y
+#echo -e "\e[34m fra\e[39m"
+#drush @$sitename_var fra -y
+echo -e "\e[34m import config\e[39m"
+if [[ "$reinstall_modules" != "" ]] ; then
+  drush @$sitename_var pm-uninstall $reinstall_reinstall_modules -y
+  drush @$sitename_var en $reinstall_reinstall_modules -y
+fi
+if [[ "$force" == "true" ]] ; then
+  # Collect the error from the import.
+  import_result="$(drush @sitename_var cim -y --pipe 2>&1 >/dev/null || true)"
+  import_result1="$(drush @sitename_var cim -y --pipe 2>&1 >/dev/null || true)"
+  import_result2="$(drush @sitename_var cim -y --pipe 2>&1 >/dev/null || true)"
+  #if error then delete the erroneous config files.
+  #Still needs to be written #####
+
+  else
+    # see for the reason for this structure: https://www.bounteous.com/insights/2020/03/11/automate-drupal-deployments/
+    drush @$sitename_var cim -y || drush @$sitename_var cim -y #--source=../cmi
+    drush @$sitename_var cim -y
+  fi
+
+
+# deal with bad config.
+
+echo -e "\e[34m make sure out of maintenance mode\e[39m"
+drush @$sitename_var sset system.maintenance_mode FALSE
+drush @$sitename_var cr
+}
+
+################################################################################
 # Update pleasy readme with the latest function explanations.
 ################################################################################
 makereadme() {
@@ -1431,6 +1537,7 @@ makereadme() {
     echo "Need a template file README_TEMPLATE.md in pleasy docs folder!"
     exit 1
   fi
+
 
   cp ../docs/README_TEMPLATE.md ../README_TEMPLATE.md
 
