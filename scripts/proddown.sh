@@ -46,7 +46,9 @@ if need be.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
-  -s --step=[1-2]         Select step to proceed (For DEBUG purposes?)
+  -s --step=[1-2]         Select step to proceed (If it stalls on a step)
+  -d --debug              Provide messages to help with debugging this function
+  -t --testing            Download the test server instead.
 
 Examples:
 pl proddown stg
@@ -66,7 +68,7 @@ SECONDS=0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o hs:d -l help,step:,debug --name "$scriptname" -- "$@")
+args=$(getopt -o hs:dt -l help,step:,debug,test --name "$scriptname" -- "$@")
 
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
@@ -99,6 +101,9 @@ while true; do
     shift; ;;
   -d | --debug)
     verbose="debug"
+    shift; ;;
+  -t | --test)
+    test="y"
     shift; ;;
   --)
   shift

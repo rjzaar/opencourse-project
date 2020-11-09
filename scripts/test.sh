@@ -1,4 +1,15 @@
 #!/bin/bash
+sitename_var="t4"
+  import_result="$(drush @$sitename_var cim -y --pipe 2>&1 >/dev/null || true)"
+  # Process the result
+#  echo "cim result $import_result result"
+echo "$import_result" > deleteme.txt
+echo "$import_result"
+python ~/pleasy/scripts/lib/regx-delete.py deleteme.txt
+
+
+
+exit 0
 sitename_var="test"
 
 

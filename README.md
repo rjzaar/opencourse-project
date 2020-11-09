@@ -500,6 +500,7 @@ Usage: pl makedb [OPTION] ... [SITE]
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
+  -d --debug              Provide messages to help with debugging this function
 
 Examples:
 END HELP
@@ -550,7 +551,9 @@ if need be.
 
 Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
-  -s --step=[1-2]         Select step to proceed (For DEBUG purposes?)
+  -s --step=[1-2]         Select step to proceed (If it stalls on a step)
+  -d --debug              Provide messages to help with debugging this function
+  -t --testing            Download the test server instead.
 
 Examples:
 pl proddown stg
@@ -705,13 +708,6 @@ Mandatory arguments to long options are mandatory for short options too.
   -d --debug              Provide debug information when running this script.
 
 Examples:
-
-</details>
-
-<details>
-
-**<summary>_inc:  :question: </summary>**
-**DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 

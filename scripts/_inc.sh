@@ -1474,16 +1474,16 @@ echo -e "\e[34mcomposer install\e[39m"
 if [[ "$sitename_var" == "prod" || "$sitename_var" == "test" ]]; then
   # presume you don't need to fix site settings for production sites.
   if [[ "$sitename_var" == "test" ]]; then
-    ssh $prod_alias "cd $(dirname $prod_test_docroot) && composer install"
+    ssh $prod_alias "cd $(dirname $prod_test_docroot) && composer install --no-dev"
     ssh -t $prod_alias "sudo ./fix-p.sh --drupal_user=$prod_user --drupal_path=$prod_test_docroot"
   else
-    ssh $prod_alias "cd $(dirname $prod_docroot) && composer install"
+    ssh $prod_alias "cd $(dirname $prod_docroot) && composer install --no-dev"
     ssh -t $prod_alias "sudo ./fix-p.sh --drupal_user=$prod_user --drupal_path=$prod_docroot"
   fi
 else
   ocmsg "Path: $site_path/$sitename_var" debug
   cd $site_path/$sitename_var
-  composer install #--no-dev   composer install needs phing. so is it set to dev?
+  composer install --no-dev  # composer install needs phing. so remove phing!
   set_site_permissions
   fix_site_settings
 fi
@@ -1499,9 +1499,12 @@ if [[ "$reinstall_modules" != "" ]] ; then
 fi
 if [[ "$force" == "true" ]] ; then
   # Collect the error from the import.
-  import_result="$(drush @sitename_var cim -y --pipe 2>&1 >/dev/null || true)"
-  import_result1="$(drush @sitename_var cim -y --pipe 2>&1 >/dev/null || true)"
-  import_result2="$(drush @sitename_var cim -y --pipe 2>&1 >/dev/null || true)"
+  import_result="$(drush @$sitename_var cim -y --pipe 2>&1 >/dev/null || true)"
+  # Process the result
+  echo "cim result $import_result result"
+
+  import_result1="$(drush @$sitename_var cim -y --pipe 2>&1 >/dev/null || true)"
+  import_result2="$(drush @$sitename_var cim -y --pipe 2>&1 >/dev/null || true)"
   #if error then delete the erroneous config files.
   #Still needs to be written #####
 
@@ -1542,12 +1545,11 @@ makereadme() {
   cp ../docs/README_TEMPLATE.md ../README_TEMPLATE.md
 
   (
-    documented_scripts=$(grep -l --directories=skip --exclude=makereadme*.sh '^args=$(getopt' *.sh)
-    undocumented_scripts=$(grep -L --directories=skip --exclude=makereadme*.sh '^args=$(getopt' *.sh)
+    documented_scripts=$(grep -l --directories=skip --exclude={_inc,makereadme*}.sh '^args=$(getopt' *.sh)
+    undocumented_scripts=$(grep -L --directories=skip --exclude={_inc,makereadme*}.sh '^args=$(getopt' *.sh)
     working_dir=$(pwd)
 
     for command in $documented_scripts; do
-
       help_documentation=$("$working_dir/$command" --help | tail -n +2)
 
       echo $help_documentation | grep -q '^Usage:' &&
