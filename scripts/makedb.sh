@@ -78,7 +78,9 @@ eval set -- "$args"
 while true; do
   case "$1" in
   -h | --help)
-    print_help; exit 0; ;;
+    print_help;
+    exit 2 # works
+    ;;
   --)
   shift
   break; ;;

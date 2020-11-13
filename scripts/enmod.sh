@@ -82,7 +82,7 @@ while true; do
   case "$1" in
   -h | --help)
     print_help
-    exit 0
+    exit 2 # works
     ;;
   --)
     shift

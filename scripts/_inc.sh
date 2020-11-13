@@ -157,13 +157,13 @@ import_site_config() {
   rp="recipes_default_uri"
   rpv=${!rp}
   if [ "$rpv" != "" ]; then
-    if [ "$lando" != "" ]; then
+    if [ "$lando" == "y" ]; then
       uri="${!rp}.lndo.site"
     else
       uri=${!rp}
     fi
   else
-    if [ "$lando" != "" ]; then
+    if [ "$lando" == "y" ]; then
       uri="$sitename_var.lndo.site"
     else
       uri="$folder.$sitename_var"
@@ -643,6 +643,13 @@ fi
 \$settings['cache']['bins']['dynamic_page_cache'] = 'cache.backend.null';
 \$config['config_split.config_split.config_dev']['status'] = TRUE;
 EOL
+else
+  cat >>$site_path/$sitename_var/$webroot/sites/default/settings.local.php <<EOL
+\$config['config_split.config_split.config_dev']['status'] = FALSE;
+#if (PHP_SAPI !== 'cli') {
+#  $settings['config_readonly'] = TRUE;
+#}
+EOL
   fi
 
   #Add site name
@@ -927,17 +934,19 @@ gitbackupdb() {
   #    ssh $prod_alias "cd proddb && git add . && git commit -m \"$(date +%Y%m%d\T%H%M%S-)\" && git push"
 echo -e "$Purple gitbackupdb"
   ssh $prod_alias "./gitbackupdb.sh $prod_docroot  $Bname"
-  echo -e "$Purple git pull"
-  if [[ ! -d $folderpath/sitebackups/proddb ]] ; then
-#    mkdir $folderpath/sitebackups/proddb
-    # need to clone the database
+
+  #Don't need all this since git database is only going one way now
+#  echo -e "$Purple git pull"
+#  if [[ ! -d $folderpath/sitebackups/proddb ]] ; then
+##    mkdir $folderpath/sitebackups/proddb
+#    # need to clone the database
+##    cd $folderpath/sitebackups/proddb
+#    git clone $prod_gitdb
+#  else
 #    cd $folderpath/sitebackups/proddb
-    git clone $prod_gitdb
-  else
-    cd $folderpath/sitebackups/proddb
-    ocmsg "Git pull -X theirs"
-    git pull -X theirs
-  fi
+#    ocmsg "Git pull -X theirs"
+#    git pull -X theirs
+#  fi
 
 
 
@@ -1468,21 +1477,27 @@ plcomposer() {
 ################################################################################
 runupdates() {
 
-drush @$sitename_var sset system.maintenance_mode TRUE
-# composer install
-echo -e "\e[34mcomposer install\e[39m"
+
+
 if [[ "$sitename_var" == "prod" || "$sitename_var" == "test" ]]; then
   # presume you don't need to fix site settings for production sites.
   if [[ "$sitename_var" == "test" ]]; then
-    ssh $prod_alias "cd $(dirname $prod_test_docroot) && composer install --no-dev"
-    ssh -t $prod_alias "sudo ./fix-p.sh --drupal_user=$prod_user --drupal_path=$prod_test_docroot"
+    # This script just runs the composer install --no-dev and fixes site permissions.
+    ssh -t $prod_alias "./updatetest.sh $prod_test_docroot"
   else
-    ssh $prod_alias "cd $(dirname $prod_docroot) && composer install --no-dev"
-    ssh -t $prod_alias "sudo ./fix-p.sh --drupal_user=$prod_user --drupal_path=$prod_docroot"
+    ssh -t $prod_alias "./updateprod.sh $prod_test_docroot $prod_docroot $prod_reinstall_modules"
+    # The updateprod script does it all.
+    exit 0
   fi
 else
   ocmsg "Path: $site_path/$sitename_var" debug
   cd $site_path/$sitename_var
+  # composer install
+#echo -e "\e[34mcomposer install\e[39m"
+#  if [[ -f $site_path/$sitename_var/composer.lock ]]; then
+#rm $site_path/$sitename_var/composer.lock
+#fi
+#rm $site_path/$sitename_var/vendor -rf
   composer install --no-dev  # composer install needs phing. so remove phing!
   set_site_permissions
   fix_site_settings
@@ -1493,6 +1508,7 @@ drush @$sitename_var updb -y
 #echo -e "\e[34m fra\e[39m"
 #drush @$sitename_var fra -y
 echo -e "\e[34m import config\e[39m"
+drush @$sitename_var sset system.maintenance_mode TRUE
 if [[ "$reinstall_modules" != "" ]] ; then
   drush @$sitename_var pm-uninstall $reinstall_reinstall_modules -y
   drush @$sitename_var en $reinstall_reinstall_modules -y
@@ -1520,6 +1536,15 @@ if [[ "$force" == "true" ]] ; then
 echo -e "\e[34m make sure out of maintenance mode\e[39m"
 drush @$sitename_var sset system.maintenance_mode FALSE
 drush @$sitename_var cr
+if [[ "$sitename_var" == "prod" || "$sitename_var" == "test" ]]; then
+   if [[ "$sitename_var" == "test" ]]; then
+      ssh -t $prod_alias "sudo ./fix-p.sh --drupal_user=$prod_user --drupal_path=$prod_test_docroot"
+   else
+    ssh -t $prod_alias "sudo ./fix-p.sh --drupal_user=$prod_user --drupal_path=$prod_docroot"
+  fi
+  else
+    set_site_permissions
+fi
 }
 
 ################################################################################
@@ -1568,10 +1593,10 @@ HEREDOC
         status=":question:"
         ;;
       2)
-        status=":white_check_mark:"
+        status=":white_check_mark:" # works but not tested with Travis
         ;;
       3)
-        status=":heavy_check_mark:"
+        status=":heavy_check_mark:" # works and passing Travis
         ;;
       *)
         status=":question:"

@@ -195,3 +195,5 @@ pl gcom $sitename_var "Updated to lastest varbase"
 
 ocmsg "Backup site $sitename_var with msg $msg"
 backup_site $sitename_var $msg
+
+echo 'Finished in H:'$(($SECONDS / 3600))' M:'$(($SECONDS % 3600 / 60))' S:'$(($SECONDS % 60))

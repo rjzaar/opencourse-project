@@ -138,6 +138,11 @@ else
   bk=$1
 fi
 
+if [[ "$bk" == prod ]] && [[ ! "$prod_method" == "git" ]]; then
+  echo "Sorry not able to handle backing up prod unless it is method git."
+  exit 0
+fi
+
 import_site_config $sitename_var
 
 # Prompt to choose which database to backup, 1 will be the latest.
@@ -145,6 +150,9 @@ import_site_config $sitename_var
 cd "$folderpath/sitebackups/$bk"
 if [[ "$bk" == prod ]] && [[ "$prod_method" == "git" ]]; then
   echo "Using production database and site from git"
+  ssh $prod_alias -t "./restoreprod.sh $prod_docroot"
+  # The script does it all. No need for anything else.
+  exit 0
   else
 
 ocmsg "flag_first is $flag_first" debug
@@ -189,12 +197,6 @@ echo -e "\e[34mrestoring files\e[39m"
 # Will need to first move the source folder ($bk) if it exists, so we can create the new folder $sitename_var
 echo "path $site_path/$sitename_var folderpath $folderpath"
 
-if [[ "$bk" == prod ]] && [[ "$prod_method" == "git" ]]; then
-  # easier and faster
-  echo -e "$Cyan Restoring production files to $sitename_var $Color_Off"
-  cd $site_path
-  git clone $prod_gitrepo $sitename_var
-else
   mkdir "$site_path/$sitename_var"
   echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz into $site_path/$sitename_var"
   # Check to see if the backup includes the root folder or not.
@@ -205,7 +207,7 @@ else
   else
     tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C "$site_path/$sitename_var" --strip-components=1
   fi
-fi
+
 # Move settings.php and settings.local.php out the way before they are overwritten just in case you might need them.
 #echo "Moving settings.php and settings.local.php"
 #setpath="$site_path/$sitename_var/$webroot/sites/default"
@@ -224,28 +226,8 @@ set_site_permissions $sitename_var
 db_defaults
 echo -e "$Cyan Restore the database $Color_Off"
 restore_db
-echo -e "$Cyan Files and database be restored $Color_Off"
+echo -e "$Cyan Files and database have been restored $Color_Off"
 
 
 #drush @sitename_var cr
 
-exit 0
-
-# Old way
-echo -e "\e[34mrestoring files\e[39m"
-# Will need to first move the source folder ($bk) if it exists, so we can create the new folder $sitename_var
-echo "path $site_path/$bk folderpath $folderpath"
-if [ -d "$site_path/$bk" ]; then
-  if [ -d "$site_path/$bk.tmp" ]; then
-    echo "$site_path/$bk.tmp exits. There might have been a problem previously. I suggest you move $site_path/$bk.tmp to $site_path/$bk and try again."
-    exit 1
-  fi
-  mv "$site_path/$bk" "$site_path/$bk.tmp"
-  echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz"
-  tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C $folderpath
-  mv "$site_path/$bk" "$site_path/$sitename_var"
-  mv "$site_path/$bk.tmp" "$site_path/$bk"
-else
-  echo "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz  fp  $folderpath"
-  tar -zxf "$folderpath/sitebackups/$bk/${Name::-4}.tar.gz" -C $folderpath
-fi

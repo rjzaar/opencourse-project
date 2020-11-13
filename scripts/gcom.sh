@@ -194,3 +194,5 @@ if [[ "$gcombackup" == "backup" ]] && [[ "$sitename_var" != "pleasy" ]] ; then
 ocmsg "Backup site $sitename_var with msg $msg"
 backup_site $sitename_var $msg
 fi
+
+echo 'Finished in H:'$(($SECONDS / 3600))' M:'$(($SECONDS % 3600 / 60))' S:'$(($SECONDS % 60))

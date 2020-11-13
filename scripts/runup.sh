@@ -132,5 +132,3 @@ runupdates
 # Finish script, display time taken
 ################################################################################
 echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
-
-}

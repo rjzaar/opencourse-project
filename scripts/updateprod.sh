@@ -148,7 +148,7 @@ parse_pl_yml
 
 import_site_config $sitename_var
 
-
+prod_reinstall_modules=$reinstall_modules
 #echo "Add credentials."
 #add_git_credentials
 ## backup latest on prod
@@ -170,13 +170,17 @@ fi
 
 ocmsg "Production site $prod_site localsite $site_path/$sitename_var" debug
 #drush rsync @$sitename_var @test --no-ansi  -y --exclude-paths=private:.git -- --exclude=.gitignore --delete
-
-  rsync -rav --delete-during --exclude 'docroot/sites/default/settings.*' \
+# was -rav
+# -rzcEPul
+  rsync -ravz --delete --exclude 'docroot/sites/default/settings.*' \
             --exclude 'docroot/sites/default/services.yml' \
             --exclude 'docroot/sites/default/files/' \
             --exclude '.git/' \
             --exclude '.gitignore' \
             --exclude 'private/' \
+            --exclude '*/node_modules/' \
+            --exclude 'node_modules/' \
+            --exclude 'dev/' \
             "$site_path/$sitename_var/"  "$prod_site" # > rsyncerrlog.txt
 
 # runup on the server
@@ -197,3 +201,8 @@ runupdates
 
 #Check changes
 
+# End timer
+################################################################################
+# Finish script, display time taken
+################################################################################
+echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))

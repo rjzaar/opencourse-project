@@ -131,12 +131,18 @@ drush @$sitename_var pm-uninstall -y $dev_modules
 
 cd $site_path/$sitename_var
 echo "Composer install with no dev modules."
-
+if [[ -f $site_path/$sitename_var/composer.lock ]]; then
+rm $site_path/$sitename_var/composer.lock
+fi
 if [[ "$verbose" == "debug" ]] ; then
 plcomposer install --no-dev
 else
 plcomposer install --no-dev --quiet
 fi
+
+# remove old cmi and re-export
+rm $site_path/$sitename_var/cmi/*
+drush @$sitename_var cex -y
 
 # rebuild permissions
 echo "Rebuild permissions, might require sudo."

@@ -494,7 +494,7 @@ END HELP
 
 <details>
 
-**<summary>makedb: Create the database for a site :question: </summary>**
+**<summary>makedb: Create the database for a site :white_check_mark: </summary>**
 Usage: pl makedb [OPTION] ... [SITE]
 <ADD DESC HERE>
 
@@ -564,7 +564,7 @@ END HELP
 
 <details>
 
-**<summary>prodowgit: Overwrite production with site specified :white_check_mark: </summary>**
+**<summary>prodowgit: Overwrite production with site specified :question: </summary>**
 Usage: pl prodow [OPTION] ... [SITE]
 This script will overwrite production with the site chosen It will first backup
 prod The external site details are also set in pl.yml under prod:
@@ -582,7 +582,7 @@ END HELP
 
 <details>
 
-**<summary>prodowtar: Overwrite production with site specified :white_check_mark: </summary>**
+**<summary>prodowtar: Overwrite production with site specified :question: </summary>**
 Usage: pl prodow [OPTION] ... [SITE]
 This script will overwrite production with the site chosen It will first backup
 prod The external site details are also set in pl.yml under prod:

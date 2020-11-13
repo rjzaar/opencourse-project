@@ -91,7 +91,7 @@ while true; do
   case "$1" in
   -h | --help)
     print_help
-    exit 2; ;;
+    exit 0; ;;
   -s | --step)
     flag_step=1
     shift

@@ -153,7 +153,11 @@ ocmsg $(pwd) debug
 
 
 # -rlptgocEPuv    -rzcEPu      -rultz
-rsync -rzcEPul --delete --exclude 'docroot/sites/default/settings.*' \
+#  -rzcEPul
+# -rvlzic --copy-unsafe-links --ipv4 --progress --delete
+# rsync -rvtlzi --copy-unsafe-links --ignore-times --ipv4
+
+rsync -rav --delete --exclude 'docroot/sites/default/settings.*' \
             --exclude 'docroot/sites/default/services.yml' \
             --exclude 'docroot/sites/default/files/' \
             --exclude '.git/' \
@@ -161,6 +165,7 @@ rsync -rzcEPul --delete --exclude 'docroot/sites/default/settings.*' \
             --exclude 'private/' \
             --exclude '*/node_modules/' \
             --exclude 'node_modules/' \
+            --exclude 'dev/' \
             "$from_site_path/$from/"  "$site_path/$sitename_var/" # > rsyncerrlog.txt
 # &> rsyncerrlog.txt
 if [ "$verbose" == "debug"  ] ; then
