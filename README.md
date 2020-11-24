@@ -402,6 +402,24 @@ END HELP
 
 <details>
 
+**<summary>info: Information on site(s) :heavy_check_mark: </summary>**
+Usage: pl info [SITE] [TYPE] [OPTION]
+This script is used to provide various information about a site.
+You just need to state the sitename, eg dev and optionally the type of information
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+  -d --debug              Provide debug information when running this script.
+
+Examples:
+pl info -h
+pl info dev
+END HELP
+
+</details>
+
+<details>
+
 **<summary>init: Initialises pleasy :heavy_check_mark: </summary>**
   Usage: pl init [OPTION]
 This will set up pleasy and initialise the sites as per

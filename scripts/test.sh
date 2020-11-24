@@ -1,4 +1,11 @@
 #!/bin/bash
+parse_pl_yml
+
+readonly_en=$(ssh -t cathnet "cd $prod_docroot && drush pm-list --pipe --type=module --status=enabled --no-core | grep 'readonlymode'")
+
+echo "Read only: $readonly_en"
+exit
+
 sitename_var="t4"
   import_result="$(drush @$sitename_var cim -y --pipe 2>&1 >/dev/null || true)"
   # Process the result

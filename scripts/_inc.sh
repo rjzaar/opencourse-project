@@ -1267,6 +1267,8 @@ db_defaults() {
 #
 ################################################################################
 site_info() {
+
+  #!!!! add code to handle info type.
   echo "Source  = $project"
   echo "Project folder = $folder"
   echo "Site folder = $sitename_var"
@@ -1485,6 +1487,9 @@ if [[ "$sitename_var" == "prod" || "$sitename_var" == "test" ]]; then
     # This script just runs the composer install --no-dev and fixes site permissions.
     ssh -t $prod_alias "./updatetest.sh $prod_test_docroot"
   else
+
+
+#Now run the rest of the update process.
     ssh -t $prod_alias "./updateprod.sh $prod_test_docroot $prod_docroot $prod_reinstall_modules"
     # The updateprod script does it all.
     exit 0

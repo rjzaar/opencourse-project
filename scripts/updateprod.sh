@@ -167,6 +167,17 @@ else
 prod_site="$prod_alias:$(dirname $prod_docroot)" # > rsyncerrlog.txt
 fi
 
+    # Check to see if production has the readonly module enabled.
+    readonly_en=$(ssh -t cathnet "cd $prod_docroot && drush pm-list --pipe --type=module --status=enabled --no-core | grep 'readonlymode'")
+if [ ! "$readonly_en" == "" ]; then
+    ssh -t cathnet "cd $prod_docroot && drush vset site_readonly 1"
+    else
+      # otherwise put into maintenance mode
+    ssh -t cathnet "cd $prod_docroot && drush sset maintenance_mode 1"
+fi
+
+#copy production to test.
+copy_prod_test
 
 ocmsg "Production site $prod_site localsite $site_path/$sitename_var" debug
 #drush rsync @$sitename_var @test --no-ansi  -y --exclude-paths=private:.git -- --exclude=.gitignore --delete
@@ -192,12 +203,7 @@ fi
 
 #import_site_config $sitename_var
 echo "This will run any updates on the $sitename_var site."
-
-echo "Put site >$sitename_var< into maintenance mode"
-
 runupdates
-
-
 
 #Check changes
 
