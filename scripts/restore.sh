@@ -139,7 +139,7 @@ else
 fi
 
 if [[ "$bk" == prod ]] && [[ ! "$prod_method" == "git" ]]; then
-  echo "Sorry not able to handle backing up prod unless it is method git."
+  echo "Sorry not able to handle restoring prod unless it is method git."
   exit 0
 fi
 
@@ -150,7 +150,7 @@ import_site_config $sitename_var
 cd "$folderpath/sitebackups/$bk"
 if [[ "$bk" == prod ]] && [[ "$prod_method" == "git" ]]; then
   echo "Using production database and site from git"
-  ssh $prod_alias -t "./restoreprod.sh $prod_docroot"
+  ssh $prod_alias -t "./restoreprod.sh $prod_docroot $prod_gitrepo"
   # The script does it all. No need for anything else.
   exit 0
   else

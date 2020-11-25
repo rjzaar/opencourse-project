@@ -399,7 +399,8 @@ if [ $step -lt 8 ]; then
 
   # Add good defaults for mariadb from lando
   # use mysqld --help --verbose to check variables
-  sudo wget https://github.com/lando/lando/blob/master/examples/mariadb/config/my.cnf /etc/mysql/mariadb.conf.d/my.cnf
+  #  This is causing an error.... todo fix mariadb my.cnf
+#  sudo wget https://github.com/lando/lando/blob/master/examples/mariadb/config/my.cnf /etc/mysql/mariadb.conf.d/my.cnf
   sudo systemctl restart mariadb
 
 #fi

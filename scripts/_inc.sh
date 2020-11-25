@@ -915,18 +915,6 @@ backup_site() {
 
 #
 ################################################################################
-# Create a git backup of the site
-################################################################################
-backup_git() {
-  #This will create a new branch for both the database and files on the local server
-  echo "Funtion backup_git still might need to be coded."
-  #This function is actually in prodowgit currently....
-
-  #cp $folderpath/sitebackups/$sitename_var/$Name $
-}
-
-#
-################################################################################
 # User server script to backup production database so it can be run in parallel
 ################################################################################
 gitbackupdb() {
