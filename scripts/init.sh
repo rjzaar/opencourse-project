@@ -393,15 +393,15 @@ if [ $step -lt 8 ]; then
   # Not installed
   # From: https://stackoverflow.com/questions/7739645/install-mysql-on-ubuntu-without-a-password-prompt
   export DEBIAN_FRONTEND=noninteractive
-  sudo debconf-set-selections <<<'mariadb-server mysql-server/root_password password root'
-  sudo debconf-set-selections <<<'mariadb-server mysql-server/root_password_again password root'
+  sudo debconf-set-selections <<<'mariadb-server-10.3 mysql-server/root_password password root'
+  sudo debconf-set-selections <<<'mariadb-server-10.3 mysql-server/root_password_again password root'
   sudo apt-get -y install mariadb-server
 
   # Add good defaults for mariadb from lando
   # use mysqld --help --verbose to check variables
   #  This is causing an error.... todo fix mariadb my.cnf
 #  sudo wget https://github.com/lando/lando/blob/master/examples/mariadb/config/my.cnf /etc/mysql/mariadb.conf.d/my.cnf
-  sudo systemctl restart mariadb
+  #sudo systemctl restart mariadb
 
 #fi
 

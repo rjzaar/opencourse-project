@@ -193,22 +193,6 @@ Backs up the database only
 
 <details>
 
-**<summary>backupprod: Backs up the production site :white_check_mark: </summary>**
-Usage: pl backup [OPTION] ... [MESSAGE]
-  This script is used to backup prod site's files and database. You can
-  add an optional message. The production site details are in pl.yml.
-
-  Mandatory arguments to long options are mandatory for short options too.
-    -h --help               Display help (Currently displayed)
-
-  Examples:
-  pl backupprod -h
-  pl backupprod 'First tim backup'
-
-</details>
-
-<details>
-
 **<summary>backup: Backup site and database :heavy_check_mark: </summary>**
 Usage: pl backup [OPTION] ... [SOURCE] [MESSAGE]
 This script is used to backup a particular site's files and database.
