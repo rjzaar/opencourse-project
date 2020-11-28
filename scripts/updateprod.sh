@@ -169,7 +169,8 @@ fi
 
     # Check to see if production has the readonly module enabled.
 ocmsg "Check to see if production has the readonly module enabled." debug
-readonly_en=$(ssh -t cathnet "cd $prod_docroot && drush pm-list --pipe --type=module --status=enabled --no-core | grep 'readonlymode'")
+readonly_en=$(ssh -t -n cathnet "cd $prod_docroot && drush pm-list --pipe --type=module --status=enabled --no-core | grep 'readonlymode'" 2>&1)
+
 ocmsg "Readonly: >$readonly_en<"
 if [ ! "$readonly_en" == "" ]; then
     ssh -t cathnet "cd $prod_docroot && drush vset site_readonly 1"

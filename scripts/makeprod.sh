@@ -143,10 +143,11 @@ fi
 # remove old cmi and re-export
 if [[ -d $site_path/$sitename_var/cmi ]]; then
   echo "remove cmi contents"
+  ls $site_path/$sitename_var/cmi
 if find "$site_path/$sitename_var/cmi" -mindepth 1 -print -quit 2>/dev/null | grep -q .; then
-    rm $site_path/$sitename_var/cmi/*
+    rm $site_path/$sitename_var/cmi/* -rf
 fi
-  
+
 else
   mkdir $site_path/$sitename_var/cmi
 fi
