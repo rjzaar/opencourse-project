@@ -140,6 +140,8 @@ else
 plcomposer install --no-dev --quiet
 fi
 
+# don't know why --no-dev uninstalls config_update, so add it.
+plcomposer require drupal/config_update
 # remove old cmi and re-export
 if [[ -d $site_path/$sitename_var/cmi ]]; then
   echo "remove cmi contents"
