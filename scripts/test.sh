@@ -1,8 +1,9 @@
 #!/bin/bash
 parse_pl_yml
 
-readonly_en=$(ssh -t cathnet "cd $prod_docroot && drush pm-list --pipe --type=module --status=enabled --no-core | grep 'readonlymode'") &
-wait
+readonly_en="$(ssh -t cathnet "cd $prod_docroot && drush pm-list --pipe --type=module --status=enabled --no-core | { grep 'readonlymode' || true; }"   )"
+
+#readonly_ena=$( echo "$readonly_en" | { grep 'ocsss' || true; } )
 
 echo "Read only: $readonly_en"
 exit

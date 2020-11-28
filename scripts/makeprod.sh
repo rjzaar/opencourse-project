@@ -151,6 +151,7 @@ fi
 else
   mkdir $site_path/$sitename_var/cmi
 fi
+ocmsg "Export config" debug
 drush @$sitename_var cex -y
 
 # rebuild permissions
