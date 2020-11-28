@@ -1000,6 +1000,18 @@ backup_prod() {
 
   if [[ ! "$prod_gitdb" == "" ]]; then
     gitprodpush
+    exit
+    #Now move the db and files down to local
+#    scp "$prod_alias:proddb/prod.sql" "$folderpath/sitebackups/prod/$Bname.sql"
+#    wget https://github.com/rjzaar/ocorg/archive/master.tar.gz -O "$folderpath/sitebackups/prod/$Bname.tar.gz"
+
+#    # Use git to put the files in the correct place
+#      rm -rf "$site_path/$sitename_var"
+#      cd $site_path
+#      git clone $prod_gitrepo $sitename_var
+#    # now tar it.
+#    tar --exclude='$site_path/$sitename_var/$webroot/sites/default/settings.local.php' --exclude='$site_path/$sitename_var/$webroot/sites/default/settings.php' -zcf "$folderpath/sitebackups/prod/$bname.tar.gz" "$site_path/$sitename_var"
+
   else
     exit 0
     #Name="$folderpath/sitebackups/prod/prod$(date +%Y%m%d\T%H%M%S-)$msg"

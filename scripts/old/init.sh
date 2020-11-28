@@ -24,7 +24,6 @@
 # Add npm, nodejs: https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
 # Use node v12:
 # https://stackoverflow.com/questions/41195952/updating-nodejs-on-ubuntu-16-04
-# If phpadmin does not install properly you may need to follow: https://stackoverflow.com/a/49302706
 #
 ################################################################################
 
@@ -53,7 +52,6 @@ Mandatory arguments to long options are mandatory for short options too.
     -n --nopassword         Nopassword. This will give the user full sudo access without requireing a password!
                             This could be a security issue for some setups. Use with caution!
     -t --test            This option is only for test environments like Travis, eg there is no mysql root password.
-    -l --lando              This will install lando
 
 Examples:
 git clone git@github.com:rjzaar/pleasy.git [sitename]  #eg git clone git@github.com:rjzaar/pleasy.git mysite.org
@@ -96,7 +94,7 @@ step=${step:-1}
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are --yes --help --step
 ################################################################################
-args=$(getopt -o yhs:ndtl -l yes,help,step:,nopassword,debug,test,lando --name "$scriptname" -- "$@")
+args=$(getopt -o yhs:ndt -l yes,help,step:,nopassword,debug,test --name "$scriptname" -- "$@")
 # echo "$args"
 
 ################################################################################
@@ -142,9 +140,6 @@ while true; do
     ;;
   -t | --test)
     pltest="y"
-    ;;
-  -l | --lando)
-    installlando="y"
     ;;
   -h | --help)
     print_help
@@ -207,14 +202,14 @@ if [ $step -lt 2 ]; then
 
   if [[ "$gversion" == "5" ]]; then
     echo "Need to purge gawk and install version 4 of gawk"
-#    1:4.1.4+dfsg-1build1
+    1:4.1.4+dfsg-1build1
     sudo apt-get remove gawk -y
 
     wget https://ftp.gnu.org/gnu/gawk/gawk-4.2.1.tar.gz
     tar -xvpzf gawk-4.2.1.tar.gz
     cd gawk-4.2.1
     sudo ./configure && sudo make && sudo make install
-#    sudo apt install gawk=1:5.0.1+dfsg-1
+    sudo apt install gawk=1:5.0.1+dfsg-1
   # It installs 5.0.1, but when you run gawk -Wv it says it 4.2.1. Anyway it works. I don't know another way of doing it.
   fi
 fi
@@ -264,8 +259,7 @@ if [ $step -lt 4 ]; then
   echo -e "$Cyan \n Make fixing folder permissions and debug run without sudo $Color_Off"
   sudo $folderpath/scripts/lib/installsudoers.sh "$folderpath/bin" $user
   echo "export PATH=\"\$PATH:/usr/local/bin/\"" >>~/.bashrc
-  # todo check this code
-  #echo ". /usr/local/bin/debug" >>~/.bashrc
+  echo ". /usr/local/bin/debug" >>~/.bashrc
 
   cd
   source ~/.bashrc
@@ -332,8 +326,7 @@ if [ $step -lt 6 ]; then
   echo -e "$Cyan \n Installing Apache2 etc $Color_Off"
   # php-gettext not installing on ubuntu 20
   #sudo apt-get -qq install apache2 php libapache2-mod-php php-mysql php-gettext curl php-cli php-gd php-mbstring php-xml php-curl php-bz2 php-zip git unzip php-xdebug -y
-  # Install vim to make sure arrow keys work properly.
-  sudo apt-get -y install apache2 php7.3 libapache2-mod-php7.3 php7.3-mysql php7.3-common curl php7.3-cli php7.3-gd php7.3-mbstring php7.3-xml php7.3-curl php7.3-bz2 php7.3-zip git unzip php-xdebug vim -y
+  sudo apt-get -y install apache2 php7.3 libapache2-mod-php7.3 php7.3-mysql php7.3-common curl php7.3-cli php7.3-gd php7.3-mbstring php7.3-xml php7.3-curl php7.3-bz2 php7.3-zip git unzip php-xdebug -y
 
   # If Travis, then add some environment variables, particularly to add more memory to php.
 #  echo "pwd: $(pwd)"
@@ -393,25 +386,9 @@ if [ $step -lt 8 ]; then
   #else
   # Not installed
   # From: https://stackoverflow.com/questions/7739645/install-mysql-on-ubuntu-without-a-password-prompt
-
-    if [[ "$host_database" == "mysql" ]]; then
   sudo debconf-set-selections <<<'mysql-server mysql-server/root_password password root'
   sudo debconf-set-selections <<<'mysql-server mysql-server/root_password_again password root'
   sudo apt-get -y install mysql-server
-  else
-
-  export DEBIAN_FRONTEND=noninteractive
-  sudo debconf-set-selections <<<'mariadb-server-10.3 mysql-server/root_password password root'
-  sudo debconf-set-selections <<<'mariadb-server-10.3 mysql-server/root_password_again password root'
-  sudo apt-get -y install mariadb-server
-  fi
-
-  # Add good defaults for mariadb from lando
-  # use mysqld --help --verbose to check variables
-  #  This is causing an error.... todo fix mariadb my.cnf
-#  sudo wget https://github.com/lando/lando/blob/master/examples/mariadb/config/my.cnf /etc/mysql/mariadb.conf.d/my.cnf
-  #sudo systemctl restart mariadb
-
 #fi
 
 fi
@@ -633,44 +610,10 @@ if [ $step -lt 15 ]; then
 set nocompatible
 EOL
 fi
-
-# Step 15
-################################################################################
-# Fix adding extra characters for vi
-################################################################################
-if [ $step -lt 16 ]; then
-  echo -e "$Cyan step 15: Install Lando if option chosen $Color_Off"
-if [[ "$installlando" == "Y" ]] ; then
-  # Install Lando
-
-#First install docker
-  # Following recipe from https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
-# Or could follow this recipe: https://get.docker.com/
-sudo apt install apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
-sudo apt update
-apt-cache policy docker-ce
-sudo apt install docker-ce
-sudo usermod -aG docker ${USER}
-username=${USER}
-su - ${USER}
-
-sudo usermod -aG docker $username
-
-# Now install lando
-wget https://files.devwithlando.io/lando-stable.deb
-sudo dpkg -i lando-stable.deb
-  fi
-
-
-
-fi
-
 echo " open this link to add the xdebug extension for the browser you want to use"
 echo "https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extensions.html?utm_campaign=PS&utm_medium=link&utm_source=product&utm_content=2019.3 "
 
-# Step 16
+# Step 15
 ################################################################################
 # I don't think this step is needed since theming tools are added to each instance via pl install
 ################################################################################
@@ -685,8 +628,8 @@ if [[ -f ~/.zshrc ]]; then
   source ~/.zshrc
 fi
 
-if [ $step -lt 17 ]; then
-  echo -e "$Cyan step 16: Now add theming tools $Color_Off"
+if [ $step -lt 16 ]; then
+  echo -e "$Cyan step 15: Now add theming tools $Color_Off"
 
 #Now add theming tools
 
@@ -701,9 +644,6 @@ export NVM_DIR="$HOME/.nvm"
 # source ~/.bashrc
 nvm install node
 sudo apt install build-essential
-# varbase needs bower installed
-# Not sure if this needs sudo?
-npm install -g bower
 
 # see https://github.com/Vardot/vartheme_bs4/tree/8.x-6.x/scripts
 # use recommended version of Node.js
@@ -724,10 +664,6 @@ ocmsg "sudo npm install gulp -D" debug
 npm install gulp -D
 ocmsg "npm install browser-sync" debug
 npm install -g browser-sync
-ocmsg "npm install yarn" debug
-# https://www.drupal.org/docs/contributed-themes/olivero/development-setup
-npm install -g yarn
-
 
 ocmsg "Increase watch speed for gulp: requires sudo." debug
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p

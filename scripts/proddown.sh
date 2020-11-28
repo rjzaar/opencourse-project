@@ -24,12 +24,13 @@
 ################################################################################
 ################################################################################
 #                                TODO LIST
+#   -t --test            Download the test server instead.
 #
 ################################################################################
 ################################################################################
 
 # Set script name for general file use
-scriptname='pleasy-proddown'
+scriptname='proddown'
 
 # Help menu
 ################################################################################
@@ -40,7 +41,7 @@ echo \
 "Overwrite a specified local site with production
 Usage: pl proddown [OPTION] ... [SITE]
 This script is used to overwrite a local site with the actual external production
-site.  The external site details are also set in pl.yml under prod: Note: once
+site. If no site specified, localprod will be used. The external site details are also set in pl.yml under prod: Note: once
 the local site has been locally backedup, then it can just be restored from there
 if need be.
 
@@ -48,14 +49,17 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
   -s --step=[1-2]         Select step to proceed (If it stalls on a step)
   -d --debug              Provide messages to help with debugging this function
-  -t --testing            Download the test server instead.
+
 
 Examples:
 pl proddown stg
 pl proddown stg -s=2
+pl proddown
 END HELP"
 
 }
+
+
 
 # start timer
 ################################################################################
@@ -68,7 +72,7 @@ SECONDS=0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o hs:dt -l help,step:,debug,test --name "$scriptname" -- "$@")
+args=$(getopt -o hs:d -l help,step:,debug --name "$scriptname" -- "$@")
 
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
@@ -102,9 +106,9 @@ while true; do
   -d | --debug)
     verbose="debug"
     shift; ;;
-  -t | --test)
-    test="y"
-    shift; ;;
+#  -t | --test)
+#    test="y"
+#    shift; ;;
   --)
   shift
   break; ;;
@@ -118,14 +122,11 @@ parse_pl_yml
 
 # Make sure @prod is setup.
 update_all_configs
-
-if [ $1 = "proddown" ] && [ -z "$2" ]; then
-  echo "No site specified"
-  print_help
-  exit 0
-fi
-
 sitename_var=$1
+if [ $1 = "proddown" ] && [ -z "$2" ]; then
+  echo "No site specified, using localprod"
+  sitename_var="localprod"
+fi
 
 echo "Importing production site into $sitename_var"
 

@@ -547,7 +547,7 @@ END HELP
 **<summary>proddown: Overwrite a specified local site with production :white_check_mark: </summary>**
 Usage: pl proddown [OPTION] ... [SITE]
 This script is used to overwrite a local site with the actual external production
-site.  The external site details are also set in pl.yml under prod: Note: once
+site. If no site specified, localprod will be used. The external site details are also set in pl.yml under prod: Note: once
 the local site has been locally backedup, then it can just be restored from there
 if need be.
 
@@ -555,11 +555,12 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
   -s --step=[1-2]         Select step to proceed (If it stalls on a step)
   -d --debug              Provide messages to help with debugging this function
-  -t --testing            Download the test server instead.
+
 
 Examples:
 pl proddown stg
 pl proddown stg -s=2
+pl proddown
 END HELP
 
 </details>
@@ -632,9 +633,7 @@ END HELP
 
 <details>
 
-**<summary>restore: args:  --help -- :heavy_check_mark: </summary>**
---**BROKEN DOCUMENTATION**--
-Restore a particular site's files and database from backup
+**<summary>restore: Restore a particular site's files and database from backup :heavy_check_mark: </summary>**
 Usage: pl restore [FROM] [TO] [OPTION]
 You just need to state the sitename, eg dev.
 You can alternatively restore the site into a different site which is the second argument.
@@ -652,7 +651,6 @@ pl restore loc stg -fy
 pl restore -h
 pl restore loc -d
 pl restore prod stg
---**BROKEN DOCUMENTATION**--
 
 </details>
 

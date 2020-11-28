@@ -18,6 +18,7 @@
 ################################################################################
 ################################################################################
 #                                TODO LIST
+#  Add the ability to choose a prod git commit to be restored.
 #
 ################################################################################
 ################################################################################
@@ -78,8 +79,6 @@ HELP
 ################################################################################
 args=$(getopt -a -o hdfy -l help,debug,first,yes --name "$scriptname" -- "$@")
 # echo "$args"
-
-echo "args: $args"
 
 # Check number of arguments
 ################################################################################
@@ -148,12 +147,63 @@ import_site_config $sitename_var
 # Prompt to choose which database to backup, 1 will be the latest.
 # Could be a better way to go: https://stackoverflow.com/questions/42789273/bash-choose-default-from-case-when-enter-is-pressed-in-a-select-prompt
 cd "$folderpath/sitebackups/$bk"
-if [[ "$bk" == prod ]] && [[ "$prod_method" == "git" ]]; then
-  echo "Using production database and site from git"
+if [[ "$bk" == "prod" ]] && [[ "$prod_method" == "git" ]] && [[ "$sitename_var" == "prod" ]]; then
+  echo "Restoring production site from last git push"
   ssh $prod_alias -t "./restoreprod.sh $prod_docroot $prod_gitrepo"
   # The script does it all. No need for anything else.
   exit 0
+  elif [[ "$bk" == "prod" ]] && [[ "$prod_method" == "git" ]] ; then
+  echo "Restoring production site to site: $sitename_var"
+  # First get the database
+  #scp "$prod_alias:proddb/prod.sql" "$folderpath/sitebackups/prod/$Bname.sql"
+  #cp "$folderpath/sitebackups/prod/$Bname.sql" "$folderpath/sitebackups/proddb/prod.sql" -rf
+
+  # Check if database is already present
+  if [[ -f "$folderpath/sitebackups/proddb/prod.sql" ]]; then
+  cd $folderpath/sitebackups/proddb/
+  git pull
   else
+  # Check if proddb exits
+  if [[ -d "$folderpath/sitebackups/proddb/" ]]; then
+    rm "$folderpath/sitebackups/proddb" -rf
+  fi
+  git clone $gitdb "$folderpath/sitebackups/proddb"
+  fi
+
+  if [[ -d "$site_path/$sitename_var" ]]; then
+     # Check that if the site exists, that it has the prod repo. Then only need to pull it!
+     ocmsg "The site: $sitename_var already exits. Now check if it is has the prod repo." debug
+     cd "$site_path/$sitename_var"
+     ocmsg "Local: $(git config --get remote.origin.url) Remote: $prod_gitrepo"
+     if [[ "$(git config --get remote.origin.url)" == "$prod_gitrepo" ]]; then
+       # Nice and simple!
+       git pull
+     else
+       # Set up the prod repo in the desired site location after deleting what is already there.
+       rm -rf "$site_path/$sitename_var"
+       cd $site_path
+       git clone $prod_gitrepo $sitename_var
+     fi
+  else
+    # clone the repo
+    cd $site_path
+    git clone $prod_gitrepo $sitename_var
+  fi
+
+    # now tar it so it is backed up for future use while we are at it.
+  #tar --exclude='$site_path/$sitename_var/$webroot/sites/default/settings.local.php' --exclude='$site_path/$sitename_var/$webroot/sites/default/settings.php' -zcf "$folderpath/sitebackups/prod/$bname.tar.gz" "$site_path/$sitename_var"
+  fix_site_settings
+
+echo "Set site permissions"
+set_site_permissions $sitename_var
+
+#restore db
+db_defaults
+echo -e "$Cyan Restore the database $Color_Off"
+restore_db
+echo -e "$Cyan Files and database have been restored $Color_Off"
+exit
+    else
 
 ocmsg "flag_first is $flag_first" debug
 options=($(find -maxdepth 1 -name "*.sql" -print0 | xargs -0 ls -1 -t))
@@ -217,7 +267,7 @@ echo "path $site_path/$sitename_var folderpath $folderpath"
 
 ### do I need to deal with services.yml?
 
-pl fixss $sitename_var
+fix_site_settings
 
 echo "Set site permissions"
 set_site_permissions $sitename_var
