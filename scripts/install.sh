@@ -126,7 +126,7 @@ while true; do
    -t | --test)
     pltest="y"
     shift; ;;
-   -e | --extras
+   -e | --extras)
     extras="y"
     shift; ;;
   --)
@@ -394,7 +394,7 @@ if [ $step -lt 9 ]; then
       yarn install
           #This might need more work.
       bower init -y
-      bower 
+      bower
     fi
   else
     echo "There is a problem: The theme $theme has not been installed."

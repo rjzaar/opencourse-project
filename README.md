@@ -452,10 +452,29 @@ END OF HELP
 
 <details>
 
-**<summary>install:  :white_check_mark: </summary>**
---**BROKEN DOCUMENTATION**--
+**<summary>install: Installs a drupal site :heavy_check_mark: </summary>**
+Usage: pl install site [OPTION]
+This script is used to install a variety of drupal flavours particularly
+opencourse This will use opencourse-project as a wrapper. It is presumed you
+have already cloned opencourse-project.  You just need to specify the site name
+as a single argument.  All the settings for that site are in pl.yml If no site
+name is given then the default site is created.
 
---**BROKEN DOCUMENTATION**--
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+  -y --yes                Auto Yes to all options
+  -f --files              Only install site files. No database
+  -s --step=[INT]         Restart at the step specified.
+  -b --build-step=[INT]   Restart the build at step specified (step=6)
+  -d --debug              Provide debug information when running this script.
+  -t --test               This option is only for test environments like Travis, eg there is no mysql root password.
+  -e --extras             Install extra features like yarn and bower
+
+Examples:
+pl install d8
+pl install ins -b=6 #To start from installing the modules.
+pl install loc -s=3 #start from composer install
+END HELP
 
 </details>
 
