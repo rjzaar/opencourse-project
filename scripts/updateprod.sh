@@ -168,14 +168,16 @@ prod_site="$prod_alias:$(dirname $prod_docroot)" # > rsyncerrlog.txt
 fi
 
     # Check to see if production has the readonly module enabled.
-    readonly_en=$(ssh -t cathnet "cd $prod_docroot && drush pm-list --pipe --type=module --status=enabled --no-core | grep 'readonlymode'")
+ocmsg "Check to see if production has the readonly module enabled." debug
+readonly_en=$(ssh -t cathnet "cd $prod_docroot && drush pm-list --pipe --type=module --status=enabled --no-core | grep 'readonlymode'")
+ocmsg "Readonly: >$readonly_en<"
 if [ ! "$readonly_en" == "" ]; then
     ssh -t cathnet "cd $prod_docroot && drush vset site_readonly 1"
     else
       # otherwise put into maintenance mode
     ssh -t cathnet "cd $prod_docroot && drush sset maintenance_mode 1"
 fi
-
+ocmsg "Copy production site to test site." debug
 #copy production to test.
 copy_prod_test
 
