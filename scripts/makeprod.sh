@@ -141,7 +141,11 @@ plcomposer install --no-dev --quiet
 fi
 
 # remove old cmi and re-export
-rm $site_path/$sitename_var/cmi/*
+if [[ -d $site_path/$sitename_var/cmi ]]; then
+  rm $site_path/$sitename_var/cmi/*
+else
+  mkdir $site_path/$sitename_var/cmi
+fi
 drush @$sitename_var cex -y
 
 # rebuild permissions

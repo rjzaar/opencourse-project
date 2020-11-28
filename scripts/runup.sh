@@ -53,7 +53,8 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:
-pl runup loc"
+pl runup loc
+pl runup test # This will run the updates on the external test server."
 
 }
 
