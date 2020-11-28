@@ -1498,10 +1498,11 @@ else
   ocmsg "Path: $site_path/$sitename_var" debug
   cd $site_path/$sitename_var
   # composer install
-#echo -e "\e[34mcomposer install\e[39m"
-#  if [[ -f $site_path/$sitename_var/composer.lock ]]; then
-#rm $site_path/$sitename_var/composer.lock
-#fi
+echo -e "\e[34mcomposer install\e[39m"
+# Looks like it is best to remove composer.lock so getting the latest according to composer.json
+  if [[ -f $site_path/$sitename_var/composer.lock ]]; then
+rm $site_path/$sitename_var/composer.lock
+fi
 #rm $site_path/$sitename_var/vendor -rf
   composer install --no-dev  # composer install needs phing. so remove phing!
   set_site_permissions

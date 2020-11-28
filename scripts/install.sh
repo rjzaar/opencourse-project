@@ -51,7 +51,8 @@ Mandatory arguments to long options are mandatory for short options too.
   -s --step=[INT]         Restart at the step specified.
   -b --build-step=[INT]   Restart the build at step specified (step=6)
   -d --debug              Provide debug information when running this script.
-  -t --test            This option is only for test environments like Travis, eg there is no mysql root password.
+  -t --test               This option is only for test environments like Travis, eg there is no mysql root password.
+  -e --extras             Install extra features like yarn and bower
 
 Examples:
 pl install d8
@@ -72,7 +73,7 @@ SECONDS=0
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -o hyfdb:s:t -l help,yes,files,debug,build-step:,step:,test --name "$scriptname" -- "$@")
+args=$(getopt -o hyfdb:s:te -l help,yes,files,debug,build-step:,step:,test,extras --name "$scriptname" -- "$@")
 
 ################################################################################
 # If getopt outputs error to error variable, quit program displaying error
@@ -124,6 +125,9 @@ while true; do
     shift; ;;
    -t | --test)
     pltest="y"
+    shift; ;;
+   -e | --extras
+    extras="y"
     shift; ;;
   --)
   shift
@@ -375,19 +379,23 @@ if [ $step -lt 9 ]; then
   if [ -d "$site_path/$sitename_var/$webroot/themes/custom/$theme" ]; then
     cd "$site_path/$sitename_var/$webroot/themes/custom/$theme"
     npm install
+    if [ "$extras" ]; then
     # https://www.drupal.org/docs/contributed-themes/olivero/development-setup
     yarn install
     #This might need more work.
     # May help: https://github.com/bower/bower/issues/1849
     bower init -y
     bower install
+    fi
   elif [ -d "$site_path/$sitename_var/$webroot/themes/contrib/$theme" ]; then
     cd "$site_path/$sitename_var/$webroot/themes/contrib/$theme"
     npm install
-    yarn install
-        #This might need more work.
-    bower init -y
-    bower install
+    if [ "$extras" ]; then
+      yarn install
+          #This might need more work.
+      bower init -y
+      bower 
+    fi
   else
     echo "There is a problem: The theme $theme has not been installed."
   fi
