@@ -1000,7 +1000,6 @@ backup_prod() {
 
   if [[ ! "$prod_gitdb" == "" ]]; then
     gitprodpush
-    exit
     #Now move the db and files down to local
 #    scp "$prod_alias:proddb/prod.sql" "$folderpath/sitebackups/prod/$Bname.sql"
 #    wget https://github.com/rjzaar/ocorg/archive/master.tar.gz -O "$folderpath/sitebackups/prod/$Bname.tar.gz"

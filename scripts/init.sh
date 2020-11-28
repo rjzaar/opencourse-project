@@ -199,7 +199,8 @@ if [ $step -lt 2 ]; then
   # nopasswd permission. This would reduce the security risk of the above command.
 
   fi
-
+  # Appears that Ubuntu 20 needs this for gawk to be installed.
+  sudo apt-get install build-essential -y
   sudo apt-get install gawk -y
   gout=$(gawk -Wv)
   gversion=${gout:8:1}
