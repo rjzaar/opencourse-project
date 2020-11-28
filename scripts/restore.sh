@@ -77,7 +77,7 @@ HELP
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
 # -y. Current accepted args are -h and --help
 ################################################################################
-args=$(getopt -a -o hdfy -l help,debug,first,yes --name "$scriptname" -- "$@")
+args=$(getopt -a -o hdfyo -l help,debug,first,yes,open --name "$scriptname" -- "$@")
 # echo "$args"
 
 # Check number of arguments
@@ -110,6 +110,10 @@ while true; do
     ;;
   -y | --yes)
     flag_yes=1
+    shift
+    ;;
+  -o | --open)
+    flag_open=1
     shift
     ;;
   --)
@@ -160,8 +164,11 @@ if [[ "$bk" == "prod" ]] && [[ "$prod_method" == "git" ]] && [[ "$sitename_var" 
 
   # Check if database is already present
   if [[ -f "$folderpath/sitebackups/proddb/prod.sql" ]]; then
+  ocmsg "Pull the database down to proddb." debug
   cd $folderpath/sitebackups/proddb/
-  git pull
+  git fetch --all
+  #git checkout -b backup-master
+  git reset --hard origin/master
   else
   # Check if proddb exits
   if [[ -d "$folderpath/sitebackups/proddb/" ]]; then
@@ -177,8 +184,12 @@ if [[ "$bk" == "prod" ]] && [[ "$prod_method" == "git" ]] && [[ "$sitename_var" 
      ocmsg "Local: $(git config --get remote.origin.url) Remote: $prod_gitrepo"
      if [[ "$(git config --get remote.origin.url)" == "$prod_gitrepo" ]]; then
        # Nice and simple!
-       git pull
+       ocmsg "Pull the files down." debug
+         git fetch --all
+        #git checkout -b backup-master
+        git reset --hard origin/master
      else
+       ocmsg "Removing old $sitename_var site and cloning the files into $sitename_var" debug
        # Set up the prod repo in the desired site location after deleting what is already there.
        rm -rf "$site_path/$sitename_var"
        cd $site_path
@@ -186,6 +197,7 @@ if [[ "$bk" == "prod" ]] && [[ "$prod_method" == "git" ]] && [[ "$sitename_var" 
      fi
   else
     # clone the repo
+    ocmsg "Cloning the files into $sitename_var" debug
     cd $site_path
     git clone $prod_gitrepo $sitename_var
   fi
@@ -278,6 +290,15 @@ echo -e "$Cyan Restore the database $Color_Off"
 restore_db
 echo -e "$Cyan Files and database have been restored $Color_Off"
 
+if [[ $flag_open ]]; then
+  drush @$sitename_var uli &
+fi
+
 
 #drush @sitename_var cr
-
+# End timer
+################################################################################
+# Finish script, display time taken
+################################################################################
+echo 'Finished in H:'$(($SECONDS/3600))' M:'$(($SECONDS%3600/60))' S:'$(($SECONDS%60))
+exit 0
