@@ -93,7 +93,7 @@ pl runup stg #run updates on stage and check site.
 You can repeat these steps to set up the live test site on the production server
 
 ```
-pl updateprod -td
+pl updateprod stg -td
 ```
 And/or you can run them on the live production server.
 ```

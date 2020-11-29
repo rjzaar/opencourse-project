@@ -159,7 +159,7 @@ recipes:
     # This is so in this case install_modules will remain blank
     default: n
   varc:
-    source: vardot/varbase-project:^8.8.5
+    source: vardot/varbase-project:^8.8.7
     install_method: composer
     theme: vartheme_bs4
     theme_admin: vartheme_admin
