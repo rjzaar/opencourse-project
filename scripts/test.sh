@@ -1,5 +1,6 @@
 #!/bin/bash
 parse_pl_yml
+# https://askubuntu.com/questions/623933/how-to-create-a-rotation-animation-using-shell-script
 
 readonly_en="$(ssh -t cathnet "cd $prod_docroot && drush pm-list --pipe --type=module --status=enabled --no-core | { grep 'readonlymode' || true; }"   )"
 

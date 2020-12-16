@@ -969,9 +969,9 @@ gitprodpush() {
      Bname=$(date +%d%b%gT%l:%M:%S%p)
      Bname=${Bname//[[:blank:]]/}
      echo "Commit name >$Bname<"
-    gitbackupdb &
-    gitbackupfiles &
-    wait
+    gitbackupdb
+    gitbackupfiles
+    #wait
     echo "Production site and files backuped"
 
 }
@@ -1513,10 +1513,9 @@ drush @$sitename_var updb -y
 #echo -e "\e[34m fra\e[39m"
 #drush @$sitename_var fra -y
 echo -e "\e[34m import config\e[39m"
-drush @$sitename_var sset system.maintenance_mode TRUE
 if [[ "$reinstall_modules" != "" ]] ; then
-  drush @$sitename_var pm-uninstall $reinstall_reinstall_modules -y
-  drush @$sitename_var en $reinstall_reinstall_modules -y
+  drush @$sitename_var pm-uninstall $reinstall_modules -y
+#  drush @$sitename_var en $reinstall_modules -y
 fi
 if [[ "$force" == "true" ]] ; then
   # Collect the error from the import.
@@ -1535,21 +1534,34 @@ if [[ "$force" == "true" ]] ; then
     drush @$sitename_var cim -y
   fi
 
-
+if [[ "$reinstall_modules" != "" ]] ; then
+#  drush @$sitename_var pm-uninstall $reinstall_modules -y
+  drush @$sitename_var en $reinstall_modules -y
+fi
 # deal with bad config.
 
-echo -e "\e[34m make sure out of maintenance mode\e[39m"
-drush @$sitename_var sset system.maintenance_mode FALSE
-drush @$sitename_var cr
 if [[ "$sitename_var" == "prod" || "$sitename_var" == "test" ]]; then
    if [[ "$sitename_var" == "test" ]]; then
       ssh -t $prod_alias "sudo ./fix-p.sh --drupal_user=$prod_user --drupal_path=$prod_test_docroot"
    else
     ssh -t $prod_alias "sudo ./fix-p.sh --drupal_user=$prod_user --drupal_path=$prod_docroot"
   fi
+  # Take out of maintenance or readonly mode
+  readonly_en=$(ssh -t cathnet "cd $prod_test_docroot && drush pm-list --pipe --type=module --status=enabled --no-core | { grep 'readonlymode' || true; }" )
+if [ ! "$readonly_en" == "" ]; then
+    ssh -t cathnet "cd $prod_test_docroot && drush cset readonlymode.settings enabled 0 -y"
+    else
+      # otherwise put into maintenance mode
+    ssh -t cathnet "cd $prod_test_docroot && drush sset maintenance_mode 0"
+fi
+
   else
     set_site_permissions
+    echo -e "\e[34m make sure out of maintenance mode\e[39m"
+drush @$sitename_var sset system.maintenance_mode FALSE
+
 fi
+drush @$sitename_var cr
 }
 
 ################################################################################

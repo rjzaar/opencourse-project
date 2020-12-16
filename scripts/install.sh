@@ -326,8 +326,8 @@ if [ $step -lt 5 ]; then
 fi
 
 
-if [ $step -lt 5 ]; then
-  echo -e "$Cyan step 4: Setting up folder/file permissions $Color_Off"
+if [ $step -lt 6 ]; then
+  echo -e "$Cyan step 5: Setting up folder/file permissions $Color_Off"
 
   fix_site_settings
 
@@ -345,8 +345,8 @@ if [ $step -lt 5 ]; then
   chmod 770 "$site_path/$sitename_var/cmi"
 fi
 
-if [ $step -lt 6 ]; then
-  echo -e "$Cyan step 5: setting up drush aliases and site permissions $Color_Off"
+if [ $step -lt 7 ]; then
+  echo -e "$Cyan step 6: setting up drush aliases and site permissions $Color_Off"
   plcomposer require drush/drush
   ocmsg "set site permissions" debug
   set_site_permissions
@@ -358,8 +358,8 @@ if [ $step -lt 6 ]; then
 
 fi
 
-if [ $step -lt 7 ]; then
-  echo -e "$Cyan step 6: Now building site. $sitename_var $Color_Off"
+if [ $step -lt 8 ]; then
+  echo -e "$Cyan step 7: Now building site. $sitename_var $Color_Off"
   if [ $flag_files ]; then
     echo "Not installing site since only files required"
     else
@@ -367,13 +367,13 @@ if [ $step -lt 7 ]; then
   fi
 fi
 
-if [ $step -lt 8 ]; then
-  echo -e "$Cyan step 7: Set up uri $uri. This will require sudo $Color_Off"
+if [ $step -lt 9 ]; then
+  echo -e "$Cyan step 8: Set up uri $uri. This will require sudo $Color_Off"
   pl sudoeuri $sitename_var
 fi
 
-if [ $step -lt 9 ]; then
-  echo -e "$Cyan Step 8: setup npm for gulp support $uri $Color_Off"
+if [ $step -lt 10 ]; then
+  echo -e "$Cyan Step 9: setup npm for gulp support $uri $Color_Off"
   echo "theme path: $site_path/$sitename_var/$webroot/themes/contrib/$theme"
   source ~/.bashrc # make sure npm will work.
   if [ -d "$site_path/$sitename_var/$webroot/themes/custom/$theme" ]; then
@@ -401,8 +401,8 @@ if [ $step -lt 9 ]; then
   fi
 fi
 
-if [ $step -lt 10 ]; then
-  echo -e "$Cyan Step 9: Trying to go to URL $uri $Color_Off"
+if [ $step -lt 11 ]; then
+  echo -e "$Cyan Step 10: Trying to go to URL $uri $Color_Off"
   if [ $flag_files ]; then
     echo "Note: No database, so you will need to set that up."
   fi

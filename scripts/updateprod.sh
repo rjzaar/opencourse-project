@@ -159,34 +159,81 @@ prod_reinstall_modules=$reinstall_modules
 #This presumes a dev2stg and runup has been run on the stage site.
 #The files in stage should be ready to move to production/test
 
+# CASE TEST ie update test server, with -t
+# 1) prod_site = test
+# 2) Don't need to put prod into mainmode or readonly mode
+# 3) copy prod to test
+# 4) Copy files from local site to test
+# 5) Runupdates on the test site.
+#   runupdates: runs updatetest.sh with test server details
+# runs updb from local
+# runs reinstall modules from local
+# runs cimx3 from local
+# runs mainmod false from local
+# runs drush cr from local
+# runs fixp script on server from local
+
+
+# CASE PROD is update prod server.
+# 1) prod_site = prod
+# 2) put prod into mainmode or readonly mode
+# 3) copy prod to test: therefore test should already be in readonly mode.
+# 4) Copy files from local site to test site
+# 5) Runupdates  on the test site then swap them.. This will do it all.
+# runupdates: runs updateprod.sh with test prod and reinstall : does it all!
+# runs on test site
+# runs composer install
+# runs fixp
+# runs updb
+# runs reinstall mods
+# cimx3
+# runs drush cr
+# runs fixp
+# now take out of main/readonly mode.
+# swap test with prod
+# Put old prod out of main mode
+
+
+# STEP 1
+# Always use the test server.
 # rsync the files to the server
-if [[ "$test" ]] ; then
+#if [[ "$test" ]] ; then
 #prod_site="$prod_user@$prod_test_uri:$prod_test_docroot" # > rsyncerrlog.txt
 prod_site="$prod_alias:$(dirname $prod_test_docroot)"
-else
-prod_site="$prod_alias:$(dirname $prod_docroot)" # > rsyncerrlog.txt
-fi
+echo "Prod_site: $prod_site"
+#else
+#prod_site="$prod_alias:$(dirname $prod_docroot)" # > rsyncerrlog.txt
+#fi
 
-    # Check to see if production has the readonly module enabled.
+# STEP 2
+# Don't need to put prod into maintenance mode if only running on test.
+if [[ ! "$test" ]] ; then
+# Check to see if production has the readonly module enabled.
 ocmsg "Check to see if production has the readonly module enabled." debug
 readonly_en=$(ssh -t cathnet "cd $prod_docroot && drush pm-list --pipe --type=module --status=enabled --no-core | { grep 'readonlymode' || true; }" )
 
 ocmsg "Readonly: >$readonly_en<"
 if [ ! "$readonly_en" == "" ]; then
-    ssh -t cathnet "cd $prod_docroot && drush vset site_readonly 1"
+    ssh -t cathnet "cd $prod_docroot && drush cset readonlymode.settings enabled 1 -y"
     else
       # otherwise put into maintenance mode
     ssh -t cathnet "cd $prod_docroot && drush sset maintenance_mode 1"
 fi
+ssh -t cathnet "cd $prod_docroot && drush cr"
+fi
+
+
+# STEP 3
 ocmsg "Copy production site to test site." debug
 #copy production to test.
 copy_prod_test
 
+# STEP 4 Copy files from local site to prod_site
 ocmsg "Production site $prod_site localsite $site_path/$sitename_var" debug
 #drush rsync @$sitename_var @test --no-ansi  -y --exclude-paths=private:.git -- --exclude=.gitignore --delete
 # was -rav
 # -rzcEPul
-  rsync -ravz --delete --exclude 'docroot/sites/default/settings.*' \
+  rsync -raz --delete --exclude 'docroot/sites/default/settings.*' \
             --exclude 'docroot/sites/default/services.yml' \
             --exclude 'docroot/sites/default/files/' \
             --exclude '.git/' \
@@ -197,6 +244,7 @@ ocmsg "Production site $prod_site localsite $site_path/$sitename_var" debug
             --exclude 'dev/' \
             "$site_path/$sitename_var/"  "$prod_site" # > rsyncerrlog.txt
 
+# STEP 5 Runupdates on the test/prod site.
 # runup on the server
 if [[ "$test" ]] ; then
 sitename_var="test"

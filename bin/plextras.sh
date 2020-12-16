@@ -19,9 +19,9 @@ sitename_var=$1
 . $script_root/_inc.sh;
 
 parse_pl_yml
-
+#echo "webroot $webroot"
 import_site_config $sitename_var
-
+#echo "webroot $webroot"
 if [[ $# -eq 1 ]]
 then
   case  $1  in
@@ -61,7 +61,7 @@ else
   case  $2  in
     d)
     if [ -d $site_path/$sitename_var/$webroot ] ; then cd $site_path/$sitename_var/$webroot
-    else echo "webroot directory for sitepate: $site_path sitename_var: $sitename_var webroot $webroot can't be found"
+    else echo "webroot directory for sitepath: $site_path sitename_var: $sitename_var webroot $webroot can't be found"
     fi
     ;;
     b)
