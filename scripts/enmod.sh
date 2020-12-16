@@ -50,7 +50,6 @@ Mandatory arguments to long options are mandatory for short options too.
   -h --help               Display help (Currently displayed)
 
 Examples:"
-exit 0
 }
 
 # Use of Getopt

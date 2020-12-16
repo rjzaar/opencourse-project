@@ -170,7 +170,7 @@ Usage: pl addc [OPTION]
 
 <details>
 
-**<summary>backupdb: [34mbackup --help [39m :question: </summary>**
+**<summary>backupdb: [34mbackup --help [39m :white_check_mark: </summary>**
 --**BROKEN DOCUMENTATION**--
 Backs up the database only
     Usage: pl backupdb [OPTION] ... [SOURCE]
@@ -280,7 +280,7 @@ Examples:
 
 <details>
 
-**<summary>enmod: Usage: pl enmod [OPTION] ... [SITE] [MODULE] :question: </summary>**
+**<summary>enmod: Usage: pl enmod [OPTION] ... [SITE] [MODULE] :white_check_mark: </summary>**
 --**BROKEN DOCUMENTATION**--
 This script will install a module first using composer, then fix the file/dir
 ownership and then enable the module using drush automatically.
@@ -325,7 +325,7 @@ Examples:
 
 <details>
 
-**<summary>gcom: args:  --help -- :question: </summary>**
+**<summary>gcom: args:  --help -- :white_check_mark: </summary>**
 --**BROKEN DOCUMENTATION**--
 Git commit code with optional backup
 Usage: pl gcom [SITE] [MESSAGE] [OPTION]
@@ -545,6 +545,20 @@ END HELP
 
 <details>
 
+**<summary>open: Opens the specified site :white_check_mark: </summary>**
+Usage: pl open [OPTION] ... [SOURCE]
+This script will open the specified site.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -h --help               Display help (Currently displayed)
+
+Examples:
+pl open loc
+
+</details>
+
+<details>
+
 **<summary>proddown: Overwrite a specified local site with production :white_check_mark: </summary>**
 Usage: pl proddown [OPTION] ... [SITE]
 This script is used to overwrite a local site with the actual external production
@@ -657,7 +671,7 @@ pl restore prod stg
 
 <details>
 
-**<summary>runup: This script will run any updates on the stg site or the site specified. :question: </summary>**
+**<summary>runup: This script will run any updates on the stg site or the site specified. :white_check_mark: </summary>**
 Usage: pl runupdates [OPTION] ... [SOURCE]
 This script presumes the files including composer.json have been updated in some way and will now run those updates.
 
@@ -681,7 +695,7 @@ pl runup test # This will run the updates on the external test server.
 
 <details>
 
-**<summary>updateprod: Update Production (or test) server with stg or specified site. :question: </summary>**
+**<summary>updateprod: Update Production (or test) server with stg or specified site. :white_check_mark: </summary>**
 Usage: pl updateprod [OPTION] ... [SITE] [MESSAGE]
 This will copy stg or site specified to the production (or test) server and run
 the updates on that server. It will also backup the server. It presumes the server
@@ -710,13 +724,6 @@ Mandatory arguments to long options are mandatory for short options too.
   -d --debug              Provide debug information when running this script.
 
 Examples:
-
-</details>
-
-<details>
-
-**<summary>open:  :question: </summary>**
-**DOCUMENTATION NOT IMPLEMENTED**
 
 </details>
 

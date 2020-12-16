@@ -57,7 +57,6 @@ print_help() {
   pl backupdb tim -m 'First tim backup'
   pl backupdb --message='Love' love
   END HELP"
-  exit 0
 }
 
 # start timer
