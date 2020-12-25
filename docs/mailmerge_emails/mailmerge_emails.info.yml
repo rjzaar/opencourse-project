@@ -1,0 +1,5 @@
+name: 'Mailmerge emails'
+type: module
+description: 'Mail merge the selected emails'
+core: 8.x
+package: 'Custom'

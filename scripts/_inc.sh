@@ -572,6 +572,7 @@ EOL
 fix_site_settings() {
 
   # Check that settings.php has reference to local.settings.php
+  echo "Fixing settings at $site_path/$sitename_var/$webroot"
   echo "Making sure settings.php exists"
   if [ -f "$site_path/$sitename_var/$webroot/sites/default/settings.php.old" ]; then
     #cp "$site_path/$sitename_var/$webroot/sites/default/settings.php.old" "$site_path/$sitename_var/$webroot/sites/default/settings.php"
@@ -920,7 +921,7 @@ backup_site() {
 gitbackupdb() {
   #    drush @prod sql-dump --result-file="/home/$prod_user/proddb/prod.sql"
   #    ssh $prod_alias "cd proddb && git add . && git commit -m \"$(date +%Y%m%d\T%H%M%S-)\" && git push"
-echo -e "$Purple gitbackupdb"
+echo -e "$Purple gitbackupdb: $prod_docroot@$prod_alias"
   ssh $prod_alias "./gitbackupdb.sh $prod_docroot  $Bname"
 
   #Don't need all this since git database is only going one way now
@@ -1508,7 +1509,7 @@ fi
   fix_site_settings
 fi
 
-echo -e "\e[34m update database\e[39m"
+echo -e "\e[34m update database for $sitename_var\e[39m"
 drush @$sitename_var updb -y
 #echo -e "\e[34m fra\e[39m"
 #drush @$sitename_var fra -y

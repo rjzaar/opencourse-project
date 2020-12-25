@@ -157,9 +157,16 @@ ocmsg $(pwd) debug
 # -rvlzic --copy-unsafe-links --ipv4 --progress --delete
 # rsync -rvtlzi --copy-unsafe-links --ignore-times --ipv4
 
+## todo could add code so it deals with whatever the webroot is.
 rsync -rav --delete --exclude 'docroot/sites/default/settings.*' \
             --exclude 'docroot/sites/default/services.yml' \
             --exclude 'docroot/sites/default/files/' \
+            --exclude 'web/sites/default/settings.*' \
+            --exclude 'web/sites/default/services.yml' \
+            --exclude 'web/sites/default/files/' \
+            --exclude 'html/sites/default/settings.*' \
+            --exclude 'html/sites/default/services.yml' \
+            --exclude 'html/sites/default/files/' \
             --exclude '.git/' \
             --exclude '.gitignore' \
             --exclude 'private/' \

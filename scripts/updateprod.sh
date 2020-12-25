@@ -238,6 +238,12 @@ ocmsg "Production site $prod_site localsite $site_path/$sitename_var" debug
   rsync -raz --delete --exclude 'docroot/sites/default/settings.*' \
             --exclude 'docroot/sites/default/services.yml' \
             --exclude 'docroot/sites/default/files/' \
+            --exclude 'web/sites/default/settings.*' \
+            --exclude 'web/sites/default/services.yml' \
+            --exclude 'web/sites/default/files/' \
+            --exclude 'html/sites/default/settings.*' \
+            --exclude 'html/sites/default/services.yml' \
+            --exclude 'html/sites/default/files/' \
             --exclude '.git/' \
             --exclude '.gitignore' \
             --exclude 'private/' \
