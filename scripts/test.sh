@@ -1,6 +1,24 @@
 #!/bin/bash
 parse_pl_yml
+sitename_var="bak"
+import_site_config $sitename_var
+
+drush @$sitename_var cr 2>/dev/null | grep -v '+' | cut -d' ' -f2
+if [[ "${PIPESTATUS[0]}" == "1" ]]; then
+  # If there is an error, it is most likely due to a drush issue so reinstall drush.
+  rm "$site_path/$sitename_var/vendor/drush" -rf
+  cd "$site_path/$sitename_var/"
+  composer install --no-dev
+  sudo chown :www-data vendor/drush -R
+  fi
+
+exit 0
+
+parse_pl_yml
 # https://askubuntu.com/questions/623933/how-to-create-a-rotation-animation-using-shell-script
+
+
+
 
 readonly_en="$(ssh -t cathnet "cd $prod_docroot && drush pm-list --pipe --type=module --status=enabled --no-core | { grep 'readonlymode' || true; }"   )"
 

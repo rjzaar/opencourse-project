@@ -212,16 +212,17 @@ echo "Prod_site: $prod_site"
 if [[ ! "$test" ]] ; then
 # Check to see if production has the readonly module enabled.
 ocmsg "Check to see if production has the readonly module enabled." debug
-readonly_en=$(ssh -t cathnet "cd $prod_docroot && drush pm-list --pipe --type=module --status=enabled --no-core | { grep 'readonlymode' || true; }" )
+ssh -t $prod_alias "cd $prod_docroot && drush pm-list --pipe --type=module --status=enabled --no-core | { grep 'readonlymode' || true; }"
+readonly_en=$(ssh -t $prod_alias "cd $prod_docroot && drush pm-list --pipe --type=module --status=enabled --no-core | { grep 'readonlymode' || true; }" )
 
 ocmsg "Readonly: >$readonly_en<"
 if [ ! "$readonly_en" == "" ]; then
-    ssh -t cathnet "cd $prod_docroot && drush cset readonlymode.settings enabled 1 -y"
+    ssh -t $prod_alias "cd $prod_docroot && drush cset readonlymode.settings enabled 1 -y"
     else
       # otherwise put into maintenance mode
-    ssh -t cathnet "cd $prod_docroot && drush sset maintenance_mode 1"
+    ssh -t $prod_alias "cd $prod_docroot && drush sset maintenance_mode 1"
 fi
-ssh -t cathnet "cd $prod_docroot && drush cr"
+ssh -t $prod_alias "cd $prod_docroot && drush cr"
 fi
 
 

@@ -716,7 +716,7 @@ ocmsg() {
 # $webroot
 ################################################################################
 set_site_permissions() {
-  if [ $dev = "y" ] || [ $verbose = "debug" ]; then
+  if [ "$dev" = "y" ] || [ "$verbose" = "debug" ]; then
     devp="--dev"
   fi
 
@@ -1229,8 +1229,18 @@ restore_db() {
     echo "Could not import $Name into database $db using root, exiting"
     exit 1
   fi
-  drush @$sitename_var cr
+
+drush @$sitename_var cr 2>/dev/null | grep -v '+' | cut -d' ' -f2
+if [[ "${PIPESTATUS[0]}" == "1" ]]; then
+  # If there is an error, it is most likely due to a drush issue so reinstall drush.
+  rm "$site_path/$sitename_var/vendor/drush" -rf
+  cd "$site_path/$sitename_var/"
+  composer install --no-dev
+  sudo chown :www-data vendor/drush -R
+  fi
+
   drush @$sitename_var sset system.maintenance_mode FALSE
+  drush @$sitename_var cset readonlymode.settings enabled 0 -y
 }
 
 #
@@ -1482,7 +1492,10 @@ runupdates() {
 
 
 if [[ "$sitename_var" == "prod" || "$sitename_var" == "test" ]]; then
-  # presume you don't need to fix site settings for production sites.
+    eval $(ssh-agent -s)
+    echo "Adding $(dirname $(dirname $script_root))/.ssh/$prod_gitkey"
+    ssh-add "$(dirname $(dirname $script_root))/.ssh/$prod_gitkey"
+  # presume you don't need toProduction site fix site settings for production sites.
   if [[ "$sitename_var" == "test" ]]; then
     # This script just runs the composer install --no-dev and fixes site permissions.
     ssh -t $prod_alias "./updatetest.sh $prod_test_docroot"
@@ -1558,8 +1571,10 @@ fi
 
   else
     set_site_permissions
-    echo -e "\e[34m make sure out of maintenance mode\e[39m"
+    echo -e "\e[34m make sure out of maintenance and readonly mode\e[39m"
 drush @$sitename_var sset system.maintenance_mode FALSE
+drush @$sitename_var cset readonlymode.settings enabled 0 -y
+
 
 fi
 drush @$sitename_var cr

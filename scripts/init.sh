@@ -29,7 +29,7 @@
 ################################################################################
 
 # Set script name for general file use
-scriptname='pleasy-init'
+scriptname='init'
 # Change this to debug to debug this script
 verbose="none"
 plcstatus="pass"

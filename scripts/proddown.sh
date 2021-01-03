@@ -67,6 +67,13 @@ END HELP"
 ################################################################################
 SECONDS=0
 
+# Step Variable
+################################################################################
+# Variable step is defined for debug purposes. If the init fails, we can,
+# using step, start at the point of the script which had failed
+################################################################################
+step=${step:-1}
+
 # Use of Getopt
 ################################################################################
 # Getopt to parse script and allow arg combinations ie. -yh instead of -h
